@@ -17,7 +17,10 @@ module.exports = {
         main: "#39B88B",
         mainLight: "#74D5B3",
         textLight: "#FFFFFF",
-        one: "#181C32"
+        one: "#181C32",
+        blackTwo: "#3F4254",
+        grayOne: "#A1A5B7",
+        grayTwo: "#E3E3E3",
         // secondary: "#74D5B3",
         // placeholder: "#BCBEC0",
         // greyText: "#C9C9C9",
