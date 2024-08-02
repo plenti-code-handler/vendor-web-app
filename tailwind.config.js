@@ -21,6 +21,9 @@ module.exports = {
         blackTwo: "#3F4254",
         grayOne: "#A1A5B7",
         grayTwo: "#E3E3E3",
+        grayThree: "#7E8299",
+        notPickedText: "#F1416C",
+        pickedText: "#50CD89",
         // secondary: "#74D5B3",
         // placeholder: "#BCBEC0",
         // greyText: "#C9C9C9",
@@ -32,14 +35,14 @@ module.exports = {
         // paginationText: "#6E6B7B",
 
         // bg colors
+        notPickedBg: "#FFF5F8",
+        pickedBg: "#E8FFF3",
         // sidebarBackground: "#0C0C0C",
         // tableButtonBackground: "#F1F1F2",
         // paginationBackground: "#F3F2F7",
         // deletecolor: "#C60000",
         // greyTag: "#F6F6F6",
-
-
-      }
+      },
     },
   },
   plugins: [],

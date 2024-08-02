@@ -30,10 +30,10 @@ const RenderStats = () => {
     </>
   ) : (
     <>
-      <div className="flex-1 lg:flex-[0_0_70%]">
+      <div className="flex-1 lg:flex-[0_0_70%] lg:flex-row">
         <RevenueChart />
       </div>
-      <div className="flex-1 lg:flex-[0_0_30%]">
+      <div className="flex-1 lg:flex-[0_0_30%] lg:flex-row">
         {isSmallDevice ? <StatSlider /> : <CardsRow />}
       </div>
     </>
