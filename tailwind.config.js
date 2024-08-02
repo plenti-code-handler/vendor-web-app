@@ -41,6 +41,8 @@ module.exports = {
         notPickedBg: "#FFF5F8",
         pickedBg: "#E8FFF3",
         pinkBgOne: "#FFF1F9",
+        pinkBgDark: "#FD8AD0",
+        pinkBgDarkHover: "#FF8C9E"
         // sidebarBackground: "#0C0C0C",
         // tableButtonBackground: "#F1F1F2",
         // paginationBackground: "#F3F2F7",

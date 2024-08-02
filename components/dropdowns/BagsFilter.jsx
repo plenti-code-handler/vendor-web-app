@@ -18,6 +18,12 @@ const BagsFilter = () => {
           <option value="small" className="text-base">
             Small Bags
           </option>
+          <option value="small" className="text-base">
+            Active Bags
+          </option>
+          <option value="small" className="text-base">
+            Past Bags
+          </option>
         </select>
         <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
           {arrowDownGray}

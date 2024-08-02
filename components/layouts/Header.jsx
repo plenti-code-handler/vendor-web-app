@@ -21,7 +21,7 @@ const Header = () => {
 
   return (
     <>
-      <header className="bg-main">
+      <header className="bg-main lg:pl-10">
         <div className="mx-auto flex max-w-7xl items-center justify-between p-5 lg:px-7">
           <img
             alt="Foodie Finder Logo"
