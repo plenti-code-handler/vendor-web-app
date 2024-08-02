@@ -1,20 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  value: false,
+  activePage: null, // Track the active page
 };
 
 export const headerSlice = createSlice({
   name: "header",
   initialState,
   reducers: {
-    setHeaderOption: (state, action) => {
-      state.value = action.payload;
+    setActivePage: (state, action) => {
+      state.activePage = action.payload;
     },
   },
 });
 
-// Action creators are generated for each case reducer function
-export const { setHeaderOption } = headerSlice.actions;
-
+export const { setActivePage } = headerSlice.actions;
 export default headerSlice.reducer;

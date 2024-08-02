@@ -4,9 +4,16 @@ import CardsRow from "./CardsRow";
 import StatSlider from "./StatSlider";
 import React, { useEffect, useState } from "react";
 import RevenueChart from "../../../charts/RevenueChart";
+import { useDispatch } from "react-redux";
+import { setActivePage } from "../../../../redux/slices/headerSlice";
 
 const RenderStats = () => {
   const [isSmallDevice, setIsSmallDevice] = useState(false);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(setActivePage("Dashboard"));
+  }, [dispatch]);
 
   useEffect(() => {
     const handleResize = () => {
