@@ -6,7 +6,7 @@ import { users } from "../../../../lib/constant_data";
 
 const RecentOrders = (props) => {
   return (
-    <div className="mt-4 w-full border border-gray-300 rounded-md p-6">
+    <div className="mt-4 w-full border border-gray-300 rounded-md p-6 sm:px-4">
       <TableUpper />
       <div className="no-scrollbar w-full  overflow-y-hidden">
         <table
