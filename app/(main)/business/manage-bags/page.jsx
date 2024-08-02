@@ -1,9 +1,12 @@
-import React from 'react'
+import React from "react";
+import BagsTable from "../../../../components/sections/bussiness/bags/BagsTable";
 
-const page = () => {
+const Page = () => {
   return (
-    <div>page</div>
-  )
-}
+    <div className="flex flex-col">
+      <BagsTable />
+    </div>
+  );
+};
 
-export default page
+export default Page;
