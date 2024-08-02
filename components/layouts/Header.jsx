@@ -41,25 +41,25 @@ const Header = () => {
           >
             <div className="flex flex-col lg:flex-row lg:gap-x-14 p-6 lg:p-0">
               <Link
-                href="/bussiness"
+                href="/business"
                 className="text-base font-semibold leading-6 text-white lg:text-textLight hover:underline transition-all"
               >
                 Dashboard
               </Link>
               <Link
-                href="#"
+                href="/business/manage-bags"
                 className="text-base font-semibold leading-6 text-white lg:text-textLight hover:underline transition-all"
               >
                 Manage Bags
               </Link>
               <Link
-                href="#"
+                href="/business/bookings"
                 className="text-base font-semibold leading-6 text-white lg:text-textLight hover:underline transition-all"
               >
-                Booking
+                Bookings
               </Link>
               <Link
-                href="#"
+                href="/business/more"
                 className="text-base font-semibold leading-6 text-white lg:text-textLight hover:underline transition-all"
               >
                 More

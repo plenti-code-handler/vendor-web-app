@@ -1,5 +1,6 @@
 import { Inter } from "next/font/google";
 import "../globals.css";
+import Providers from "../../redux/provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -12,13 +13,7 @@ export default function AuthLayout({ children }) {
   return (
     <html lang="en">
       <body className={inter.className}>
-        <header>
-          <h1>Auth Layout</h1>
-        </header>
-        <main>{children}</main>
-        <footer>
-          <h1>Footer</h1>
-        </footer>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

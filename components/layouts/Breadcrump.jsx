@@ -8,11 +8,19 @@ const Breadcrumb = () => {
 
   useEffect(() => {
     const decidePath = () => {
-      switch (pathname.split("/")[1]) {
+      switch (pathname.split("/").at(-1)) {
         case "business":
           setCurrentPath("My Dashboard");
           break;
-
+        case "manage-bags":
+          setCurrentPath("Manage Bags");
+          break;
+        case "bookings":
+          setCurrentPath("Bookings");
+          break;
+        case "more":
+          setCurrentPath("More");
+          break;
         default:
           setCurrentPath("IDK");
           break;

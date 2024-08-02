@@ -1,91 +1,60 @@
 "use client";
-import Header from "@/components/layout/Header";
-import Sidebar from "@/components/layout/Sidebar";
-import { usePathname } from "next/navigation";
 import { Provider } from "react-redux";
-import { ToastContainer } from "react-toastify";
 import { store } from "./store";
-import Main from "@/components/layout/Main";
-import NewUserModal from "@/components/modals/NewUserModal";
-import DeleteUserModal from "@/components/modals/DeleteUserModal";
-import EditUserModal from "@/components/modals/EditUserModal";
-import CancelSubModal from "@/components/modals/CancelSubModal";
-import SidebarModal from "@/components/modals/SidebarModal";
-import NotificationModal from "@/components/modals/NotificationModal";
-import { getToken } from "./slices/userSlice";
+import Main from "../components/layouts/Main";
 import { useEffect } from "react";
+import Header from "../components/layouts/Header";
+import { usePathname } from "next/navigation";
 
 const Providers = ({ children }) => {
   const pathname = usePathname();
 
   useEffect(() => {
-    const token = getToken();
+    const user = true;
 
     if (
-      token == undefined &&
-      pathname !== "/login" &&
+      !user &&
+      pathname !== "/" &&
       pathname !== "/register" &&
       pathname !== "/forgot-password" &&
-      pathname !== "/reset-password" &&
-      pathname !== "/verify-account"
+      pathname !== "/reset-password"
     ) {
       window.location.href = "/login";
     }
 
     if (
-      token &&
-      (pathname === "/login" ||
+      user &&
+      (pathname === "/" ||
         pathname === "/register" ||
         pathname === "/forgot-password" ||
-        pathname === "/reset-password" ||
-        pathname === "/verify-account")
+        pathname === "/reset-password")
     ) {
-      window.location.href = "/";
+      window.location.href = "/business";
     }
   }, []);
 
   if (
-    pathname === "/login" ||
+    pathname === "/" ||
     pathname === "/register" ||
     pathname === "/forgot-password" ||
-    pathname === "/reset-password" ||
-    pathname === "/verify-account"
+    pathname === "/reset-password"
   ) {
     return (
       <Provider store={store}>
-        <div className="relative flex w-full flex-col">
-          <main className="w-full">{children}</main>
-        </div>
+        <header>
+          <h1>Auth Layout</h1>
+        </header>
+        <main>{children}</main>
+        <footer>
+          <h1>Footer</h1>
+        </footer>
       </Provider>
     );
   } else {
     return (
       <Provider store={store}>
-        <NewUserModal />
-        <DeleteUserModal />
-        <EditUserModal />
-        <CancelSubModal />
-        <SidebarModal />
-        <NotificationModal />
-        <ToastContainer
-          position="top-center"
-          theme="dark"
-          closeOnClick={false} // No close button
-          //autoClose={3000}
-          hideProgressBar={false}
-          style={{ zIndex: 110000 }}
-        />
-
-        <div className="relative flex w-full flex-col">
-          <Header />
-          <div
-            style={{ top: "80px", height: "calc(100vh - 80px)" }}
-            className="bg-primaryBackground absolute flex w-full flex-row overflow-y-auto overflow-x-hidden"
-          >
-            <Sidebar />
-            <Main> {children} </Main>
-          </div>
-        </div>
+        <Header />
+        <Main>{children}</Main>
       </Provider>
     );
   }
