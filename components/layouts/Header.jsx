@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { logoutIconSvg } from "../../svgs";
 import Link from "next/link";
 import LanguageDropdown from "../dropdowns/LanguageDropdown";
+import ProfileDropdown from "../dropdowns/ProfileDropdown";
 import { setActivePage } from "../../redux/slices/headerSlice";
 
 const Header = () => {
@@ -28,10 +29,8 @@ const Header = () => {
             src="https://firebasestorage.googleapis.com/v0/b/foodie-finder-ee1d8.appspot.com/o/app_logo.png?alt=media&token=8e779e74-bdc7-4dc6-8634-55a30110bc98"
             className="h-10 w-auto mr-16 pr-8"
           />
-          <div className="flex lg:hidden">
-            <div className="mr-2 pr-0 h-9 w-8 overflow-hidden">
-              <img src="/User.png" alt="User" className="rounded-lg" />
-            </div>
+          <div className="flex lg:hidden items-center">
+            <ProfileDropdown />
             <button
               onClick={toggleMenu}
               className="text-gray-900 hover:text-gray-700 focus:outline-none"
@@ -74,9 +73,7 @@ const Header = () => {
           </nav>
           <div className="hidden lg:flex items-center gap-x-4">
             <LanguageDropdown />
-            <div className="h-9 w-8 rounded-sm overflow-hidden">
-              <img src="/User.png" alt="User" className="rounded-lg" />
-            </div>
+            <ProfileDropdown />
             <button className="text-sm font-semibold leading-6 text-gray-900">
               {logoutIconSvg}
             </button>
