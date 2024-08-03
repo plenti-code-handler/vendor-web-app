@@ -9,11 +9,11 @@ import FaqForm from "./FaqForm";
 
 const Faqs = () => {
   return (
-    <div className="flex h-screen w-full px-4 sm:px-10 md:px-20 lg:px-40 sm:pt-10">
+    <div className="flex w-full px-4 sm:px-10 md:px-20 lg:px-40 sm:pt-10">
       <div className="mx-auto w-full max-w-4xl divide-y divide-gray-200 rounded-xl bg-white/5">
         <Disclosure as="div" defaultOpen={true}>
           <DisclosureButton className="group flex w-full items-center justify-between py-4">
-            <span className="text-[20px] font-medium text-blackThree group-hover:text-bblackThreelack/80">
+            <span className="text-[20px] font-medium text-blackThree group-hover:text-blackThree/80">
               Terms and Conditions
             </span>
             <div className="flex items-center">

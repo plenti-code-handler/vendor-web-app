@@ -58,8 +58,8 @@ const Header = () => {
                   href={href}
                   className={`text-base font-semibold leading-6 transition-all rounded-md ${
                     activePage === name
-                      ? "bg-mainLight pr-6 pl-6 pt-3 pb-3 text-white"
-                      : "text-white lg:text-textLight hover:underline pt-3"
+                      ? "bg-mainLight text-white px-8 py-3 -mx-4 -my-3"
+                      : "text-white lg:text-textLight hover:underline"
                   }`}
                   onClick={() => handleLinkClick(name)}
                 >
