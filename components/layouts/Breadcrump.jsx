@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import { addUserSvg } from "../../svgs";
 import { useDispatch } from "react-redux";
 import { setActivePage } from "../../redux/slices/headerSlice";
+import { setOpenDrawer } from "../../redux/slices/addBagSlice";
 
 const decidePath = (pathname, dispatch) => {
   const path = pathname.split("/").at(-1);
@@ -22,7 +23,7 @@ const decidePath = (pathname, dispatch) => {
       dispatch(setActivePage("More"));
       return "More Options";
     default:
-      return "IDK";
+      return "";
   }
 };
 
@@ -30,11 +31,18 @@ const Breadcrumb = () => {
   const pathname = usePathname();
   const dispatch = useDispatch();
 
-  const currentPath = useMemo(() => decidePath(pathname, dispatch), [pathname, dispatch]);
+  const handleOpenDrawer = () => {
+    dispatch(setOpenDrawer(true));
+  };
+
+  const currentPath = useMemo(
+    () => decidePath(pathname, dispatch),
+    [pathname, dispatch]
+  );
 
   const MoreOptionsContent = () => (
     <div className="flex flex-col items-center">
-       <img
+      <img
         alt="Foodie Finder Logo"
         src="https://firebasestorage.googleapis.com/v0/b/foodie-finder-ee1d8.appspot.com/o/app_logo.png?alt=media&token=8e779e74-bdc7-4dc6-8634-55a30110bc98"
         className="lg:h-[25%] lg:w-[25%]"
@@ -51,10 +59,15 @@ const Breadcrumb = () => {
         {currentPath}
       </p>
       {currentPath === "Manage Bags" && (
-        <button className="flex items-center justify-between bg-pinkBgDark text-white font-semibold py-2 px-4 rounded hover:bg-pinkBgDarkHover gap-2 lg:w-[15%]">
-          <span>New Bag</span>
-          <span>{addUserSvg}</span>
-        </button>
+        <>
+          <button
+            onClick={() => handleOpenDrawer()}
+            className="flex items-center justify-between bg-pinkBgDark text-white font-semibold py-2 px-4 rounded hover:bg-pinkBgDarkHover gap-2 lg:w-[15%]"
+          >
+            <span>New Bag</span>
+            <span>{addUserSvg}</span>
+          </button>
+        </>
       )}
     </div>
   );
@@ -62,7 +75,9 @@ const Breadcrumb = () => {
   return currentPath === "More Options" ? (
     <MoreOptionsContent />
   ) : (
-    <DefaultContent />
+    <>
+      <DefaultContent />
+    </>
   );
 };
 

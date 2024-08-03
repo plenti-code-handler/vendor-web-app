@@ -29,7 +29,7 @@ module.exports = {
         notPickedText: "#F1416C",
         pickedText: "#50CD89",
         pinkTextOne: "#FD8AD0",
-        // secondary: "#74D5B3",
+        secondary: "#74D5B3",
         // placeholder: "#BCBEC0",
         // greyText: "#C9C9C9",
         // sidebarOptionText: "#ADB7C0",
