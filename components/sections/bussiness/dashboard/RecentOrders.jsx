@@ -70,7 +70,7 @@ const RecentOrders = (props) => {
                 </td>
                 <td className="truncate text-center px-2">
                   <p className="text-sm font-semibold text-grayThree">
-                    {user.amount}
+                    € {user.amount}
                   </p>
                 </td>
                 <td className="truncate text-center px-2">

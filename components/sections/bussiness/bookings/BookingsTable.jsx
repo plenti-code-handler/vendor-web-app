@@ -1,10 +1,18 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import TableUpper from "./TableUpper";
 import { bookings } from "../../../../lib/constant_data";
+import { useDispatch } from "react-redux";
+import { setActivePage } from "../../../../redux/slices/headerSlice";
 
 const BookingsTable = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(setActivePage("Bookings"));
+  }, [dispatch]);
+
   return (
     <div className="mt-4 w-full border border-gray-300 rounded-md p-6 sm:px-4">
       <TableUpper />
@@ -70,7 +78,7 @@ const BookingsTable = () => {
                 </td>
                 <td className="truncate text-center px-2">
                   <p className="text-sm font-semibold text-grayThree">
-                    {user.amount}
+                    € {user.amount}
                   </p>
                 </td>
                 <td className="truncate text-center px-2">

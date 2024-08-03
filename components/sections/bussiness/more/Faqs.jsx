@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Disclosure,
   DisclosureButton,
@@ -6,8 +8,17 @@ import {
 import { ChevronRightIcon } from "@heroicons/react/20/solid";
 import { faqData } from "../../../../lib/constant_data";
 import FaqForm from "./FaqForm";
+import { useDispatch } from "react-redux";
+import { setActivePage } from "../../../../redux/slices/headerSlice";
+import { useEffect } from "react";
 
 const Faqs = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(setActivePage("More"));
+  }, [dispatch]);
+
   return (
     <div className="flex w-full px-4 sm:px-10 md:px-20 lg:px-40 sm:pt-10">
       <div className="mx-auto w-full max-w-4xl divide-y divide-gray-200 rounded-xl bg-white/5">

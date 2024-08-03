@@ -3,24 +3,19 @@ import React, { useMemo } from "react";
 import { usePathname } from "next/navigation";
 import { addUserSvg } from "../../svgs";
 import { useDispatch } from "react-redux";
-import { setActivePage } from "../../redux/slices/headerSlice";
 import { setOpenDrawer } from "../../redux/slices/addBagSlice";
 
-const decidePath = (pathname, dispatch) => {
+const decidePath = (pathname) => {
   const path = pathname.split("/").at(-1);
 
   switch (path) {
     case "business":
-      dispatch(setActivePage("Dashboard"));
       return "My Dashboard";
     case "manage-bags":
-      dispatch(setActivePage("Manage Bags"));
       return "Manage Bags";
     case "bookings":
-      dispatch(setActivePage("Bookings"));
       return "Bookings";
     case "more":
-      dispatch(setActivePage("More"));
       return "More Options";
     default:
       return "";
@@ -35,10 +30,7 @@ const Breadcrumb = () => {
     dispatch(setOpenDrawer(true));
   };
 
-  const currentPath = useMemo(
-    () => decidePath(pathname, dispatch),
-    [pathname, dispatch]
-  );
+  const currentPath = useMemo(() => decidePath(pathname), [pathname, dispatch]);
 
   const MoreOptionsContent = () => (
     <div className="flex flex-col items-center">
@@ -62,9 +54,9 @@ const Breadcrumb = () => {
         <>
           <button
             onClick={() => handleOpenDrawer()}
-            className="flex items-center justify-between bg-pinkBgDark text-white font-semibold py-2 px-4 rounded hover:bg-pinkBgDarkHover gap-2 lg:w-[15%]"
+            className="flex items-center text-center justify-center bg-pinkBgDark text-white font-semibold py-2 px-4 rounded hover:bg-pinkBgDarkHover lg:w-[15%]"
           >
-            <span>New Bag</span>
+            <span className="mr-2">New Bag</span>
             <span>{addUserSvg}</span>
           </button>
         </>

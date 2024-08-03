@@ -23,11 +23,11 @@ const Header = () => {
   return (
     <>
       <header className="bg-main lg:pl-10 lg:justify-center z-10">
-        <div className="mx-auto flex max-w-7xl items-center justify-between p-5 lg:px-7">
+        <div className="mx-auto flex max-w-7xl items-center justify-between p-5 ">
           <img
             alt="Foodie Finder Logo"
             src="https://firebasestorage.googleapis.com/v0/b/foodie-finder-ee1d8.appspot.com/o/app_logo.png?alt=media&token=8e779e74-bdc7-4dc6-8634-55a30110bc98"
-            className="h-10 w-auto mr-16 pr-8"
+            className="h-10 w-auto"
           />
           <div className="flex lg:hidden items-center">
             <ProfileDropdown />
@@ -43,10 +43,10 @@ const Header = () => {
               isMenuOpen ? "block" : "hidden"
             } absolute top-16 left-0 w-full h-full bg-main font-base shadow-md transition-transform transform ${
               isMenuOpen ? "translate-y-0" : "-translate-y-full"
-            } lg:static lg:block lg:bg-transparent lg:shadow-none lg:translate-y-0`}
+            } lg:static lg:block lg:bg-transparent lg:shadow-none lg:translate-y-0 lg:ml-20`}
             style={{ zIndex: 1000 }}
           >
-            <div className="flex flex-col lg:flex-row lg:gap-x-14 p-6 lg:p-0">
+            <div className="flex flex-col lg:flex-row lg:gap-x-8 p-6 lg:p-0">
               {[
                 { name: "Dashboard", href: "/business" },
                 { name: "Manage Bags", href: "/business/manage-bags" },
@@ -56,10 +56,10 @@ const Header = () => {
                 <Link
                   key={name}
                   href={href}
-                  className={`text-base font-semibold leading-6 transition-all rounded-md ${
+                  className={`text-md font-semibold leading-6 transition-all rounded-md pt-3 pb-3 pl-4 pr-4 ${
                     activePage === name
-                      ? "bg-mainLight text-white px-8 py-3 -mx-4 -my-3"
-                      : "text-white lg:text-textLight hover:underline"
+                      ? "bg-mainLight text-white"
+                      : "text-white lg:text-textLight hover:underline "
                   }`}
                   onClick={() => handleLinkClick(name)}
                 >
@@ -71,12 +71,14 @@ const Header = () => {
               </div>
             </div>
           </nav>
-          <div className="hidden lg:flex items-center gap-x-4">
+          <div className="hidden lg:flex items-center">
             <LanguageDropdown />
-            <ProfileDropdown />
-            <button className="text-sm font-semibold leading-6 text-gray-900">
-              {logoutIconSvg}
-            </button>
+            <div className="flex gap-x-2 lg:pr-14 lg:pl-2">
+              <ProfileDropdown />
+              <button className="text-sm font-semibold leading-6 text-gray-900">
+                {logoutIconSvg}
+              </button>
+            </div>
           </div>
         </div>
       </header>

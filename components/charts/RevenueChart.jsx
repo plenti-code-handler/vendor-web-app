@@ -77,8 +77,7 @@ const RevenueChart = () => {
           options={chartData.options}
           series={chartData.series}
           type="area"
-          height={350}
-          //   width="70%"
+          height={220}
         />
       </div>
     </div>

@@ -2,7 +2,7 @@ import { arrowDown } from "../../svgs";
 
 const LanguageDropdown = () => {
   return (
-    <form className="max-w-lg mx-12 w-60">
+    <form className="mx-12 lg:w-60">
       <div className="relative">
         <select
           id="countries"

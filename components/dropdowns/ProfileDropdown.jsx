@@ -6,7 +6,11 @@ const ProfileDropdown = () => {
     <Menu as="div" className="relative">
       <div>
         <MenuButton className="flex items-center rounded-md text-sm focus:outline-none mr-2 focus:ring-2 focus:ring-white">
-          <img alt="User" src="/User.png" className="h-8 w-8 rounded-md" />
+          <img
+            alt="User"
+            src="/User.png"
+            className="h-8 w-8 lg:h-9 lg:w-12 rounded-md"
+          />
         </MenuButton>
       </div>
       <MenuItems className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition-opacity focus:outline-none">
