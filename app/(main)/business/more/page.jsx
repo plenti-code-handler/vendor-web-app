@@ -1,9 +1,9 @@
-import React from 'react'
+import React from "react";
+import Faqs from "../../../../components/sections/bussiness/more/Faqs";
 
 const page = () => {
-  return (
-    <div>page</div>
-  )
-}
+  return <Faqs />;
+  
+};
 
-export default page
+export default page;
