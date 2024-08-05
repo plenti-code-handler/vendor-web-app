@@ -75,7 +75,10 @@ const Header = () => {
             <LanguageDropdown />
             <div className="flex gap-x-2 lg:pr-14 lg:pl-2">
               <ProfileDropdown />
-              <button className="text-sm font-semibold leading-6 text-gray-900">
+              <button
+                className="text-sm font-semibold leading-6 pl-1 text-gray-900 transition-colors duration-200 ease-in-out hover:bg-mainLight hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-mainLight focus:ring-offset-2 rounded-lg"
+                title="Logout"
+              >
                 {logoutIconSvg}
               </button>
             </div>
