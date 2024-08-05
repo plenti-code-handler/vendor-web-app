@@ -17,6 +17,8 @@ const decidePath = (pathname) => {
       return "Bookings";
     case "more":
       return "More Options";
+    case "profile":
+      return "My Profile";
     default:
       return "";
   }
@@ -46,7 +48,7 @@ const Breadcrumb = () => {
   );
 
   const DefaultContent = () => (
-    <div className="flex justify-between items-center m-4 lg:mr-auto lg:mt-4 lg:mb-4 lg:py-2 lg:w-[99%]">
+    <div className="flex justify-between items-center lg:mr-auto lg:mt-4 lg:mb-4 lg:py-2 lg:w-[99%]">
       <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-one">
         {currentPath}
       </p>
