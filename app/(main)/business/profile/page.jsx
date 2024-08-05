@@ -1,10 +1,14 @@
 import React from 'react';
 import ProfileCard from "../../../../components/sections/bussiness/profile/ProfileCard";
+import Transactions from "../../../../components/sections/bussiness/profile/Transactions";
 
-const page = () => {
+const Page = () => {
   return (
-    <ProfileCard/>
-  )
-}
+    <div className='flex flex-col md:flex-row gap-4 p-3'>
+      <ProfileCard />
+      <Transactions />
+    </div>
+  );
+};
 
-export default page
+export default Page;

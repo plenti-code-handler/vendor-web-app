@@ -49,7 +49,7 @@ const Breadcrumb = () => {
 
   const DefaultContent = () => (
     <div className="flex justify-between items-center lg:mr-auto lg:mt-4 lg:mb-4 lg:py-2 lg:w-[99%]">
-      <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-one">
+      <p className="m-4 text-lg sm:m-0 sm:text-xl md:text-2xl lg:text-3xl font-bold text-one">
         {currentPath}
       </p>
       {currentPath === "Manage Bags" && (
