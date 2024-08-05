@@ -87,10 +87,10 @@ const UpdatePasswordDrawer = () => {
                         <PasswordField />
                       </div>
                       <div className="flex gap-5 pt-5">
-                        <button className="flex justify-center bg-white text-black border border-black font-md py-2  rounded hover:bg-grayTwo gap-2 lg:w-[100%]">
+                        <button className="flex justify-center bg-white text-black border border-black font-md py-2  rounded hover:bg-grayTwo gap-2 w-[100%]">
                           Cancel
                         </button>
-                        <button className="flex justify-center bg-pinkBgDark text-white font-md py-2  rounded hover:bg-pinkBgDarkHover gap-2 lg:w-[100%]">
+                        <button className="flex justify-center bg-pinkBgDark text-white font-md py-2  rounded hover:bg-pinkBgDarkHover gap-2 w-[100%]">
                           Update
                         </button>
                       </div>
