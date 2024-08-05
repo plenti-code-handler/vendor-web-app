@@ -16,12 +16,16 @@ import {
 } from "@heroicons/react/20/solid";
 import { useDispatch } from "react-redux";
 import { setOpenDrawer } from "../../redux/slices/updatePasswordSlice";
+import { setOpenDrawer as setDeleteDrawer } from "../../redux/slices/deleteAccountSlice";
 
 const ProfileDropdown = () => {
   const dispatch = useDispatch();
 
   const handleOpenDrawer = () => {
     dispatch(setOpenDrawer(true));
+  };
+  const handleDeleteDrawer = () => {
+    dispatch(setDeleteDrawer(true));
   };
   return (
     <Menu as="div" className="relative" title="Your Profile">
@@ -64,7 +68,6 @@ const ProfileDropdown = () => {
                     active ? "bg-main text-white" : "text-gray-900"
                   } group flex w-full items-center rounded-md px-2 py-2 text-xs sm:text-sm`}
                   onClick={() => handleOpenDrawer()}
-
                 >
                   <PencilIcon className="mr-2 h-5 w-5" aria-hidden="true" />
                   Change Password
@@ -79,6 +82,7 @@ const ProfileDropdown = () => {
                   className={`${
                     active ? "bg-red-800 text-red-100" : "text-gray-900"
                   } group flex w-full items-center rounded-md px-2 py-2 text-xs sm:text-sm`}
+                  onClick={() => handleDeleteDrawer()}
                 >
                   <TrashIcon className="mr-2 h-5 w-5" aria-hidden="true" />
                   Delete Account
