@@ -20,6 +20,7 @@ module.exports = {
         one: "#181C32",
         blackTwo: "#3F4254",
         blackThree: "#0B0B0B",
+        blackFour: "#09090B",
         grayOne: "#A1A5B7",
         grayTwo: "#E3E3E3",
         grayThree: "#7E8299",

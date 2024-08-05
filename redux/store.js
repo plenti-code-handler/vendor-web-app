@@ -1,10 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 import headerReducer from "./slices/headerSlice";
 import addBagReducer from "./slices/addBagSlice";
+import updatePasswordReducer from "./slices/updatePasswordSlice";
 
 export const store = configureStore({
   reducer: {
     header: headerReducer,
     addBag: addBagReducer,
+    updatePassword: updatePasswordReducer,
   },
 });
