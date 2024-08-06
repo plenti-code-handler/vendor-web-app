@@ -2,7 +2,7 @@ import { arrowDownGray } from "../../svgs";
 
 const BookingsFilter = ({ selectedFilter, onFilterChange }) => {
   return (
-    <form className="max-w-lg mx-12 w-60">
+    <form className="max-w-lg sm:mx-5 w-[100%]">
       <div className="relative">
         <select
           id="bookings"
@@ -20,7 +20,7 @@ const BookingsFilter = ({ selectedFilter, onFilterChange }) => {
             Scheduled Bags
           </option>
         </select>
-        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 lg:pr-1">
           {arrowDownGray}
         </div>
       </div>
