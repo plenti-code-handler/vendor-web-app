@@ -6,18 +6,16 @@ import {
   DialogTitle,
 } from "@headlessui/react";
 import { useDispatch, useSelector } from "react-redux";
-import { setOpenDrawer } from "../../redux/slices/withdrawAmountSlice";
-import { setOpenDrawer as setOpenSuccessDrawer } from "../../redux/slices/withdrawSuccessSlice";
+import { setOpenDrawer } from "../../redux/slices/withdrawSuccessSlice";
 import { crossIconWhiteSvg, payPalSvg, warningSvg } from "../../svgs";
 import { useState } from "react";
 
-const WithdrawAmountDrawer = () => {
+const SuccessWithdrawDrawer = () => {
   const dispatch = useDispatch();
-  const open = useSelector((state) => state.withdrawAmount.drawerOpen);
+  const open = useSelector((state) => state.withdrawSuccess.drawerOpen);
 
   const [amount, setAmount] = useState("");
   const currentBalance = 3150.7;
-  const isInsufficient = parseFloat(amount) > currentBalance;
 
   const handleClose = () => {
     dispatch(setOpenDrawer(false));
@@ -25,7 +23,6 @@ const WithdrawAmountDrawer = () => {
 
   const handleContinue = () => {
     dispatch(setOpenDrawer(false));
-    dispatch(setOpenSuccessDrawer(true));
   };
 
   return (
@@ -45,7 +42,7 @@ const WithdrawAmountDrawer = () => {
                 <div className="flex h-full flex-col overflow-y-scroll py-5 shadow-xl bg-gradient-custom">
                   <DialogTitle className="flex px-4 sm:px-6 justify-between">
                     <p className="text-white font-semibold text-[18px]">
-                      Withdraw Amount
+                      Successfull
                     </p>
                     <button
                       className="p-2 hover:bg-main rounded"
@@ -55,7 +52,25 @@ const WithdrawAmountDrawer = () => {
                     </button>
                   </DialogTitle>
                   <hr className="my-3 w-[90%] border-gray-300 ml-8" />
-                  <div className="flex flex-col mt-3 pb-3 flex-1 px-4 sm:px-6 space-y-4 items-center gap-5">
+                  <div className="flex flex-col mt-3 pb-3 flex-1 px-4 sm:px-6 space-y-4 items-center">
+                    <img
+                      alt="Tick Icon"
+                      src="/tick-mark.png"
+                      className="h-25 w-25 "
+                    />
+
+                    <div className="flex flex-col gap-2 items-center">
+                      <p className="text-white text-[14px]">
+                        You have successfully withdrawn{" "}
+                      </p>
+
+                      <p className="text-white text-[50px] font-bold">
+                        € 5000.0
+                      </p>
+
+                      <p className="text-white text-[14px]">to account</p>
+                    </div>
+
                     <div className="flex justify-between items-center bg-[#8adbbf] shadow-lg transform translate-y-[-5px] p-2 rounded-lg mt-2 lg:w-[80%]">
                       <div className="flex gap-2 items-center">
                         <span className="mt-1">{payPalSvg}</span>
@@ -65,49 +80,14 @@ const WithdrawAmountDrawer = () => {
                       </div>
                     </div>
 
-                    <div className="flex flex-col items-center">
-                      <p className="text-amountStatus text-[14px]">
-                        Current Balance
-                      </p>
-                      <p className="text-amountStatus text-[16px] font-bold">
-                        € {currentBalance.toFixed(2)}
-                      </p>
+                    <div className="w-full flex items-center justify-center">
+                      <button
+                        onClick={handleContinue}
+                        className="flex justify-center bg-transparent border border-white text-white font-md py-2 rounded-3xl hover:bg-mainLight gap-2 w-[90%] mt-5"
+                      >
+                        Go Back to Homepage
+                      </button>
                     </div>
-
-                    <div className="flex gap-2 items-center justify-center w-[50%]">
-                      <p className="text-white text-[50px] font-bold">€</p>
-                      <input
-                        type="number"
-                        value={amount}
-                        onChange={(e) => setAmount(e.target.value)}
-                        className="block placeholder-white/50 text-[50px] w-full rounded-lg border-none py-3 px-3 text-sm text-white focus:outline-none"
-                        style={{
-                          background:
-                            "linear-gradient(to right, #74D5B3, #4AA887)",
-                          WebkitBackgroundClip: "text",
-                          color: "white",
-                          fontSize: "50px",
-                          cursorWidth: "1px",
-                        }}
-                        placeholder="0"
-                      />
-                    </div>
-
-                    {isInsufficient && (
-                      <div className="flex gap-2 items-center">
-                        {warningSvg}
-                        <p className="text-amountStatus text-[14px] font-medium">
-                          Balance is insufficient
-                        </p>
-                      </div>
-                    )}
-
-                    <button
-                      onClick={handleContinue}
-                      className="flex justify-center bg-white text-black font-md py-2 rounded-3xl hover:bg-gray-200 gap-2 w-[90%] mt-5"
-                    >
-                      Continue
-                    </button>
                   </div>
                 </div>
               </DialogPanel>
@@ -119,4 +99,4 @@ const WithdrawAmountDrawer = () => {
   );
 };
 
-export default WithdrawAmountDrawer;
+export default SuccessWithdrawDrawer;
