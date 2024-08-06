@@ -5,7 +5,7 @@ import BagsFilter from "../../../dropdowns/BagsFilter";
 import { useDispatch } from "react-redux";
 import { setActivePage } from "../../../../redux/slices/headerSlice";
 
-const TableUpper = () => {
+const TableUpper = ({ selectedFilter, onFilterChange }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -18,7 +18,10 @@ const TableUpper = () => {
         My Bags
       </p>
       <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-        <BagsFilter />
+        <BagsFilter
+          selectedFilter={selectedFilter}
+          onFilterChange={onFilterChange}
+        />
         <SearchField placeholder={"Search Bag"} />
       </div>
     </div>

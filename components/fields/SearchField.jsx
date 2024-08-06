@@ -10,12 +10,7 @@ const SearchField = (props) => {
   };
 
   return (
-    <div
-      className="flex w-full max-w-[300px] items-center gap-x-2 rounded-2xl bg-grayFive px-5 border"
-      style={{
-        boxShadow: "0px 1.999px 7.994px 0px rgba(153, 153, 153, 0.20)",
-      }}
-    >
+    <div className="flex w-full max-w-[300px] items-center gap-x-2 rounded-2xl bg-grayFive px-5">
       {searchSvg}
       <input
         type="text"

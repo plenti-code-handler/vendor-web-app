@@ -8,7 +8,7 @@ const CustomerReviews = () => {
       <p className="text-black font-semibold text-[16px] mb-3">
         Customer's Reviews
       </p>
-      <div className="flex flex-col gap-1 shadow-md transform translate-y-[-2px] p-2 bg-white rounded-lg lg:w-[120%]">
+      <div className="flex flex-col gap-1 shadow-md transform translate-y-[-2px] p-2 bg-white rounded-lg lg:w-[100%]">
         <div className="flex justify-between">
           <div className="flex gap-1 items-center">
             <img

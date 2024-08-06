@@ -8,7 +8,7 @@ const PaymentInfo = () => {
   const handleAddCardClick = () => setView("linkedCards");
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col  lg:w-[100%]">
       {view === "initial" && (
         <div className="flex flex-col items-center gap-3">
           <p className="font-md text-[14px] text-gray-800 text-center">

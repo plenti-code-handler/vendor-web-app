@@ -1,10 +1,10 @@
 import React from "react";
-import BagsTable from "../../../../components/sections/bussiness/bags/BagsTable";
+import TableContainer from "../../../../components/sections/bussiness/bags/TableContainer";
 
 const Page = () => {
   return (
     <div className="flex flex-col">
-      <BagsTable />
+      <TableContainer />
     </div>
   );
 };

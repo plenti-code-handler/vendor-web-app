@@ -48,6 +48,7 @@ module.exports = {
         mainTwo: "#50CD89",
         mainThree: "#E8FFF3",
         tabColor: "#3E97FF",
+        badgeScheduled: "#F6C000",
 
         // bg colors
         notPickedBg: "#FFF5F8",
@@ -55,6 +56,7 @@ module.exports = {
         pinkBgOne: "#FFF1F9",
         pinkBgDark: "#FD8AD0",
         pinkBgDarkHover: "#FF8C9E",
+        scheduledBg: "#FFF8DD",
       },
     },
   },

@@ -5,6 +5,7 @@ import TableUpper from "./TableUpper";
 import { bookings } from "../../../../lib/constant_data";
 import { useDispatch } from "react-redux";
 import { setActivePage } from "../../../../redux/slices/headerSlice";
+import StatusDropdown from "./StatusDropdown";
 
 const BookingsTable = () => {
   const dispatch = useDispatch();
@@ -13,10 +14,15 @@ const BookingsTable = () => {
     dispatch(setActivePage("Bookings"));
   }, [dispatch]);
 
+  const handleStatusChange = (newStatus, index) => {
+    // Handle status change logic here, such as updating the state or making an API call
+    console.log(`Status changed for booking ${index}: ${newStatus}`);
+  };
+
   return (
     <div className="mt-4 w-full border border-gray-300 rounded-md p-6 sm:px-4">
       <TableUpper />
-      <div className="no-scrollbar w-full  overflow-y-hidden">
+      <div className="no-scrollbar w-full overflow-y-hidden">
         <table
           className="w-full table-auto truncate overflow-hidden rounded-2xl bg-white"
           style={{ boxShadow: "0px 4px 10px 0px rgba(0, 0, 0, 0.10)" }}
@@ -87,15 +93,12 @@ const BookingsTable = () => {
                   </p>
                 </td>
                 <td className="truncate text-center px-2">
-                  <div
-                    className={`mx-auto ${
-                      user.status.toLowerCase() == "picked"
-                        ? "bg-pickedBg text-pickedText w-20 pl-4 pr-4 pt-2"
-                        : "bg-notPickedBg text-notPickedText w-20 pl-0 pr-0 pt-2"
-                    } font-semibold p-1 rounded-md text-sm`}
-                  >
-                    <p>{user.status}</p>
-                  </div>
+                  <StatusDropdown
+                    initialStatus={user.status}
+                    onStatusChange={(newStatus) =>
+                      handleStatusChange(newStatus, index)
+                    }
+                  />
                 </td>
               </tr>
             ))}

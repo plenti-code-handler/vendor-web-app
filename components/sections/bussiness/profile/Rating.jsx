@@ -12,8 +12,8 @@ const Rating = () => {
   ];
 
   return (
-    <div className="flex flex-col">
-      <div className="flex gap-8 lg:w-[120%]">
+    <div className="flex flex-col lg:w-[120%]">
+      <div className="flex gap-8">
         {/* Rating Bars */}
         <div className="flex flex-col gap-2 flex-1 ">
           {ratings.map(({ level, percentage }) => (

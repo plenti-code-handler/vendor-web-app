@@ -4,20 +4,7 @@ import Image from "next/image";
 import { bags } from "../../../../lib/constant_data";
 import { deleteSvg, editSvg } from "../../../../svgs";
 
-const BagsTable = () => {
-  const decideStyle = (status) => {
-    switch (status) {
-      case "active":
-        return "bg-pinkBgOne text-pinkTextOne w-20 pl-4 pr-4 pt-2";
-      case "past":
-        return "bg-grayFive text-grayFour w-20 pl-4 pr-4 pt-2";
-      case "scheduled":
-        return "bg-scheduledBg text-badgeScheduled w-20 pr-4 pt-2";
-      default:
-        break;
-    }
-  };
-
+const ScheduledBagsTable = () => {
   return (
     <div className="no-scrollbar w-full  overflow-y-hidden">
       <table
@@ -33,7 +20,7 @@ const BagsTable = () => {
             <th className="pb-[8px] px-2 pt-[18px] text-center">Daily Serve</th>
             <th className="pb-[8px] px-2 pt-[18px] text-center">In Stock</th>
             <th className="pb-[8px] px-2 pt-[18px] text-center">Bag Price</th>
-            <th className="pb-[8px] px-2 pt-[18px] text-center">Status</th>
+            <th className="pb-[8px] px-2 pt-[18px] text-center">Date</th>
             <th className="pb-[8px] px-2 pt-[18px] text-center">Actions</th>
           </tr>
         </thead>
@@ -83,13 +70,9 @@ const BagsTable = () => {
                 </p>
               </td>
               <td className="truncate text-center px-2">
-                <div
-                  className={`mx-auto ${decideStyle(
-                    bag.status.toLowerCase()
-                  )} font-semibold p-1 rounded-md text-sm`}
-                >
-                  <p>{bag.status}</p>
-                </div>
+                <p className="text-sm font-semibold text-grayThree">
+                  10/01/2023, 10:30 - 12:30
+                </p>
               </td>
               <td className="truncate text-center">
                 <div className="flex flex-row justify-center">
@@ -109,4 +92,4 @@ const BagsTable = () => {
   );
 };
 
-export default BagsTable;
+export default ScheduledBagsTable;

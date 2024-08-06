@@ -5,7 +5,7 @@ import { Textarea } from "@headlessui/react";
 
 const Account = () => {
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 lg:w-[120%]">
       <TextField placeholder={"Business Name"} />
       <div className="flex justify-between w-full placeholder:font-bold rounded-lg border border-gray-300 bg-[#F4F4F4] py-3 px-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black">
         <p className="font-semibold text-black">iamzaibi305@gmail.com</p>
