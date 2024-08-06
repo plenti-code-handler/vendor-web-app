@@ -1,15 +1,21 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { payPalSvg, withdrawAmountSvg } from "../../../../svgs";
 import { useDispatch } from "react-redux";
 import { setOpenDrawer } from "../../../../redux/slices/withdrawAmountSlice";
+import { setActivePage } from "../../../../redux/slices/headerSlice";
 
 const Transactions = () => {
   const dispatch = useDispatch();
   const handleWithdraw = () => {
     dispatch(setOpenDrawer(true));
   };
+
+  useEffect(() => {
+    dispatch(setActivePage(""));
+  }, [dispatch]);
+
   return (
     <div className="flex flex-col w-[100%] lg:w-[50%] md:w-[60%]">
       <div
