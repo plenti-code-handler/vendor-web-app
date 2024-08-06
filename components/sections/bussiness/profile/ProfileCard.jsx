@@ -4,7 +4,7 @@ import Tabs from "./Tabs";
 
 const ProfileCard = () => {
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-5 w-[100%] lg:w-[50%] md:w-[60%]">
       <div className="flex space-x-4">
         <img
           alt="User"
