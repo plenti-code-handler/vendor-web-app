@@ -1,16 +1,27 @@
+"use client";
+
 import React from "react";
 import { payPalSvg, withdrawAmountSvg } from "../../../../svgs";
+import { useDispatch } from "react-redux";
+import { setOpenDrawer } from "../../../../redux/slices/withdrawAmountSlice";
 
 const Transactions = () => {
+  const dispatch = useDispatch();
+  const handleWithdraw = () => {
+    dispatch(setOpenDrawer(true));
+  };
   return (
     <div className="flex flex-col w-[100%] lg:w-[50%] md:w-[60%]">
       <div
-        className="flex flex-col bg-mainLight rounded-xl md:max-w-sm items-center shadow-lg transform translate-y-[-10px] p-6"
+        className="flex flex-col bg-gradient-custom rounded-xl md:max-w-sm items-center shadow-lg transform translate-y-[-10px] p-6"
         style={{ width: "100%", maxWidth: "480px", height: "190px" }}
       >
         <p className="text-[40px] font-bold text-white">$9,540</p>
         <p className="text-[16px] font-medium text-white">My Wallet</p>
-        <button className="flex justify-center items-center bg-[#8adbbf] text-white font-semibold rounded hover:bg-main p-2 mt-4">
+        <button
+          onClick={() => handleWithdraw()}
+          className="flex justify-center items-center bg-[#76d5b4] text-white font-semibold rounded hover:bg-main p-2 mt-4"
+        >
           {withdrawAmountSvg}
           <span className="ml-2">Withdraw Amount</span>
         </button>
@@ -33,7 +44,6 @@ const Transactions = () => {
           </div>
           <p className="text-amount text-[20px] font-semibold">€55.00</p>
         </div>
-        
       </div>
     </div>
   );

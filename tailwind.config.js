@@ -11,7 +11,14 @@ module.exports = {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+        "gradient-custom": "linear-gradient(to right, #74D5B3, #4AA887)",
       },
+      // ringColor: {
+      //   gradient: "linear-gradient(to right, #74D5B3, #4AA887)",
+      // },
+      // ringOffsetWidth: {
+      //   gradient: "4px",
+      // },
       colors: {
         // texts
         main: "#39B88B",
@@ -28,8 +35,9 @@ module.exports = {
         grayFour: "#747474",
         grayFive: "#F9F9F9",
         graySix: "#404146",
+        amountStatus: "#E2E2E2",
         date: "#AFAFAF",
-        amount : "#1C1C28",
+        amount: "#1C1C28",
         comment: "#575B62",
         dividerComment: "#C4C4C4",
         notPickedText: "#F1416C",

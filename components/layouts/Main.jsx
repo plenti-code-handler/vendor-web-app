@@ -4,6 +4,7 @@ import BreadCrump from "./Breadcrump";
 import AddBagDrawer from "../drawers/AddBagDrawer";
 import UpdatePasswordDrawer from "../drawers/UpdatePasswordDrawer";
 import DeleteAccountDrawer from "../drawers/DeleteAccountDrawer";
+import WithdrawAmountDrawer from "../drawers/WithdrawAmountDrawer";
 
 const Main = ({ children }) => {
   return (
@@ -13,6 +14,7 @@ const Main = ({ children }) => {
       {true && <AddBagDrawer />}
       {true && <UpdatePasswordDrawer />}
       {true && <DeleteAccountDrawer />}
+      {true && <WithdrawAmountDrawer />}
     </main>
   );
 };
