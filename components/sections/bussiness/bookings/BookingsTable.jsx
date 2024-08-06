@@ -15,7 +15,6 @@ const BookingsTable = () => {
   }, [dispatch]);
 
   const handleStatusChange = (newStatus, index) => {
-    // Handle status change logic here, such as updating the state or making an API call
     console.log(`Status changed for booking ${index}: ${newStatus}`);
   };
 

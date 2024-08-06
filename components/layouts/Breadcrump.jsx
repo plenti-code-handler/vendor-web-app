@@ -56,9 +56,9 @@ const Breadcrumb = () => {
         <>
           <button
             onClick={() => handleOpenDrawer()}
-            className="flex items-center text-center justify-center bg-pinkBgDark text-white font-semibold py-2 px-4 rounded hover:bg-pinkBgDarkHover lg:w-[15%]"
+            className="mr-3 mt-2 lg:m-0  flex items-center text-center justify-center bg-pinkBgDark text-white font-semibold py-2 px-4 rounded hover:bg-pinkBgDarkHover lg:w-[15%]"
           >
-            <span className="mr-2">New Bag</span>
+            <span className="mr-3 ml-2">New Bag</span>
             <span>{addUserSvg}</span>
           </button>
         </>
