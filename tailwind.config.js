@@ -27,6 +27,8 @@ module.exports = {
         grayFour: "#747474",
         grayFive: "#F9F9F9",
         graySix: "#404146",
+        comment: "#575B62",
+        dividerComment: "#C4C4C4",
         notPickedText: "#F1416C",
         pickedText: "#50CD89",
         pinkTextOne: "#FD8AD0",

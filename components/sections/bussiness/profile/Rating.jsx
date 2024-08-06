@@ -1,5 +1,6 @@
 import React from "react";
 import { starSvg } from "../../../../svgs";
+import CustomerReviews from "./CustomerReviews";
 
 const Rating = () => {
   const ratings = [
@@ -12,7 +13,7 @@ const Rating = () => {
 
   return (
     <div className="flex flex-col">
-      <div className="flex gap-8 lg:w-[110%]">
+      <div className="flex gap-8 lg:w-[120%]">
         {/* Rating Bars */}
         <div className="flex flex-col gap-2 flex-1 ">
           {ratings.map(({ level, percentage }) => (
@@ -43,11 +44,7 @@ const Rating = () => {
           </p>
         </div>
       </div>
-      <div className="flex flex-col mt-5">
-        <p className="text-black font-semibold text-[16px]">
-          Customer's Reviews
-        </p>
-      </div>
+      <CustomerReviews />
     </div>
   );
 };
