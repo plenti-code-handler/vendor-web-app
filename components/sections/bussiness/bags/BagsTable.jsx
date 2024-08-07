@@ -3,8 +3,11 @@ import React from "react";
 import Image from "next/image";
 import { bags } from "../../../../lib/constant_data";
 import { deleteSvg, editSvg } from "../../../../svgs";
+import { useDispatch } from "react-redux";
+import { setOpenDrawer } from "../../../../redux/slices/editBagSlice";
 
 const BagsTable = () => {
+  const dispatch = useDispatch();
   const decideStyle = (status) => {
     switch (status) {
       case "active":
@@ -16,6 +19,10 @@ const BagsTable = () => {
       default:
         break;
     }
+  };
+
+  const handleEditClick = () => {
+    dispatch(setOpenDrawer(true));
   };
 
   return (
@@ -93,12 +100,15 @@ const BagsTable = () => {
               </td>
               <td className="truncate text-center">
                 <div className="flex flex-row justify-center">
-                  <div className="rounded-md bg-tableButtonBackground p-2 hover:bg-gray-200 hover:p-2">
+                  <button
+                    onClick={() => handleEditClick()}
+                    className="rounded-md bg-tableButtonBackground p-2 hover:bg-gray-200 hover:p-2"
+                  >
                     {editSvg}
-                  </div>
-                  <div className="rounded-md bg-tableButtonBackground p-2 hover:bg-gray-200 hover:p-2">
+                  </button>
+                  <button className="rounded-md bg-tableButtonBackground p-2 hover:bg-gray-200 hover:p-2">
                     {deleteSvg}
-                  </div>
+                  </button>
                 </div>
               </td>
             </tr>

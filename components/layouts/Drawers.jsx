@@ -4,6 +4,7 @@ import UpdatePasswordDrawer from "../drawers/UpdatePasswordDrawer";
 import DeleteAccountDrawer from "../drawers/DeleteAccountDrawer";
 import WithdrawAmountDrawer from "../drawers/WithdrawAmountDrawer";
 import SuccessWithdrawDrawer from "../drawers/SuccessWithdrawDrawer";
+import EditBagDrawer from "../drawers/EditBagDrawer";
 
 const Drawers = () => {
   return (
@@ -13,6 +14,7 @@ const Drawers = () => {
       {true && <DeleteAccountDrawer />}
       {true && <WithdrawAmountDrawer />}
       {true && <SuccessWithdrawDrawer />}
+      {true && <EditBagDrawer />}
     </>
   );
 };
