@@ -8,7 +8,7 @@ const PaymentInfo = () => {
   const handleAddCardClick = () => setView("linkedCards");
 
   return (
-    <div className="flex flex-col  lg:w-[100%]">
+    <div className="flex flex-col justify-center">
       {view === "initial" && (
         <div className="flex flex-col items-center gap-3">
           <p className="font-md text-[14px] text-gray-800 text-center">
@@ -24,7 +24,7 @@ const PaymentInfo = () => {
       )}
 
       {view === "addCard" && (
-        <>
+        <div className="flex flex-col gap-5">
           <p className="text-blackFour font-semibold text-[15px]">
             Add Card Details
           </p>
@@ -33,7 +33,7 @@ const PaymentInfo = () => {
               className="block w-full placeholder:font-bold rounded-lg border border-gray-300 py-3 px-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
               placeholder="Card Holder Name"
             />
-            <span className="absolute right-3 text-black font-bold">
+            <span className="absolute right-3 text-black font-bold mt-2">
               <img src="/masterCard.png" alt="MasterCard" />
             </span>
             <TextField placeholder="Card Number" />
@@ -64,7 +64,7 @@ const PaymentInfo = () => {
               Add
             </button>
           </div>
-        </>
+        </div>
       )}
 
       {view === "linkedCards" && (
