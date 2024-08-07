@@ -1,7 +1,16 @@
-import SearchField from "../../../fields/SearchField";
-import React from "react";
+"use client";
 
+import SearchField from "../../../fields/SearchField";
+import React, { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { setActivePage } from "../../../../redux/slices/headerSlice";
 const TableUpper = ({ activeTable, setActiveTable }) => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(setActivePage("Users"));
+  }, [dispatch]);
+
   return (
     <div className="flex justify-between items-center mb-4 px-2 truncate sm:px-2 flex-col lg:flex-row md:flex-row gap-2 lg:gap-0 md:gap-0">
       <p className="text-[16px] font-bold text-blackTwo">
@@ -20,7 +29,7 @@ const TableUpper = ({ activeTable, setActiveTable }) => {
               activeTable === "business"
                 ? "border-pinkBgDark"
                 : "border-gray-300"
-            } font-md py-2 rounded hover:bg-pinkBgDarkHover gap-2 w-[100%]`}
+            } font-md py-2 rounded hover:bg-pinkBgDarkHover hover:text-white gap-2 w-[100%]`}
           >
             Business
           </button>
@@ -34,7 +43,7 @@ const TableUpper = ({ activeTable, setActiveTable }) => {
               activeTable === "customer"
                 ? "border-pinkBgDark"
                 : "border-gray-300"
-            } font-md py-2 rounded hover:bg-pinkBgDarkHover gap-2 w-[100%]`}
+            } font-md py-2 rounded hover:bg-pinkBgDarkHover hover:text-white  gap-2 w-[100%]`}
           >
             Customer
           </button>

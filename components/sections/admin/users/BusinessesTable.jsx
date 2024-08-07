@@ -1,17 +1,10 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Image from "next/image";
-import TableUpper from "./TableUpper";
 import { adminBusinesses } from "../../../../lib/constant_data";
-import { useDispatch } from "react-redux";
-import { setActivePage } from "../../../../redux/slices/headerSlice";
+
 
 const BusinessesTable = () => {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(setActivePage("Users"));
-  }, [dispatch]);
 
   return (
     <div className="no-scrollbar w-full overflow-y-hidden lg:pl-10 lg:pr-10">
