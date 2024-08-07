@@ -13,12 +13,6 @@ module.exports = {
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
         "gradient-custom": "linear-gradient(to right, #74D5B3, #4AA887)",
       },
-      // ringColor: {
-      //   gradient: "linear-gradient(to right, #74D5B3, #4AA887)",
-      // },
-      // ringOffsetWidth: {
-      //   gradient: "4px",
-      // },
       colors: {
         // texts
         main: "#39B88B",
@@ -49,6 +43,7 @@ module.exports = {
         mainThree: "#E8FFF3",
         tabColor: "#3E97FF",
         badgeScheduled: "#F6C000",
+        menuItem: "#5E6278",
 
         // bg colors
         notPickedBg: "#FFF5F8",

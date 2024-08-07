@@ -6,6 +6,7 @@ import deleteAccountReducer from "./slices/deleteAccountSlice";
 import withdrawAmountReducer from "./slices/withdrawAmountSlice";
 import withdrawSuccessReducer from "./slices/withdrawSuccessSlice";
 import editBagReducer from "./slices/editBagSlice";
+import loggedInUserReducer from "./slices/loggedInUserSlice";
 
 export const store = configureStore({
   reducer: {
@@ -16,5 +17,6 @@ export const store = configureStore({
     withdrawAmount: withdrawAmountReducer,
     withdrawSuccess: withdrawSuccessReducer,
     editBag: editBagReducer,
+    loggedInUser: loggedInUserReducer,
   },
 });
