@@ -19,6 +19,8 @@ const decidePath = (pathname) => {
       return "More Options";
     case "profile":
       return "My Profile";
+    case "admin":
+      return "Admin Dashboard";
     default:
       return "";
   }

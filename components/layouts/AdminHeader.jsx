@@ -67,7 +67,7 @@ const AdminHeader = () => {
 
   return (
     <>
-      <header className="bg-white lg:justify-around border-b-2">
+      <header className="bg-white lg:justify-around border-b-2 lg:pl-20">
         <div className="mx-auto flex max-w-7xl items-center justify-between p-2">
           <img
             alt="Foodie Finder Logo"
@@ -113,7 +113,7 @@ const AdminHeader = () => {
             </div>
           </nav>
           {/* User Profile Section */}
-          <div className="hidden lg:flex border-2 border-dashed	rounded-xl p-2 justify-between w-[33%]">
+          <div className="hidden lg:flex border-2 border-dashed	rounded-xl p-2 justify-between w-[30%] mr-20">
             <div className="flex gap-2">
               <img
                 alt="User"
