@@ -21,6 +21,8 @@ const decidePath = (pathname) => {
       return "My Profile";
     case "admin":
       return "Admin Dashboard";
+    case "users":
+      return "Users";
     default:
       return "";
   }

@@ -56,7 +56,7 @@ const RecentOrders = (props) => {
                     </div>
                   </div>
                 </td>
-                <td className="truncate pl-2 pr-2 w-[17.00%]">
+                <td className="truncate pl-2 pr-2 w-[17.00]">
                   <div className="py-3">
                     <div className="flex flex-row items-center gap-x-2">
                       <div className="flex h-[40px] w-[40px] items-center justify-center overflow-hidden rounded-full">

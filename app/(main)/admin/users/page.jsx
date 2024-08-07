@@ -1,9 +1,12 @@
-import React from 'react'
+import React from "react";
+import TableContainer from "../../../../components/sections/admin/users/TableContainer";
 
 const page = () => {
   return (
-    <div>Admin Users is Here</div>
-  )
-}
+    <>
+      <TableContainer />
+    </>
+  );
+};
 
-export default page
+export default page;
