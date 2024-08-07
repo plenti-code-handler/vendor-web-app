@@ -32,7 +32,7 @@ const AdminProfileDropdown = () => {
         leaveTo="transform opacity-0 scale-95"
       >
         <MenuItems className="absolute right-0 mt-2 w-40 sm:w-48 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none z-10">
-          <div className="px-1 py-1 block sm:hidden">
+          <div className="px-1 py-1 block">
             {/* This div is for small devices */}
             <MenuItem>
               {({ active }) => (

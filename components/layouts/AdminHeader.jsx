@@ -27,31 +27,31 @@ const AdminHeader = () => {
   const menuItemsData = [
     {
       name: "Dashboard",
-      href: "#",
+      href: "/admin",
       activeSvg: dashboardIconSvgActive,
       inactiveSvg: dashboardIconSvgWhite,
     },
     {
       name: "Users",
-      href: "#",
+      href: "/admin/users",
       activeSvg: usersIconSvgActive,
       inactiveSvg: usersIconSvgWhite,
     },
     {
       name: "Approvals",
-      href: "#",
+      href: "/admin/approvals",
       activeSvg: approvalSvgActive,
       inactiveSvg: approvalSvgWhite,
     },
     {
       name: "Transactions",
-      href: "#",
+      href: "/admin/transactions",
       activeSvg: transactionSvgActive,
       inactiveSvg: transactionSvgWhite,
     },
     {
       name: "Categories",
-      href: "#",
+      href: "/admin/categories",
       activeSvg: categoriesSvgActive,
       inactiveSvg: categoriesSvgWhite,
     },
@@ -100,7 +100,7 @@ const AdminHeader = () => {
                   className={`lg:text-[15px] font-semibold leading-6 transition-all rounded-md pt-3 pb-3 pl-4 pr-4 lg:w-[14%] lg:h-[15%] ${
                     activePage === name
                       ? "bg-secondary text-white"
-                      : "text-menuItem lg:text-menuItem hover:underline decoration-mainLight underline-offset-4"
+                      : "text-menuItem lg:text-menuItem hover:underline decoration-mainLight underline-offset-8"
                   }`}
                   onClick={() => handleLinkClick(name)}
                 >
