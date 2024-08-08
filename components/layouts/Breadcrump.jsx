@@ -1,14 +1,23 @@
 "use client";
-import React, { useMemo } from "react";
-import { usePathname } from "next/navigation";
-import { addUserSvg } from "../../svgs";
+import React, { useMemo, useCallback } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { addUserSvg, backButtonSvg } from "../../svgs";
 import { useDispatch } from "react-redux";
 import { setOpenDrawer } from "../../redux/slices/addBagSlice";
 
 const decidePath = (pathname) => {
-  const path = pathname.split("/").at(-1);
+  // Check for specific patterns
+  if (pathname.match(/\/admin\/users\/business\/[a-z0-9]+/)) {
+    return "Business Details";
+  } else if (pathname.match(/\/admin\/users\/customer\/[a-z0-9]+/)) {
+    return "Customer Details";
+  }
 
-  switch (path) {
+  // Check the last part of the path for general cases
+  const path = pathname.split("/");
+  const lastPath = path.at(-1);
+
+  switch (lastPath) {
     case "business":
       return "My Dashboard";
     case "manage-bags":
@@ -31,12 +40,17 @@ const decidePath = (pathname) => {
 const Breadcrumb = () => {
   const pathname = usePathname();
   const dispatch = useDispatch();
+  const router = useRouter();
 
-  const handleOpenDrawer = () => {
+  const handleOpenDrawer = useCallback(() => {
     dispatch(setOpenDrawer(true));
-  };
+  }, [dispatch]);
 
-  const currentPath = useMemo(() => decidePath(pathname), [pathname, dispatch]);
+  const handleBackClick = useCallback(() => {
+    router.replace("/admin/users");
+  }, [router]);
+
+  const currentPath = useMemo(() => decidePath(pathname), [pathname]);
 
   const MoreOptionsContent = () => (
     <div className="flex flex-col items-center">
@@ -57,26 +71,38 @@ const Breadcrumb = () => {
         {currentPath}
       </p>
       {currentPath === "Manage Bags" && (
-        <>
-          <button
-            onClick={() => handleOpenDrawer()}
-            className="mr-3 mt-2 lg:m-0  flex items-center text-center justify-center bg-pinkBgDark text-white font-semibold py-2 px-4 rounded hover:bg-pinkBgDarkHover lg:w-[15%]"
-          >
-            <span className="mr-3 ml-2">New Bag</span>
-            <span>{addUserSvg}</span>
-          </button>
-        </>
+        <button
+          onClick={handleOpenDrawer}
+          className="mr-3 mt-2 lg:m-0 flex items-center text-center justify-center bg-pinkBgDark text-white font-semibold py-2 px-4 rounded hover:bg-pinkBgDarkHover lg:w-[15%]"
+        >
+          <span className="mr-3 ml-2">New Bag</span>
+          <span>{addUserSvg}</span>
+        </button>
       )}
     </div>
   );
 
-  return currentPath === "More Options" ? (
-    <MoreOptionsContent />
-  ) : (
-    <>
-      <DefaultContent />
-    </>
+  const DetailsContent = ({ content }) => (
+    <div className="flex items-center gap-4 m-4 lg:m-0 lg:mr-auto lg:mt-4 lg:mb-4 lg:py-2 lg:w-[99%]">
+      <button
+        onClick={handleBackClick}
+        className="bg-gray-100 p-1 rounded-full border border-gray-400 hover:bg-gray-200"
+      >
+        {backButtonSvg}
+      </button>
+      <p className="m-4 text-lg sm:m-0 sm:text-xl md:text-2xl lg:text-3xl font-bold text-one">
+        {content}
+      </p>
+    </div>
   );
+
+  if (currentPath === "More Options") {
+    return <MoreOptionsContent />;
+  } else if (currentPath === "Business Details" || currentPath === "Customer Details") {
+    return <DetailsContent content={currentPath} />;
+  } else {
+    return <DefaultContent />;
+  }
 };
 
 export default Breadcrumb;

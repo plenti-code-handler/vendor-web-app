@@ -2,8 +2,16 @@
 import React from "react";
 import Image from "next/image";
 import { adminCustomers } from "../../../../lib/constant_data";
+import { useRouter } from "next/navigation";
 
 const CustomersTable = () => {
+
+  const router = useRouter();
+  
+  const handleRowClick = (userId) => {
+    router.replace(`/admin/users/customer/${userId}`);
+  };
+
   return (
     <div className="no-scrollbar w-full overflow-y-hidden lg:pl-10 lg:pr-10">
       <table className="w-full table-auto truncate overflow-hidden rounded-2xl bg-white">
@@ -28,6 +36,7 @@ const CustomersTable = () => {
             <tr
               key={index}
               className="cursor-pointer border-b-[1px] border-[#E4E4E4] hover:bg-[#f8f7f7]"
+              onClick={() => handleRowClick(user.id)}
             >
               <td className="truncate pl-2 pr-2 w-[18.00%]">
                 <div className="py-3">
