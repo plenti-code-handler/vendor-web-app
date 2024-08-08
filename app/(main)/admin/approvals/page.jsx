@@ -1,7 +1,12 @@
 import React from "react";
+import TableContainer from "../../../../components/sections/admin/approvals/TableContainer";
 
 const page = () => {
-  return <div>Admin Approvals is Here</div>;
+  return (
+    <div className="flex flex-col w-[100%] lg:w-[100%] md:w-[60%] mt-4 border border-[#E3E3E3] rounded-2xl p-6 lg:p-3 sm:px-4">
+      <TableContainer />
+    </div>
+  );
 };
 
 export default page;

@@ -1,5 +1,5 @@
 "use client";
-import { searchSvg } from "../../svgs";
+import { magnifierSvg, searchSvg } from "../../svgs";
 import React, { useState } from "react";
 
 const SearchField = (props) => {
@@ -10,8 +10,8 @@ const SearchField = (props) => {
   };
 
   return (
-    <div className="flex w-full sm:max-w-[300px] items-center gap-x-2 rounded-2xl bg-grayFive px-5">
-      {searchSvg}
+    <div className="flex w-full sm:max-w-[300px] items-center gap-x-2 rounded-[6px] bg-grayFive px-5">
+      {magnifierSvg}
       <input
         type="text"
         placeholder={props.placeholder}

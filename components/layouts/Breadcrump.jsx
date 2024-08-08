@@ -32,6 +32,8 @@ const decidePath = (pathname) => {
       return "Admin Dashboard";
     case "users":
       return "Users";
+    case "approvals":
+      return "Approvals";
     default:
       return "";
   }
@@ -82,6 +84,17 @@ const Breadcrumb = () => {
     </div>
   );
 
+  const ApprovalsContent = () => (
+    <div className="flex items-center lg:mr-auto lg:mt-4 lg:mb-4 lg:py-2 lg:w-[99%] lg:gap-2">
+      <p className="m-4 text-lg sm:m-0 sm:text-xl md:text-2xl lg:text-3xl font-bold text-one">
+        {currentPath}
+      </p>
+      <p className="text-lg sm:m-0 sm:text-xl md:text-2xl lg:text-3xl font-medium text-secondary">
+        {"(2 New)"}
+      </p>
+    </div>
+  );
+
   const DetailsContent = () => (
     <div className="flex items-center gap-4 m-4 lg:m-0 lg:mr-auto lg:mt-4 lg:mb-4 lg:py-2 lg:w-[99%]">
       <button
@@ -103,6 +116,8 @@ const Breadcrumb = () => {
     currentPath === "Customer Details"
   ) {
     return <DetailsContent />;
+  } else if (currentPath === "Approvals") {
+    return <ApprovalsContent />;
   } else {
     return <DefaultContent />;
   }
