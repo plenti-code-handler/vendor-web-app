@@ -1,13 +1,13 @@
 "use client";
 import React from "react";
 import TableUpper from "./TableUpper";
-import ApprovalsTable from "../../../sections/admin/approvals/ApprovalsTable";
+import TransactionsTable from "../../../sections/admin/transactions/TransactionsTable";
 
 const TableContainer = () => {
   return (
     <>
       <TableUpper />
-      <ApprovalsTable />
+      <TransactionsTable />
     </>
   );
 };

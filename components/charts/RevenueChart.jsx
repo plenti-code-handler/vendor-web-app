@@ -62,7 +62,7 @@ const RevenueChart = () => {
   });
 
   return (
-    <div className="flex h-full flex-col justify-between py-2.5  border border-grayTwo rounded-2xl">
+    <div className="flex h-full flex-col justify-between py-2.5  border border-grayTwo rounded-2xl lg:w-[100%]">
       <div className="flex flex-col mt-4 ml-8">
         <h1 className="text-[18px] font-semibold leading-[28px] text-headingText">
           Revenue

@@ -67,8 +67,8 @@ const AdminHeader = () => {
 
   return (
     <>
-      <header className="bg-white lg:justify-around border-b-2 lg:pl-20">
-        <div className="mx-auto flex max-w-7xl items-center justify-between p-2">
+      <header className="bg-white border-b-2 lg:pl-[8%] lg:pr-[2%] justify-around">
+        <div className="mx-auto flex max-w-8xl items-center justify-between p-2">
           <img
             alt="Foodie Finder Logo"
             src="https://firebasestorage.googleapis.com/v0/b/foodie-finder-ee1d8.appspot.com/o/app_logo.png?alt=media&token=8e779e74-bdc7-4dc6-8634-55a30110bc98"
