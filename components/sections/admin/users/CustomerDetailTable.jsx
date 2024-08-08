@@ -28,7 +28,7 @@ const CustomerDetailTable = () => {
             {users.map((user, index) => (
               <tr
                 key={index}
-                className="cursor-pointer border-b-[1px] border-[#E4E4E4] hover:bg-[#f8f7f7] h-[50px] w-[50px]"
+                className="cursor-pointer border-b-[1px] border-[#E4E4E4] hover:bg-[#f8f7f7] h-[60px] w-[50px]"
               >
                 <td className="truncate text-center px-2">
                   <p className="text-sm font-semibold text-grayThree">

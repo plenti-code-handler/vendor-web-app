@@ -1,7 +1,17 @@
-import { filesEmailSvg, locationIconSvg } from "../../../../svgs";
-import React from "react";
+"use client";
+
+import { useDispatch } from "react-redux";
+import { filesEmailSvg } from "../../../../svgs";
+import React, { useEffect } from "react";
+import { setActivePage } from "../../../../redux/slices/headerSlice";
 
 const CustomerProfileCard = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(setActivePage("Users"));
+  }, [dispatch]);
+
   return (
     <>
       <div className="flex space-x-4">

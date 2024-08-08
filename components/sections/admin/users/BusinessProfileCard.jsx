@@ -1,7 +1,16 @@
+"use client";
+
+import { useDispatch } from "react-redux";
 import { businessStarSvg, locationIconSvg } from "../../../../svgs";
-import React from "react";
+import React, { useEffect } from "react";
+import { setActivePage } from "../../../../redux/slices/headerSlice";
 
 const BusinessProfileCard = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(setActivePage("Users"));
+  }, [dispatch]);
   return (
     <>
       <div className="flex space-x-4">
