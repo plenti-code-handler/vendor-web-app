@@ -82,7 +82,7 @@ const Breadcrumb = () => {
     </div>
   );
 
-  const DetailsContent = ({ content }) => (
+  const DetailsContent = () => (
     <div className="flex items-center gap-4 m-4 lg:m-0 lg:mr-auto lg:mt-4 lg:mb-4 lg:py-2 lg:w-[99%]">
       <button
         onClick={handleBackClick}
@@ -91,15 +91,18 @@ const Breadcrumb = () => {
         {backButtonSvg}
       </button>
       <p className="m-4 text-lg sm:m-0 sm:text-xl md:text-2xl lg:text-3xl font-bold text-one">
-        {content}
+        {currentPath}
       </p>
     </div>
   );
 
   if (currentPath === "More Options") {
     return <MoreOptionsContent />;
-  } else if (currentPath === "Business Details" || currentPath === "Customer Details") {
-    return <DetailsContent content={currentPath} />;
+  } else if (
+    currentPath === "Business Details" ||
+    currentPath === "Customer Details"
+  ) {
+    return <DetailsContent />;
   } else {
     return <DefaultContent />;
   }

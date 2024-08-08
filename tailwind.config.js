@@ -44,6 +44,7 @@ module.exports = {
         tabColor: "#3E97FF",
         badgeScheduled: "#F6C000",
         menuItem: "#5E6278",
+        starItem: "#FFB400",
 
         // bg colors
         notPickedBg: "#FFF5F8",
