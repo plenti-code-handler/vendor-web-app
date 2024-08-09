@@ -3,11 +3,11 @@ import React from "react";
 import Image from "next/image";
 import { adminCustomers } from "../../../../lib/constant_data";
 import { useRouter } from "next/navigation";
+import LoadMoreButton from "../../../buttons/LoadMoreButton";
 
 const CustomersTable = () => {
-
   const router = useRouter();
-  
+
   const handleRowClick = (userId) => {
     router.replace(`/admin/users/customer/${userId}`);
   };
@@ -16,11 +16,11 @@ const CustomersTable = () => {
     <div className="no-scrollbar w-full overflow-y-hidden lg:pl-10 lg:pr-10">
       <table className="w-full table-auto truncate overflow-hidden rounded-2xl bg-white">
         <thead>
-          <tr className="border-b-[1px] border-grayOne border-opacity-20 text-sm font-semibold text-grayOne">
+          <tr className="border-b-[1px]  border-grayOne border-dashed border-opacity-45 text-[16px] font-semibold text-grayOne">
             <th className="pb-[8px] pl-2 pt-[18px] text-left w-[18.00%]">
               Customer
             </th>
-            <th className="pb-[8px] px-2 pt-[18px] text-center  w-[30.00%]">
+            <th className="pb-[8px] px-[14%] pt-[18px] text-left">
               Email
             </th>
             <th className="pb-[8px] px-2 pt-[18px] text-left w-[20.00%]">
@@ -35,7 +35,7 @@ const CustomersTable = () => {
           {adminCustomers.map((user, index) => (
             <tr
               key={index}
-              className="cursor-pointer border-b-[1px] border-[#E4E4E4] hover:bg-[#f8f7f7]"
+              className="cursor-pointer border-b-[1px] border-[#E4E4E4] border-dashed hover:bg-[#f8f7f7]"
               onClick={() => handleRowClick(user.id)}
             >
               <td className="truncate pl-2 pr-2 w-[18.00%]">
@@ -62,7 +62,7 @@ const CustomersTable = () => {
                   {user.email}
                 </p>
               </td>
-              <td className="relative text-left px-2">
+              <td className="relative text-left px-8">
                 <p className="text-sm font-semibold text-grayThree truncate overflow-hidden whitespace-nowrap tooltip-target">
                   € {user.totalSpending}
                 </p>
@@ -76,6 +76,7 @@ const CustomersTable = () => {
           ))}
         </tbody>
       </table>
+      <LoadMoreButton/>
     </div>
   );
 };

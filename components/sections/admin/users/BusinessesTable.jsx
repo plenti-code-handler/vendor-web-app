@@ -3,24 +3,24 @@ import React from "react";
 import Image from "next/image";
 import { adminBusinesses } from "../../../../lib/constant_data";
 import { useRouter } from "next/navigation";
+import LoadMoreButton from "../../../buttons/LoadMoreButton";
 
 const BusinessesTable = () => {
-
   const router = useRouter();
-  
+
   const handleRowClick = (userId) => {
     router.replace(`/admin/users/business/${userId}`);
   };
 
   return (
-    <div className="no-scrollbar w-full overflow-y-hidden lg:pl-10 lg:pr-10">
+    <div className="no-scrollbar w-full overflow-y-hidden lg:pl-10 lg:pr-10 ">
       <table className="w-full table-auto truncate overflow-hidden rounded-2xl bg-white">
         <thead>
-          <tr className="border-b-[1px] border-grayOne border-opacity-20 text-sm font-semibold text-grayOne">
+          <tr className="border-b-[1px]  border-grayOne border-dashed border-opacity-45 text-[16px] font-semibold text-grayOne">
             <th className="pb-[8px] pl-2 pt-[18px] text-left w-[18.00%]">
               Business Name
             </th>
-            <th className="pb-[8px] px-2 pt-[18px] text-center">Address</th>
+            <th className="pb-[8px] px-[10%] pt-[18px] text-left">Address</th>
             <th className="pb-[8px] px-2 pt-[18px] text-left w-[30.00%]">
               Description
             </th>
@@ -31,7 +31,7 @@ const BusinessesTable = () => {
           {adminBusinesses.map((user, index) => (
             <tr
               key={index}
-              className="cursor-pointer border-b-[1px] border-[#E4E4E4] hover:bg-[#f8f7f7]"
+              className="cursor-pointer border-b-[1px] border-[#E4E4E4] border-dashed hover:bg-[#f8f7f7]"
               onClick={() => handleRowClick(user.id)}
             >
               <td className="truncate pl-2 pr-2 w-[18.00%]">
@@ -78,6 +78,7 @@ const BusinessesTable = () => {
           ))}
         </tbody>
       </table>
+      <LoadMoreButton/>
     </div>
   );
 };

@@ -13,23 +13,19 @@ const TableUpper = ({ activeTable, setActiveTable }) => {
 
   return (
     <div className="flex justify-between items-center mb-4 px-2 truncate sm:px-2 flex-col lg:flex-row md:flex-row gap-2 lg:gap-0 md:gap-0">
-      <p className="text-[16px] font-bold text-blackTwo">
-        {activeTable === "business" ? "Business" : "Customer"}
+      <p className="text-[20px] font-semibold text-blackTwo">
+        {activeTable === "business" ? "Businesses" : "Customers"}
       </p>
-      <div className="flex flex-col lg:flex-row md:flex-row gap-2 lg:gap-0 lg:w-[50%]">
+      <div className="flex flex-col lg:flex-row md:flex-row gap-2 lg:gap-2 w-[50%] lg:w-[35%]">
         <SearchField placeholder={"Search User"} />
-        <div className="flex gap-1 lg:w-[120%]">
+        <div className="flex gap-3">
           <button
             onClick={() => setActiveTable("business")}
             className={`flex justify-center ${
               activeTable === "business"
                 ? "bg-pinkBgDark text-white"
                 : "bg-white text-gray-500"
-            } font-bold border ${
-              activeTable === "business"
-                ? "border-pinkBgDark"
-                : "border-gray-300"
-            } font-md py-2 rounded hover:bg-pinkBgDarkHover hover:text-white gap-2 w-[100%]`}
+            } font-bold  rounded-[6px] hover:bg-pinkBgDarkHover hover:text-pinkBgDark w-[90px] h-[38px] text-[13px] items-center`}
           >
             Business
           </button>
@@ -39,11 +35,7 @@ const TableUpper = ({ activeTable, setActiveTable }) => {
               activeTable === "customer"
                 ? "bg-pinkBgDark text-white"
                 : "bg-white text-gray-500"
-            } font-bold border ${
-              activeTable === "customer"
-                ? "border-pinkBgDark"
-                : "border-gray-300"
-            } font-md py-2 rounded hover:bg-pinkBgDarkHover hover:text-white  gap-2 w-[100%]`}
+            } font-bold rounded-[6px] hover:bg-pinkBgDarkHover hover:text-pinkBgDark w-[90px] h-[38px] text-[13px] items-center`}
           >
             Customer
           </button>

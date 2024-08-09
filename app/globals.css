@@ -17,3 +17,10 @@ input[type="number"] {
   -moz-appearance: textfield;
 }
 
+tr:last-child {
+  border-bottom: none;
+}
+
+tr:first-child td {
+  border-top: 1px dashed #e4e4e4;
+}

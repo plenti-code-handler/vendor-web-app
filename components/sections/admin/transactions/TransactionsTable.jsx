@@ -2,6 +2,7 @@
 import React from "react";
 import Image from "next/image";
 import { transactionsData } from "../../../../lib/constant_data";
+import LoadMoreButton from "../../../buttons/LoadMoreButton";
 
 const TransactionsTable = () => {
   return (
@@ -67,6 +68,7 @@ const TransactionsTable = () => {
           ))}
         </tbody>
       </table>
+      <LoadMoreButton/>
     </div>
   );
 };

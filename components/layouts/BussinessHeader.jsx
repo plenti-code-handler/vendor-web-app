@@ -44,6 +44,7 @@ const BussinessHeader = () => {
             } absolute top-16 left-0 w-full h-full bg-main font-base shadow-md transition-transform transform ${
               isMenuOpen ? "translate-y-0" : "-translate-y-full"
             } lg:static lg:block lg:bg-transparent lg:shadow-none lg:translate-y-0 lg:ml-20`}
+            /* REMINDER FOR DEEPAK TO HAVE IT ONLY WHEN SMALL SCREEN IS OPEN SAME FOR ADMIN TOO */
             style={{ zIndex: 1000 }}
           >
             <div className="flex flex-col lg:flex-row lg:gap-x-8 p-6 lg:p-0">

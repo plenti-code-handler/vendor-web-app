@@ -3,18 +3,16 @@ import React from "react";
 import Image from "next/image";
 import TableUpper from "./TableUpper";
 import { users } from "../../../../lib/constant_data";
+import LoadMoreButton from "../../../buttons/LoadMoreButton";
 
-const RecentOrders = (props) => {
+const RecentOrders = () => {
   return (
-    <div className="mt-4 w-full border border-gray-300 rounded-md p-6 sm:px-4">
+    <div className="mt-4 w-full border border-gray-300 rounded-xl p-6 sm:px-4">
       <TableUpper />
       <div className="no-scrollbar w-full  overflow-y-hidden">
-        <table
-          className="w-full table-auto truncate overflow-hidden rounded-2xl bg-white"
-          style={{ boxShadow: "0px 4px 10px 0px rgba(0, 0, 0, 0.10)" }}
-        >
+        <table className="w-full table-auto truncate overflow-hidden bg-white">
           <thead>
-            <tr className="border-b-[1px] border-grayOne border-opacity-20 text-sm font-semibold text-grayOne">
+            <tr className="border-b-[1px] border-grayOne border-dashed border-opacity-30 text-sm font-semibold text-grayOne">
               <th className="pb-[8px] pl-2 pt-[18px] text-left w-[14.28%]">
                 CUSTOMER
               </th>
@@ -28,14 +26,14 @@ const RecentOrders = (props) => {
               <th className="pb-[8px] px-2 pt-[18px] text-center">
                 Order Date
               </th>
-              <th className="pb-[8px] px-2 pt-[18px] text-center">Status</th>
+              <th className="pb-[8px] px-3 pt-[18px] text-left">Status</th>
             </tr>
           </thead>
           <tbody>
             {users.map((user, index) => (
               <tr
                 key={index}
-                className="cursor-pointer border-b-[1px] border-[#E4E4E4] hover:bg-[#f8f7f7]"
+                className="cursor-pointer border-b-[1px] border-[#E4E4E4] border-dashed hover:bg-[#f8f7f7]"
               >
                 <td className="truncate pl-2 pr-2 w-[17.00%]">
                   <div className="py-3">
@@ -95,13 +93,13 @@ const RecentOrders = (props) => {
                     {user.orderDate}
                   </p>
                 </td>
-                <td className="truncate text-center px-2">
+                <td className="truncate text-center justify-center items-center">
                   <div
-                    className={`mx-auto ${
+                    className={`${
                       user.status.toLowerCase() == "picked"
-                        ? "bg-pickedBg text-pickedText w-20 pl-4 pr-4 pt-2"
-                        : "bg-notPickedBg text-notPickedText w-20 pl-0 pr-0 pt-2"
-                    } font-semibold p-1 rounded-md text-sm`}
+                        ? "bg-pickedBg text-pickedText "
+                        : "bg-notPickedBg text-notPickedText"
+                    } font-semibold rounded-[4px] text-[12px] w-[77px] h-[26px] p-1 `}
                   >
                     <p>{user.status}</p>
                   </div>
@@ -111,6 +109,7 @@ const RecentOrders = (props) => {
           </tbody>
         </table>
       </div>
+      <LoadMoreButton/>
     </div>
   );
 };

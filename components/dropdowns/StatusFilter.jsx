@@ -2,7 +2,7 @@ import { arrowDownGray } from "../../svgs";
 
 const StatusFilter = ({ selectedFilter, onFilterChange }) => {
   return (
-    <form className="max-w-lg sm:mx-5 w-[100%]">
+    <form className="max-w-lg sm:mx-5 lg:w-[50%]">
       <div className="relative">
         <select
           id="status"

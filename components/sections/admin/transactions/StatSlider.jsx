@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import Card from "./Card";
+import TransactionCard from "./TransactionCard";
 
 const StatSlider = () => {
   const [current, setCurrent] = useState(0);
@@ -74,16 +74,20 @@ const StatSlider = () => {
   return (
     <Slider {...settings}>
       <div className="px-4">
-        <Card title="259,786" content={"Total Businesses"} />
+        <TransactionCard
+          title="€2,786.22"
+          content={"Revenue Generated"}
+          textColor={"text-secondary"}
+          smallScreen={true}
+        />
       </div>
       <div className="px-4">
-        <Card title="15" content={"Today's Bag Made"} />
-      </div>
-      <div className="px-4">
-        <Card title="259,786" content={"Total Customers"} />
-      </div>
-      <div className="px-4">
-        <Card title="15" content={"Today's Total Bags"} />{" "}
+        <TransactionCard
+          title="59,786"
+          content={"Total Businesses"}
+          textColor={"text-blackTwo"}
+          smallScreen={true}
+        />
       </div>
     </Slider>
   );

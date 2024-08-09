@@ -2,19 +2,19 @@
 import React from "react";
 import DetailsTableUpper from "./DetailsTableUpper";
 import { users } from "../../../../lib/constant_data";
+import LoadMoreButton from "../../../buttons/LoadMoreButton";
 
 const CustomerDetailTable = () => {
   return (
-    <div className="mt-4 w-full border border-gray-300 rounded-md p-6 sm:px-4">
+    <div className="mt-4 w-full border border-gray-200 rounded-xl p-6 sm:px-4">
       <DetailsTableUpper />
-      <div className="no-scrollbar w-full  overflow-y-hidden">
+      <div className="no-scrollbar w-full overflow-y-hidden">
         <table
           className="w-full table-auto truncate overflow-hidden rounded-2xl bg-white"
-          style={{ boxShadow: "0px 4px 10px 0px rgba(0, 0, 0, 0.10)" }}
         >
           <thead>
-            <tr className="border-b-[1px] border-grayOne border-opacity-20 text-sm font-semibold text-grayOne">
-              <th className="pb-[8px] px-2 pt-[18px] text-center">Deal Name</th>
+            <tr className="border-b-[1px] border-grayOne border-dashed text-sm font-semibold text-grayOne">
+              <th className="pb-[8px] px-[3%] pt-[18px] text-left">Deal Name</th>
               <th className="pb-[8px] px-2 pt-[18px] text-center">Size</th>
               <th className="pb-[8px] px-2 pt-[18px] text-center">Quantity</th>
               <th className="pb-[8px] px-2 pt-[18px] text-center">Amount</th>
@@ -28,9 +28,9 @@ const CustomerDetailTable = () => {
             {users.map((user, index) => (
               <tr
                 key={index}
-                className="cursor-pointer border-b-[1px] border-[#E4E4E4] hover:bg-[#f8f7f7] h-[60px] w-[50px]"
+                className="cursor-pointer border-b-[1px] border-[#E4E4E4] border-dashed hover:bg-[#f8f7f7] h-[60px] w-[50px]"
               >
-                <td className="truncate text-center px-2">
+                <td className="truncate text-left px-[3%]">
                   <p className="text-sm font-semibold text-grayThree">
                     {user.dealName}
                   </p>
@@ -59,9 +59,9 @@ const CustomerDetailTable = () => {
                   <div
                     className={`mx-auto ${
                       user.status.toLowerCase() == "picked"
-                        ? "bg-pickedBg text-pickedText w-20 pl-4 pr-4 pt-2"
-                        : "bg-notPickedBg text-notPickedText w-20 pl-0 pr-0 pt-2"
-                    } font-semibold p-1 rounded-md text-sm`}
+                        ? "bg-pickedBg text-pickedText "
+                        : "bg-notPickedBg text-notPickedText"
+                    } font-semibold rounded-[4px] text-[12px] w-[77px] h-[26px] p-1 `}
                   >
                     <p>{user.status}</p>
                   </div>
@@ -71,6 +71,7 @@ const CustomerDetailTable = () => {
           </tbody>
         </table>
       </div>
+      <LoadMoreButton/>
     </div>
   );
 };

@@ -51,7 +51,7 @@ module.exports = {
         pickedBg: "#E8FFF3",
         pinkBgOne: "#FFF1F9",
         pinkBgDark: "#FD8AD0",
-        pinkBgDarkHover: "#FF8C9E",
+        pinkBgDarkHover: "#ffe6f5",
         scheduledBg: "#FFF8DD",
       },
     },

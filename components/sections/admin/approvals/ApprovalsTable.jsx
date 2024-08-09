@@ -3,6 +3,7 @@ import React from "react";
 import Image from "next/image";
 import { approvalsData } from "../../../../lib/constant_data";
 import { redCrossSvg, whiteTickSvg } from "../../../../svgs";
+import LoadMoreButton from "../../../buttons/LoadMoreButton";
 
 const ApprovalsTable = () => {
   return (
@@ -85,6 +86,7 @@ const ApprovalsTable = () => {
           ))}
         </tbody>
       </table>
+      <LoadMoreButton/>
     </div>
   );
 };

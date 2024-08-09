@@ -48,13 +48,23 @@ const StatSlider = () => {
       },
     ],
     appendDots: (dots) => (
-      <div style={{ bottom: "0px" }}>
-        <ul style={{ margin: "0px" }}> {dots} </ul>
+      <div style={{ position: "relative", bottom: "20px" }}>
+        <ul
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            padding: "0px",
+            padding: "0px",
+            margin: "0px",
+          }}
+        >
+          {dots}
+        </ul>
       </div>
     ),
     customPaging: (index) => (
       <div
-        className={`h-2 w-2 rounded-full bg-primary ${
+        className={`h-2 w-2 rounded-full bg-secondary ${
           index === current ? "opacity-100" : "opacity-50"
         }`}
       ></div>
