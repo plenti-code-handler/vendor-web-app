@@ -36,6 +36,8 @@ const decidePath = (pathname) => {
       return "Approvals";
     case "transactions":
       return "Transactions";
+    case "categories":
+      return "Categories/Tags";
     default:
       return "";
   }
