@@ -1,3 +1,4 @@
+import Link from "next/link";
 import AuthPasswordField from "../../fields/AuthPasswordField";
 import React from "react";
 
@@ -10,7 +11,9 @@ const LoginForm = () => {
         </p>
         <p className="text-[#404146] text-[14px] font-medium">
           Want to register your business?{" "}
-          <span className="font-bold underline hover:text-black cursor-pointer">Register </span>
+          <span className="font-bold underline hover:text-black cursor-pointer">
+            <Link href={"/register"}>Register</Link>
+          </span>
         </p>
       </div>
       <input
@@ -21,7 +24,9 @@ const LoginForm = () => {
       <button className="flex justify-center bg-pinkBgDark text-white font-semibold py-2  rounded hover:bg-pinkBgDarkHover2 gap-2 lg:w-[100%]">
         Login
       </button>
-      <p className="text-[#A1A5B7] text-[14px] font-medium text-center transition-colors hover:text-gray-500 hover:underline underline-offset-4 cursor-pointer">Forget Password</p>
+      <p className="text-[#A1A5B7] text-[14px] font-medium text-center transition-colors hover:text-gray-500 hover:underline underline-offset-4 cursor-pointer">
+        Forget Password
+      </p>
     </div>
   );
 };

@@ -18,7 +18,7 @@ const TableUpper = () => {
       <p className="text-[16px] font-bold text-blackTwo hidden sm:block w-full sm:w-auto">
         Bags Made
       </p>
-      <div className="flex flex-col gap-2 sm:flex-row gap-2 w-full sm:w-auto">
+      <div className="flex flex-col gap-2 sm:flex-row w-full sm:w-auto">
         <div className="flex flex-col sm:flex-row gap-2 lg:w-[150%] lg:space-x-8  sm:gap-4 w-full sm:w-auto">
           <MonthFilter />
           <SortByAmount />
