@@ -2,6 +2,7 @@
 import { Provider } from "react-redux";
 import { store } from "./store";
 import Main from "../components/layouts/Main";
+import AuthMain from "../components/layouts/AuthMain";
 import { useEffect } from "react";
 import Header from "../components/layouts/Header";
 import { usePathname } from "next/navigation";
@@ -10,7 +11,7 @@ const Providers = ({ children }) => {
   const pathname = usePathname();
 
   useEffect(() => {
-    const user = true;
+    const user = false;
 
     if (
       !user &&
@@ -19,7 +20,7 @@ const Providers = ({ children }) => {
       pathname !== "/forgot-password" &&
       pathname !== "/reset-password"
     ) {
-      window.location.href = "/login";
+      window.location.href = "/";
     }
 
     if (
@@ -41,13 +42,7 @@ const Providers = ({ children }) => {
   ) {
     return (
       <Provider store={store}>
-        <header>
-          <h1>Auth Layout</h1>
-        </header>
-        <main>{children}</main>
-        <footer>
-          <h1>Footer</h1>
-        </footer>
+        <AuthMain>{children}</AuthMain>
       </Provider>
     );
   } else {
