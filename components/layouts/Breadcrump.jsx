@@ -63,7 +63,7 @@ const Breadcrumb = () => {
       <img
         alt="Foodie Finder Logo"
         src={"/logo_more.png"}
-        className="lg:h-[25%] lg:w-[25%]"
+        className="w-[60%] h-[80%] p-5 lg:p-0 lg:h-[25%] lg:w-[25%]"
       />
       <p className="text-lg sm:text-sm md:text-2xl lg:text-[20px] font-semibold text-graySix">
         {currentPath}
