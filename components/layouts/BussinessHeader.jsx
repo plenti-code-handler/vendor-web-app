@@ -56,12 +56,14 @@ const BussinessHeader = () => {
             } lg:static lg:block lg:bg-transparent lg:shadow-none lg:translate-y-0 lg:ml-[6%]`}
             style={{ zIndex: isSmallDevice ? 1000 : 0 }}
           >
-            <div className="flex flex-col lg:flex-row p-6 lg:p-0 gap-[2.2%]">
+            <div className="flex flex-col items-start lg:flex-row p-6 lg:p-0 gap-[2.2%]">
               {menuItemsData.map(({ name, href }) => (
                 <Link
                   key={name}
                   href={href}
-                  className={`lg:text-[16px] font-semibold leading-6 transition-all rounded-md flex items-center justify-center pt-3 pb-3 pl-6 pr-6 m-2 lg:m-0  ${
+                  className={`lg:text-[16px] font-semibold leading-6 transition-all rounded-md flex items-center justify-start lg:justify-center pt-3 pb-3 pl-6 pr-6 m-2 lg:m-0 ${
+                    isSmallDevice ? "w-[100%]" : ""
+                  }  ${
                     activePage === name
                       ? "bg-mainLight text-white"
                       : "text-white lg:text-textLight hover:bg-mainLight "
@@ -71,7 +73,7 @@ const BussinessHeader = () => {
                   {name}
                 </Link>
               ))}
-              <div className="flex flex-col lg:hidden">
+              <div className="w-full lg:hidden">
                 <LanguageDropdown />
               </div>
             </div>
