@@ -4,12 +4,12 @@ import Tabs from "./Tabs";
 
 const ProfileCard = () => {
   return (
-    <div className="flex flex-col gap-5 w-[100%] lg:w-[60%] md:w-[60%] border border-gray-150 rounded-md p-3">
+    <div className="flex flex-col gap-5 w-[100%] lg:w-[60%] md:w-[60%] border border-gray-100 rounded-md p-3">
       <div className="flex space-x-4">
         <img
           alt="User"
           src="/User.png"
-          className="rounded-full h-24 w-24 sm:h-40 sm:w-40 object-cover"
+          className="rounded-full h-24 w-24 sm:h-[90%] sm:w-[25%] object-cover"
         />
         <div className="flex flex-col lg:mt-5 lg:gap-y-2">
           <p className="text-lg font-semibold text-gray-900">McDonald's</p>
@@ -32,7 +32,7 @@ const ProfileCard = () => {
         thought-out metaphors about driving and keep you focused on the overall
         structure of your post.
       </p>
-      <Tabs/>
+      <Tabs />
     </div>
   );
 };

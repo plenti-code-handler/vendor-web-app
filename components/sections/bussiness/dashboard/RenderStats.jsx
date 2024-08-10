@@ -36,14 +36,14 @@ const RenderStats = () => {
       </div>
     </>
   ) : (
-    <>
+    <div className="flex w-[100%] gap-[2.8%]">
       <div className="flex-1 lg:flex-[0_0_70%] lg:flex-row">
         <RevenueChart />
       </div>
       <div className="flex-1 lg:flex-[0_0_30%] lg:flex-row">
         {isSmallDevice ? <StatSlider /> : <CardsRow />}
       </div>
-    </>
+    </div>
   );
 };
 

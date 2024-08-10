@@ -1,6 +1,9 @@
+"use client";
+
 import React from "react";
 import { starSvg } from "../../../../svgs";
 import CustomerReviews from "./CustomerReviews";
+import { useSelector } from "react-redux";
 
 const Rating = () => {
   const ratings = [
@@ -10,6 +13,9 @@ const Rating = () => {
     { level: 2, percentage: 38 },
     { level: 1, percentage: 18 },
   ];
+
+  const successOpen = useSelector((state) => state.withdrawSuccess.drawerOpen);
+  const amountOpen = useSelector((state) => state.withdrawAmount.drawerOpen);
 
   return (
     <div className="flex flex-col lg:w-[120%]">
@@ -21,7 +27,9 @@ const Rating = () => {
               <p className="w-6 text-center">{level}</p>
               <div className="relative flex-1">
                 <div
-                  className="absolute inset-0 bg-[#FFB400] rounded-sm z-10"
+                  className={`absolute inset-0 bg-[#FFB400] rounded-sm ${
+                    successOpen || amountOpen ? "" : "z-10"
+                  }`}
                   style={{ width: `${percentage}%`, height: "10px" }}
                 ></div>
                 <div

@@ -1,16 +1,30 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { logoutIconSvg } from "../../svgs";
 import Link from "next/link";
 import LanguageDropdown from "../dropdowns/LanguageDropdown";
 import ProfileDropdown from "../dropdowns/ProfileDropdown";
 import { setActivePage } from "../../redux/slices/headerSlice";
+import { appLogoUrl } from "../../lib/constant_data";
+import { menuItemsData } from "../../lib/business_menu";
 
 const BussinessHeader = () => {
-  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const activePage = useSelector((state) => state.header.activePage);
   const dispatch = useDispatch();
+  const [isSmallDevice, setIsSmallDevice] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsSmallDevice(window.innerWidth < 1024);
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -22,18 +36,14 @@ const BussinessHeader = () => {
 
   return (
     <>
-      <header className="bg-main lg:pl-10 lg:justify-center z-10">
-        <div className="mx-auto flex max-w-7xl items-center justify-between p-5 ">
-          <img
-            alt="Foodie Finder Logo"
-            src="https://firebasestorage.googleapis.com/v0/b/foodie-finder-ee1d8.appspot.com/o/app_logo.png?alt=media&token=8e779e74-bdc7-4dc6-8634-55a30110bc98"
-            className="h-10 w-auto"
-          />
+      <header className="bg-main lg:pl-[6%] lg:pr-[2%] justify-around">
+        <div className="mx-auto flex items-center max-w-8xl justify-between p-5">
+          <img alt="Foodie Finder Logo" src={appLogoUrl} />
           <div className="flex lg:hidden items-center">
             <ProfileDropdown />
             <button
               onClick={toggleMenu}
-              className="text-gray-900 hover:text-gray-700 focus:outline-none"
+              className="text-gray-900 hover:text-gray-700 focus:outline-none pl-[8px]"
             >
               {isMenuOpen ? closeSvg : hamburgerIcon}
             </button>
@@ -43,63 +53,41 @@ const BussinessHeader = () => {
               isMenuOpen ? "block" : "hidden"
             } absolute top-16 left-0 w-full h-full bg-main font-base shadow-md transition-transform transform ${
               isMenuOpen ? "translate-y-0" : "-translate-y-full"
-            } lg:static lg:block lg:bg-transparent lg:shadow-none lg:translate-y-0 lg:ml-20`}
-            /* REMINDER FOR DEEPAK TO HAVE IT ONLY WHEN SMALL SCREEN IS OPEN SAME FOR ADMIN TOO */
-            style={{ zIndex: 1000 }}
+            } lg:static lg:block lg:bg-transparent lg:shadow-none lg:translate-y-0 lg:ml-[6%]`}
+            style={{ zIndex: isSmallDevice ? 1000 : 0 }}
           >
-            <div className="flex flex-col lg:flex-row lg:gap-x-8 p-6 lg:p-0">
-              {[
-                { name: "Dashboard", href: "/business" },
-                { name: "Manage Bags", href: "/business/manage-bags" },
-                { name: "Bookings", href: "/business/bookings" },
-                { name: "More", href: "/business/more" },
-              ].map(({ name, href }) => (
+            <div className="flex flex-col lg:flex-row p-6 lg:p-0 gap-[2.2%]">
+              {menuItemsData.map(({ name, href }) => (
                 <Link
                   key={name}
                   href={href}
-                  className={`text-md font-semibold leading-6 transition-all rounded-md pt-3 pb-3 pl-4 pr-4 ${
+                  className={`lg:text-[16px] font-semibold leading-6 transition-all rounded-md flex items-center justify-center pt-3 pb-3 pl-6 pr-6 m-2 lg:m-0  ${
                     activePage === name
                       ? "bg-mainLight text-white"
-                      : "text-white lg:text-textLight hover:underline "
+                      : "text-white lg:text-textLight hover:bg-mainLight "
                   }`}
                   onClick={() => handleLinkClick(name)}
                 >
                   {name}
                 </Link>
               ))}
-              <div className="flex flex-col lg:hidden mt-4 mr-8">
+              <div className="flex flex-col lg:hidden">
                 <LanguageDropdown />
               </div>
             </div>
           </nav>
-          <div className="hidden lg:flex items-center">
+          <div className="hidden lg:flex items-center mr-[10%] space-x-[5%]">
             <LanguageDropdown />
-            <div className="flex gap-x-2 lg:pr-14 lg:pl-2">
-              <ProfileDropdown />
-              <button
-                className="text-sm font-semibold leading-6 pl-1 text-gray-900 transition-colors duration-200 ease-in-out hover:bg-mainLight hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-mainLight focus:ring-offset-2 rounded-lg"
-                title="Logout"
-              >
-                {logoutIconSvg}
-              </button>
-            </div>
+            <ProfileDropdown />
+            <button
+              className="text-sm font-semibold leading-6 text-gray-900 transition-colors duration-200 ease-in-out hover:bg-mainLight hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-mainLight focus:ring-offset-2 rounded-lg"
+              title="Logout"
+            >
+              {logoutIconSvg}
+            </button>
           </div>
         </div>
       </header>
-      <style jsx>{`
-        @media (max-width: 1024px) {
-          nav a {
-            color: red;
-          }
-          nav {
-            height: 100vh;
-          }
-          nav div {
-            height: 100%;
-            justify-content: space-between;
-          }
-        }
-      `}</style>
     </>
   );
 };

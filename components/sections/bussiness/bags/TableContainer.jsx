@@ -8,7 +8,7 @@ const TableContainer = () => {
   const [filterType, setFilterType] = useState("All Bags");
 
   return (
-    <div className="mt-4 w-full border border-gray-300 rounded-md p-6 sm:px-4">
+    <div className="mt-4 w-full border border-gray-200 rounded-xl p-6 sm:px-4">
       <TableUpper selectedFilter={filterType} onFilterChange={setFilterType} />
       {filterType === "All Bags" && <BagsTable />}
       {filterType === "Scheduled Bags" && <ScheduledBagsTable />}

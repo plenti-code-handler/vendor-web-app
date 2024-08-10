@@ -12,7 +12,7 @@ import {
   PencilIcon,
   TrashIcon,
   UserIcon,
-  ArrowRightStartOnRectangleIcon,
+  ArrowRightOnRectangleIcon,
 } from "@heroicons/react/20/solid";
 import { useDispatch } from "react-redux";
 import { setOpenDrawer } from "../../redux/slices/updatePasswordSlice";
@@ -36,13 +36,17 @@ const ProfileDropdown = () => {
   };
 
   return (
-    <Menu as="div" className="relative" title="Your Profile">
+    <Menu
+      as="div"
+      className="relative inline-block text-left"
+      title="Your Profile"
+    >
       <div>
-        <MenuButton className="flex items-center rounded-md text-sm focus:outline-none mr-2 focus:ring-2 focus:ring-white hover:ring-2 hover:ring-white">
+        <MenuButton className="flex items-center h-9 w-9 sm:h-10 sm:w-10 lg:h-10 lg:w-10 rounded-md focus:outline-none focus:ring-2 focus:ring-white hover:ring-2 hover:ring-white">
           <img
             alt="User"
             src="/User.png"
-            className="h-8 w-8 lg:h-9 lg:w-12 rounded-md hover:cursor-pointer focus:outline-none"
+            className="rounded-[6px] object-cover w-full h-full hover:cursor-pointer focus:outline-none"
           />
         </MenuButton>
       </div>
@@ -55,7 +59,7 @@ const ProfileDropdown = () => {
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <MenuItems className="absolute right-0 mt-2 w-40 sm:w-48 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none z-10">
+        <MenuItems className="absolute right-0 mt-2 w-48 sm:w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none z-10">
           <div className="px-1 py-1 ">
             <MenuItem>
               {({ active }) => (
@@ -108,7 +112,7 @@ const ProfileDropdown = () => {
                     active ? "bg-main text-white" : "text-gray-900"
                   } group flex w-full items-center rounded-md px-2 py-2 text-xs sm:text-sm`}
                 >
-                  <ArrowRightStartOnRectangleIcon
+                  <ArrowRightOnRectangleIcon
                     className="mr-2 h-5 w-5"
                     aria-hidden="true"
                   />

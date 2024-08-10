@@ -4,7 +4,7 @@ import Transactions from "../../../../components/sections/bussiness/profile/Tran
 
 const Page = () => {
   return (
-    <div className='flex flex-col md:flex-row gap-10 px-3'>
+    <div className='flex flex-col md:flex-row gap-10 '>
       <ProfileCard />
       <Transactions />
     </div>

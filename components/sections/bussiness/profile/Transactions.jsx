@@ -26,7 +26,7 @@ const Transactions = () => {
         <p className="text-[16px] font-medium text-white">My Wallet</p>
         <button
           onClick={() => handleWithdraw()}
-          className="flex justify-center items-center bg-[#76d5b4] text-white font-semibold rounded hover:bg-main p-2 mt-4"
+          className="flex justify-center items-center bg-black/5 text-white font-medium rounded hover:bg-main p-2 mt-4"
         >
           {withdrawAmountSvg}
           <span className="ml-2">Withdraw Amount</span>

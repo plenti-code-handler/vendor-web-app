@@ -62,7 +62,7 @@ const Breadcrumb = () => {
     <div className="flex flex-col items-center">
       <img
         alt="Foodie Finder Logo"
-        src="https://firebasestorage.googleapis.com/v0/b/foodie-finder-ee1d8.appspot.com/o/app_logo.png?alt=media&token=8e779e74-bdc7-4dc6-8634-55a30110bc98"
+        src={"/logo_more.png"}
         className="lg:h-[25%] lg:w-[25%]"
       />
       <p className="text-lg sm:text-sm md:text-2xl lg:text-[20px] font-semibold text-graySix">
@@ -79,9 +79,9 @@ const Breadcrumb = () => {
       {currentPath === "Manage Bags" && (
         <button
           onClick={handleOpenDrawer}
-          className="mr-3 mt-2 lg:m-0 flex items-center text-center justify-center bg-pinkBgDark text-white font-semibold py-2 px-4 rounded hover:bg-pinkBgDarkHover lg:w-[15%]"
+          className="mr-3 mt-2 lg:m-0 flex items-center text-center justify-center bg-pinkBgDark text-white font-semibold py-2 px-4 rounded-[6px] hover:bg-pinkBgDarkHover2 lg:w-[15%]"
         >
-          <span className="mr-3 ml-2">New Bag</span>
+          <span className="mr-3 ml-2 font-semibold">New Bag</span>
           <span>{addUserSvg}</span>
         </button>
       )}

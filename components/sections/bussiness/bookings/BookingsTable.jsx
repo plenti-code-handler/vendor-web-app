@@ -19,16 +19,13 @@ const BookingsTable = () => {
   };
 
   return (
-    <div className="mt-4 w-full border border-gray-300 rounded-md p-6 sm:px-4">
+    <div className="mt-4 w-full border border-gray-200 rounded-xl p-6 sm:px-4">
       <TableUpper />
       <div className="no-scrollbar w-full overflow-y-hidden">
-        <table
-          className="w-full table-auto truncate overflow-hidden rounded-2xl bg-white"
-          style={{ boxShadow: "0px 4px 10px 0px rgba(0, 0, 0, 0.10)" }}
-        >
+        <table className="w-full table-auto truncate overflow-hidden bg-white">
           <thead>
-            <tr className="border-b-[1px] border-grayOne border-opacity-20 text-sm font-semibold text-grayOne">
-              <th className="pb-[8px] pl-2 pt-[18px] text-left w-[14.28%]">
+            <tr className="border-b-[1px] border-grayOne border-dashed border-opacity-45 text-sm font-semibold text-grayOne">
+              <th className="pb-[8px] pl-[5%] pt-[18px] text-left w-[18.00%]">
                 CUSTOMER
               </th>
               <th className="pb-[8px] px-2 pt-[18px] text-center">Deal Name</th>
@@ -45,9 +42,9 @@ const BookingsTable = () => {
             {bookings.map((user, index) => (
               <tr
                 key={index}
-                className="cursor-pointer border-b-[1px] border-[#E4E4E4] hover:bg-[#f8f7f7]"
+                className="cursor-pointer border-b-[1px] border-[#E4E4E4] border-dashed hover:bg-[#f8f7f7]"
               >
-                <td className="truncate pl-2 pr-2 w-[14.28%]">
+                <td className="truncate pl-2 lg:pl-[5%] pr-2 w-[14.28%]">
                   <div className="py-3">
                     <div className="flex flex-row items-center gap-x-2">
                       <div className="flex h-[40px] w-[40px] items-center justify-center overflow-hidden rounded-full">
