@@ -63,7 +63,7 @@ const RestaurentBox = () => {
   };
 
   return (
-    <div className="flex flex-col w-[100%] lg:w-[48%] gap-y-3">
+    <div className="flex flex-col w-[100%] lg:w-[48%] gap-y-3 mb-10">
       <div className="flex flex-col gap-5 lg:flex-row lg:gap-12 items-center w-[100%] justify-start lg:justify-between">
         <p className="text-blackTwo font-semibold text-[18px] whitespace-nowrap">
           Restaurant Categories

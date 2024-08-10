@@ -2,7 +2,7 @@ import { arrowDownGray } from "../../svgs";
 
 const MonthFilter = () => {
   return (
-    <form className="md:w-[140%] lg:w-[150%]">
+    <form className="md:w-[140%] lg:w-[150%] w-full sm:w-auto">
       <div className="relative">
         <select
           id="months"

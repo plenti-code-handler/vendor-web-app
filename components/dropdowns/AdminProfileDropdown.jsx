@@ -14,7 +14,7 @@ const AdminProfileDropdown = () => {
   return (
     <Menu as="div" className="relative" title="Your Profile">
       <div>
-        <MenuButton className="flex items-center rounded-md text-sm focus:outline-none mr-2 focus:ring-2 focus:ring-white hover:ring-2 hover:ring-white">
+        <MenuButton className="flex items-center rounded-md text-sm focus:outline-none mr-2 focus:ring-2 focus:ring-secondary hover:ring-2 hover:ring-secondary">
           <img
             alt="User"
             src="/User.png"

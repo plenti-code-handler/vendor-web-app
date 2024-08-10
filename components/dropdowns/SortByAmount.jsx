@@ -2,7 +2,7 @@ import { arrowDownGray } from "../../svgs";
 
 const SortByAmount = () => {
   return (
-    <form className="md:w-[140%] lg:w-[200%]">
+    <form className="md:w-[140%] lg:w-[200%] w-full sm:w-auto">
       <div className="relative">
         <select
           id="amounts"

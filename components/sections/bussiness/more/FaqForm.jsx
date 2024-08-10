@@ -15,7 +15,7 @@ const FaqForm = () => {
         rows={5}
         placeholder="Your Query"
       />
-      <button className="flex justify-center bg-pinkBgDark text-white font-bold py-3 px-4 rounded hover:bg-pinkBgDarkHover w-full sm:w-auto sm:px-6 lg:w-[35%]">
+      <button className="flex justify-center bg-pinkBgDark text-white font-bold py-3 px-4 rounded hover:bg-pinkBgDarkHover2 w-full sm:w-auto sm:px-6 lg:w-[35%]">
         Submit
       </button>
     </div>
