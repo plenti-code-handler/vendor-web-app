@@ -5,6 +5,7 @@ import { bags } from "../../../../lib/constant_data";
 import { deleteSvg, editSvg } from "../../../../svgs";
 import { useDispatch } from "react-redux";
 import { setOpenDrawer } from "../../../../redux/slices/editBagSlice";
+import LoadMoreButton from "../../../buttons/LoadMoreButton";
 
 const BagsTable = () => {
   const dispatch = useDispatch();
@@ -112,6 +113,7 @@ const BagsTable = () => {
           ))}
         </tbody>
       </table>
+      <LoadMoreButton />
     </div>
   );
 };

@@ -6,6 +6,7 @@ import { bookings } from "../../../../lib/constant_data";
 import { useDispatch } from "react-redux";
 import { setActivePage } from "../../../../redux/slices/headerSlice";
 import StatusDropdown from "./StatusDropdown";
+import LoadMoreButton from "../../../buttons/LoadMoreButton";
 
 const BookingsTable = () => {
   const dispatch = useDispatch();
@@ -101,6 +102,7 @@ const BookingsTable = () => {
           </tbody>
         </table>
       </div>
+      <LoadMoreButton />
     </div>
   );
 };

@@ -3,6 +3,7 @@ import React from "react";
 import Image from "next/image";
 import TableUpper from "./TableUpper";
 import { users } from "../../../../lib/constant_data";
+import LoadMoreButton from "../../../buttons/LoadMoreButton";
 
 const RecentOrders = () => {
   return (
@@ -91,6 +92,8 @@ const RecentOrders = () => {
           </tbody>
         </table>
       </div>
+      <LoadMoreButton/>
+
     </div>
   );
 };

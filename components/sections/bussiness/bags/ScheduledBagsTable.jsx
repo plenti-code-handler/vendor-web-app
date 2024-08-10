@@ -3,16 +3,14 @@ import React from "react";
 import Image from "next/image";
 import { bags } from "../../../../lib/constant_data";
 import { deleteSvg, editSvg } from "../../../../svgs";
+import LoadMoreButton from "../../../buttons/LoadMoreButton";
 
 const ScheduledBagsTable = () => {
   return (
     <div className="no-scrollbar w-full  overflow-y-hidden">
-      <table
-        className="w-full table-auto truncate overflow-hidden rounded-2xl bg-white"
-        style={{ boxShadow: "0px 4px 10px 0px rgba(0, 0, 0, 0.10)" }}
-      >
+      <table className="w-full table-auto truncate overflow-hidden bg-white">
         <thead>
-          <tr className="border-b-[1px] border-grayOne border-opacity-20 text-sm font-semibold text-grayOne">
+          <tr className="border-b-[1px] border-grayOne border-opacity-45 border-dashed text-sm font-semibold text-grayOne">
             <th className="pb-[8px] pl-2 pt-[18px] text-left w-[14.28%]">
               Bag Deal Title
             </th>
@@ -28,7 +26,7 @@ const ScheduledBagsTable = () => {
           {bags.map((bag, index) => (
             <tr
               key={index}
-              className="cursor-pointer border-b-[1px] border-[#E4E4E4] hover:bg-[#f8f7f7]"
+              className="cursor-pointer border-b-[1px] border-[#E4E4E4] border-dashed hover:bg-[#f8f7f7]"
             >
               <td className="truncate pl-2 pr-2 w-[14.28%]">
                 <div className="py-3">
@@ -88,6 +86,7 @@ const ScheduledBagsTable = () => {
           ))}
         </tbody>
       </table>
+      <LoadMoreButton />
     </div>
   );
 };
