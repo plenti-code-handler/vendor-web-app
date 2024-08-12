@@ -1421,6 +1421,31 @@ export const loadingCirclesSvg = (
   </svg>
 );
 
+export const pencilSvgProfile = (
+  <svg
+    width="10"
+    height="11"
+    viewBox="0 0 10 11"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M10.0046 2.76402L8.11502 0.820435L6.80566 2.16718L8.69524 4.11077L10.0046 2.76402Z"
+      fill="white"
+    />
+    <path
+      d="M2.25684 8.78911L4.3354 8.59477L7.91226 4.91572L6.02263 2.97211L2.44579 6.65115L2.25684 8.78911Z"
+      fill="white"
+    />
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M6.61504 10.7813H0.320312V9.78519H6.61504V10.7813Z"
+      fill="white"
+    />
+  </svg>
+);
+
 export const authBackArrow = (
   <svg
     width="12"
