@@ -18,6 +18,10 @@ const Providers = ({ children }) => {
       pathname !== "/" &&
       pathname !== "/register" &&
       pathname !== "/forgot-password" &&
+      pathname !== "/verify" &&
+      pathname !== "/setup_password" &&
+      pathname !== "/setup_profile" &&
+      pathname !== "/awaiting" &&
       pathname !== "/reset-password"
     ) {
       window.location.href = "/";
@@ -28,8 +32,13 @@ const Providers = ({ children }) => {
       (pathname === "/" ||
         pathname === "/register" ||
         pathname === "/forgot-password" ||
+        pathname === "/verify" ||
+        pathname === "/setup_password" ||
+        pathname === "/setup_profile" ||
+        pathname === "/awaiting" ||
         pathname === "/reset-password")
     ) {
+      // Todo: Decide naivgation path location based on user role in user object in an another protected client component wrapping the child
       window.location.href = "/business";
     }
   }, []);
@@ -38,6 +47,10 @@ const Providers = ({ children }) => {
     pathname === "/" ||
     pathname === "/register" ||
     pathname === "/forgot-password" ||
+    pathname === "/verify" ||
+    pathname === "/setup_password" ||
+    pathname === "/setup_profile" ||
+    pathname === "/awaiting" ||
     pathname === "/reset-password"
   ) {
     return (
