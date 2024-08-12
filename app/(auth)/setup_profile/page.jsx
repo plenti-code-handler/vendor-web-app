@@ -1,4 +1,3 @@
-"use client";
 import React from "react";
 import ProfileForm from "../../../components/sections/auth/ProfileForm";
 

@@ -1,4 +1,3 @@
-"use client";
 import React from "react";
 import VerifyAccountForm from "../../../components/sections/auth/VerifyAccountForm";
 import HeaderStyle from "../../../components/sections/auth/HeaderStyle";

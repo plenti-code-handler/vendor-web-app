@@ -1,4 +1,3 @@
-"use client";
 import React from "react";
 import RegisterForm from "../../../components/sections/auth/RegisterForm";
 import HeaderStyle from "../../../components/sections/auth/HeaderStyle";
