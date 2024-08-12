@@ -1,17 +1,99 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { auth } from "../../app/firebase/config";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../../app/firebase/config";
+
+export const getloginUserData = createAsyncThunk(
+  "auth/getloginUserData",
+  async (userId, thunkAPI) => {
+    try {
+      const userDocRef = doc(db, "users", userId);
+      const userDoc = await getDoc(userDocRef);
+
+      if (userDoc.exists()) {
+        return userDoc.data(); // Return the user data from Firestore
+      } else {
+        throw new Error("User does not exist in Firestore");
+      }
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+
+export const loginUser = createAsyncThunk(
+  "auth/loginUser",
+  async ({ email, password }, thunkAPI) => {
+    try {
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = userCredential.user;
+      const userData = await thunkAPI
+        .dispatch(getloginUserData(user.uid))
+        .unwrap();
+
+      return userData;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+
+export const getUserLocal = () => {
+  try {
+    const user = localStorage.getItem("user");
+    if (user !== null) {
+      return user;
+    } else {
+      return null;
+    }
+  } catch (err) {
+    console.log("Error getting user:", err);
+    return null;
+  }
+};
 
 const initialState = {
   user: {
-    name: "Deepak Kumar",
+    name: "Deepak",
+    role: "vendor",
     // role: "admin",
-    role: "business_owner",
   },
+  isLoading: false,
+  error: null,
 };
 
 export const loggedInUserSlice = createSlice({
   name: "loggedInUser",
   initialState,
-  reducers: {},
+  reducers: {
+    logoutUser: (state) => {
+      state.user = null;
+      localStorage.removeItem("user");
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(loginUser.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(loginUser.fulfilled, (state, action) => {
+        state.user = action.payload;
+        state.isLoading = false;
+        localStorage.setItem("user", JSON.stringify(action.payload));
+      })
+      .addCase(loginUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      });
+  },
 });
+
+export const { logoutUser } = loggedInUserSlice.actions;
 
 export default loggedInUserSlice.reducer;

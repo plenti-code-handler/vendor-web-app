@@ -1,8 +1,11 @@
+"use client";
+
 import { passwordHideSvgAuth, passwordShowSvg } from "../../svgs";
 import React, { useState } from "react";
 
-const AuthPasswordField = (props) => {
+const AuthPasswordField = ({ value, onChange, placeholder }) => {
   const [showPassword, setShowPassword] = useState(false);
+
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -12,7 +15,9 @@ const AuthPasswordField = (props) => {
       <input
         type={showPassword ? "text" : "password"}
         className="w-full placeholder:font-bold rounded-md border border-gray-200 py-3 px-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
-        placeholder={props.placeholder || "Password"}
+        placeholder={placeholder || "Password"}
+        value={value}
+        onChange={onChange}
       />
       <span
         className="absolute right-3 text-black font-bold cursor-pointer"

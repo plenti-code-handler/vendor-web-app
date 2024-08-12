@@ -1,17 +1,19 @@
 "use client";
-import { Provider } from "react-redux";
+import { Provider, useDispatch } from "react-redux";
 import { store } from "./store";
 import Main from "../components/layouts/Main";
 import AuthMain from "../components/layouts/AuthMain";
 import { useEffect } from "react";
 import Header from "../components/layouts/Header";
 import { usePathname } from "next/navigation";
+import { getloginUserData, getUserLocal } from "./slices/loggedInUserSlice";
 
 const Providers = ({ children }) => {
   const pathname = usePathname();
 
   useEffect(() => {
     const user = false;
+    console.log({ user });
 
     if (
       !user &&
@@ -39,6 +41,8 @@ const Providers = ({ children }) => {
         pathname === "/reset-password")
     ) {
       // Todo: Decide naivgation path location based on user role in user object in an another protected client component wrapping the child
+      // const decidePath = getData(user.uid);
+      // console.log(decidePath);
       window.location.href = "/business";
     }
   }, []);

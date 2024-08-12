@@ -1509,3 +1509,79 @@ export const headerTopLeftSvgInnerTop = (
     />
   </svg>
 );
+
+export const authBgSlightRightSvg = (
+  <svg
+    width="340"
+    height="111"
+    viewBox="0 0 340 111"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect
+      opacity="0.03"
+      width="340"
+      height="340"
+      rx="170"
+      transform="matrix(-1 0 0 1 340 0)"
+      fill="#597FB9"
+    />
+  </svg>
+);
+
+export const authBgBarLeftSvg = (
+  <svg
+    width="141"
+    height="340"
+    viewBox="0 0 141 340"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect
+      opacity="0.03"
+      width="340"
+      height="340"
+      rx="170"
+      transform="matrix(-1 0 0 1 140.84 0)"
+      fill="#597FB9"
+    />
+  </svg>
+);
+
+export const authBgTopBarSvg = (
+  <svg
+    width="533"
+    height="281"
+    viewBox="0 0 533 281"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect
+      opacity="0.03"
+      width="342.502"
+      height="500.103"
+      rx="100"
+      transform="matrix(-0.46478 -0.885426 -0.885426 0.46478 567.84 83.2607)"
+      fill="#597FB9"
+    />
+  </svg>
+);
+
+export const authBgCornerSvg = (
+  <svg
+    width="266"
+    height="257"
+    viewBox="0 0 266 257"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect
+      opacity="0.03"
+      width="342.502"
+      height="500.103"
+      rx="100"
+      transform="matrix(-0.289487 0.957182 0.957182 0.289487 -188.85 -24)"
+      fill="#597FB9"
+    />
+  </svg>
+);
