@@ -8,7 +8,7 @@ const AuthLeftContent = () => {
         src={"/auth_logo.png"}
         className="w-[60%] h-[80%] md:h-[40%] md:w-[40%] lg:h-[60%] lg:w-[55%]"
       />
-      <div className="flex flex-col mt-4 lg:mt-6">
+      <div className="flex flex-col gap-4 mt-4 lg:mt-6">
         <p className="text-[30px] font-semibold text-gray-800">
           possimus ea <span className="text-secondary">laboriosam </span>
           laboriosam

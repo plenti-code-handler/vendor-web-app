@@ -3,7 +3,7 @@ import TableContainer from "../../../../components/sections/admin/approvals/Tabl
 
 const page = () => {
   return (
-    <div className="flex flex-col w-[100%] lg:w-[100%] md:w-[60%] mt-4 border border-[#E3E3E3] rounded-2xl p-6 lg:p-3 sm:px-4">
+    <div className="flex flex-col w-[100%] md:w-[100%] mt-4 border border-[#E3E3E3] rounded-2xl p-6 lg:p-3 sm:px-4">
       <TableContainer />
     </div>
   );

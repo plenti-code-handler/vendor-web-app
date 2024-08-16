@@ -58,11 +58,11 @@ const ProfileForm = () => {
       </div>
 
       <input
-        className="placeholder:font-bold rounded-md border border-gray-200 py-3 px-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
+        className="placeholder:font-bold rounded-md border border-gray-200 py-3 px-3 text-black text-[13px] font-semibold placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
         placeholder="Business Name"
       />
       <input
-        className="placeholder:font-bold rounded-md border border-gray-200 py-3 px-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
+        className="placeholder:font-bold rounded-md border border-gray-200 py-3 px-3 text-black text-[13px] font-semibold placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
         placeholder="Address"
       />
       <iframe
@@ -76,7 +76,7 @@ const ProfileForm = () => {
         rows={6}
         placeholder="Description..."
       />
-      <button className="flex justify-center bg-pinkBgDark text-white font-semibold py-2  rounded hover:bg-pinkBgDarkHover2 gap-2 lg:w-[100%]">
+      <button className="flex justify-center bg-pinkBgDark text-white font-semibold py-2 text-[16px] rounded hover:bg-pinkBgDarkHover2 gap-2 lg:w-[100%]">
         Submit Request
       </button>
     </div>

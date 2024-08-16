@@ -63,19 +63,19 @@ const FoodFiltersBox = () => {
   };
 
   return (
-    <div className="flex flex-col w-[100%] lg:w-[48%] gap-y-3">
+    <div className="flex flex-col w-[100%] lg:w-[50%] gap-y-3">
       <div className="flex flex-col gap-5 lg:flex-row lg:gap-12 items-center w-[100%] justify-start lg:justify-between">
-        <p className="text-blackTwo font-semibold text-[18px] whitespace-nowrap">
+        <p className="text-blackTwo xl:ml-10 font-semibold text-[18px] lg:text-[16px] xl:text-[18px] whitespace-nowrap">
           Food Filters
         </p>
-        <div className="flex gap-5 lg:flex-grow w-full items-center lg:ml-[15%]">
+        <div className="flex gap-5 lg:flex-grow w-full lg:justify-end justify-between items-center">
           <button
             onClick={handlePlusClick}
             className="bg-pinkBgDark w-[50px] h-[38px] rounded-[6px] flex justify-center items-center flex-shrink-0"
           >
             {inputValue ? whiteTickSvg : plusIconSvg}
           </button>
-          <div className="flex flex-grow items-center gap-x-2 rounded-[6px] bg-[#F9F9F9] px-5 overflow-hidden ">
+          <div className="flex flex-grow items-center gap-x-2 rounded-[6px] lg:max-w-[238px] bg-[#F9F9F9] w-full px-5 overflow-hidden ">
             {magnifierSvg}
             <input
               type="text"

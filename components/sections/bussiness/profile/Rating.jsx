@@ -18,7 +18,7 @@ const Rating = () => {
   const amountOpen = useSelector((state) => state.withdrawAmount.drawerOpen);
 
   return (
-    <div className="flex flex-col lg:w-[120%]">
+    <div className="flex flex-col w-full">
       <div className="flex gap-8">
         {/* Rating Bars */}
         <div className="flex flex-col gap-2 flex-1 ">

@@ -48,7 +48,7 @@ const StatSlider = () => {
       },
     ],
     appendDots: (dots) => (
-      <div style={{ position: "relative", bottom: "20px" }}>
+      <div style={{ position: "relative", bottom: "-10px" }}>
         <ul
           style={{
             display: "flex",

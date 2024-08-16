@@ -14,7 +14,7 @@ const AuthPasswordField = ({ value, onChange, placeholder }) => {
     <div className="relative flex items-center">
       <input
         type={showPassword ? "text" : "password"}
-        className="w-full placeholder:font-bold rounded-md border border-gray-200 py-3 px-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
+        className="w-full placeholder:font-bold rounded-md border border-gray-200 py-3 px-3 text-[13px] text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
         placeholder={placeholder || "Password"}
         value={value}
         onChange={onChange}

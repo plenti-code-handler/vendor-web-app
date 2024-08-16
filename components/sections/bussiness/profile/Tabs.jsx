@@ -23,7 +23,7 @@ const tabs = [
 const Tabs = () => {
   return (
     <div className="flex">
-      <div className="w-full max-w-md">
+      <div className="w-full">
         <TabGroup>
           <TabList className="flex gap-4">
             {tabs.map(({ name }) => (
@@ -43,9 +43,7 @@ const Tabs = () => {
           </TabList>
           <TabPanels className="mt-5">
             {tabs.map(({ component }, index) => (
-              <TabPanel key={index}>
-                {component}
-              </TabPanel>
+              <TabPanel key={index}>{component}</TabPanel>
             ))}
           </TabPanels>
         </TabGroup>

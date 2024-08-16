@@ -46,9 +46,9 @@ const AddBagDrawer = () => {
                   <BagsPerDay />
                   <DateSelection />
 
-                  <div className="flex flex-col pb-5 gap-3">
+                  <div className="flex flex-col gap-3">
                     <BagPricing />
-                    <button className="flex justify-center bg-pinkBgDark text-white font-semibold py-2  rounded hover:bg-pinkBgDarkHover gap-2 lg:w-[100%]">
+                    <button className="flex justify-center bg-pinkBgDark text-white font-semibold py-2  rounded hover:bg-pinkBgDarkHover2 gap-2 lg:w-[100%]">
                       Add Bag
                     </button>
                   </div>

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useRouter } from "next/navigation";
 import React from "react";
 
@@ -22,9 +22,9 @@ const AwaitingContent = () => {
       </div>
       <button
         onClick={() => router.replace("/")}
-        className="w-full bg-pinkBgDark text-white font-semibold py-2 rounded hover:bg-pinkBgDarkHover2"
+        className="w-full bg-pinkBgDark text-[16px] text-white font-semibold py-2 rounded hover:bg-pinkBgDarkHover2"
       >
-        Okay, Got It
+        Okay Got It
       </button>
     </div>
   );

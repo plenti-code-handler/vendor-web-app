@@ -10,7 +10,7 @@ const SearchField = (props) => {
   };
 
   return (
-    <div className="flex w-full sm:max-w-[300px] items-center gap-x-2 rounded-[6px] bg-grayFive px-5">
+    <div className="flex lg:w-[300px] md:w-auto w-full items-center gap-x-2 rounded-[6px] bg-grayFive px-5">
       {magnifierSvg}
       <input
         type="text"

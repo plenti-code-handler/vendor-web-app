@@ -13,6 +13,10 @@ module.exports = {
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
         "gradient-custom": "linear-gradient(to right, #74D5B3, #4AA887)",
       },
+      borderColor: {
+        gray: "#AEAEAE",
+        secondary: "#74D5B3",
+      },
       colors: {
         // texts
         main: "#39B88B",
@@ -29,6 +33,8 @@ module.exports = {
         grayFour: "#747474",
         grayFive: "#F9F9F9",
         graySix: "#404146",
+        graySeven: "#3F4254",
+        grayEight: "#AEAEAE",
         amountStatus: "#E2E2E2",
         date: "#AFAFAF",
         amount: "#1C1C28",
@@ -52,7 +58,7 @@ module.exports = {
         pinkBgOne: "#FFF1F9",
         pinkBgDark: "#FD8AD0",
         pinkBgDarkHover: "#ffe6f5",
-        pinkBgDarkHover2: "#fd68c4",
+        pinkBgDarkHover2: "#FEBCE5",
         scheduledBg: "#FFF8DD",
       },
     },

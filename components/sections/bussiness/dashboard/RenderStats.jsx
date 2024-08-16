@@ -28,7 +28,7 @@ const RenderStats = () => {
 
   return isSmallDevice ? (
     <>
-      <div className="flex-1 lg:flex-[0_0_30%] px-2">
+      <div className="flex-1 lg:flex-[0_0_30%] px-2 mb-2">
         {isSmallDevice ? <StatSlider /> : <CardsRow />}
       </div>
       <div className="flex-1 lg:flex-[0_0_70%] px-2">

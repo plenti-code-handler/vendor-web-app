@@ -20,7 +20,7 @@ const CardsRow = () => {
   return isSmallDevice ? (
     <StatSlider />
   ) : (
-    <div className="hidden gap-x-10 xl:flex gap-5 lg:w-[100%] flex-row">
+    <div className="hidden gap-x-10 lg:flex gap-5 lg:w-[100%] flex-row">
       <TransactionCard
         title="€2,786.22"
         content={"Revenue Generated"}

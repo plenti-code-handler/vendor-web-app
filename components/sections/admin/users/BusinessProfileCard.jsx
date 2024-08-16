@@ -19,10 +19,10 @@ const BusinessProfileCard = () => {
           src="/User.png"
           className="rounded-full h-24 w-24 sm:h-40 sm:w-40 object-cover"
         />
-        <div className="flex">
+        <div className="flex gap-5">
           <div className="flex flex-col lg:mt-5 lg:gap-y-2">
             <p className="text-lg font-semibold text-gray-900">McDonald's</p>
-            <div className="flex items-center text-gray-600 space-x-2">
+            <div className="flex items-center text-grayOne font-semibold space-x-2">
               {locationIconSvg}
               <p className="text-sm">1425 Edinburg, United Kingdom</p>
             </div>
@@ -44,7 +44,7 @@ const BusinessProfileCard = () => {
           </div>
         </div>
       </div>
-      <p className="text-left leading-5 text-grayThree font-medium text-[16px]">
+      <p className="text-left leading-5 text-graySeven font-medium text-[16px]">
         Outlines keep you honest. They stop you from indulging in poorly
         thought-out metaphors about driving and keep you focused on the overall
         structure of your post Outlines keep you honest. They stop you from

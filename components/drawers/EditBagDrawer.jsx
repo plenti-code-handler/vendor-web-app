@@ -46,7 +46,7 @@ const EditBagDrawer = () => {
                     <button className="py-2 px-2 rounded hover:bg-pinkBgDark">
                       {deleteSvg}
                     </button>
-                    <button className=" bg-pinkBgDark py-2 px-2 rounded hover:bg-pinkBgDarkHover">
+                    <button className=" bg-pinkBgDark py-2 px-2 rounded hover:bg-pinkBgDarkHover2">
                       {recycleSvg}
                     </button>
                   </div>
@@ -60,7 +60,7 @@ const EditBagDrawer = () => {
 
                   <div className="flex flex-col pb-5 gap-3">
                     <BagPricing />
-                    <button className="flex justify-center bg-pinkBgDark text-white font-semibold py-2  rounded hover:bg-pinkBgDarkHover gap-2 lg:w-[100%]">
+                    <button className="flex justify-center bg-pinkBgDark text-white font-semibold py-2 rounded hover:bg-pinkBgDarkHover2 gap-2 lg:w-[100%]">
                       Edit Bag
                     </button>
                   </div>

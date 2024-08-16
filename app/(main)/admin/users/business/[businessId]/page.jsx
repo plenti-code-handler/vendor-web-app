@@ -4,9 +4,9 @@ import BusinessDetailTable from "../../../../../../components/sections/admin/use
 
 const page = () => {
   return (
-    <div className="flex flex-col gap-5 w-[100%] lg:w-[100%] md:w-[60%] rounded-md p-3">
+    <div className="flex flex-col gap-5 w-[100%] lg:w-[100%] rounded-md p-3">
       <BusinessProfileCard />
-      <BusinessDetailTable/>
+      <BusinessDetailTable />
     </div>
   );
 };

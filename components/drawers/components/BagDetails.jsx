@@ -64,7 +64,7 @@ const BagDetails = () => {
       </div>
       <Textarea
         className="block w-full placeholder:font-bold resize-none rounded-lg border border-gray-300 py-3 px-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
-        rows={4}
+        rows={6}
         placeholder="Description..."
       />
       <div className="mt-3 border border-gray-300 p-2 rounded-md">

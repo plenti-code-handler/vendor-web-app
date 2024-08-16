@@ -2,7 +2,7 @@ import { arrowDownGray } from "../../svgs";
 
 const ApprovalsFilter = () => {
   return (
-    <form className="max-w-lg mx-12 w-60">
+    <form className="w-full lg:w-60">
       <div className="relative">
         <select
           id="bags"

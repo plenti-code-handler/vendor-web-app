@@ -73,13 +73,13 @@ const Breadcrumb = () => {
 
   const DefaultContent = () => (
     <div className="flex justify-between items-center lg:mr-auto lg:mt-4 lg:mb-4 lg:py-2 lg:w-[99%]">
-      <p className="m-4 text-lg sm:m-0 sm:text-xl md:text-2xl lg:text-3xl font-bold text-one">
+      <p className="m-4 text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-one">
         {currentPath}
       </p>
       {currentPath === "Manage Bags" && (
         <button
           onClick={handleOpenDrawer}
-          className="mr-3 mt-2 lg:m-0 flex items-center text-center justify-center bg-pinkBgDark text-white font-semibold py-2 px-4 rounded-[6px] hover:bg-pinkBgDarkHover2 lg:w-[15%]"
+          className="mr-3 mt-2 lg:m-0 flex items-center text-center justify-center bg-pinkBgDark text-white font-semibold py-2 px-4 rounded-[6px] hover:bg-pinkBgDarkHover2"
         >
           <span className="mr-3 ml-2 font-semibold">New Bag</span>
           <span>{addUserSvg}</span>
@@ -89,8 +89,8 @@ const Breadcrumb = () => {
   );
 
   const ApprovalsContent = () => (
-    <div className="flex items-center lg:mr-auto lg:mt-4 lg:mb-4 lg:py-2 lg:w-[99%] lg:gap-2">
-      <p className="m-4 text-lg sm:m-0 sm:text-xl md:text-2xl lg:text-3xl font-bold text-one">
+    <div className="flex items-center m-4 lg:mr-auto lg:mt-4 lg:mb-4 lg:w-[99%] gap-2">
+      <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-one">
         {currentPath}
       </p>
       <p className="text-lg sm:m-0 sm:text-xl md:text-2xl lg:text-3xl font-medium text-secondary">

@@ -52,7 +52,7 @@ const VerifyAccountForm = () => {
       <BackButton />
       <div className="flex flex-col space-y-3">
         <p className="text-black font-semibold text-[28px]">Verify Account</p>
-        <p className="text-[#A1A5B7] text-[14px] font-medium">
+        <p className="text-[16px]">
           Code has been sent to{" "}
           <span className="font-bold text-blackTwo">johndoe@gmail.com.</span>
           <br />
@@ -69,12 +69,12 @@ const VerifyAccountForm = () => {
             onChange={(e) => handleChange(e, index)}
             onKeyDown={(e) => handleKeyDown(e, index)}
             maxLength="1"
-            className="rounded-[20px] border text-center text-bold border-[#DDDDDD] text-black text-[24px] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black w-[64.43px] h-[64.43px]"
+            className="rounded-[20px] border text-center font-bold text-bold border-[#DDDDDD] text-black text-[24px] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black w-[55px] h-[55px] md:w-[64.43px] md:h-[64.43px]"
           />
         ))}
       </div>
       <div className="flex items-center justify-center">
-        <p className="text-[#A1A5B7] text-[12px] font-medium">
+        <p className="text-[#494949] text-[12px] font-medium">
           Didn't Receive Code?{" "}
           <span
             className={`underline ${

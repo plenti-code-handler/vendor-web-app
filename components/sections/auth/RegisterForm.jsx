@@ -3,14 +3,14 @@ import BackButton from "./BackButton";
 
 const RegisterForm = () => {
   return (
-    <div className="flex flex-col w-[390px] h-[315px] space-y-5">
+    <div className="flex flex-col w-[390px] space-y-5">
       <BackButton />
       <div className="flex flex-col space-y-3">
         <p className="text-black font-semibold text-[28px]">
           Register Your Business
         </p>
-        <p className="text-[#A1A5B7] text-[14px] font-medium">
-          Entr your email to register?
+        <p className="text-[#A1A5B7] text-[14px]">
+          Enter your email to register
         </p>
       </div>
       <input

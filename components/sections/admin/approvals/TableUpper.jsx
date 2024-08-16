@@ -17,9 +17,12 @@ const TableUpper = () => {
       <p className="text-[20px] font-bold text-blackTwo w-full sm:w-auto text-center sm:text-left hidden sm:block">
         Total Approvals
       </p>
-      <div className="flex flex-col sm:flex-row w-full gap-2 sm:gap-0 sm:w-auto">
+      <div className="flex flex-col sm:flex-row w-full gap-2 sm:gap-4 sm:w-auto">
         <ApprovalsFilter className="w-full sm:w-auto" />
-        <SearchField placeholder={"Search People"} className="w-full sm:w-auto" />
+        <SearchField
+          placeholder={"Search People"}
+          className="w-full sm:w-auto"
+        />
       </div>
     </div>
   );

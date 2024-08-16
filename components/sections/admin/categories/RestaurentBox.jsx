@@ -63,19 +63,19 @@ const RestaurentBox = () => {
   };
 
   return (
-    <div className="flex flex-col w-[100%] lg:w-[48%] gap-y-3 mb-10">
-      <div className="flex flex-col gap-5 lg:flex-row lg:gap-12 items-center w-[100%] justify-start lg:justify-between">
-        <p className="text-blackTwo font-semibold text-[18px] whitespace-nowrap">
+    <div className="flex flex-col w-[100%] lg:w-[50%] gap-y-3">
+      <div className="flex flex-col gap-5 lg:flex-row lg:gap-4 items-center w-[100%] justify-start lg:justify-between">
+        <p className="text-blackTwo font-semibold text-[18px] lg:text-[16px] xl:text-[18px] xl:ml-10 whitespace-nowrap">
           Restaurant Categories
         </p>
-        <div className="flex gap-5 lg:flex-grow w-full items-center">
+        <div className="flex gap-5 lg:flex-grow w-full justify-between lg:justify-end items-center">
           <button
             onClick={handlePlusClick}
             className="bg-pinkBgDark w-[50px] h-[38px] rounded-[6px] flex justify-center items-center flex-shrink-0"
           >
             {inputValue ? whiteTickSvg : plusIconSvg}
           </button>
-          <div className="flex flex-grow items-center gap-x-2 rounded-[6px] bg-[#F9F9F9] px-5 overflow-hidden">
+          <div className="flex flex-grow items-center gap-x-2 rounded-[6px] bg-[#F9F9F9] px-5 overflow-hidden w-full lg:max-w-[238px]">
             {magnifierSvg}
             <input
               type="text"

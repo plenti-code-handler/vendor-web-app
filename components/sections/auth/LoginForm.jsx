@@ -30,7 +30,7 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="flex flex-col w-[390px] h-[315px] space-y-5">
+    <div className="flex flex-col w-[390px] space-y-5">
       <div className="flex flex-col space-y-3">
         <p className="text-black font-semibold text-[28px]">
           Login to your account

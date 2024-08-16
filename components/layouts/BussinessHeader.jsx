@@ -36,14 +36,14 @@ const BussinessHeader = () => {
 
   return (
     <>
-      <header className="bg-main lg:pl-[6%] lg:pr-[2%] justify-around">
-        <div className="mx-auto flex items-center max-w-8xl justify-between p-5">
+      <header className="bg-main px-[6%] justify-around">
+        <div className="mx-auto flex items-center justify-between py-5">
           <img alt="Foodie Finder Logo" src={appLogoUrl} />
-          <div className="flex lg:hidden items-center">
+          <div className="flex lg:hidden gap-6 items-center">
             <ProfileDropdown />
             <button
               onClick={toggleMenu}
-              className="text-gray-900 hover:text-gray-700 focus:outline-none pl-[8px]"
+              className="text-gray-900 hover:text-gray-700 focus:outline-none"
             >
               {isMenuOpen ? closeSvg : hamburgerIcon}
             </button>
@@ -53,7 +53,7 @@ const BussinessHeader = () => {
               isMenuOpen ? "block" : "hidden"
             } absolute top-16 left-0 w-full h-full bg-main font-base shadow-md transition-transform transform ${
               isMenuOpen ? "translate-y-0" : "-translate-y-full"
-            } lg:static lg:block lg:bg-transparent lg:shadow-none lg:translate-y-0 lg:ml-[6%]`}
+            } lg:static lg:block lg:bg-transparent lg:shadow-none lg:translate-y-0 xl:ml-[6%] lg:ml-[3%]`}
             style={{ zIndex: isSmallDevice ? 1000 : 0 }}
           >
             <div className="flex flex-col items-start lg:flex-row p-6 lg:p-0 gap-[2.2%]">
@@ -61,7 +61,7 @@ const BussinessHeader = () => {
                 <Link
                   key={name}
                   href={href}
-                  className={`lg:text-[16px] font-semibold leading-6 transition-all rounded-md flex items-center justify-start lg:justify-center pt-3 pb-3 pl-6 pr-6 m-2 lg:m-0 ${
+                  className={`lg:text-[12px] xl:text-[16px] font-semibold leading-6 transition-all rounded-md flex items-center justify-start lg:justify-center px-[3%] py-[1%] m-2 lg:m-0 ${
                     isSmallDevice ? "w-[100%]" : ""
                   }  ${
                     activePage === name
@@ -78,11 +78,11 @@ const BussinessHeader = () => {
               </div>
             </div>
           </nav>
-          <div className="hidden lg:flex items-center mr-[10%] space-x-[5%]">
+          <div className="hidden lg:flex items-center gap-5">
             <LanguageDropdown />
             <ProfileDropdown />
             <button
-              className="text-sm font-semibold leading-6 text-gray-900 transition-colors duration-200 ease-in-out hover:bg-mainLight hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-mainLight focus:ring-offset-2 rounded-lg"
+              className="text-sm font-semibold leading-6 text-gray-900 p-3 transition-colors duration-200 ease-in-out hover:bg-mainLight hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-mainLight focus:ring-offset-2 rounded-lg"
               title="Logout"
             >
               {logoutIconSvg}

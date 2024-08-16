@@ -4,7 +4,7 @@ import FoodFiltersBox from "../../../../components/sections/admin/categories/Foo
 
 const page = () => {
   return (
-    <div className="flex w-[100%] gap-[5%] flex-col lg:flex-row p-8">
+    <div className="flex w-[100%] gap-[30px] flex-col lg:flex-row lg:p-0 p-8">
       <RestaurentBox />
       <FoodFiltersBox />
     </div>

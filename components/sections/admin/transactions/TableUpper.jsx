@@ -15,15 +15,13 @@ const TableUpper = () => {
 
   return (
     <div className="flex flex-col sm:flex-row sm:justify-between items-center mb-4 px-2 sm:px-4 ">
-      <p className="text-[16px] font-bold text-blackTwo hidden sm:block w-full sm:w-auto">
+      <p className="text-[16px] font-bold text-blackTwo hidden md:block w-full basis-[15%]">
         Bags Made
       </p>
-      <div className="flex flex-col gap-2 sm:flex-row w-full sm:w-auto">
-        <div className="flex flex-col sm:flex-row gap-2 lg:w-[150%] lg:space-x-8  sm:gap-4 w-full sm:w-auto">
+      <div className="flex flex-col justify-end items-center gap-2 sm:flex-row w-full">
+        <div className="flex flex-col sm:justify-end sm:flex-row gap-2 sm:gap-2 w-full">
           <MonthFilter />
           <SortByAmount />
-        </div>
-        <div className="w-full">
           <SearchField placeholder={"Search By Restaurent"} />
         </div>
       </div>

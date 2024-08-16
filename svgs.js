@@ -1585,3 +1585,112 @@ export const authBgCornerSvg = (
     />
   </svg>
 );
+
+export const bottomWalletBackground = (
+  <svg
+    width="119"
+    height="49"
+    viewBox="0 0 119 49"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      opacity="0.1"
+      d="M0.978027 35.8169L59.5693 70.6917V129.659L0.978027 94.468V35.8169Z"
+      fill="#E7FAF4"
+      fillOpacity="0.2"
+    />
+    <path
+      opacity="0.2"
+      d="M117.955 35.8521L59.3655 70.6903V129.595L117.955 94.4416V35.8521Z"
+      fill="#E7FAF4"
+      fillOpacity="0.2"
+    />
+    <path
+      opacity="0.3"
+      d="M0.978027 36.01L59.5693 0.819336L118.16 36.01V36.2732L59.5693 71.4638L0.978027 36.2732V36.01Z"
+      fill="#E7FAF4"
+      fillOpacity="0.2"
+    />
+  </svg>
+);
+
+export const topLeftWalletBackground = (
+  <svg
+    width="118"
+    height="73"
+    viewBox="0 0 118 73"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      opacity="0.1"
+      d="M0.614258 -21.0708L59.2055 13.804V72.7709L0.614258 37.5803V-21.0708Z"
+      fill="#E7FAF4"
+      fillOpacity="0.2"
+    />
+    <path
+      opacity="0.2"
+      d="M117.591 -21.0356L59.0017 13.8026V72.7077L117.591 37.5539V-21.0356Z"
+      fill="#E7FAF4"
+      fillOpacity="0.2"
+    />
+    <path
+      opacity="0.3"
+      d="M0.614258 -20.8777L59.2055 -56.0684L117.797 -20.8777V-20.6145L59.2055 14.5761L0.614258 -20.6145V-20.8777Z"
+      fill="#E7FAF4"
+      fillOpacity="0.2"
+    />
+  </svg>
+);
+export const leftWalletBackground = (
+  <svg
+    width="130"
+    height="190"
+    viewBox="0 0 130 190"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      opacity="0.2"
+      d="M128.974 84.4409L-11.5436 167.995V309.269L128.974 224.959V84.4409Z"
+      fill="#E7FAF4"
+      fillOpacity="0.2"
+    />
+    <path
+      opacity="0.3"
+      d="M-151.577 84.8195L-11.0555 0.42041L129.466 84.8195V85.4508L-11.0555 169.85L-151.577 85.4508V84.8195Z"
+      fill="#E7FAF4"
+      fillOpacity="0.2"
+    />
+  </svg>
+);
+
+export const rightWalletBackground = (
+  <svg
+    width="282"
+    height="281"
+    viewBox="0 0 282 281"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      opacity="0.1"
+      d="M0.704102 40.1274L141.226 123.769V265.192L0.704102 180.793V40.1274Z"
+      fill="#E7FAF4"
+      fillOpacity="0.2"
+    />
+    <path
+      opacity="0.2"
+      d="M281.255 40.2119L140.738 123.766V265.04L281.255 180.73V40.2119Z"
+      fill="#E7FAF4"
+      fillOpacity="0.2"
+    />
+    <path
+      opacity="0.3"
+      d="M0.704102 40.5905L141.226 -43.8086L281.747 40.5905V41.2218L141.226 125.621L0.704102 41.2218V40.5905Z"
+      fill="#E7FAF4"
+      fillOpacity="0.2"
+    />
+  </svg>
+);

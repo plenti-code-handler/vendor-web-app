@@ -24,7 +24,7 @@ const AdminHeader = () => {
 
   return (
     <>
-      <header className="bg-white border-b-2 lg:pl-[8%] lg:pr-[2%] justify-around">
+      <header className="bg-white border-b-2 xl:px-[6%] justify-around">
         <div className="mx-auto flex max-w-8xl items-center justify-between p-2">
           <img
             alt="Foodie Finder Logo"
@@ -46,15 +46,15 @@ const AdminHeader = () => {
               isMenuOpen ? "block" : "hidden"
             } absolute top-16 left-0 w-full h-full bg-white font-base shadow-md transition-transform transform${
               isMenuOpen ? "translate-y-0" : "-translate-y-full"
-            } lg:static lg:block lg:bg-transparent lg:shadow-none lg:translate-y-0 lg:ml-20`}
+            } lg:static lg:block lg:bg-transparent lg:shadow-none lg:translate-y-0`}
             style={{ zIndex: 1000 }}
           >
-            <div className="flex flex-col lg:flex-row lg:gap-x-8 p-6 lg:p-0">
+            <div className="flex flex-col lg:flex-row lg:justify-center lg:gap-x-4 p-6 lg:p-0">
               {menuItemsData.map(({ name, href, activeSvg, inactiveSvg }) => (
                 <Link
                   key={name}
                   href={href}
-                  className={`lg:text-[15px] font-semibold leading-6 transition-all rounded-md pt-3 pb-3 pl-4 pr-4 lg:w-[14%] lg:h-[15%] ${
+                  className={`lg:text-[15px] font-semibold flex flex-col gap-10 leading-6 transition-all rounded-md pt-3 pb-3 pl-4 pr-4 lg:w-[96px] lg:h-[80px] ${
                     activePage === name
                       ? "bg-secondary text-white"
                       : "text-menuItem lg:text-menuItem hover:bg-secondary hover:text-white  decoration-mainLight"
@@ -63,18 +63,20 @@ const AdminHeader = () => {
                   onMouseLeave={() => setHoveredItem(null)}
                   onClick={() => handleLinkClick(name)}
                 >
-                  <span className="flex lg:flex-col items-center gap-3 lg:gap-1">
-                    {activePage === name || hoveredItem === name
-                      ? inactiveSvg
-                      : activeSvg}
-                    {name}
-                  </span>
+                  <div className="flex lg:flex-col items-center gap-3 text-[15px]">
+                    <div>
+                      {activePage === name || hoveredItem === name
+                        ? inactiveSvg
+                        : activeSvg}
+                    </div>
+                    <div>{name}</div>
+                  </div>
                 </Link>
               ))}
             </div>
           </nav>
           {/* User Profile Section */}
-          <div className="hidden lg:flex border-2 border-dashed	rounded-xl p-2 justify-between w-[30%] mr-20">
+          <div className="hidden lg:flex border-2 border-dotted	rounded-xl min-w-[220px] justify-between p-2 h-[66px]">
             <div className="flex gap-2">
               <img
                 alt="User"
