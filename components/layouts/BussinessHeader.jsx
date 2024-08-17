@@ -36,8 +36,8 @@ const BussinessHeader = () => {
 
   return (
     <>
-      <header className="bg-main px-[6%] justify-around">
-        <div className="mx-auto flex items-center justify-between py-5">
+      <header className="bg-main xl:px-[6%] justify-around">
+        <div className="mx-auto flex p-2 items-center justify-between py-5">
           <img alt="Foodie Finder Logo" src={appLogoUrl} />
           <div className="flex lg:hidden gap-6 items-center">
             <ProfileDropdown />
