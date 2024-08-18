@@ -8,6 +8,7 @@ import withdrawAmountReducer from "./slices/withdrawAmountSlice";
 import withdrawSuccessReducer from "./slices/withdrawSuccessSlice";
 import editBagReducer from "./slices/editBagSlice";
 import loggedInUserReducer from "./slices/loggedInUserSlice";
+import registerUserReducer from "./slices/registerUserSlice";
 
 export const store = configureStore({
   reducer: {
@@ -20,5 +21,7 @@ export const store = configureStore({
     withdrawSuccess: withdrawSuccessReducer,
     editBag: editBagReducer,
     loggedInUser: loggedInUserReducer,
+    registerUser: registerUserReducer,
   },
+  devTools: process.env.NODE_ENV !== "production",
 });

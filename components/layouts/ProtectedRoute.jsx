@@ -7,12 +7,12 @@ import Main from "./Main"; // Import Main component if needed
 
 const ProtectedRoute = ({ children }) => {
   const user = useSelector((state) => state.loggedInUser.user);
-  console.log({user});
+  console.log({ user });
   const router = useRouter();
 
   useEffect(() => {
     if (!user) {
-        console.log("This here?")
+      console.log("This here?");
       router.push("/"); // Redirect to login page if no user
     }
   }, [user, router]);

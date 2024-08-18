@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../../../redux/slices/loggedInUserSlice";
 import { useRouter } from "next/navigation";
+import { auth } from "../../../app/firebase/config";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -17,7 +18,7 @@ const LoginForm = () => {
     dispatch(loginUser({ email, password }))
       .unwrap()
       .then((user) => {
-        console.log({ user });
+        console.log(user);
         if (user.role === "vendor") {
           router.push("/business");
         } else if (user.role === "admin") {

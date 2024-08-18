@@ -6,6 +6,10 @@ import { redCrossSvg, whiteTickSvg } from "../../../../svgs";
 import LoadMoreButton from "../../../buttons/LoadMoreButton";
 
 const ApprovalsTable = () => {
+  useEffect(() => {
+    async function fetchAllUsers() {}
+  });
+
   return (
     <div className="no-scrollbar w-full overflow-y-hidden lg:pl-10 lg:pr-10">
       <table className="w-full table-auto truncate overflow-hidden rounded-2xl bg-white">
@@ -86,7 +90,7 @@ const ApprovalsTable = () => {
           ))}
         </tbody>
       </table>
-      <LoadMoreButton/>
+      <LoadMoreButton />
     </div>
   );
 };

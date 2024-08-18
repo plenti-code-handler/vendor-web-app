@@ -45,7 +45,7 @@ export const loginUser = createAsyncThunk(
 
 export const getUserLocal = () => {
   try {
-    const user = localStorage.getItem("user");
+    const user = JSON.parse(localStorage.getItem("user"));
     if (user !== null) {
       return user;
     } else {
@@ -59,9 +59,9 @@ export const getUserLocal = () => {
 
 const initialState = {
   user: {
-    name: "Deepak",
-    role: "vendor",
-    // role: "admin",
+    // name: "Deepak",
+    // role: "vendor",
+    // // role: "admin",
   },
   isLoading: false,
   error: null,

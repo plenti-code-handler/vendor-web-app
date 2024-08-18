@@ -2,12 +2,18 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import BackButton from "./BackButton";
+import { useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
 
 const VerifyAccountForm = () => {
   const [otp, setOtp] = useState(new Array(4).fill(""));
   const [isResendDisabled, setIsResendDisabled] = useState(true);
   const [timeLeft, setTimeLeft] = useState(60);
   const inputRefs = useRef([]);
+
+  const email = useSelector((state) => state.registerUser.email);
+
+  const router = useRouter();
 
   useEffect(() => {
     if (timeLeft > 0) {
@@ -47,6 +53,10 @@ const VerifyAccountForm = () => {
     }
   };
 
+  const handleVerify = () => {
+    router.push("/setup_password");
+  };
+
   return (
     <div className="flex flex-col w-[390px] space-y-5">
       <BackButton />
@@ -54,7 +64,7 @@ const VerifyAccountForm = () => {
         <p className="text-black font-semibold text-[28px]">Verify Account</p>
         <p className="text-[16px]">
           Code has been sent to{" "}
-          <span className="font-bold text-blackTwo">johndoe@gmail.com.</span>
+          <span className="font-bold text-blackTwo">{email}.</span>
           <br />
           Enter the code to verify your account
         </p>
@@ -92,7 +102,10 @@ const VerifyAccountForm = () => {
           </span>
         </p>
       </div>
-      <button className="flex justify-center bg-pinkBgDark text-white font-semibold py-2  rounded hover:bg-pinkBgDarkHover2 gap-2 lg:w-[100%]">
+      <button
+        onClick={handleVerify}
+        className="flex justify-center bg-pinkBgDark text-white font-semibold py-2  rounded hover:bg-pinkBgDarkHover2 gap-2 lg:w-[100%]"
+      >
         Verify
       </button>
     </div>

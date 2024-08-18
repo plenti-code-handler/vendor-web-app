@@ -1,7 +1,24 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import BackButton from "./BackButton";
+import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { setRegisterEmail } from "../../../redux/slices/registerUserSlice";
 
 const RegisterForm = () => {
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+
+  const dispatch = useDispatch();
+
+  const handleContinue = () => {
+    if (email) {
+      dispatch(setRegisterEmail(email));
+      router.push("/verify");
+    }
+  };
+
   return (
     <div className="flex flex-col w-[390px] space-y-5">
       <BackButton />
@@ -16,8 +33,13 @@ const RegisterForm = () => {
       <input
         className="placeholder:font-bold rounded-md border border-gray-200 py-3 px-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
         placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
       />
-      <button className="flex justify-center bg-pinkBgDark text-white font-semibold py-2  rounded hover:bg-pinkBgDarkHover2 gap-2 lg:w-[100%]">
+      <button
+        onClick={handleContinue}
+        className="flex justify-center bg-pinkBgDark text-white font-semibold py-2  rounded hover:bg-pinkBgDarkHover2 gap-2 lg:w-[100%]"
+      >
         Continue
       </button>
     </div>

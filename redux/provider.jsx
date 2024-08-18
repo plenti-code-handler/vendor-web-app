@@ -1,51 +1,16 @@
 "use client";
-import { Provider, useDispatch } from "react-redux";
+
+import { Provider } from "react-redux";
 import { store } from "./store";
-import Main from "../components/layouts/Main";
-import AuthMain from "../components/layouts/AuthMain";
-import { useEffect } from "react";
-import Header from "../components/layouts/Header";
 import { usePathname } from "next/navigation";
-import { getloginUserData, getUserLocal } from "./slices/loggedInUserSlice";
+import {
+  PublicLayout,
+  AdminLayout,
+  BusinessLayout,
+} from "../components/layouts/AllLayouts";
 
 const Providers = ({ children }) => {
   const pathname = usePathname();
-
-  useEffect(() => {
-    const user = false;
-    console.log({ user });
-
-    if (
-      !user &&
-      pathname !== "/" &&
-      pathname !== "/register" &&
-      pathname !== "/forgot-password" &&
-      pathname !== "/verify" &&
-      pathname !== "/setup_password" &&
-      pathname !== "/setup_profile" &&
-      pathname !== "/awaiting" &&
-      pathname !== "/reset-password"
-    ) {
-      window.location.href = "/";
-    }
-
-    if (
-      user &&
-      (pathname === "/" ||
-        pathname === "/register" ||
-        pathname === "/forgot-password" ||
-        pathname === "/verify" ||
-        pathname === "/setup_password" ||
-        pathname === "/setup_profile" ||
-        pathname === "/awaiting" ||
-        pathname === "/reset-password")
-    ) {
-      // Todo: Decide naivgation path location based on user role in user object in an another protected client component wrapping the child
-      // const decidePath = getData(user.uid);
-      // console.log(decidePath);
-      window.location.href = "/business";
-    }
-  }, []);
 
   if (
     pathname === "/" ||
@@ -59,16 +24,23 @@ const Providers = ({ children }) => {
   ) {
     return (
       <Provider store={store}>
-        <AuthMain>{children}</AuthMain>
+        <PublicLayout>{children}</PublicLayout>
+      </Provider>
+    );
+  } else if (pathname.startsWith("/admin")) {
+    return (
+      <Provider store={store}>
+        <AdminLayout>{children}</AdminLayout>
+      </Provider>
+    );
+  } else if (pathname.startsWith("/business")) {
+    return (
+      <Provider store={store}>
+        <BusinessLayout>{children}</BusinessLayout>
       </Provider>
     );
   } else {
-    return (
-      <Provider store={store}>
-        <Header />
-        <Main>{children}</Main>
-      </Provider>
-    );
+    return null;
   }
 };
 

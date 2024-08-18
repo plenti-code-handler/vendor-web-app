@@ -8,12 +8,17 @@ import ProfileDropdown from "../dropdowns/ProfileDropdown";
 import { setActivePage } from "../../redux/slices/headerSlice";
 import { appLogoUrl } from "../../lib/constant_data";
 import { menuItemsData } from "../../lib/business_menu";
+import { logoutUser } from "../../redux/slices/loggedInUserSlice";
+import { useRouter } from "next/navigation";
+import { auth } from "../../app/firebase/config";
 
 const BussinessHeader = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const activePage = useSelector((state) => state.header.activePage);
   const dispatch = useDispatch();
   const [isSmallDevice, setIsSmallDevice] = useState(false);
+
+  const router = useRouter();
 
   useEffect(() => {
     const handleResize = () => {
@@ -32,6 +37,13 @@ const BussinessHeader = () => {
 
   const handleLinkClick = (page) => {
     dispatch(setActivePage(page));
+    c;
+  };
+
+  const handleLogout = async () => {
+    await auth.signOut();
+    dispatch(logoutUser());
+    router.push("/");
   };
 
   return (
@@ -39,7 +51,7 @@ const BussinessHeader = () => {
       <header className="bg-main xl:px-[6%] justify-around">
         <div className="mx-auto flex p-2 items-center justify-between py-5">
           <img alt="Foodie Finder Logo" src={appLogoUrl} />
-          <div className="flex lg:hidden gap-6 items-center">
+          <div className="flex lg:hidden gap-3 items-center">
             <ProfileDropdown />
             <button
               onClick={toggleMenu}
@@ -47,11 +59,18 @@ const BussinessHeader = () => {
             >
               {isMenuOpen ? closeSvg : hamburgerIcon}
             </button>
+            <button
+              className="text-sm font-semibold leading-6 text-gray-900 p-3 transition-colors duration-200 ease-in-out hover:bg-mainLight hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-mainLight focus:ring-offset-2 rounded-lg"
+              title="Logout"
+              onClick={handleLogout}
+            >
+              {logoutIconSvg}
+            </button>
           </div>
           <nav
             className={`${
               isMenuOpen ? "block" : "hidden"
-            } absolute top-16 left-0 w-full h-full bg-main font-base shadow-md transition-transform transform ${
+            } absolute top-16 left-0 mt-3 lg:mt-0 w-full h-full bg-main font-base shadow-md transition-transform transform ${
               isMenuOpen ? "translate-y-0" : "-translate-y-full"
             } lg:static lg:block lg:bg-transparent lg:shadow-none lg:translate-y-0 xl:ml-[6%] lg:ml-[3%]`}
             style={{ zIndex: isSmallDevice ? 1000 : 0 }}
@@ -84,6 +103,7 @@ const BussinessHeader = () => {
             <button
               className="text-sm font-semibold leading-6 text-gray-900 p-3 transition-colors duration-200 ease-in-out hover:bg-mainLight hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-mainLight focus:ring-offset-2 rounded-lg"
               title="Logout"
+              onClick={handleLogout}
             >
               {logoutIconSvg}
             </button>

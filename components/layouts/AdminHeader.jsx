@@ -31,13 +31,20 @@ const AdminHeader = () => {
             src={appLogoUrl}
             className="h-10 w-auto"
           />
-          <div className="flex lg:hidden items-center">
+          <div className="flex lg:hidden gap-3 items-center">
             <AdminProfileDropdown />
             <button
               onClick={toggleMenu}
               className="text-gray-900 hover:text-gray-700 focus:outline-none"
             >
               {isMenuOpen ? closeSvg : hamburgerIcon}
+            </button>
+            <button
+              className="text-sm font-semibold leading-6 text-gray-900 p-3 transition-colors duration-200 ease-in-out hover:bg-mainLight hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-mainLight focus:ring-offset-2 rounded-lg"
+              title="Logout"
+              // onClick={handleLogout}
+            >
+              {logoutIconAdminSvg}
             </button>
           </div>
           {/* Menu Items Section */}
