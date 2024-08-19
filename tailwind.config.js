@@ -12,6 +12,9 @@ module.exports = {
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
         "gradient-custom": "linear-gradient(to right, #74D5B3, #4AA887)",
+        homeMain: "url('/intro.png')",
+        homeSectionThree: "url('/home-third-section.png')",
+        homeFooter: "url('/footer.png')",
       },
       borderColor: {
         gray: "#AEAEAE",
@@ -60,6 +63,10 @@ module.exports = {
         pinkBgDarkHover: "#ffe6f5",
         pinkBgDarkHover2: "#FEBCE5",
         scheduledBg: "#FFF8DD",
+      },
+
+      backgroundColor: {
+        blackBtn: "#191919",
       },
     },
   },

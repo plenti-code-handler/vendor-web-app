@@ -37,7 +37,6 @@ const BussinessHeader = () => {
 
   const handleLinkClick = (page) => {
     dispatch(setActivePage(page));
-    c;
   };
 
   const handleLogout = async () => {

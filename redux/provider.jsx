@@ -7,6 +7,7 @@ import {
   PublicLayout,
   AdminLayout,
   BusinessLayout,
+  LandingLayout,
 } from "../components/layouts/AllLayouts";
 
 const Providers = ({ children }) => {
@@ -25,6 +26,18 @@ const Providers = ({ children }) => {
     return (
       <Provider store={store}>
         <PublicLayout>{children}</PublicLayout>
+      </Provider>
+    );
+  } else if (
+    pathname === "/home" ||
+    pathname === "/about_us" ||
+    pathname === "/faqs" ||
+    pathname === "/privacy" ||
+    pathname === "/terms"
+  ) {
+    return (
+      <Provider store={store}>
+        <LandingLayout>{children}</LandingLayout>
       </Provider>
     );
   } else if (pathname.startsWith("/admin")) {

@@ -1,7 +1,7 @@
 import React from "react";
-import { useSelector } from "react-redux";
 import AdminHeader from "./AdminHeader";
 import BussinessHeader from "./BussinessHeader";
+import LandingHeader from "./LandingHeader";
 import { getUserLocal } from "../../redux/slices/loggedInUserSlice";
 
 const Header = () => {
@@ -12,7 +12,7 @@ const Header = () => {
   ) : user?.role === "vendor" ? (
     <BussinessHeader />
   ) : (
-    ""
+    <LandingHeader />
   );
 };
 
