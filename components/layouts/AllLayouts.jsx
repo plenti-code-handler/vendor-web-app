@@ -33,8 +33,6 @@ export const BusinessLayout = ({ children }) => {
 };
 
 export const LandingLayout = ({ children }) => {
-  useProtectedRoute([]);
-
   return (
     <>
       <Header />
