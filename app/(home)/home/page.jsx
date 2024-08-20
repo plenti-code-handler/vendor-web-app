@@ -105,7 +105,7 @@ const page = () => {
           <h1 className="text-center mb-8 text-white text-[48px] font-[400]">
             Take Advantage of FoodieFinder’s Amazing Features
           </h1>
-          <div className="flex items-center justify-center gap-5">
+          <div className="flex items-center flex-wrap justify-center gap-5">
             <div className="w-[334px] h-[334px] flex items-center justify-center border-white border-2">
               <div className="flex flex-col items-center gap-3">
                 <div>{heartIcon}</div>
@@ -167,11 +167,11 @@ const page = () => {
           At Foodiefinder, we are guided by our core values
         </p>
       </div>
-      <div className="flex justify-center items-center p-[5%]">
-        <div className="w-1/2 flex items-center justify-center">
+      <div className="flex justify-center items-center flex-wrap p-[5%]">
+        <div className="lg:w-1/2 flex items-center justify-center">
           <img src="/home-fifth-section-1.png" />
         </div>
-        <div className="w-1/2 flex flex-col gap-3">
+        <div className="w-full lg:w-1/2 flex flex-col gap-3">
           <h2 className="text-pinkTextOne text-[48px] font-[400]">Heading 1</h2>
           <p className="text-[20px] text-[#222] font-[500]">
             Culpa dicta iste. Soluta id qui et sed tempora nihil velit
@@ -181,8 +181,8 @@ const page = () => {
           </p>
         </div>
       </div>
-      <div className="flex justify-center items-center p-[5%]">
-        <div className="w-1/2 flex flex-col gap-3">
+      <div className="flex justify-center items-center flex-wrap p-[5%]">
+        <div className="w-full lg:w-1/2 flex flex-col gap-3">
           <h2 className="text-pinkTextOne text-[48px] font-[400]">Heading 1</h2>
           <p className="text-[20px] text-[#222] font-[500]">
             Nostrum temporibus nemo consequatur sapiente ut voluptas earum
@@ -190,15 +190,15 @@ const page = () => {
             Voluptas quos quaerat sapiente est ratione ut quam quas
           </p>
         </div>
-        <div className="w-1/2 flex items-center justify-center">
+        <div className="lg:w-1/2 flex items-center justify-center">
           <img src="/home-fifth-section-2.png" />
         </div>
       </div>
-      <div className="flex justify-center items-center p-[5%]">
-        <div className="w-1/2 flex items-center justify-center">
+      <div className="flex justify-center items-center flex-wrap p-[5%]">
+        <div className="lg:w-1/2 flex items-center justify-center">
           <img src="/home-fifth-section-3.png" />
         </div>
-        <div className="w-1/2 flex flex-col gap-3">
+        <div className="w-full lg:w-1/2 flex flex-col gap-3">
           <h2 className="text-pinkTextOne text-[48px] font-[400]">Heading 1</h2>
           <p className="text-[20px] text-[#222] font-[500]">
             Accusamus in repudiandae non cum modi natus. Optio in quia numquam
@@ -206,8 +206,8 @@ const page = () => {
           </p>
         </div>
       </div>
-      <div className="flex justify-center items-center p-[5%]">
-        <div className="w-1/2 flex flex-col gap-3">
+      <div className="flex justify-center items-center flex-wrap p-[5%]">
+        <div className="w-full lg:w-1/2 flex flex-col gap-3">
           <h2 className="text-pinkTextOne text-[48px] font-[400]">Heading 1</h2>
           <p className="text-[20px] text-[#222] font-[500]">
             Dolorem impedit omnis rerum nisi et quos et neque distinctio. Saepe
@@ -215,7 +215,7 @@ const page = () => {
             quo accusamus sunt quia sed.
           </p>
         </div>
-        <div className="w-1/2 flex items-center justify-center">
+        <div className="lg:w-1/2 flex items-center justify-center">
           <img src="/home-fifth-section-4.png" />
         </div>
       </div>

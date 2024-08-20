@@ -12,6 +12,10 @@ module.exports = {
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
         "gradient-custom": "linear-gradient(to right, #74D5B3, #4AA887)",
+        "gradient-hr":
+          "linear-gradient(to right, rgba(116,213,179 , 0.6), #FFFFFF)",
+        "gradient-hr-alt":
+          "linear-gradient(to left, rgba(116,213,179 , 0.6), #FFFFFF)",
         homeMain: "url('/intro.png')",
         homeSectionThree: "url('/home-third-section.png')",
         homeFooter: "url('/footer.png')",
@@ -19,6 +23,11 @@ module.exports = {
       borderColor: {
         gray: "#AEAEAE",
         secondary: "#74D5B3",
+      },
+      boxShadow: {
+        faq: "0px 1px 3px 0px rgba(0, 0, 0, 0.12)",
+        faq1: "0px 1px 1px 0px rgba(0, 0, 0, 0.14)",
+        faq2: "0px 2px 1px -1px rgba(0, 0, 0, 0.20)",
       },
       colors: {
         // texts

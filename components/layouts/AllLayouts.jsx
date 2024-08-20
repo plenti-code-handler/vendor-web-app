@@ -3,6 +3,7 @@ import AuthMain from "./AuthMain";
 import Header from "./Header";
 import Footer from "./Footer";
 import Main from "./Main";
+import ContactDrawer from "../drawers/ContactDrawer";
 
 export const PublicLayout = ({ children }) => {
   useProtectedRoute([]);
@@ -35,6 +36,7 @@ export const BusinessLayout = ({ children }) => {
 export const LandingLayout = ({ children }) => {
   return (
     <>
+      {true && <ContactDrawer />}
       <Header />
       <div>{children}</div>
       <Footer />

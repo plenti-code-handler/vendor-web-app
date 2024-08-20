@@ -9,6 +9,7 @@ import withdrawSuccessReducer from "./slices/withdrawSuccessSlice";
 import editBagReducer from "./slices/editBagSlice";
 import loggedInUserReducer from "./slices/loggedInUserSlice";
 import registerUserReducer from "./slices/registerUserSlice";
+import contactUserReducer from "./slices/contactUserSlice";
 
 export const store = configureStore({
   reducer: {
@@ -22,6 +23,7 @@ export const store = configureStore({
     editBag: editBagReducer,
     loggedInUser: loggedInUserReducer,
     registerUser: registerUserReducer,
+    contactUser: contactUserReducer,
   },
   devTools: process.env.NODE_ENV !== "production",
 });
