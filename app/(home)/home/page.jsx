@@ -67,7 +67,9 @@ const page = () => {
       <div className={gfsFont.className}>
         <div className="flex justify-center items-center flex-wrap p-[5%]">
           <div className="lg:w-1/2 flex flex-col gap-3">
-            <h2 className="text-pinkTextOne text-[3em] font-[400]">
+            <h2
+              className={`text-pinkTextOne ${gfsFont.className} text-[3em] font-[400]`}
+            >
               Why Choose FoodieFinder
             </h2>
             <p
@@ -160,7 +162,11 @@ const page = () => {
           <img src="/home-fifth-section-1.png" />
         </div>
         <div className="w-full lg:w-1/2 flex flex-col gap-3">
-          <h2 className="text-pinkTextOne text-[3em] font-[400]">Heading 1</h2>
+          <h2
+            className={`${gfsFont.className} text-pinkTextOne text-[3em] font-[400]`}
+          >
+            Heading 1
+          </h2>
           <p className="text-[1.25em] text-[#222] font-[500]">
             Culpa dicta iste. Soluta id qui et sed tempora nihil velit
             cupiditate. Dicta voluptatem consequatur explicabo et animi.
@@ -171,7 +177,11 @@ const page = () => {
       </div>
       <div className="flex justify-center items-center flex-wrap p-[5%]">
         <div className="w-full lg:w-1/2 flex flex-col gap-3">
-          <h2 className="text-pinkTextOne text-[3em] font-[400]">Heading 1</h2>
+          <h2
+            className={`${gfsFont.className} text-pinkTextOne text-[3em] font-[400]`}
+          >
+            Heading 1
+          </h2>
           <p className="text-[1.25em] text-[#222] font-[500]">
             Nostrum temporibus nemo consequatur sapiente ut voluptas earum
             exercitationem. Ad aut aliquam quidem. Dolorum dolor consequatur.
@@ -187,7 +197,11 @@ const page = () => {
           <img src="/home-fifth-section-3.png" />
         </div>
         <div className="w-full lg:w-1/2 flex flex-col gap-3">
-          <h2 className="text-pinkTextOne text-[3em] font-[400]">Heading 1</h2>
+          <h2
+            className={`${gfsFont.className} text-pinkTextOne text-[3em] font-[400]`}
+          >
+            Heading 1
+          </h2>
           <p className="text-[1.25em] text-[#222] font-[500]">
             Accusamus in repudiandae non cum modi natus. Optio in quia numquam
             vero iure quia. Autem enim ad. Ad et modi et odio et.
@@ -196,7 +210,11 @@ const page = () => {
       </div>
       <div className="flex justify-center items-center flex-wrap p-[5%]">
         <div className="w-full lg:w-1/2 flex flex-col gap-3">
-          <h2 className="text-pinkTextOne text-[3em] font-[400]">Heading 1</h2>
+          <h2
+            className={`${gfsFont.className} text-pinkTextOne text-[3em] font-[400]`}
+          >
+            Heading 1
+          </h2>
           <p className="text-[1.25em] text-[#222] font-[500]">
             Dolorem impedit omnis rerum nisi et quos et neque distinctio. Saepe
             ipsam labore sapiente cumque esse. Reprehenderit omnis dicta dolorem
