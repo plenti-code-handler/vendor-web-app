@@ -15,16 +15,18 @@ const montserratFont = Montserrat_Alternates({
 const page = () => {
   return (
     <>
-      <div className="bg-homeMain bg-bottom bg-cover bg-no-repeat h-[calc(100vh-96px)]">
+      <div className="bg-homeMain bg-bottom bg-cover bg-no-repeat p-[10%] md:h-[calc(100vh-96px)]">
         <div className="flex flex-col justify-center items-center h-full">
           <div className="flex flex-col gap-5 items-center">
             <img
               alt="Foodie Finder Logo"
-              className="w-[496px]"
+              className="w-[496px] mx-[5%]"
               src="/logo-landing.png"
             />
-            <h1 className="text-[48px] text-white">Lorem Ipsum Lorem Ipsum</h1>
-            <div className="flex gap-[5%]">
+            <h1 className="text-[3rem] text-center text-white">
+              Lorem Ipsum Lorem Ipsum
+            </h1>
+            <div className="flex flex-col md:flex-row gap-[5%] space-y-5 md:space-y-0">
               <button className="flex items-center gap-3 w-[205px] px-4 py-2 bg-blackBtn hover:bg-slate-800 rounded-[12px] text-white">
                 <div>{appleLogoSvg}</div>
                 <div className="text-center">
@@ -47,11 +49,11 @@ const page = () => {
           </div>
         </div>
       </div>
-      <div className="flex justify-center items-center p-[5%]">
+      <div className="flex justify-center items-center flex-wrap p-[5%]">
         <div className="w-1/2 flex items-center justify-center">
           <img className="w-full h-full" src="/home-second-section.png" />
         </div>
-        <div className="w-1/2 flex flex-col gap-3">
+        <div className="w-full lg:w-1/2 flex flex-col gap-3">
           <h2 className="text-pinkTextOne text-[48px] font-[400]">Heading 1</h2>
           <p className="text-[20px] text-[#222] font-[500]">
             Magnam sunt soluta amet. Tenetur impedit debitis dolor sapiente enim
@@ -60,7 +62,7 @@ const page = () => {
           </p>
         </div>
       </div>
-      <div className="bg-homeSectionThree p-[5%] bg-center bg-cover h-[496px] w-auto flex flex-col justify-center">
+      <div className="bg-homeSectionThree p-[5%] bg-center bg-cover w-auto flex flex-col justify-center">
         <div className="mx-auto flex flex-col gap-3">
           <h2 className="text-white text-[48px] font-[400]">Lorem Ipsum</h2>
           <p className="text-[20px] text-white font-[500]">
@@ -77,8 +79,8 @@ const page = () => {
         </div>
       </div>
       <div className={gfsFont.className}>
-        <div className="flex justify-center items-center p-[5%]">
-          <div className="w-1/2 flex flex-col gap-3">
+        <div className="flex justify-center items-center flex-wrap p-[5%]">
+          <div className="lg:w-1/2 flex flex-col gap-3">
             <h2 className="text-pinkTextOne text-[48px] font-[400]">
               Why Choose FoodieFinder
             </h2>
@@ -105,7 +107,7 @@ const page = () => {
           <h1 className="text-center mb-8 text-white text-[48px] font-[400]">
             Take Advantage of FoodieFinder’s Amazing Features
           </h1>
-          <div className="flex items-center flex-wrap justify-center gap-5">
+          <div className="flex items-center flex-wrap xl:flex-nowrap justify-center gap-5">
             <div className="w-[334px] h-[334px] flex items-center justify-center border-white border-2">
               <div className="flex flex-col items-center gap-3">
                 <div>{heartIcon}</div>
@@ -168,7 +170,7 @@ const page = () => {
         </p>
       </div>
       <div className="flex justify-center items-center flex-wrap p-[5%]">
-        <div className="lg:w-1/2 flex items-center justify-center">
+        <div className="w-1/2 flex items-center justify-center">
           <img src="/home-fifth-section-1.png" />
         </div>
         <div className="w-full lg:w-1/2 flex flex-col gap-3">
@@ -190,12 +192,12 @@ const page = () => {
             Voluptas quos quaerat sapiente est ratione ut quam quas
           </p>
         </div>
-        <div className="lg:w-1/2 flex items-center justify-center">
+        <div className="w-1/2 flex items-center justify-center">
           <img src="/home-fifth-section-2.png" />
         </div>
       </div>
       <div className="flex justify-center items-center flex-wrap p-[5%]">
-        <div className="lg:w-1/2 flex items-center justify-center">
+        <div className="w-1/2 flex items-center justify-center">
           <img src="/home-fifth-section-3.png" />
         </div>
         <div className="w-full lg:w-1/2 flex flex-col gap-3">
@@ -215,7 +217,7 @@ const page = () => {
             quo accusamus sunt quia sed.
           </p>
         </div>
-        <div className="lg:w-1/2 flex items-center justify-center">
+        <div className="w-full flex items-center justify-center">
           <img src="/home-fifth-section-4.png" />
         </div>
       </div>

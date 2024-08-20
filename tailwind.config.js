@@ -24,6 +24,9 @@ module.exports = {
         gray: "#AEAEAE",
         secondary: "#74D5B3",
       },
+      fontSize: {
+        // base: ["18px", "1.5"],
+      },
       boxShadow: {
         faq: "0px 1px 3px 0px rgba(0, 0, 0, 0.12)",
         faq1: "0px 1px 1px 0px rgba(0, 0, 0, 0.14)",

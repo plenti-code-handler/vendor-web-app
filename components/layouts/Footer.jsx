@@ -11,10 +11,10 @@ const montserratFont = Montserrat_Alternates({
 const Footer = () => {
   return (
     <>
-      <div className="bg-homeFooter p-[5%] mb-20 bg-cover bg-center h-[496px] w-auto flex flex-col justify-center">
+      <div className="bg-homeFooter p-[5%] mb-20 bg-cover bg-center w-auto flex flex-col justify-center">
         <div className="mx-auto flex flex-col gap-3">
           <div className="flex flex-col gap-5 items-center">
-            <h1 className="text-[48px] text-white">
+            <h1 className="text-[48px] text-center lg:text-left text-white">
               Download FoodieFinder Today!
             </h1>
             <p className="text-[#ddd] text-center text-[20px] font-[500]">
@@ -22,7 +22,7 @@ const Footer = () => {
               discover the best taste around you? <br /> Find best deals around
               you today!
             </p>
-            <div className="flex gap-[5%]">
+            <div className="flex flex-col md:flex-row gap-[5%] space-y-5 md:space-y-0">
               <button className="flex items-center gap-3 w-[205px] px-4 py-2 bg-blackBtn hover:bg-slate-800 rounded-[12px] text-white">
                 <div>{appleLogoSvg}</div>
                 <div className="text-center">
