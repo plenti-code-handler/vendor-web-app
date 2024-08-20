@@ -14,7 +14,7 @@ const page = () => {
   return (
     <div className="bg-[#F5F5F5] py-10">
       <div className="mx-14">
-        <div className="text-center w-[60%] mx-auto">
+        <div className="text-center lg:w-[60%] mx-auto">
           <h1 className="text-[48px] text-[500] text-pinkBgDark">About Us</h1>
           <p className="text-[#474747]">
             At FoodieFinder, We are Suscipit ducimus dolores expedita id.

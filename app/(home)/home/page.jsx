@@ -14,7 +14,7 @@ const montserratFont = Montserrat_Alternates({
 
 const page = () => {
   return (
-    <>
+    <div className="text-[70%] md:text-[100%]">
       <div className="bg-homeMain bg-bottom bg-cover bg-no-repeat p-[10%] md:h-[calc(100vh-96px)]">
         <div className="flex flex-col justify-center items-center h-full">
           <div className="flex flex-col gap-5 items-center">
@@ -23,7 +23,7 @@ const page = () => {
               className="w-[496px] mx-[5%]"
               src="/logo-landing.png"
             />
-            <h1 className="text-[3rem] text-center text-white">
+            <h1 className="text-[3em] text-center text-white">
               Lorem Ipsum Lorem Ipsum
             </h1>
             <div className="flex flex-col md:flex-row gap-[5%] space-y-5 md:space-y-0">
@@ -54,8 +54,8 @@ const page = () => {
           <img className="w-full h-full" src="/home-second-section.png" />
         </div>
         <div className="w-full lg:w-1/2 flex flex-col gap-3">
-          <h2 className="text-pinkTextOne text-[48px] font-[400]">Heading 1</h2>
-          <p className="text-[20px] text-[#222] font-[500]">
+          <h2 className="text-pinkTextOne text-[3em] font-[400]">Heading 1</h2>
+          <p className="text-[1.25em] text-[#222] font-[500]">
             Magnam sunt soluta amet. Tenetur impedit debitis dolor sapiente enim
             in soluta omnis earum. Voluptatem molestiae suscipit. Et quaerat
             rerum sit quo odio ullam ea.
@@ -64,8 +64,8 @@ const page = () => {
       </div>
       <div className="bg-homeSectionThree p-[5%] bg-center bg-cover w-auto flex flex-col justify-center">
         <div className="mx-auto flex flex-col gap-3">
-          <h2 className="text-white text-[48px] font-[400]">Lorem Ipsum</h2>
-          <p className="text-[20px] text-white font-[500]">
+          <h2 className="text-white text-[3em] font-[400]">Lorem Ipsum</h2>
+          <p className="text-[1.25em] text-white font-[500]">
             Magnam sunt soluta amet. Tenetur impedit debitis dolor sapiente enim
             in soluta omnis earum. Voluptatem molestiae suscipit. Et quaerat
             rerum sit quo odio ullam ea.
@@ -81,11 +81,11 @@ const page = () => {
       <div className={gfsFont.className}>
         <div className="flex justify-center items-center flex-wrap p-[5%]">
           <div className="lg:w-1/2 flex flex-col gap-3">
-            <h2 className="text-pinkTextOne text-[48px] font-[400]">
+            <h2 className="text-pinkTextOne text-[3em] font-[400]">
               Why Choose FoodieFinder
             </h2>
             <p
-              className={`${montserratFont.className} text-[20px] text-[#222] font-[500]`}
+              className={`${montserratFont.className} text-[1.25em] text-[#222] font-[500]`}
             >
               Accusantium ut fugit aut qui est aut harum sed. Et et cum et
               debitis distinctio consequatur quas mollitia. Accusantium eum illo
@@ -104,7 +104,7 @@ const page = () => {
           </div>
         </div>
         <div className="bg-pinkTextOne p-[5%]">
-          <h1 className="text-center mb-8 text-white text-[48px] font-[400]">
+          <h1 className="text-center mb-8 text-white text-[3em] font-[400]">
             Take Advantage of FoodieFinder’s Amazing Features
           </h1>
           <div className="flex items-center flex-wrap xl:flex-nowrap justify-center gap-5">
@@ -162,10 +162,10 @@ const page = () => {
         </div>
       </div>
       <div className="text-center mt-[5%]">
-        <h2 className={`text-secondary text-[48px] ${gfsFont.className}`}>
+        <h2 className={`text-secondary text-[3em] ${gfsFont.className}`}>
           Our Core Values
         </h2>
-        <p className={`${montserratFont.className} text-[20px]`}>
+        <p className={`${montserratFont.className} text-[1.25em]`}>
           At Foodiefinder, we are guided by our core values
         </p>
       </div>
@@ -174,8 +174,8 @@ const page = () => {
           <img src="/home-fifth-section-1.png" />
         </div>
         <div className="w-full lg:w-1/2 flex flex-col gap-3">
-          <h2 className="text-pinkTextOne text-[48px] font-[400]">Heading 1</h2>
-          <p className="text-[20px] text-[#222] font-[500]">
+          <h2 className="text-pinkTextOne text-[3em] font-[400]">Heading 1</h2>
+          <p className="text-[1.25em] text-[#222] font-[500]">
             Culpa dicta iste. Soluta id qui et sed tempora nihil velit
             cupiditate. Dicta voluptatem consequatur explicabo et animi.
             Voluptas accusantium maxime. Qui delectus autem corrupti mollitia
@@ -185,8 +185,8 @@ const page = () => {
       </div>
       <div className="flex justify-center items-center flex-wrap p-[5%]">
         <div className="w-full lg:w-1/2 flex flex-col gap-3">
-          <h2 className="text-pinkTextOne text-[48px] font-[400]">Heading 1</h2>
-          <p className="text-[20px] text-[#222] font-[500]">
+          <h2 className="text-pinkTextOne text-[3em] font-[400]">Heading 1</h2>
+          <p className="text-[1.25em] text-[#222] font-[500]">
             Nostrum temporibus nemo consequatur sapiente ut voluptas earum
             exercitationem. Ad aut aliquam quidem. Dolorum dolor consequatur.
             Voluptas quos quaerat sapiente est ratione ut quam quas
@@ -201,8 +201,8 @@ const page = () => {
           <img src="/home-fifth-section-3.png" />
         </div>
         <div className="w-full lg:w-1/2 flex flex-col gap-3">
-          <h2 className="text-pinkTextOne text-[48px] font-[400]">Heading 1</h2>
-          <p className="text-[20px] text-[#222] font-[500]">
+          <h2 className="text-pinkTextOne text-[3em] font-[400]">Heading 1</h2>
+          <p className="text-[1.25em] text-[#222] font-[500]">
             Accusamus in repudiandae non cum modi natus. Optio in quia numquam
             vero iure quia. Autem enim ad. Ad et modi et odio et.
           </p>
@@ -210,18 +210,18 @@ const page = () => {
       </div>
       <div className="flex justify-center items-center flex-wrap p-[5%]">
         <div className="w-full lg:w-1/2 flex flex-col gap-3">
-          <h2 className="text-pinkTextOne text-[48px] font-[400]">Heading 1</h2>
-          <p className="text-[20px] text-[#222] font-[500]">
+          <h2 className="text-pinkTextOne text-[3em] font-[400]">Heading 1</h2>
+          <p className="text-[1.25em] text-[#222] font-[500]">
             Dolorem impedit omnis rerum nisi et quos et neque distinctio. Saepe
             ipsam labore sapiente cumque esse. Reprehenderit omnis dicta dolorem
             quo accusamus sunt quia sed.
           </p>
         </div>
-        <div className="w-full flex items-center justify-center">
+        <div className="w-1/2 flex items-center justify-center">
           <img src="/home-fifth-section-4.png" />
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

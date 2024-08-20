@@ -10,14 +10,14 @@ const montserratFont = Montserrat_Alternates({
 
 const Footer = () => {
   return (
-    <>
+    <div className="text-[70%] md:text-[100%]">
       <div className="bg-homeFooter p-[5%] mb-20 bg-cover bg-center w-auto flex flex-col justify-center">
         <div className="mx-auto flex flex-col gap-3">
           <div className="flex flex-col gap-5 items-center">
-            <h1 className="text-[48px] text-center lg:text-left text-white">
+            <h1 className="text-[3em] text-center lg:text-left text-white">
               Download FoodieFinder Today!
             </h1>
-            <p className="text-[#ddd] text-center text-[20px] font-[500]">
+            <p className="text-[#ddd] text-center text-[1.25em] font-[500]">
               FoodeFinder is free to download and free to use! Are you ready to
               discover the best taste around you? <br /> Find best deals around
               you today!
@@ -46,39 +46,39 @@ const Footer = () => {
         </div>
       </div>
       <div className="bg-blackBtn px-[5%] pt-[5%] pb-6">
-        <div className="flex justify-between flex-wrap">
-          <div>
+        <div className="flex flex-col gap-5 justify-between flex-wrap sm:flex-row">
+          <div className="">
             <div className="flex mb-5 gap-3">
               <img src="/logo-without-text.png" />
               <img src="/logo-white.png" />
             </div>
-            <ul className="text-white flex flex-col gap-3 text-[400] text-[24px]">
+            <ul className="text-white flex flex-col gap-3 text-[400] text-[1.5em]">
               <li>
-                <div className="flex items-center text-[24px] gap-5">
+                <div className="flex items-center  gap-5">
                   {horizontalChecklistIcon}
                   <span>About us</span>
                 </div>
               </li>
               <li>
-                <div className="flex items-center text-[24px] gap-5">
+                <div className="flex items-center gap-5">
                   {horizontalChecklistIcon}
                   <span>Home</span>
                 </div>
               </li>
               <li>
-                <div className="flex items-center text-[24px] gap-5">
+                <div className="flex items-center  gap-5">
                   {horizontalChecklistIcon}
                   <span>FAQs</span>
                 </div>
               </li>
               <li>
-                <div className="flex items-center text-[24px] gap-5">
+                <div className="flex items-center  gap-5">
                   {horizontalChecklistIcon}
                   <span>Privacy Policy</span>
                 </div>
               </li>
               <li>
-                <div className="flex items-center text-[24px] gap-5">
+                <div className="flex items-center gap-5">
                   {horizontalChecklistIcon}
                   <span>Terms & Conditions</span>
                 </div>
@@ -86,7 +86,7 @@ const Footer = () => {
             </ul>
           </div>
           <div className="text-white pl-8 flex flex-col gap-4 border-white border-l">
-            <h2 className="text-[32px] text-[400]">Connect with us</h2>
+            <h2 className="text-[2em] text-[400]">Connect with us</h2>
             <div className="flex gap-4 items-center">
               <div>{facebookLogo}</div>
               <div>{instagramLogo}</div>
@@ -97,9 +97,9 @@ const Footer = () => {
             </div>
             <hr className="my-4" />
             <div className="flex flex-col gap-4">
-              <h2 className="text-[32px] text-[400]">Or drop us a line</h2>
+              <h2 className="text-[2em] text-[400]">Or drop us a line</h2>
               <p
-                className={`${montserratFont.className} underline text-[24px]`}
+                className={`${montserratFont.className} underline text-[1.5em]`}
               >
                 contact@foodiefinder.com
               </p>
@@ -117,7 +117,7 @@ const Footer = () => {
           FoodieFinder @2023
         </p>
       </div>
-    </>
+    </div>
   );
 };
 
