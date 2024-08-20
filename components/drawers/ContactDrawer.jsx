@@ -29,7 +29,7 @@ const ContactDrawer = () => {
           <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full">
             <DialogPanel
               transition
-              className="pointer-events-auto relative lg:w-[960px] transform transition duration-500 ease-in-out data-[closed]:translate-x-full sm:duration-700"
+              className="pointer-events-auto relative lg:w-[700px] transform transition duration-500 ease-in-out data-[closed]:translate-x-full sm:duration-700"
             >
               <div className="flex h-full flex-col overflow-y-scroll bg-white py-5 shadow-xl">
                 <div className="text-[70%] md:text-[100%]">

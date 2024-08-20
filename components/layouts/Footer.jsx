@@ -1,7 +1,12 @@
+"use client";
+
 import React from "react";
 import { appLogoUrl } from "../../lib/constant_data";
 import { appleLogoSvg, googleLogoSvg, rightArrowIcon } from "../../svgs";
 import { Montserrat_Alternates } from "next/font/google";
+import { setOpenDrawer } from "../../redux/slices/contactUserSlice";
+import { useDispatch } from "react-redux";
+import Link from "next/link";
 
 const montserratFont = Montserrat_Alternates({
   weight: ["400"],
@@ -9,6 +14,12 @@ const montserratFont = Montserrat_Alternates({
 });
 
 const Footer = () => {
+  const dispatch = useDispatch();
+
+  const openContactForm = () => {
+    dispatch(setOpenDrawer(true));
+  };
+
   return (
     <div className="text-[70%] md:text-[100%]">
       <div className="bg-homeFooter p-[5%] mb-20 bg-cover bg-center w-auto flex flex-col justify-center">
@@ -54,34 +65,34 @@ const Footer = () => {
             </div>
             <ul className="text-white flex flex-col gap-3 text-[400] text-[1.5em]">
               <li>
-                <div className="flex items-center  gap-5">
+                <Link href="/about_us" className="flex items-center  gap-5">
                   {horizontalChecklistIcon}
                   <span>About us</span>
-                </div>
+                </Link>
               </li>
               <li>
-                <div className="flex items-center gap-5">
+                <Link href="/home" className="flex items-center gap-5">
                   {horizontalChecklistIcon}
                   <span>Home</span>
-                </div>
+                </Link>
               </li>
               <li>
-                <div className="flex items-center  gap-5">
+                <Link href="/faqs" className="flex items-center  gap-5">
                   {horizontalChecklistIcon}
                   <span>FAQs</span>
-                </div>
+                </Link>
               </li>
               <li>
-                <div className="flex items-center  gap-5">
+                <Link href="/privacy" className="flex items-center  gap-5">
                   {horizontalChecklistIcon}
                   <span>Privacy Policy</span>
-                </div>
+                </Link>
               </li>
               <li>
-                <div className="flex items-center gap-5">
+                <Link href="/terms" className="flex items-center gap-5">
                   {horizontalChecklistIcon}
                   <span>Terms & Conditions</span>
-                </div>
+                </Link>
               </li>
             </ul>
           </div>
@@ -104,7 +115,10 @@ const Footer = () => {
                 contact@foodiefinder.com
               </p>
               <div className="flex items-center gap-5">
-                <button className="mr-3 mt-2 lg:m-0 flex items-center min-w-[150px] px-[12px] py-[16px] text-center justify-center bg-secondary text-white font-semibold rounded-[6px] hover:bg-mainTwo">
+                <button
+                  onClick={openContactForm}
+                  className="mr-3 mt-2 lg:m-0 flex items-center min-w-[150px] px-[12px] py-[16px] text-center justify-center bg-secondary text-white font-semibold rounded-[6px] hover:bg-mainTwo"
+                >
                   <span className="mr-3 ml-2 font-semibold">Contact us</span>
                   <span>{rightArrowIcon}</span>
                 </button>

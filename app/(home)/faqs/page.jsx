@@ -3,7 +3,11 @@ import {
   DisclosureButton,
   DisclosurePanel,
 } from "@headlessui/react";
-import { ChevronDownIcon } from "@heroicons/react/20/solid";
+import {
+  ChevronDownIcon,
+  ChevronRightIcon,
+  ChevronUpIcon,
+} from "@heroicons/react/20/solid";
 import React from "react";
 import { faqData } from "../../../lib/constant_data";
 
@@ -20,7 +24,7 @@ const page = () => {
                   apps?
                 </span>
                 <div className="flex items-center">
-                  <ChevronDownIcon className="h-6 w-6 text-blackThree/60 group-hover:text-blackThree/50 group-data-[open]:rotate-90" />
+                  <ChevronRightIcon className="h-6 w-6 text-blackThree/60 group-hover:text-blackThree/50 group-data-[open]:rotate-90" />
                 </div>
               </DisclosureButton>
               <DisclosurePanel className="mt-2 pb-2 text-sm text-blackThree/50">
@@ -37,7 +41,7 @@ const page = () => {
                   Is FoodieFinder free to use? Is there a subscription fee?
                 </span>
                 <div className="flex items-center">
-                  <ChevronDownIcon className="h-6 w-6 text-blackThree/60 group-hover:text-blackThree/50 group-data-[open]:rotate-90" />
+                  <ChevronRightIcon className="h-6 w-6 text-blackThree/60 group-hover:text-blackThree/50 group-data-[open]:rotate-90" />
                 </div>
               </DisclosureButton>
               <DisclosurePanel className="mt-2 pb-2 text-sm text-blackThree/50">
@@ -50,7 +54,7 @@ const page = () => {
                   Minus qui assumenda minus repellat.
                 </span>
                 <div className="flex items-center">
-                  <ChevronDownIcon className="h-6 w-6 text-blackThree/60 group-hover:text-blackThree/50 group-data-[open]:rotate-90" />
+                  <ChevronRightIcon className="h-6 w-6 text-blackThree/60 group-hover:text-blackThree/50 group-data-[open]:rotate-90" />
                 </div>
               </DisclosureButton>
               <DisclosurePanel className="mt-2 pb-2 text-sm text-blackThree/50">
@@ -63,7 +67,7 @@ const page = () => {
                   Aut odio voluptas sed qui dolores debitis.
                 </span>
                 <div className="flex items-center">
-                  <ChevronDownIcon className="h-6 w-6 text-blackThree/60 group-hover:text-blackThree/50 group-data-[open]:rotate-90" />
+                  <ChevronRightIcon className="h-6 w-6 text-blackThree/60 group-hover:text-blackThree/50 group-data-[open]:rotate-90" />
                 </div>
               </DisclosureButton>
               <DisclosurePanel className="mt-2 pb-2 text-sm text-blackThree/50">
@@ -76,7 +80,7 @@ const page = () => {
                   Placeat natus ad laboriosam voluptatem.
                 </span>
                 <div className="flex items-center">
-                  <ChevronDownIcon className="h-6 w-6 text-blackThree/60 group-hover:text-blackThree/50 group-data-[open]:rotate-90" />
+                  <ChevronRightIcon className="h-6 w-6 text-blackThree/60 group-hover:text-blackThree/50 group-data-[open]:rotate-90" />
                 </div>
               </DisclosureButton>
               <DisclosurePanel className="mt-2 pb-2 text-sm text-blackThree/50">
@@ -89,7 +93,7 @@ const page = () => {
                   Qui nostrum fugit eligendi nemo ex.
                 </span>
                 <div className="flex items-center">
-                  <ChevronDownIcon className="h-6 w-6 text-blackThree/60 group-hover:text-blackThree/50 group-data-[open]:rotate-90" />
+                  <ChevronRightIcon className="h-6 w-6 text-blackThree/60 group-hover:text-blackThree/50 group-data-[open]:rotate-90" />
                 </div>
               </DisclosureButton>
               <DisclosurePanel className="mt-2 pb-2 text-sm text-blackThree/50">
@@ -102,7 +106,7 @@ const page = () => {
                   Neque debitis quas quae magni error minima quae.
                 </span>
                 <div className="flex items-center">
-                  <ChevronDownIcon className="h-6 w-6 text-blackThree/60 group-hover:text-blackThree/50 group-data-[open]:rotate-90" />
+                  <ChevronRightIcon className="h-6 w-6 text-blackThree/60 group-hover:text-blackThree/50 group-data-[open]:rotate-90" />
                 </div>
               </DisclosureButton>
               <DisclosurePanel className="mt-2 pb-2 text-sm text-blackThree/50">
@@ -115,7 +119,7 @@ const page = () => {
                   Omnis sapiente vel sequi aliquid.
                 </span>
                 <div className="flex items-center">
-                  <ChevronDownIcon className="h-6 w-6 text-blackThree/60 group-hover:text-blackThree/50 group-data-[open]:rotate-90" />
+                  <ChevronRightIcon className="h-6 w-6 text-blackThree/60 group-hover:text-blackThree/50 group-data-[open]:rotate-90" />
                 </div>
               </DisclosureButton>
               <DisclosurePanel className="mt-2 pb-2 text-sm text-blackThree/50">
@@ -128,7 +132,7 @@ const page = () => {
                   Commodi sint veritatis adipisci.
                 </span>
                 <div className="flex items-center">
-                  <ChevronDownIcon className="h-6 w-6 text-blackThree/60 group-hover:text-blackThree/50 group-data-[open]:rotate-90" />
+                  <ChevronRightIcon className="h-6 w-6 text-blackThree/60 group-hover:text-blackThree/50 group-data-[open]:rotate-90" />
                 </div>
               </DisclosureButton>
               <DisclosurePanel className="mt-2 pb-2 text-sm text-blackThree/50">
@@ -142,7 +146,7 @@ const page = () => {
                   ex.
                 </span>
                 <div className="flex items-center">
-                  <ChevronDownIcon className="h-6 w-6 text-blackThree/60 group-hover:text-blackThree/50 group-data-[open]:rotate-90" />
+                  <ChevronRightIcon className="h-6 w-6 text-blackThree/60 group-hover:text-blackThree/50 group-data-[open]:rotate-90" />
                 </div>
               </DisclosureButton>
               <DisclosurePanel className="mt-2 pb-2 text-sm text-blackThree/50">

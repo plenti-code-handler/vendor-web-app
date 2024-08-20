@@ -4,6 +4,7 @@ import { GFS_Didot } from "next/font/google";
 import { Montserrat_Alternates } from "next/font/google";
 
 import React from "react";
+import ContactSection from "../../../components/sections/home/ContactSection";
 import { appleLogoSvg, googleLogoSvg, rightArrowIcon } from "../../../svgs";
 
 const gfsFont = GFS_Didot({ weight: "400", subsets: ["greek"] });
@@ -14,7 +15,7 @@ const montserratFont = Montserrat_Alternates({
 
 const page = () => {
   return (
-    <div className="text-[70%] md:text-[100%]">
+    <div className="text-[70%] md:text[90%] lg:text-[100%]">
       <div className="bg-homeMain bg-bottom bg-cover bg-no-repeat p-[10%] md:h-[calc(100vh-96px)]">
         <div className="flex flex-col justify-center items-center h-full">
           <div className="flex flex-col gap-5 items-center">
@@ -49,8 +50,8 @@ const page = () => {
           </div>
         </div>
       </div>
-      <div className="flex justify-center items-center flex-wrap p-[5%]">
-        <div className="w-1/2 flex items-center justify-center">
+      <div className="flex flex-col-reverse md:flex-row justify-center items-center p-[5%]">
+        <div className="w-1/2 my-5 flex items-center justify-center">
           <img className="w-full h-full" src="/home-second-section.png" />
         </div>
         <div className="w-full lg:w-1/2 flex flex-col gap-3">
@@ -62,22 +63,7 @@ const page = () => {
           </p>
         </div>
       </div>
-      <div className="bg-homeSectionThree p-[5%] bg-center bg-cover w-auto flex flex-col justify-center">
-        <div className="mx-auto flex flex-col gap-3">
-          <h2 className="text-white text-[3em] font-[400]">Lorem Ipsum</h2>
-          <p className="text-[1.25em] text-white font-[500]">
-            Magnam sunt soluta amet. Tenetur impedit debitis dolor sapiente enim
-            in soluta omnis earum. Voluptatem molestiae suscipit. Et quaerat
-            rerum sit quo odio ullam ea.
-          </p>
-          <div className="flex items-center gap-5">
-            <button className="mr-3 mt-2 lg:m-0 flex items-center min-w-[150px] px-[12px] py-[16px] text-center justify-center bg-secondary text-white font-semibold rounded-[6px] hover:bg-mainTwo">
-              <span className="mr-3 ml-2 font-semibold">Contact us</span>
-              <span>{rightArrowIcon}</span>
-            </button>
-          </div>
-        </div>
-      </div>
+      <ContactSection />
       <div className={gfsFont.className}>
         <div className="flex justify-center items-center flex-wrap p-[5%]">
           <div className="lg:w-1/2 flex flex-col gap-3">
@@ -99,7 +85,7 @@ const page = () => {
               </button>
             </div>
           </div>
-          <div className="w-1/2 flex items-center justify-center">
+          <div className="w-1/2 my-5 flex items-center justify-center">
             <img className="w-full h-full" src="/home-forth-section.png" />
           </div>
         </div>
@@ -169,8 +155,8 @@ const page = () => {
           At Foodiefinder, we are guided by our core values
         </p>
       </div>
-      <div className="flex justify-center items-center flex-wrap p-[5%]">
-        <div className="w-1/2 flex items-center justify-center">
+      <div className="flex flex-col-reverse md:flex-row justify-center items-center p-[5%]">
+        <div className="w-1/2 my-5 flex items-center justify-center">
           <img src="/home-fifth-section-1.png" />
         </div>
         <div className="w-full lg:w-1/2 flex flex-col gap-3">
@@ -192,12 +178,12 @@ const page = () => {
             Voluptas quos quaerat sapiente est ratione ut quam quas
           </p>
         </div>
-        <div className="w-1/2 flex items-center justify-center">
+        <div className="w-1/2 my-5 flex items-center justify-center">
           <img src="/home-fifth-section-2.png" />
         </div>
       </div>
-      <div className="flex justify-center items-center flex-wrap p-[5%]">
-        <div className="w-1/2 flex items-center justify-center">
+      <div className="flex flex-col-reverse md:flex-row justify-center items-center p-[5%]">
+        <div className="w-1/2 my-5 flex items-center justify-center">
           <img src="/home-fifth-section-3.png" />
         </div>
         <div className="w-full lg:w-1/2 flex flex-col gap-3">
@@ -217,7 +203,7 @@ const page = () => {
             quo accusamus sunt quia sed.
           </p>
         </div>
-        <div className="w-1/2 flex items-center justify-center">
+        <div className="w-1/2 my-5 flex items-center justify-center">
           <img src="/home-fifth-section-4.png" />
         </div>
       </div>
