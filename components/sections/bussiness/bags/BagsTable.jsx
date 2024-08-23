@@ -8,6 +8,8 @@ import { setOpenDrawer } from "../../../../redux/slices/editBagSlice";
 import LoadMoreButton from "../../../buttons/LoadMoreButton";
 import {
   collection,
+  deleteDoc,
+  doc,
   getDocs,
   limit,
   orderBy,
@@ -30,20 +32,6 @@ const BagsTable = () => {
         break;
     }
   };
-
-  // const [bags, setBags] = useState([]);
-
-  // useEffect(() => {
-  //   const colRef = collection(db, "bags");
-
-  //   const fetchBookings = async () => {
-  //     const allBookingsSnapshot = await getDocs(colRef);
-  //     const bookingsData = allBookingsSnapshot.docs.map((doc) => doc.data());
-  //     setBags(bookingsData);
-  //   };
-
-  //   fetchBookings();
-  // }, []);
 
   const [bags, setBags] = useState([]);
   const [filteredBookings, setFilteredBags] = useState([]);
@@ -114,6 +102,25 @@ const BagsTable = () => {
   };
   const handleEditClick = () => {
     dispatch(setOpenDrawer(true));
+  };
+
+  const handleDelete = async (id) => {
+    const docRef = doc(db, "bags", id);
+    await deleteDoc(docRef);
+    const colRef = collection(db, "bags");
+    const q = query(colRef, orderBy("title"), limit(10)); // Adjust limit as needed
+
+    const allBagsSnapshot = await getDocs(q);
+
+    const bagsData = allBagsSnapshot.docs.map((doc) => ({
+      id: doc.id, // Extract the ID here
+      ...doc.data(), // Spread the rest of the document data
+    }));
+    const lastDoc = allBagsSnapshot.docs[allBagsSnapshot.docs.length - 1];
+
+    setBags(bagsData);
+    setFilteredBags(bagsData);
+    setLastVisible(lastDoc);
   };
 
   return (
@@ -194,7 +201,10 @@ const BagsTable = () => {
                   >
                     {editSvg}
                   </button>
-                  <button className="rounded-md bg-tableButtonBackground p-2 hover:bg-gray-200 hover:p-2">
+                  <button
+                    onClick={() => handleDelete(bag.id)}
+                    className="rounded-md bg-tableButtonBackground p-2 hover:bg-gray-200 hover:p-2"
+                  >
                     {deleteSvg}
                   </button>
                 </div>

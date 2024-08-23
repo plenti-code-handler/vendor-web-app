@@ -1,10 +1,12 @@
 import React from "react";
 
-const DrawerHeader = () => {
+const DrawerHeader = ({ dealTitle, setDealTitle }) => {
   return (
     <>
       <input
         type="text"
+        value={dealTitle}
+        onChange={(e) => setDealTitle(e.target.value)}
         placeholder="Bag Deal Title"
         className="placeholder-grayThree text-lg placeholder:font-bold focus:outline-none"
       />

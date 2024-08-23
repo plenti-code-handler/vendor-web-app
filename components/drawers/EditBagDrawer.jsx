@@ -19,29 +19,31 @@ const EditBagDrawer = () => {
   const dispatch = useDispatch();
   const open = useSelector((state) => state.editBag.drawerOpen);
 
-  const [selectedBagType, setSelectedBagType] = useState(null);
+  const [selectedBag, setSelectedBag] = useState({});
   const [selectedTags, setSelectedTags] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
+  const [stock, setStock] = useState("");
   const [description, setDescription] = useState("");
   const [numberOfBags, setNumberOfBags] = useState(0);
   const [pricing, setPricing] = useState("");
   const [originalPrice, setOriginalPrice] = useState("");
-
-  const [selectedDate, setSelectedDate] = useState("");
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
+  const [selectedDates, setSelectedDates] = useState([]);
+  const [dealTitle, setDealTitle] = useState("");
+  const [user, setUser] = useState({});
 
   const resetForm = () => {
-    setSelectedBagType(null);
+    setSelectedBag({});
     setSelectedTags([]);
     setSelectedCategories([]);
+    setSelectedDates([]);
     setDescription("");
     setNumberOfBags(0);
     setPricing("");
     setOriginalPrice("");
-    setSelectedDate("");
     setStartTime("");
     setEndTime("");
+    setDealTitle("");
+    setStock("");
   };
 
   const handleSubmitBag = async () => {
@@ -51,16 +53,21 @@ const EditBagDrawer = () => {
 
       // Data to be added
       const newBag = {
-        type: selectedBagType,
-        tags: selectedTags,
-        categories: selectedCategories,
-        desc: description,
         bagaday: numberOfBags,
-        pricing: pricing,
-        originalPrice: originalPrice,
-        startingdate: selectedDate,
-        starttime: startTime,
-        endtime: endTime,
+        date: selectedDates,
+        desc: description,
+        img: selectedBag.img,
+        loc: user.loc,
+        type: selectedBag.type,
+        tags: selectedTags,
+        resname: user.name,
+        resimg: user.img,
+        title: dealTitle,
+        stock: Number(stock),
+        resuid: user.uid,
+        // categories: selectedCategories,
+        price: Number(pricing),
+        // originalPrice: originalPrice,
         // createdAt: new Date(), // Optionally add a timestamp
       };
 
@@ -98,6 +105,8 @@ const EditBagDrawer = () => {
                   <input
                     type="text"
                     placeholder="Bag Deal Title"
+                    value={dealTitle}
+                    onChange={(e) => setDealTitle(e.target.value)}
                     className="placeholder-grayThree text-lg placeholder:font-bold focus:outline-none"
                   />
                   <div className="flex gap-x-2">
@@ -112,8 +121,8 @@ const EditBagDrawer = () => {
                 <hr className="my-3 w-[90%] border-gray-300 ml-8" />
                 <div className="relative mt-3 pb-3 flex-1 px-4 sm:px-6">
                   <BagTypes
-                    selectedBagType={selectedBagType}
-                    setSelectedBagType={setSelectedBagType}
+                    selectedBag={selectedBag}
+                    setSelectedBag={setSelectedBag}
                   />
                   <BagDetails
                     description={description}
@@ -128,12 +137,8 @@ const EditBagDrawer = () => {
                     setNumberOfBags={setNumberOfBags}
                   />
                   <DateSelection
-                    selectedDate={selectedDate}
-                    setSelectedDate={setSelectedDate}
-                    startTime={startTime}
-                    setStartTime={setStartTime}
-                    endTime={endTime}
-                    setEndTime={setEndTime}
+                    selectedDates={selectedDates}
+                    setSelectedDates={setSelectedDates}
                   />
 
                   <div className="flex flex-col pb-5 gap-3">

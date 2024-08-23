@@ -13,25 +13,32 @@ import BagDetails from "./components/BagDetails";
 import BagsPerDay from "./components/BagsPerDay";
 import DateSelection from "./components/DateSelection";
 import BagPricing from "./components/BagPricing";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { db } from "../../app/firebase/config";
 import { addDoc, collection } from "firebase/firestore";
+import { getUserLocal } from "../../redux/slices/loggedInUserSlice";
+import { title } from "process";
 
 const AddBagDrawer = () => {
-  const [selectedBagType, setSelectedBagType] = useState(null);
+  const [selectedBag, setSelectedBag] = useState({});
   const [selectedTags, setSelectedTags] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const [stock, setStock] = useState(null);
+  const [stock, setStock] = useState("");
   const [description, setDescription] = useState("");
   const [numberOfBags, setNumberOfBags] = useState(0);
   const [pricing, setPricing] = useState("");
   const [originalPrice, setOriginalPrice] = useState("");
   const [selectedDates, setSelectedDates] = useState([]);
+  const [dealTitle, setDealTitle] = useState("");
+  const [user, setUser] = useState({});
 
-  console.log(selectedDates);
+  useEffect(() => {
+    const user = getUserLocal();
+    setUser(user);
+  }, []);
 
   const resetForm = () => {
-    setSelectedBagType(null);
+    setSelectedBag({});
     setSelectedTags([]);
     setSelectedCategories([]);
     setSelectedDates([]);
@@ -41,7 +48,11 @@ const AddBagDrawer = () => {
     setOriginalPrice("");
     setStartTime("");
     setEndTime("");
+    setDealTitle("");
+    setStock("");
   };
+
+  console.log(user);
 
   const handleSubmitBag = async () => {
     try {
@@ -50,14 +61,21 @@ const AddBagDrawer = () => {
 
       // Data to be added
       const newBag = {
-        type: selectedBagType,
-        tags: selectedTags,
-        // categories: selectedCategories,
-        desc: description,
         bagaday: numberOfBags,
-        pricing: pricing,
-        originalPrice: originalPrice,
-        dates: selectedDates,
+        date: selectedDates,
+        desc: description,
+        img: selectedBag.img,
+        loc: user.loc,
+        type: selectedBag.type,
+        tags: selectedTags,
+        resname: user.name,
+        resimg: user.img,
+        title: dealTitle,
+        stock: Number(stock),
+        resuid: user.uid,
+        // categories: selectedCategories,
+        price: Number(pricing),
+        // originalPrice: originalPrice,
         // createdAt: new Date(), // Optionally add a timestamp
       };
 
@@ -94,13 +112,16 @@ const AddBagDrawer = () => {
             >
               <div className="flex h-full flex-col overflow-y-scroll bg-white py-5 shadow-xl">
                 <DialogTitle className="flex px-4 sm:px-6 justify-between ">
-                  <DrawerHeader />
+                  <DrawerHeader
+                    dealTitle={dealTitle}
+                    setDealTitle={setDealTitle}
+                  />
                 </DialogTitle>
                 <hr className="my-3 w-[90%] border-gray-300 ml-8" />
                 <div className="relative mt-3 pb-3 flex-1 px-4 sm:px-6">
                   <BagTypes
-                    selectedBagType={selectedBagType}
-                    setSelectedBagType={setSelectedBagType}
+                    selectedBag={selectedBag}
+                    setSelectedBag={setSelectedBag}
                   />
                   <BagDetails
                     description={description}

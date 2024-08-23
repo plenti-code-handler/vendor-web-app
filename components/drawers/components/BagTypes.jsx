@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const BagTypes = ({ selectedBagType, setSelectedBagType }) => {
+const BagTypes = ({ selectedBag, setSelectedBag }) => {
   const bagTypes = [
     {
       type: "Surprise",
@@ -19,8 +19,8 @@ const BagTypes = ({ selectedBagType, setSelectedBagType }) => {
     },
   ];
 
-  const handleBagTypeClick = (type) => {
-    setSelectedBagType(type);
+  const handleBagTypeClick = (bag) => {
+    setSelectedBag(bag);
   };
 
   return (
@@ -32,9 +32,9 @@ const BagTypes = ({ selectedBagType, setSelectedBagType }) => {
         {bagTypes.map((bag) => (
           <div
             key={bag.type}
-            onClick={() => handleBagTypeClick(bag.type)}
+            onClick={() => handleBagTypeClick(bag)}
             className={`flex flex-col h-[30%] w-[25%] p-2 items-center rounded-lg shadow-lg transform transition-transform hover:translate-y-[-5px] ${
-              selectedBagType === bag.type
+              selectedBag.type === bag.type
                 ? "bg-mainLight opacity-90 border-2 border-main"
                 : "bg-white"
             }`}
@@ -42,7 +42,7 @@ const BagTypes = ({ selectedBagType, setSelectedBagType }) => {
             <img alt={bag.type} src={bag.image} className="rounded-md" />
             <p
               className={`text-[14px] font-semibold mt-2 ${
-                selectedBagType === bag.type
+                selectedBag.type === bag.type
                   ? "text-black font-bold"
                   : "text-black"
               }`}

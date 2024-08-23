@@ -157,7 +157,7 @@ const BagDetails = ({
       </div> */}
       <div className="relative flex mt-3 items-center">
         <input
-          className="block w-full  placeholder:font-bold rounded-lg border border-gray-300 py-5 px-5 text-md text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
+          className="block w-full  placeholder:font-bold rounded-lg border border-gray-300 py-4 px-5 text-md text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
           placeholder="Quantity"
           value={stock}
           type="number"
