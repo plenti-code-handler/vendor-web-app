@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { locationIconSvg, plusIconSvg } from "../../../../svgs";
 import Tabs from "./Tabs";
 import { setOpenDrawer } from "../../../../redux/slices/addCategorySlice";
@@ -9,12 +9,19 @@ import { getUserLocal } from "../../../../redux/slices/loggedInUserSlice";
 
 const ProfileCard = () => {
   const dispatch = useDispatch();
+  const [user, setUser] = useState({});
 
   const handleAddCategory = () => {
     dispatch(setOpenDrawer(true));
   };
 
-  const user = getUserLocal();
+  useEffect(() => {
+    const user = getUserLocal();
+    if (user) {
+      setUser(user);
+    }
+  }, []);
+
   return (
     <div className="flex flex-col gap-5 w-[100%] lg:w-[60%] md:w-[60%] p-5 border border-gray-100 rounded-md">
       <div className="flex space-x-4">

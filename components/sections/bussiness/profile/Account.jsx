@@ -17,11 +17,24 @@ const Account = () => {
   const [input, setInput] = useState({});
   const inputRef = useRef(null);
   const [location, setLocation] = useState("");
+  const [user, setUser] = useState({});
 
-  const user = getUserLocal();
+  const [lat, setLat] = useState(null);
+  const [lng, setLng] = useState(null);
 
-  const [lat, setLat] = useState(user.point.latitude);
-  const [lng, setLng] = useState(user.point.longitude);
+  useEffect(() => {
+    const user = getUserLocal();
+    if (user) {
+      setUser(user);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (user.point) {
+      setLat(user.point.latitude || null);
+      setLng(user.point.longitude || null);
+    }
+  }, [user]);
 
   const zoomLevel = 14;
 
@@ -90,8 +103,6 @@ const Account = () => {
     }
     formData(place);
   };
-
-  console.log(input);
 
   useEffect(() => {
     if (!isLoaded || loadError) return;
