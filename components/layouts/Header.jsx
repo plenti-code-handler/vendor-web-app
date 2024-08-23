@@ -1,11 +1,16 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import AdminHeader from "./AdminHeader";
 import BussinessHeader from "./BussinessHeader";
 import LandingHeader from "./LandingHeader";
 import { getUserLocal } from "../../redux/slices/loggedInUserSlice";
 
 const Header = () => {
-  const user = getUserLocal();
+  const [user, setUser] = useState("");
+
+  useEffect(() => {
+    const user = getUserLocal();
+    setUser(user);
+  }, []);
 
   return user?.role === "admin" ? (
     <AdminHeader />

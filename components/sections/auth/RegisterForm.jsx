@@ -24,13 +24,13 @@ const RegisterForm = () => {
       dispatch(setRegisterEmail(email));
       dispatch(setOtpCode(generatedOtp));
       emailjs.send(
-        process.env.NEXT_EMAILJS_SERVICE_KEY,
-        process.env.NEXT_EMAILJS_TEMPLATE_ID,
+        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_KEY,
+        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_KEY,
         {
           message: `Your OTP is ${generatedOtp.map((digit) => digit).join("")}`,
           to_email: email,
         },
-        { publicKey: process.env.NEXT_EMAILJS_PUBLIC_KEY }
+        { publicKey: process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY }
       );
       router.push("/verify");
     }
