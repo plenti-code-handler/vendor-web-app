@@ -9,8 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emailjs/browser": "^4.4.1",
     "@headlessui/react": "^2.1.2",
     "@heroicons/react": "^2.1.5",
+    "@react-google-maps/api": "^2.19.3",
     "@redux-devtools/extension": "^3.3.0",
     "@reduxjs/toolkit": "^2.2.3",
     "apexcharts": "^3.51.0",

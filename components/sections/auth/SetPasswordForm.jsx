@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AuthPasswordField from "../../fields/AuthPasswordField";
 import { useDispatch, useSelector } from "react-redux";
 import { setRegisterPassword } from "../../../redux/slices/registerUserSlice";
@@ -6,6 +6,10 @@ import { useRouter } from "next/navigation";
 
 const SetPasswordForm = () => {
   const email = useSelector((state) => state.registerUser.email);
+
+  useEffect(() => {
+    if (!email) router.push("/register");
+  }, []);
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");

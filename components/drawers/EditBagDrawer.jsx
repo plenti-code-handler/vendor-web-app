@@ -13,10 +13,68 @@ import BagsPerDay from "./components/BagsPerDay";
 import DateSelection from "./components/DateSelection";
 import BagPricing from "./components/BagPricing";
 import { deleteSvg, recycleSvg, trashSvg } from "../../svgs";
+import { useState } from "react";
 
 const EditBagDrawer = () => {
   const dispatch = useDispatch();
   const open = useSelector((state) => state.editBag.drawerOpen);
+
+  const [selectedBagType, setSelectedBagType] = useState(null);
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [description, setDescription] = useState("");
+  const [numberOfBags, setNumberOfBags] = useState(0);
+  const [pricing, setPricing] = useState("");
+  const [originalPrice, setOriginalPrice] = useState("");
+
+  const [selectedDate, setSelectedDate] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
+
+  const resetForm = () => {
+    setSelectedBagType(null);
+    setSelectedTags([]);
+    setSelectedCategories([]);
+    setDescription("");
+    setNumberOfBags(0);
+    setPricing("");
+    setOriginalPrice("");
+    setSelectedDate("");
+    setStartTime("");
+    setEndTime("");
+  };
+
+  const handleSubmitBag = async () => {
+    try {
+      // Reference to the 'bags' collection
+      const bagsCollectionRef = collection(db, "bags");
+
+      // Data to be added
+      const newBag = {
+        type: selectedBagType,
+        tags: selectedTags,
+        categories: selectedCategories,
+        desc: description,
+        bagaday: numberOfBags,
+        pricing: pricing,
+        originalPrice: originalPrice,
+        startingdate: selectedDate,
+        starttime: startTime,
+        endtime: endTime,
+        // createdAt: new Date(), // Optionally add a timestamp
+      };
+
+      // Add the document to Firestore
+      const docRef = await addDoc(bagsCollectionRef, newBag);
+
+      console.log("Document written with ID: ", docRef.id);
+
+      // Optionally, reset the form state after successful submission
+      resetForm();
+    } catch (error) {
+      console.error("Error adding document: ", error);
+    }
+  };
 
   const handleClose = () => {
     dispatch(setOpenDrawer(false));
@@ -53,13 +111,38 @@ const EditBagDrawer = () => {
                 </DialogTitle>
                 <hr className="my-3 w-[90%] border-gray-300 ml-8" />
                 <div className="relative mt-3 pb-3 flex-1 px-4 sm:px-6">
-                  <BagTypes />
-                  <BagDetails />
-                  <BagsPerDay />
-                  <DateSelection />
+                  <BagTypes
+                    selectedBagType={selectedBagType}
+                    setSelectedBagType={setSelectedBagType}
+                  />
+                  <BagDetails
+                    description={description}
+                    setDescription={setDescription}
+                    selectedTags={selectedTags}
+                    selectedCategories={selectedCategories}
+                    setSelectedTags={setSelectedTags}
+                    setSelectedCategories={setSelectedCategories}
+                  />
+                  <BagsPerDay
+                    numberOfBags={numberOfBags}
+                    setNumberOfBags={setNumberOfBags}
+                  />
+                  <DateSelection
+                    selectedDate={selectedDate}
+                    setSelectedDate={setSelectedDate}
+                    startTime={startTime}
+                    setStartTime={setStartTime}
+                    endTime={endTime}
+                    setEndTime={setEndTime}
+                  />
 
                   <div className="flex flex-col pb-5 gap-3">
-                    <BagPricing />
+                    <BagPricing
+                      originalPrice={originalPrice}
+                      setOriginalPrice={setOriginalPrice}
+                      pricing={pricing}
+                      setPricing={setPricing}
+                    />
                     <button className="flex justify-center bg-pinkBgDark text-white font-semibold py-2 rounded hover:bg-pinkBgDarkHover2 gap-2 lg:w-[100%]">
                       Edit Bag
                     </button>

@@ -1,11 +1,20 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { bags } from "../../../../lib/constant_data";
+// import { bags } from "../../../../lib/constant_data";
 import { deleteSvg, editSvg } from "../../../../svgs";
 import { useDispatch } from "react-redux";
 import { setOpenDrawer } from "../../../../redux/slices/editBagSlice";
 import LoadMoreButton from "../../../buttons/LoadMoreButton";
+import {
+  collection,
+  getDocs,
+  limit,
+  orderBy,
+  query,
+  startAfter,
+} from "firebase/firestore";
+import { db } from "../../../../app/firebase/config";
 
 const BagsTable = () => {
   const dispatch = useDispatch();
@@ -22,6 +31,87 @@ const BagsTable = () => {
     }
   };
 
+  // const [bags, setBags] = useState([]);
+
+  // useEffect(() => {
+  //   const colRef = collection(db, "bags");
+
+  //   const fetchBookings = async () => {
+  //     const allBookingsSnapshot = await getDocs(colRef);
+  //     const bookingsData = allBookingsSnapshot.docs.map((doc) => doc.data());
+  //     setBags(bookingsData);
+  //   };
+
+  //   fetchBookings();
+  // }, []);
+
+  const [bags, setBags] = useState([]);
+  const [filteredBookings, setFilteredBags] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [lastVisible, setLastVisible] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetchInitialBags();
+  }, []);
+
+  const fetchInitialBags = async () => {
+    const colRef = collection(db, "bags");
+    const q = query(colRef, orderBy("title"), limit(10)); // Adjust limit as needed
+
+    const allBagsSnapshot = await getDocs(q);
+
+    const bagsData = allBagsSnapshot.docs.map((doc) => ({
+      id: doc.id, // Extract the ID here
+      ...doc.data(), // Spread the rest of the document data
+    }));
+    const lastDoc = allBagsSnapshot.docs[allBagsSnapshot.docs.length - 1];
+
+    setBags(bagsData);
+    setFilteredBags(bagsData);
+    setLastVisible(lastDoc);
+  };
+
+  const fetchMoreBags = async () => {
+    // Prevent the function from running if it’s already loading
+    if (loading) return;
+
+    try {
+      setLoading(true);
+
+      const colRef = collection(db, "bags");
+      let q;
+
+      if (lastVisible) {
+        // If lastVisible exists, start after it
+        q = query(colRef, orderBy("title"), startAfter(lastVisible), limit(10));
+      } else {
+        // If lastVisible is null, just order and limit
+        q = query(colRef, orderBy("title"), limit(10));
+      }
+
+      const allBagsSnapshot = await getDocs(q);
+
+      // Handle empty snapshots (end of collection)
+      if (allBagsSnapshot.empty) {
+        console.log("No more bags to fetch");
+        setLoading(false);
+        return;
+      }
+
+      const bagsData = allBagsSnapshot.docs.map((doc) => doc.data());
+      const lastDoc = allBagsSnapshot.docs[allBagsSnapshot.docs.length - 1];
+
+      // Update state with new data
+      setBags((prevBags) => [...prevBags, ...bagsData]);
+      setFilteredBags((prevBags) => [...prevBags, ...bagsData]);
+      setLastVisible(lastDoc); // Set the last visible document for pagination
+    } catch (error) {
+      console.error("Error fetching more bags:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
   const handleEditClick = () => {
     dispatch(setOpenDrawer(true));
   };
@@ -53,7 +143,7 @@ const BagsTable = () => {
                   <div className="flex flex-row items-center gap-x-2">
                     <div className="flex h-[40px] w-[40px] items-center justify-center overflow-hidden rounded-full">
                       <Image
-                        src="/User.png"
+                        src={bag.img ? bag.img : "/User.png"}
                         alt="GetSpouse Logo"
                         className="h-full w-full object-cover"
                         width={40}
@@ -69,32 +159,32 @@ const BagsTable = () => {
               </td>
               <td className="truncate text-center px-2">
                 <p className="text-sm font-semibold text-grayThree">
-                  {bag.size}
+                  {bag.type}
                 </p>
               </td>
               <td className="truncate text-center px-2">
                 <p className="text-sm font-semibold text-grayThree">
-                  {bag.dailyServe}
+                  {bag.bagaday}
                 </p>
               </td>
               <td className="truncate text-center px-2">
                 <p className="text-sm font-semibold text-grayThree">
-                  {bag.inStock}
+                  {bag.stock}
                 </p>
               </td>
               <td className="truncate text-center px-2">
                 <p className="text-sm font-semibold text-grayThree">
-                  € {bag.bagPrice}
+                  € {bag.price}
                 </p>
               </td>
               <td className="truncate text-center px-2">
-                <div
+                {/* <div
                   className={`mx-auto ${decideStyle(
                     bag.status.toLowerCase()
                   )} font-semibold rounded-[4px] text-[12px] w-[77px] h-[26px] p-1`}
                 >
                   <p>{bag.status}</p>
-                </div>
+                </div> */}
               </td>
               <td className="truncate text-center">
                 <div className="flex flex-row justify-center">
@@ -113,7 +203,7 @@ const BagsTable = () => {
           ))}
         </tbody>
       </table>
-      <LoadMoreButton />
+      <LoadMoreButton loadMore={fetchMoreBags} isLoading={loading} />
     </div>
   );
 };

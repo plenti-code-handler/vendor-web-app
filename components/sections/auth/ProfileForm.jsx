@@ -1,7 +1,7 @@
 "use client";
 
 import { Textarea } from "@headlessui/react";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { pencilSvgProfile } from "../../../svgs";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
@@ -10,18 +10,30 @@ import {
   setProfile,
 } from "../../../redux/slices/registerUserSlice";
 import { useRouter } from "next/navigation";
+import { useLoadScript } from "@react-google-maps/api";
+import { GeoPoint } from "firebase/firestore";
+
+const libraries = ["places"];
+
+const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY; // Replace with your actual API key
 
 const ProfileForm = () => {
+  const placeholderImage =
+    "https://firebasestorage.googleapis.com/v0/b/foodie-finder-ee1d8.appspot.com/o/person.png?alt=media&token=3d046313-6334-44cd-abf5-1345111c9cee";
+
   const dispatch = useDispatch();
   const router = useRouter();
-  const [preview, setPreview] = useState("/person_placeholder.png"); // State for image preview
-  const [profileImage, setProfileImage] = useState("/person_placeholder.png");
+  const [preview, setPreview] = useState(placeholderImage); // State for image preview
+  const [profileImage, setProfileImage] = useState(placeholderImage);
   const [businessName, setBusinessName] = useState("");
-  const [location, setLocation] = useState("");
   const [description, setDescription] = useState("");
 
   const email = useSelector((state) => state.registerUser.email);
   const password = useSelector((state) => state.registerUser.password);
+
+  useEffect(() => {
+    if (!email && !password) router.push("/register");
+  }, []);
 
   const handleImageChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -40,9 +52,10 @@ const ProfileForm = () => {
           email,
           password,
           name: businessName,
-          loc: location,
+          loc: input.completeAddress,
           desc: description,
           img: profileImage,
+          point: new GeoPoint(input.latitude, input.longitude),
         })
       )
         .unwrap()
@@ -58,6 +71,104 @@ const ProfileForm = () => {
       // Handle errors (e.g., show an error message)
       console.error("Registration failed:", error);
     }
+  };
+
+  const [input, setInput] = useState({});
+  const inputRef = useRef(null);
+  const [location, setLocation] = useState("");
+
+  const [lat, setLat] = useState("");
+  const [lng, setLng] = useState("");
+
+  const zoomLevel = 14;
+
+  const [mapUrl, setMapUrl] = useState(
+    `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${lat},${lng}&zoom=${zoomLevel}`
+  );
+
+  const { isLoaded, loadError } = useLoadScript({
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
+    libraries,
+  });
+
+  const formData = (data) => {
+    const addressComponents = data?.address_components;
+
+    const componentMap = {
+      subPremise: "",
+      premise: "",
+      street_number: "",
+      route: "",
+      country: "",
+      postal_code: "",
+      administrative_area_level_2: "",
+      administrative_area_level_1: "",
+    };
+
+    for (const component of addressComponents) {
+      const componentType = component.types[0];
+      if (componentMap.hasOwnProperty(componentType)) {
+        componentMap[componentType] = component.long_name;
+      }
+    }
+
+    const formattedAddress =
+      `${componentMap.subPremise} ${componentMap.premise} ${componentMap.street_number} ${componentMap.route}`.trim();
+    const latitude = data?.geometry?.location?.lat();
+    const longitude = data?.geometry?.location?.lng();
+
+    setLat(latitude);
+    setLng(longitude);
+    setMapUrl(
+      `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${latitude},${longitude}&zoom=${zoomLevel}`
+    );
+
+    setInput((values) => ({
+      ...values,
+      streetAddress: formattedAddress,
+      country: componentMap.country,
+      zipCode: componentMap.postal_code,
+      city: componentMap.administrative_area_level_2,
+      state: componentMap.administrative_area_level_1,
+      latitude: latitude,
+      longitude: longitude,
+      completeAddress: `${formattedAddress}, ${componentMap.administrative_area_level_2}, ${componentMap.country}`,
+    }));
+  };
+
+  const handlePlaceChanged = async (address) => {
+    if (!isLoaded) return;
+    const place = address.getPlace();
+    setLocation(`${input.streetAddress}, ${input.city}, ${input.country}`);
+
+    if (!place || !place.geometry) {
+      // setInput({});
+      return;
+    }
+    formData(place);
+  };
+
+  useEffect(() => {
+    if (!isLoaded || loadError) return;
+
+    const options = {
+      fields: ["address_components", "geometry"],
+    };
+
+    const autocomplete = new google.maps.places.Autocomplete(
+      inputRef.current,
+      options
+    );
+    autocomplete.addListener("place_changed", () =>
+      handlePlaceChanged(autocomplete)
+    );
+
+    // return () => autocomplete.removeListener("place_changed", handlePlaceChanged);
+  }, [isLoaded, loadError]);
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setInput((values) => ({ ...values, [name]: value }));
   };
 
   return (
@@ -104,17 +215,24 @@ const ProfileForm = () => {
         onChange={(e) => setBusinessName(e.target.value)}
       />
       <input
-        className="placeholder:font-bold rounded-md border border-gray-200 py-3 px-3 text-black text-[13px] font-semibold placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
-        placeholder="Address"
-        value={location}
-        onChange={(e) => setLocation(e.target.value)}
+        value={input.completeAddress || input.streetAddress || ""}
+        className="block w-full placeholder:font-bold rounded-lg border border-gray-300 py-3 px-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
+        onChange={handleChange}
+        ref={inputRef}
+        name="streetAddress"
+        placeholder="Enter Location"
       />
-      <iframe
-        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3151.8354345094173!2d144.9537363159041!3d-37.81720974202165!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad642af0f11fd81%3A0x5045675218ce7e0!2sMelbourne%20VIC%2C%20Australia!5e0!3m2!1sen!2sus!4v1613989980106!5m2!1sen!2sus"
-        className="w-full sm:w-[390px] sm:h-[123px] rounded-[8px]"
-        style={{ border: 0 }}
-        loading="lazy"
-      />
+      {mapUrl && (
+        <iframe
+          src={mapUrl}
+          width="450"
+          height="250"
+          className="w-full rounded-lg"
+          style={{ border: 0 }}
+          allowFullScreen=""
+          loading="lazy"
+        />
+      )}
       <Textarea
         className="block w-full placeholder:font-bold resize-none rounded-lg border border-gray-200 py-3 px-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
         rows={6}

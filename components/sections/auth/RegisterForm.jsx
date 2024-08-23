@@ -4,17 +4,34 @@ import React, { useState } from "react";
 import BackButton from "./BackButton";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
-import { setRegisterEmail } from "../../../redux/slices/registerUserSlice";
+import {
+  setOtpCode,
+  setRegisterEmail,
+} from "../../../redux/slices/registerUserSlice";
+import emailjs from "@emailjs/browser";
 
 const RegisterForm = () => {
   const router = useRouter();
   const [email, setEmail] = useState("");
+  const [generatedOtp, setGeneratedOtp] = useState(
+    Array.from({ length: 4 }, () => Math.floor(Math.random() * 10).toString())
+  );
 
   const dispatch = useDispatch();
 
   const handleContinue = () => {
     if (email) {
       dispatch(setRegisterEmail(email));
+      dispatch(setOtpCode(generatedOtp));
+      emailjs.send(
+        process.env.NEXT_EMAILJS_SERVICE_KEY,
+        process.env.NEXT_EMAILJS_TEMPLATE_ID,
+        {
+          message: `Your OTP is ${generatedOtp.map((digit) => digit).join("")}`,
+          to_email: email,
+        },
+        { publicKey: process.env.NEXT_EMAILJS_PUBLIC_KEY }
+      );
       router.push("/verify");
     }
   };

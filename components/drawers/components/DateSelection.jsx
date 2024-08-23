@@ -1,37 +1,87 @@
 import React, { useState } from "react";
+import { ChevronUpIcon, XMarkIcon } from "@heroicons/react/20/solid";
 
-const DateSelection = () => {
+const DateSelection = ({ selectedDates, setSelectedDates }) => {
   const [selectedDate, setSelectedDate] = useState("");
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
-  return (
-    <div className="flex flex-col pb-5 mt-4 gap-2">
-      <p className="text-black font-bold text-[20px]">Date & Time</p>
-      <input
-        type="date"
-        value={selectedDate}
-        onChange={(e) => setSelectedDate(e.target.value)}
-        className="block w-full placeholder:font-bold rounded-lg border border-gray-300 py-3 px-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
-        placeholder="Select Date"
-      />
 
-      <div className="flex gap-4">
-        <input
-          type="time"
-          value={startTime}
-          onChange={(e) => setStartTime(e.target.value)}
-          className="block w-full placeholder:font-bold rounded-lg border border-gray-300 py-3 px-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
-          placeholder="Start Time"
-        />
-        <input
-          type="time"
-          value={endTime}
-          onChange={(e) => setEndTime(e.target.value)}
-          className="block w-full placeholder:font-bold rounded-lg border border-gray-300 py-3 px-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
-          placeholder="End Time"
-        />
+  const handleDateChange = (index, field, value) => {
+    setSelectedDates((prevDates) =>
+      prevDates.map((date, i) =>
+        i === index ? { ...date, [field]: value } : date
+      )
+    );
+  };
+
+  const removeDate = (index) => {
+    setSelectedDates((prevDates) => prevDates.filter((_, i) => i !== index));
+  };
+
+  return (
+    <>
+      <div className="flex flex-col pb-5 mt-4 gap-1">
+        <p className="text-black font-bold text-[20px]">Date & Time</p>
+        <form onSubmit>
+          <input
+            type="date"
+            value={selectedDate}
+            onChange={(e) => {
+              setSelectedDate(e.target.value);
+
+              setSelectedDates((state) => {
+                return [
+                  ...state,
+                  { date: e.target.value, starttime: "", endtime: "" },
+                ];
+              });
+              setSelectedDate("");
+            }}
+            className="block w-full placeholder:font-bold rounded-lg border border-gray-300 py-3 px-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
+            placeholder="Select Date"
+          />
+        </form>
+
+        {selectedDates.length !== 0 && (
+          <>
+            <div className="flex items-center justify-between pb-3 mt-4 gap-2">
+              <p className="text-black font-bold text-[20px]">Selected Dates</p>
+              <ChevronUpIcon width="20px" height="20px" />
+            </div>
+            {selectedDates.map((date, index) => (
+              <div key={index} className="flex gap-1">
+                <input
+                  type="date"
+                  value={date.date || ""}
+                  onChange={(e) =>
+                    handleDateChange(index, "date", e.target.value)
+                  }
+                  className="block placeholder:font-bold rounded-lg border border-gray-300 py-2 px-2 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
+                  placeholder="Select Date"
+                />
+                <input
+                  type="time"
+                  value={date.starttime || ""}
+                  onChange={(e) =>
+                    handleDateChange(index, "starttime", e.target.value)
+                  }
+                  className="block placeholder:font-bold rounded-lg border border-gray-300 py-2 px-2 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
+                  placeholder="Start Time"
+                />
+                <input
+                  type="time"
+                  value={date.endtime || ""}
+                  onChange={(e) =>
+                    handleDateChange(index, "endtime", e.target.value)
+                  }
+                  className="block placeholder:font-bold rounded-lg border border-gray-300 py-2 px-2 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
+                  placeholder="End Time"
+                />
+                <XMarkIcon onClick={() => removeDate(index)} />
+              </div>
+            ))}
+          </>
+        )}
       </div>
-    </div>
+    </>
   );
 };
 

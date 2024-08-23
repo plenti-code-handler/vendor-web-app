@@ -2,8 +2,10 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import BackButton from "./BackButton";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
+import { setOtpCode } from "../../../redux/slices/registerUserSlice";
+import emailjs from "@emailjs/browser";
 
 const VerifyAccountForm = () => {
   const [otp, setOtp] = useState(new Array(4).fill(""));
@@ -11,9 +13,16 @@ const VerifyAccountForm = () => {
   const [timeLeft, setTimeLeft] = useState(60);
   const inputRefs = useRef([]);
 
+  const dispatch = useDispatch();
+
   const email = useSelector((state) => state.registerUser.email);
+  const generatedOtp = useSelector((state) => state.registerUser.otp);
 
   const router = useRouter();
+
+  useEffect(() => {
+    if (!email) router.push("/register");
+  }, []);
 
   useEffect(() => {
     if (timeLeft > 0) {
@@ -47,14 +56,34 @@ const VerifyAccountForm = () => {
 
   const handleResend = () => {
     if (!isResendDisabled) {
-      setOtp(new Array(4).fill(""));
+      const otpCode = Array.from({ length: 4 }, () =>
+        Math.floor(Math.random() * 10).toString()
+      );
+      dispatch(setOtpCode(otpCode));
+      emailjs.send(
+        process.env.NEXT_EMAILJS_SERVICE_KEY,
+        process.env.NEXT_EMAILJS_TEMPLATE_ID,
+        {
+          message: `Your OTP is ${otpCode.map((digit) => digit).join("")}`,
+          to_email: email,
+        },
+        { publicKey: process.env.NEXT_EMAILJS_PUBLIC_KEY }
+      );
       setTimeLeft(60);
       setIsResendDisabled(true);
     }
   };
 
   const handleVerify = () => {
-    router.push("/setup_password");
+    const otpMatches = otp.every(
+      (digit, index) => digit === generatedOtp[index]
+    );
+
+    if (otpMatches) {
+      router.push("/setup_password");
+    } else {
+      console.log("OTP does not match. Please try again.");
+    }
   };
 
   return (

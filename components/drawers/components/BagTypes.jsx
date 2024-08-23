@@ -1,19 +1,21 @@
 import React, { useState } from "react";
 
-const BagTypes = () => {
-  const [selectedBagType, setSelectedBagType] = useState(null);
+const BagTypes = ({ selectedBagType, setSelectedBagType }) => {
   const bagTypes = [
     {
       type: "Surprise",
       image: "/surprise.png",
+      img: "https://firebasestorage.googleapis.com/v0/b/foodie-finder-ee1d8.appspot.com/o/box1.png?alt=media&token=1786ee59-09c2-46ba-a4a6-8aeab31d4535",
     },
     {
       type: "Large",
       image: "/large.png",
+      img: "https://firebasestorage.googleapis.com/v0/b/foodie-finder-ee1d8.appspot.com/o/box2.png?alt=media&token=f7fdb328-c8db-4130-9d5d-7206bbfee479",
     },
     {
       type: "Small",
       image: "/small.png",
+      img: "https://firebasestorage.googleapis.com/v0/b/foodie-finder-ee1d8.appspot.com/o/box3.png?alt=media&token=f70fb9b4-390d-4d7b-9b98-546ca588a867",
     },
   ];
 

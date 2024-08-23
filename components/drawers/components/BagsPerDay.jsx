@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 
-const BagsPerDay = () => {
-  const [numberOfBags, setNumberOfBags] = useState(0);
-
+const BagsPerDay = ({ numberOfBags, setNumberOfBags }) => {
   const handleIncrease = () => {
     setNumberOfBags((prevCount) => prevCount + 1);
   };

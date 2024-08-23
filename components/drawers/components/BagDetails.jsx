@@ -1,11 +1,19 @@
 import { Textarea } from "@headlessui/react";
 import React, { useState } from "react";
 
-const BagDetails = () => {
+const BagDetails = ({
+  selectedTags,
+  selectedCategories,
+  setSelectedTags,
+  setSelectedCategories,
+  description,
+  setDescription,
+  stock,
+  setStock,
+}) => {
   const [tagInput, setTagInput] = useState("");
   const [categoryInput, setCategoryInput] = useState("");
-  const [selectedTags, setSelectedTags] = useState([]);
-  const [selectedCategories, setSelectedCategories] = useState([]);
+
   const [showTagOptions, setShowTagOptions] = useState(false);
   const [showCategoryOptions, setShowCategoryOptions] = useState(false);
   const handleTagInputChange = (e) => {
@@ -66,6 +74,8 @@ const BagDetails = () => {
         className="block w-full placeholder:font-bold resize-none rounded-lg border border-gray-300 py-3 px-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
         rows={6}
         placeholder="Description..."
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
       />
       <div className="mt-3 border border-gray-300 p-2 rounded-md">
         <div
@@ -106,7 +116,7 @@ const BagDetails = () => {
           </div>
         )}
       </div>
-      <div className="mt-3 border border-gray-300 p-2 rounded-md">
+      {/* <div className="mt-3 border border-gray-300 p-2 rounded-md">
         <div
           className={`flex flex-wrap gap-2 ${
             selectedCategories.length > 0 && "mb-3"
@@ -144,6 +154,16 @@ const BagDetails = () => {
             ))}
           </div>
         )}
+      </div> */}
+      <div className="relative flex mt-3 items-center">
+        <input
+          className="block w-full  placeholder:font-bold rounded-lg border border-gray-300 py-5 px-5 text-md text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
+          placeholder="Quantity"
+          value={stock}
+          type="number"
+          onChange={(e) => setStock(e.target.value)}
+        />
+        <span className="absolute right-3 text-black font-bold"></span>
       </div>
     </>
   );

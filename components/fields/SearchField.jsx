@@ -1,12 +1,14 @@
 "use client";
-import { magnifierSvg, searchSvg } from "../../svgs";
+import { magnifierSvg } from "../../svgs";
 import React, { useState } from "react";
 
-const SearchField = (props) => {
+const SearchField = ({ placeholder, setSearchTerm }) => {
   const [search, setSearch] = useState("");
 
   const handleSearchChange = (e) => {
-    setSearch(e.target.value);
+    const value = e.target.value;
+    setSearch(value);
+    setSearchTerm(value);
   };
 
   return (
@@ -14,7 +16,7 @@ const SearchField = (props) => {
       {magnifierSvg}
       <input
         type="text"
-        placeholder={props.placeholder}
+        placeholder={placeholder}
         value={search}
         onChange={handleSearchChange}
         className="bg-grayFive w-full rounded-full p-2 pl-4 text-sm text-black text-opacity-45 placeholder:text-sm placeholder-grayFour focus:outline-none"

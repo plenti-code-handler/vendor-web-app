@@ -51,7 +51,7 @@ const BussinessHeader = () => {
         <div className="mx-auto flex p-2 items-center justify-between py-5">
           <img alt="Foodie Finder Logo" src={appLogoUrl} />
           <div className="flex lg:hidden gap-3 items-center">
-            <ProfileDropdown />
+            {/* <ProfileDropdown /> */}
             <button
               onClick={toggleMenu}
               className="text-gray-900 hover:text-gray-700 focus:outline-none"

@@ -7,7 +7,7 @@ import { storage } from "../../app/firebase/config";
 
 export const registerUser = createAsyncThunk(
   "auth/registerUser",
-  async ({ email, password, name, loc, desc, img }, thunkAPI) => {
+  async ({ email, password, name, loc, desc, img, point }, thunkAPI) => {
     try {
       // Create user with email and password
       const userCredential = await createUserWithEmailAndPassword(
@@ -17,8 +17,40 @@ export const registerUser = createAsyncThunk(
       );
       const user = userCredential.user;
 
-      // Prepare user data to be stored in Firestore
-      const userData = {
+      const placeholderImage =
+        "https://firebasestorage.googleapis.com/v0/b/foodie-finder-ee1d8.appspot.com/o/person.png?alt=media&token=3d046313-6334-44cd-abf5-1345111c9cee";
+
+      let userData = {};
+
+      if (img === placeholderImage) {
+        userData = {
+          email,
+          img,
+          name,
+          loc,
+          desc,
+          role: "vendor",
+          pass: password,
+          bags: 0,
+          rating: 0,
+          status: false,
+          point,
+          otp: 1234,
+          uid: user.uid,
+        };
+
+        const myCollection = collection(db, "users");
+
+        // Define the document reference
+        const myDocRef = doc(myCollection, user.uid);
+
+        // Add or update the document
+        await setDoc(myDocRef, userData);
+
+        return;
+      }
+
+      userData = {
         email,
         name,
         loc,
@@ -28,9 +60,11 @@ export const registerUser = createAsyncThunk(
         bags: 0,
         rating: 0,
         status: false,
-
+        point,
         otp: 1234, // Assuming OTP is fixed; otherwise, generate it dynamically
       };
+
+      // Prepare user data to be stored in Firestore
 
       const storageRef = ref(storage, `profile_images/${img.name}`);
 
@@ -78,6 +112,7 @@ export const registerUser = createAsyncThunk(
 const initialState = {
   email: "",
   password: "",
+  otp: "",
   profile: {
     img: "",
     name: "",
@@ -95,6 +130,9 @@ export const registerUserSlice = createSlice({
     },
     setRegisterPassword: (state, action) => {
       state.password = action.payload;
+    },
+    setOtpCode: (state, action) => {
+      state.otp = action.payload;
     },
     setProfile: {
       reducer: (state, action) => {
@@ -117,6 +155,6 @@ export const registerUserSlice = createSlice({
   },
 });
 
-export const { setRegisterEmail, setRegisterPassword, setProfile } =
+export const { setRegisterEmail, setOtpCode, setRegisterPassword, setProfile } =
   registerUserSlice.actions;
 export default registerUserSlice.reducer;
