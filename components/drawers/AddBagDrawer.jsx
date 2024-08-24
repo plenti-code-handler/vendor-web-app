@@ -13,13 +13,40 @@ import BagDetails from "./components/BagDetails";
 import BagsPerDay from "./components/BagsPerDay";
 import DateSelection from "./components/DateSelection";
 import BagPricing from "./components/BagPricing";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { db } from "../../app/firebase/config";
-import { addDoc, collection } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  getDocs,
+  limit,
+  orderBy,
+  query,
+} from "firebase/firestore";
 import { getUserLocal } from "../../redux/slices/loggedInUserSlice";
-import { title } from "process";
+import { BagsContext } from "../../contexts/BagsContext";
+
+const bagTypes = [
+  {
+    type: "Surprise",
+    image: "/surprise.png",
+    img: "https://firebasestorage.googleapis.com/v0/b/foodie-finder-ee1d8.appspot.com/o/box1.png?alt=media&token=1786ee59-09c2-46ba-a4a6-8aeab31d4535",
+  },
+  {
+    type: "Large",
+    image: "/large.png",
+    img: "https://firebasestorage.googleapis.com/v0/b/foodie-finder-ee1d8.appspot.com/o/box2.png?alt=media&token=f7fdb328-c8db-4130-9d5d-7206bbfee479",
+  },
+  {
+    type: "Small",
+    image: "/small.png",
+    img: "https://firebasestorage.googleapis.com/v0/b/foodie-finder-ee1d8.appspot.com/o/box3.png?alt=media&token=f70fb9b4-390d-4d7b-9b98-546ca588a867",
+  },
+];
 
 const AddBagDrawer = () => {
+  const { setBags, setFilteredBags, setLastVisible } = useContext(BagsContext);
+
   const [selectedBag, setSelectedBag] = useState({});
   const [selectedTags, setSelectedTags] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -46,13 +73,9 @@ const AddBagDrawer = () => {
     setNumberOfBags(0);
     setPricing("");
     setOriginalPrice("");
-    setStartTime("");
-    setEndTime("");
     setDealTitle("");
     setStock("");
   };
-
-  console.log(user);
 
   const handleSubmitBag = async () => {
     try {
@@ -86,6 +109,21 @@ const AddBagDrawer = () => {
 
       // Optionally, reset the form state after successful submission
       resetForm();
+      const colRef = collection(db, "bags");
+      const q = query(colRef, orderBy("title"), limit(10)); // Adjust limit as needed
+
+      const allBagsSnapshot = await getDocs(q);
+
+      const bagsData = allBagsSnapshot.docs.map((doc) => ({
+        id: doc.id, // Extract the ID here
+        ...doc.data(), // Spread the rest of the document data
+      }));
+      const lastDoc = allBagsSnapshot.docs[allBagsSnapshot.docs.length - 1];
+
+      setBags(bagsData);
+      setFilteredBags(bagsData);
+      setLastVisible(lastDoc);
+      dispatch(setOpenDrawer(false));
     } catch (error) {
       console.error("Error adding document: ", error);
     }
@@ -122,6 +160,7 @@ const AddBagDrawer = () => {
                   <BagTypes
                     selectedBag={selectedBag}
                     setSelectedBag={setSelectedBag}
+                    bagTypes={bagTypes}
                   />
                   <BagDetails
                     description={description}

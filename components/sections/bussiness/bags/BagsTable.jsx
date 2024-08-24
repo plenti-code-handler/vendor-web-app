@@ -1,10 +1,14 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import Image from "next/image";
 // import { bags } from "../../../../lib/constant_data";
 import { deleteSvg, editSvg } from "../../../../svgs";
 import { useDispatch } from "react-redux";
-import { setOpenDrawer } from "../../../../redux/slices/editBagSlice";
+import {
+  setBagToUpdate,
+  setOpenDrawer,
+  updateBagsList,
+} from "../../../../redux/slices/editBagSlice";
 import LoadMoreButton from "../../../buttons/LoadMoreButton";
 import {
   collection,
@@ -17,6 +21,7 @@ import {
   startAfter,
 } from "firebase/firestore";
 import { db } from "../../../../app/firebase/config";
+import { BagsContext } from "../../../../contexts/BagsContext";
 
 const BagsTable = () => {
   const dispatch = useDispatch();
@@ -33,10 +38,19 @@ const BagsTable = () => {
     }
   };
 
-  const [bags, setBags] = useState([]);
-  const [filteredBookings, setFilteredBags] = useState([]);
+  const {
+    bags,
+    lastVisible,
+    filteredBookings,
+    setBags,
+    setFilteredBags,
+    setLastVisible,
+  } = useContext(BagsContext);
+
+  // const [bags, setBags] = useState([]);
+  // const [filteredBookings, setFilteredBags] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [lastVisible, setLastVisible] = useState(null);
+  // const [lastVisible, setLastVisible] = useState(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -100,7 +114,8 @@ const BagsTable = () => {
       setLoading(false);
     }
   };
-  const handleEditClick = () => {
+  const handleEditClick = async (bag) => {
+    dispatch(setBagToUpdate(bag));
     dispatch(setOpenDrawer(true));
   };
 
@@ -196,7 +211,7 @@ const BagsTable = () => {
               <td className="truncate text-center">
                 <div className="flex flex-row justify-center">
                   <button
-                    onClick={() => handleEditClick()}
+                    onClick={() => handleEditClick(bag)}
                     className="rounded-md bg-tableButtonBackground p-2 hover:bg-gray-200 hover:p-2"
                   >
                     {editSvg}

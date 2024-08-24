@@ -45,11 +45,13 @@ export const loginUser = createAsyncThunk(
 
 export const getUserLocal = () => {
   try {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (user !== null) {
-      return user;
-    } else {
-      return null;
+    if (typeof window !== "undefined") {
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (user !== null) {
+        return user;
+      } else {
+        return null;
+      }
     }
   } catch (err) {
     console.log("Error getting user:", err);
