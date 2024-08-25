@@ -22,6 +22,7 @@ import {
   orderBy,
   query,
   updateDoc,
+  where,
 } from "firebase/firestore";
 import { db } from "../../app/firebase/config";
 import { getUserLocal } from "../../redux/slices/loggedInUserSlice";
@@ -130,13 +131,17 @@ const EditBagDrawer = () => {
       // Optionally, reset the form state after successful submission
       resetForm();
       const colRef = collection(db, "bags");
-      const q = query(colRef, orderBy("title"), limit(10)); // Adjust limit as needed
+      const q = query(
+        colRef,
+        where("resuid", "==", user.uid), // Adjusted field to resuid
+        // orderBy("time"),
+        limit(10)
+      );
 
       const allBagsSnapshot = await getDocs(q);
-
       const bagsData = allBagsSnapshot.docs.map((doc) => ({
-        id: doc.id, // Extract the ID here
-        ...doc.data(), // Spread the rest of the document data
+        id: doc.id,
+        ...doc.data(),
       }));
       const lastDoc = allBagsSnapshot.docs[allBagsSnapshot.docs.length - 1];
 

@@ -19,29 +19,20 @@ import {
   orderBy,
   query,
   startAfter,
+  where,
 } from "firebase/firestore";
 import { db } from "../../../../app/firebase/config";
 import { BagsContext } from "../../../../contexts/BagsContext";
+import { getUserLocal } from "../../../../redux/slices/loggedInUserSlice";
+import TableUpper from "./TableUpper";
 
 const BagsTable = () => {
   const dispatch = useDispatch();
-  const decideStyle = (status) => {
-    switch (status) {
-      case "active":
-        return "bg-pinkBgOne text-pinkTextOne";
-      case "past":
-        return "bg-grayFive text-grayFour";
-      case "scheduled":
-        return "bg-scheduledBg text-badgeScheduled";
-      default:
-        break;
-    }
-  };
 
   const {
     bags,
     lastVisible,
-    filteredBookings,
+    filteredBags,
     setBags,
     setFilteredBags,
     setLastVisible,
@@ -52,30 +43,62 @@ const BagsTable = () => {
   const [searchTerm, setSearchTerm] = useState("");
   // const [lastVisible, setLastVisible] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState({});
+  const [onStatusChange, setOnStatusChange] = useState("");
 
   useEffect(() => {
-    fetchInitialBags();
+    const localUser = getUserLocal();
+    setUser(localUser);
   }, []);
 
-  const fetchInitialBags = async () => {
-    const colRef = collection(db, "bags");
-    const q = query(colRef, orderBy("title"), limit(10)); // Adjust limit as needed
+  useEffect(() => {
+    if (user && user.uid) {
+      // Ensure the user and user.uid are available
+      const fetchInitialBags = async () => {
+        try {
+          const colRef = collection(db, "bags");
+          const q = query(
+            colRef,
+            where("resuid", "==", user.uid), // Adjusted field to resuid
+            // orderBy("time"),
+            limit(10)
+          );
 
-    const allBagsSnapshot = await getDocs(q);
+          const allBagsSnapshot = await getDocs(q);
+          const bagsData = allBagsSnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          const lastDoc = allBagsSnapshot.docs[allBagsSnapshot.docs.length - 1];
 
-    const bagsData = allBagsSnapshot.docs.map((doc) => ({
-      id: doc.id, // Extract the ID here
-      ...doc.data(), // Spread the rest of the document data
-    }));
-    const lastDoc = allBagsSnapshot.docs[allBagsSnapshot.docs.length - 1];
+          setBags(bagsData);
+          setFilteredBags(bagsData);
+          setLastVisible(lastDoc);
+        } catch (error) {
+          console.error("Error fetching bookings:", error);
+        }
+      };
 
-    setBags(bagsData);
-    setFilteredBags(bagsData);
-    setLastVisible(lastDoc);
-  };
+      fetchInitialBags();
+    } else {
+      console.log("user or user.uid is undefined:", user);
+    }
+  }, [user, setBags, setFilteredBags, setLastVisible]);
+
+  useEffect(() => {
+    if (searchTerm === "") {
+      setFilteredBags(bags);
+    } else {
+      const filtered = bags.filter(
+        (bag) =>
+          bag.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          bag.type.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredBags(filtered);
+    }
+  }, [searchTerm, bags]);
 
   const fetchMoreBags = async () => {
-    // Prevent the function from running if it’s already loading
     if (loading) return;
 
     try {
@@ -86,28 +109,40 @@ const BagsTable = () => {
 
       if (lastVisible) {
         // If lastVisible exists, start after it
-        q = query(colRef, orderBy("title"), startAfter(lastVisible), limit(10));
+        q = query(
+          colRef,
+          where("resuid", "==", user.uid),
+          // orderBy("time"),
+          startAfter(lastVisible),
+          limit(10)
+        );
       } else {
         // If lastVisible is null, just order and limit
-        q = query(colRef, orderBy("title"), limit(10));
+        q = query(
+          colRef,
+          where("resuid", "==", user.uid),
+          // orderBy("time"),
+          limit(10)
+        );
       }
 
       const allBagsSnapshot = await getDocs(q);
 
-      // Handle empty snapshots (end of collection)
       if (allBagsSnapshot.empty) {
         console.log("No more bags to fetch");
         setLoading(false);
         return;
       }
 
-      const bagsData = allBagsSnapshot.docs.map((doc) => doc.data());
+      const bagsData = allBagsSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
       const lastDoc = allBagsSnapshot.docs[allBagsSnapshot.docs.length - 1];
 
-      // Update state with new data
       setBags((prevBags) => [...prevBags, ...bagsData]);
       setFilteredBags((prevBags) => [...prevBags, ...bagsData]);
-      setLastVisible(lastDoc); // Set the last visible document for pagination
+      setLastVisible(lastDoc);
     } catch (error) {
       console.error("Error fetching more bags:", error);
     } finally {
@@ -120,16 +155,22 @@ const BagsTable = () => {
   };
 
   const handleDelete = async (id) => {
+    // Reference to the document to be deleted
     const docRef = doc(db, "bags", id);
     await deleteDoc(docRef);
+
     const colRef = collection(db, "bags");
-    const q = query(colRef, orderBy("title"), limit(10)); // Adjust limit as needed
+    const q = query(
+      colRef,
+      where("resuid", "==", user.uid), // Adjusted field to resuid
+      // orderBy("time"),
+      limit(10)
+    );
 
     const allBagsSnapshot = await getDocs(q);
-
     const bagsData = allBagsSnapshot.docs.map((doc) => ({
-      id: doc.id, // Extract the ID here
-      ...doc.data(), // Spread the rest of the document data
+      id: doc.id,
+      ...doc.data(),
     }));
     const lastDoc = allBagsSnapshot.docs[allBagsSnapshot.docs.length - 1];
 
@@ -138,8 +179,43 @@ const BagsTable = () => {
     setLastVisible(lastDoc);
   };
 
+  const onFilterChange = (status) => {
+    setOnStatusChange(status);
+
+    const getStatus = (dateArray) => {
+      const now = new Date();
+
+      for (let dateObj of dateArray) {
+        const { date, starttime, endtime } = dateObj;
+        const startDateTime = new Date(`${date}T${starttime}`);
+        const endDateTime = new Date(`${date}T${endtime}`);
+
+        if (now >= startDateTime && now <= endDateTime) {
+          return "active";
+        } else if (now < startDateTime) {
+          return "scheduled";
+        }
+      }
+
+      return "past";
+    };
+
+    const filtered = bags.filter((bag) => {
+      const statusFromDates = getStatus(bag.date); // Assuming bag.dates is the array of date objects
+      return statusFromDates === status || status === ""; // Include all if status is empty
+    });
+
+    setFilteredBags(filtered);
+  };
+
   return (
     <div className="no-scrollbar w-full  overflow-y-hidden">
+      <TableUpper
+        selectedFilter={onStatusChange}
+        onFilterChange={onFilterChange}
+        setSearchTerm={setSearchTerm}
+      />
+
       <table className="w-full table-auto truncate overflow-hidden bg-white">
         <thead>
           <tr className="border-b-[1px] border-grayOne border-dashed border-opacity-45 text-sm font-semibold text-grayOne">
@@ -155,7 +231,7 @@ const BagsTable = () => {
           </tr>
         </thead>
         <tbody>
-          {bags.map((bag, index) => (
+          {filteredBags.map((bag, index) => (
             <tr
               key={index}
               className="cursor-pointer border-b-[1px] border-[#E4E4E4] border-dashed hover:bg-[#f8f7f7]"
@@ -200,13 +276,7 @@ const BagsTable = () => {
                 </p>
               </td>
               <td className="truncate text-center px-2">
-                {/* <div
-                  className={`mx-auto ${decideStyle(
-                    bag.status.toLowerCase()
-                  )} font-semibold rounded-[4px] text-[12px] w-[77px] h-[26px] p-1`}
-                >
-                  <p>{bag.status}</p>
-                </div> */}
+                <RenderStatus dates={bag.date} />
               </td>
               <td className="truncate text-center">
                 <div className="flex flex-row justify-center">
@@ -234,3 +304,56 @@ const BagsTable = () => {
 };
 
 export default BagsTable;
+
+const RenderStatus = ({ dates }) => {
+  console.log(dates);
+
+  const decideStyle = (status) => {
+    switch (status) {
+      case "active":
+        return "bg-pinkBgOne text-pinkTextOne";
+      case "past":
+        return "bg-grayFive text-grayFour";
+      case "scheduled":
+        return "bg-scheduledBg text-badgeScheduled";
+      default:
+        return "";
+    }
+  };
+
+  // Function to determine status based on current date and time
+  const getStatus = (dateObj) => {
+    const now = new Date();
+    const { date, starttime, endtime } = dateObj;
+    const startDateTime = new Date(`${date}T${starttime}`);
+    const endDateTime = new Date(`${date}T${endtime}`);
+
+    if (now >= startDateTime && now <= endDateTime) {
+      return "active";
+    } else if (now < startDateTime) {
+      return "scheduled";
+    } else {
+      return "past";
+    }
+  };
+
+  return (
+    <div>
+      {dates.map((dateObj, index) => {
+        const status = getStatus(dateObj);
+        console.log(status);
+
+        return (
+          <div
+            key={index}
+            className={`mx-auto ${decideStyle(
+              status
+            )} font-semibold rounded-[4px] text-[12px] w-[77px] h-[26px] p-1`}
+          >
+            <p>{status.charAt(0).toUpperCase() + status.slice(1)}</p>
+          </div>
+        );
+      })}
+    </div>
+  );
+};

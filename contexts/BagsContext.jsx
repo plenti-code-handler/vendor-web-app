@@ -4,7 +4,7 @@ export const BagsContext = createContext();
 
 export const BagsProvider = ({ children }) => {
   const [bags, setBags] = useState([]);
-  const [filteredBookings, setFilteredBags] = useState([]);
+  const [filteredBags, setFilteredBags] = useState([]);
   const [lastVisible, setLastVisible] = useState(null);
 
   return (
@@ -12,7 +12,7 @@ export const BagsProvider = ({ children }) => {
       value={{
         bags,
         lastVisible,
-        filteredBookings,
+        filteredBags,
         setBags,
         setFilteredBags,
         setLastVisible,

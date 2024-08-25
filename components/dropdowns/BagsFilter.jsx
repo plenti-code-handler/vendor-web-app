@@ -10,19 +10,20 @@ const BagsFilter = ({ selectedFilter, onFilterChange }) => {
           value={selectedFilter}
           onChange={(e) => onFilterChange(e.target.value)}
         >
-          <option value="All Bags" className="text-base">
+          <option value="" className="text-base">
             All Bags
           </option>
-          <option value="Scheduled Bags" className="text-base">
+          <option value="scheduled" className="text-base">
             Scheduled Bags
           </option>
-          <option value="Active Bags" className="text-base">
+          <option value="active" className="text-base">
             Active Bags
           </option>
-          <option value="Past Bags" className="text-base">
+          <option value="past" className="text-base">
             Past Bags
           </option>
         </select>
+
         <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
           {arrowDownGray}
         </div>
