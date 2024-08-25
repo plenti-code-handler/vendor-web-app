@@ -11,8 +11,12 @@ import {
   orderBy,
   limit,
   startAfter,
+  where,
+  getDoc,
+  doc,
 } from "firebase/firestore";
 import LoadMoreButton from "../../../buttons/LoadMoreButton";
+import { getUserLocal } from "../../../../redux/slices/loggedInUserSlice";
 
 const RecentOrders = () => {
   const [bookings, setBookings] = useState([]);
@@ -20,10 +24,63 @@ const RecentOrders = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [lastVisible, setLastVisible] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState({});
 
   useEffect(() => {
-    fetchInitialBookings();
+    const localUser = getUserLocal();
+    setUser(localUser);
   }, []);
+
+  useEffect(() => {
+    if (user && user.uid) {
+      // Ensure the user and user.uid are available
+      const fetchInitialBookings = async () => {
+        try {
+          const colRef = collection(db, "bookings");
+          const q = query(
+            colRef,
+            where("vendorid", "==", user.uid),
+            // orderBy("time"),
+            limit(10)
+          );
+
+          const allBookingsSnapshot = await getDocs(q);
+          const bookingsData = await Promise.all(
+            allBookingsSnapshot.docs.map(async (entry) => {
+              const booking = entry.data();
+
+              // Fetch user data based on the user ID in the booking
+              const userDocRef = doc(db, "users", booking.uid); // Assuming booking.uid is the field for user ID
+              const userDocSnap = await getDoc(userDocRef);
+
+              if (userDocSnap.exists()) {
+                const userData = userDocSnap.data();
+                return {
+                  ...booking,
+                  user: userData, // Merge user data with booking
+                };
+              } else {
+                console.log("User data not found for UID:", booking.uid);
+                return booking; // Return booking without user data if not found
+              }
+            })
+          );
+          const lastDoc =
+            allBookingsSnapshot.docs[allBookingsSnapshot.docs.length - 1];
+
+          setBookings(bookingsData);
+          setFilteredBookings(bookingsData);
+          setLastVisible(lastDoc);
+        } catch (error) {
+          console.error("Error fetching bookings:", error);
+        }
+      };
+
+      fetchInitialBookings();
+    } else {
+      console.log("user or user.uid is undefined:", user);
+    }
+  }, [user]);
 
   useEffect(() => {
     if (searchTerm === "") {
@@ -31,26 +88,14 @@ const RecentOrders = () => {
     } else {
       const filtered = bookings.filter(
         (booking) =>
-          booking.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          booking.user.username
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
           booking.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setFilteredBookings(filtered);
     }
   }, [searchTerm, bookings]);
-
-  const fetchInitialBookings = async () => {
-    const colRef = collection(db, "bookings");
-    const q = query(colRef, orderBy("time"), limit(10)); // Adjust limit as needed
-
-    const allBookingsSnapshot = await getDocs(q);
-    const bookingsData = allBookingsSnapshot.docs.map((doc) => doc.data());
-    const lastDoc =
-      allBookingsSnapshot.docs[allBookingsSnapshot.docs.length - 1];
-
-    setBookings(bookingsData);
-    setFilteredBookings(bookingsData);
-    setLastVisible(lastDoc);
-  };
 
   const fetchMoreBookings = async () => {
     // Prevent the function from running if it’s already loading
@@ -79,12 +124,33 @@ const RecentOrders = () => {
         return;
       }
 
-      const bookingsData = allBookingsSnapshot.docs.map((doc) => doc.data());
+      const bookingsData = await Promise.all(
+        allBookingsSnapshot.docs.map(async (entry) => {
+          const booking = entry.data();
+
+          // Fetch user data based on the user ID in the booking
+          const userDocRef = doc(db, "users", booking.uid); // Assuming booking.uid is the field for user ID
+          const userDocSnap = await getDoc(userDocRef);
+
+          if (userDocSnap.exists()) {
+            const userData = userDocSnap.data();
+            return {
+              ...booking,
+              user: userData, // Merge user data with booking
+            };
+          } else {
+            console.log("User data not found for UID:", booking.uid);
+            return booking; // Return booking without user data if not found
+          }
+        })
+      );
+
+      // Determine the last document for pagination
       const lastDoc =
         allBookingsSnapshot.docs[allBookingsSnapshot.docs.length - 1];
 
       // Update state with new data
-      setBags((prevBookings) => [...prevBookings, ...bookingsData]);
+      setBookings((prevBookings) => [...prevBookings, ...bookingsData]);
       setFilteredBookings((prevBookings) => [...prevBookings, ...bookingsData]);
       setLastVisible(lastDoc); // Set the last visible document for pagination
     } catch (error) {
@@ -135,7 +201,7 @@ const RecentOrders = () => {
                       </div>
                       <div className="flex flex-col gap-y-1">
                         <p className="text-sm font-medium">
-                          {booking.username}
+                          {booking.user.username}
                         </p>
                       </div>
                     </div>
@@ -174,7 +240,9 @@ const RecentOrders = () => {
                         : "bg-notPickedBg text-notPickedText"
                     } font-semibold rounded-[4px] text-[12px] w-[77px] h-[26px] p-1 `}
                   >
-                    <p>{booking.status === "active" ? "Picked" : "Not Picked"}</p>
+                    <p>
+                      {booking.status === "active" ? "Picked" : "Not Picked"}
+                    </p>
                   </div>
                 </td>
               </tr>
