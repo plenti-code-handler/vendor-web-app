@@ -97,6 +97,7 @@ const AddBagDrawer = () => {
         title: dealTitle,
         stock: Number(stock),
         resuid: user.uid,
+        isgift: false,
         // categories: selectedCategories,
         price: Number(pricing),
         // originalPrice: originalPrice,

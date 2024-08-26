@@ -16,8 +16,11 @@ import {
   startAfter,
   doc,
   updateDoc,
+  where,
+  getDoc,
 } from "firebase/firestore";
 import { db } from "../../../../app/firebase/config";
+import { getUserLocal } from "../../../../redux/slices/loggedInUserSlice";
 
 const BookingsTable = () => {
   const dispatch = useDispatch();
@@ -31,41 +34,44 @@ const BookingsTable = () => {
     await updateDoc(docRef, {
       status: newStatus,
     });
-  };
-
-  const [bookings, setBookings] = useState([]);
-  const [filteredBookings, setFilteredBookings] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [lastVisible, setLastVisible] = useState(null);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    fetchInitialBookings();
-  }, []);
-
-  useEffect(() => {
-    if (searchTerm === "") {
-      setFilteredBookings(bookings);
-    } else {
-      const filtered = bookings.filter(
-        (booking) =>
-          booking.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          booking.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setFilteredBookings(filtered);
-    }
-  }, [searchTerm, bookings]);
-
-  const fetchInitialBookings = async () => {
     const colRef = collection(db, "bookings");
-    const q = query(colRef, orderBy("time"), limit(10)); // Adjust limit as needed
+    const q = query(
+      colRef,
+      where("vendorid", "==", user.uid),
+      // orderBy("time"),
+      limit(10)
+    );
 
     const allBookingsSnapshot = await getDocs(q);
+    const bookingsData = await Promise.all(
+      allBookingsSnapshot.docs.map(async (entry) => {
+        const booking = {
+          id: entry.id, // Include the document ID here
+          ...entry.data(),
+        };
 
-    const bookingsData = allBookingsSnapshot.docs.map((doc) => ({
-      id: doc.id, // Extract the ID here
-      ...doc.data(), // Spread the rest of the document data
-    }));
+        // Fetch user data based on the user ID in the booking
+        const userDocRef = doc(db, "users", booking.uid); // Assuming booking.uid is the field for user ID
+        const userDocSnap = await getDoc(userDocRef);
+
+        const bagDocRef = doc(db, "bags", booking.bagid);
+        const bagDocSnap = await getDoc(bagDocRef);
+
+        if (userDocSnap.exists() && bagDocSnap.exists()) {
+          const userData = userDocSnap.data();
+          const bagData = bagDocSnap.data();
+
+          return {
+            ...booking,
+            user: userData, // Merge user data with booking
+            bag: bagData,
+          };
+        } else {
+          console.log("User data not found for UID:", booking.uid);
+          return booking; // Return booking without user data if not found
+        }
+      })
+    );
     const lastDoc =
       allBookingsSnapshot.docs[allBookingsSnapshot.docs.length - 1];
 
@@ -73,6 +79,94 @@ const BookingsTable = () => {
     setFilteredBookings(bookingsData);
     setLastVisible(lastDoc);
   };
+
+  const [bookings, setBookings] = useState([]);
+  const [filteredBookings, setFilteredBookings] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [lastVisible, setLastVisible] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState({});
+  const [onStatusChange, setOnStatusChange] = useState("");
+  const [bookingFilter, setOnBookingFilter] = useState("");
+
+  useEffect(() => {
+    const localUser = getUserLocal();
+    setUser(localUser);
+  }, []);
+
+  useEffect(() => {
+    if (user && user.uid) {
+      // Ensure the user and user.uid are available
+      const fetchInitialBookings = async () => {
+        try {
+          const colRef = collection(db, "bookings");
+          const q = query(
+            colRef,
+            where("vendorid", "==", user.uid),
+            // orderBy("time"),
+            limit(10)
+          );
+
+          const allBookingsSnapshot = await getDocs(q);
+          const bookingsData = await Promise.all(
+            allBookingsSnapshot.docs.map(async (entry) => {
+              const booking = {
+                id: entry.id, // Include the document ID here
+                ...entry.data(),
+              };
+
+              // Fetch user data based on the user ID in the booking
+              const userDocRef = doc(db, "users", booking.uid); // Assuming booking.uid is the field for user ID
+              const userDocSnap = await getDoc(userDocRef);
+
+              const bagDocRef = doc(db, "bags", booking.bagid);
+              const bagDocSnap = await getDoc(bagDocRef);
+
+              if (userDocSnap.exists() && bagDocSnap.exists()) {
+                const userData = userDocSnap.data();
+                const bagData = bagDocSnap.data();
+                return {
+                  ...booking,
+                  user: userData, // Merge user data with booking
+                  bag: bagData,
+                };
+              } else {
+                console.log("User data not found for UID:", booking.uid);
+                return booking; // Return booking without user data if not found
+              }
+            })
+          );
+          const lastDoc =
+            allBookingsSnapshot.docs[allBookingsSnapshot.docs.length - 1];
+
+          setBookings(bookingsData);
+          setFilteredBookings(bookingsData);
+          setLastVisible(lastDoc);
+        } catch (error) {
+          console.error("Error fetching bookings:", error);
+        }
+      };
+
+      fetchInitialBookings();
+    } else {
+      console.log("user or user.uid is undefined:", user);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (searchTerm === "") {
+      setFilteredBookings(bookings);
+    } else {
+      const filtered = bookings.filter(
+        (booking) =>
+          booking.user.username
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
+          booking.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredBookings(filtered);
+    }
+  }, [searchTerm, bookings]);
 
   const fetchMoreBookings = async () => {
     // Prevent the function from running if it’s already loading
@@ -101,12 +195,42 @@ const BookingsTable = () => {
         return;
       }
 
-      const bookingsData = allBookingsSnapshot.docs.map((doc) => doc.data());
+      const bookingsData = await Promise.all(
+        allBookingsSnapshot.docs.map(async (entry) => {
+          const booking = {
+            id: entry.id, // Include the document ID here
+            ...entry.data(),
+          };
+
+          // Fetch user data based on the user ID in the booking
+          const userDocRef = doc(db, "users", booking.uid); // Assuming booking.uid is the field for user ID
+          const userDocSnap = await getDoc(userDocRef);
+
+          const bagDocRef = doc(db, "bags", booking.bagid);
+          const bagDocSnap = await getDoc(bagDocRef);
+
+          if (userDocSnap.exists() && bagDocSnap.exists()) {
+            const userData = userDocSnap.data();
+            const bagData = bagDocSnap.data();
+
+            return {
+              ...booking,
+              user: userData, // Merge user data with booking
+              bag: bagData,
+            };
+          } else {
+            console.log("User data not found for UID:", booking.uid);
+            return booking; // Return booking without user data if not found
+          }
+        })
+      );
+
+      // Determine the last document for pagination
       const lastDoc =
         allBookingsSnapshot.docs[allBookingsSnapshot.docs.length - 1];
 
       // Update state with new data
-      setBags((prevBookings) => [...prevBookings, ...bookingsData]);
+      setBookings((prevBookings) => [...prevBookings, ...bookingsData]);
       setFilteredBookings((prevBookings) => [...prevBookings, ...bookingsData]);
       setLastVisible(lastDoc); // Set the last visible document for pagination
     } catch (error) {
@@ -116,9 +240,54 @@ const BookingsTable = () => {
     }
   };
 
+  const onBookingFilterChange = (status) => {
+    setOnBookingFilter(status);
+
+    const getStatus = (dateArray) => {
+      const now = new Date();
+
+      for (let dateObj of dateArray) {
+        const { date, starttime, endtime } = dateObj;
+        const startDateTime = new Date(`${date}T${starttime}`);
+        const endDateTime = new Date(`${date}T${endtime}`);
+
+        if (now >= startDateTime && now <= endDateTime) {
+          return "active";
+        } else if (now < startDateTime) {
+          return "scheduled";
+        }
+      }
+      return "past";
+    };
+
+    const filtered = bookings.filter((booking) => {
+      const statusFromDates = getStatus(booking.bag.date);
+      return statusFromDates === status || status === "";
+    });
+
+    setFilteredBookings(filtered);
+  };
+
+  const onFilterChange = (status) => {
+    console.log(bookings);
+    setOnStatusChange(status);
+    if (status === "cancel") {
+      const filtered = bookings.filter((booking) => booking.iscancelled);
+      setFilteredBookings(filtered);
+    } else if (status === "both" || status === "") {
+      setFilteredBookings(bookings); // Show all bookings without filtering
+    }
+  };
+
   return (
     <div className="mt-4 w-full border border-gray-200 rounded-xl p-6 sm:px-4">
-      <TableUpper setSearchTerm={setSearchTerm} />
+      <TableUpper
+        setSearchTerm={setSearchTerm}
+        selectedFilter={onStatusChange}
+        onFilterChange={onFilterChange}
+        bookingFilter={bookingFilter}
+        onBookingFilterChange={onBookingFilterChange}
+      />
       <div className="no-scrollbar w-full overflow-y-hidden">
         <table className="w-full table-auto truncate overflow-hidden bg-white">
           <thead>
@@ -131,7 +300,7 @@ const BookingsTable = () => {
               <th className="pb-[8px] px-2 pt-[18px] text-center">Quantity</th>
               <th className="pb-[8px] px-2 pt-[18px] text-center">Amount</th>
               <th className="pb-[8px] px-2 pt-[18px] text-center">
-                Order Date
+                Scheduled At
               </th>
               <th className="pb-[8px] px-2 pt-[18px] text-center">Status</th>
             </tr>
@@ -157,7 +326,7 @@ const BookingsTable = () => {
                       </div>
                       <div className="flex flex-col gap-y-1">
                         <p className="text-sm font-medium">
-                          {booking.username}
+                          {booking.user.username}
                         </p>
                       </div>
                     </div>

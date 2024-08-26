@@ -10,10 +10,10 @@ const StatusFilter = ({ selectedFilter, onFilterChange }) => {
           value={selectedFilter}
           onChange={(e) => onFilterChange(e.target.value)}
         >
-          <option value="Both Status" className="text-base">
+          <option value="both" className="text-base">
             Both Status
           </option>
-          <option value="Cancel" className="text-base">
+          <option value="cancel" className="text-base">
             Cancel
           </option>
         </select>

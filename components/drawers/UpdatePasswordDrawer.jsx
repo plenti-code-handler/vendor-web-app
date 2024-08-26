@@ -10,19 +10,82 @@ import { setOpenDrawer } from "../../redux/slices/updatePasswordSlice";
 import { crossIconSvg } from "../../svgs";
 import PasswordField from "./components/PasswordField";
 import { useState } from "react";
+import {
+  EmailAuthProvider,
+  getAuth,
+  reauthenticateWithCredential,
+  updatePassword as updateFirebasePassword,
+} from "firebase/auth";
+import { db } from "../../app/firebase/config";
+import { doc, updateDoc } from "firebase/firestore";
+import { logoutUser } from "../../redux/slices/loggedInUserSlice";
+import { useRouter } from "next/navigation";
 
 const UpdatePasswordDrawer = () => {
   const dispatch = useDispatch();
   const open = useSelector((state) => state.updatePassword.drawerOpen);
 
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
+
   const [showFields, setShowFields] = useState(false);
+
+  const auth = getAuth();
+  const user = auth.currentUser;
 
   const handleClose = () => {
     dispatch(setOpenDrawer(false));
   };
 
-  const handleContinue = () => {
-    setShowFields(true);
+  const router = useRouter();
+
+  const handleContinue = async () => {
+    if (!user) {
+      setError("No user is logged in.");
+      return;
+    }
+
+    const credential = EmailAuthProvider.credential(user.email, oldPassword);
+
+    try {
+      await reauthenticateWithCredential(user, credential);
+      // Password is correct, proceed to the next step
+      setShowFields(true);
+    } catch (error) {
+      console.error("Incorrect password.");
+    }
+  };
+
+  const updatePassword = async () => {
+    if (newPassword === confirmNewPassword) {
+      try {
+        // Update password in Firebase Authentication
+        await updateFirebasePassword(user, newPassword);
+        console.log("Password updated successfully in Firebase Auth.");
+
+        // Update the password in the Firestore 'users' collection
+        const userDocRef = doc(db, "users", user.uid); // Assuming the user document ID is the user's UID
+        await updateDoc(userDocRef, {
+          pass: newPassword,
+        });
+
+        setOldPassword("");
+        setShowFields(false);
+        setNewPassword("");
+        setConfirmNewPassword("");
+
+        console.log("Password updated successfully in Firestore.");
+        dispatch(setOpenDrawer(false));
+        await auth.signOut();
+        dispatch(logoutUser());
+        router.push("/");
+      } catch (error) {
+        console.error("Error updating password:", error);
+      }
+    } else {
+      console.error("New password and confirm password do not match.");
+    }
   };
 
   return (
@@ -62,7 +125,10 @@ const UpdatePasswordDrawer = () => {
                           <p className="text-blackFour font-semibold text-[15px]">
                             Old Password
                           </p>
-                          <PasswordField />
+                          <PasswordField
+                            value={oldPassword}
+                            onChange={setOldPassword}
+                          />
                         </div>
                         <button
                           onClick={handleContinue}
@@ -78,19 +144,36 @@ const UpdatePasswordDrawer = () => {
                         <p className="text-blackFour font-semibold text-[15px]">
                           New Password
                         </p>
-                        <PasswordField />
+                        <PasswordField
+                          value={newPassword}
+                          onChange={setNewPassword}
+                        />
                       </div>
                       <div className="flex flex-col space-y-2">
                         <p className="text-blackFour font-semibold text-[15px]">
                           Confirm New Password
                         </p>
-                        <PasswordField />
+                        <PasswordField
+                          value={confirmNewPassword}
+                          onChange={setConfirmNewPassword}
+                        />
                       </div>
                       <div className="flex gap-5 pt-5">
-                        <button className="flex justify-center bg-white text-black border border-black font-md py-2  rounded hover:bg-grayTwo gap-2 w-[100%]">
+                        <button
+                          onClick={() => {
+                            setOldPassword("");
+                            setShowFields(false);
+                            setNewPassword("");
+                            setConfirmNewPassword("");
+                          }}
+                          className="flex justify-center bg-white text-black border border-black font-md py-2  rounded hover:bg-grayTwo gap-2 w-[100%]"
+                        >
                           Cancel
                         </button>
-                        <button className="flex justify-center bg-pinkBgDark text-white font-md py-2  rounded hover:bg-pinkBgDarkHover2 gap-2 w-[100%]">
+                        <button
+                          onClick={updatePassword}
+                          className="flex justify-center bg-pinkBgDark text-white font-md py-2  rounded hover:bg-pinkBgDarkHover2 gap-2 w-[100%]"
+                        >
                           Update
                         </button>
                       </div>

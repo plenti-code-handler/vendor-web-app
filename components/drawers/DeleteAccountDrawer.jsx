@@ -9,6 +9,17 @@ import { useDispatch, useSelector } from "react-redux";
 import { setOpenDrawer } from "../../redux/slices/deleteAccountSlice";
 import { crossIconSvg, deleteUserSvg } from "../../svgs";
 import PasswordField from "./components/PasswordField";
+import { useState } from "react";
+import {
+  deleteUser,
+  EmailAuthProvider,
+  getAuth,
+  reauthenticateWithCredential,
+} from "firebase/auth";
+import { db } from "../../app/firebase/config";
+import { deleteDoc, doc } from "firebase/firestore";
+import { logoutUser } from "../../redux/slices/loggedInUserSlice";
+import { useRouter } from "next/navigation";
 
 const DeleteAccountDrawer = () => {
   const dispatch = useDispatch();
@@ -16,6 +27,39 @@ const DeleteAccountDrawer = () => {
 
   const handleClose = () => {
     dispatch(setOpenDrawer(false));
+  };
+
+  const router = useRouter();
+
+  const [password, setPassword] = useState("");
+
+  const auth = getAuth();
+  const user = auth.currentUser;
+
+  const handlePasswordDelete = async () => {
+    if (!user) {
+      setError("No user is logged in.");
+      return;
+    }
+
+    const credential = EmailAuthProvider.credential(user.email, password);
+
+    try {
+      await reauthenticateWithCredential(user, credential);
+      // Delete the user from Firebase Authentication
+      await deleteUser(user);
+      console.log("User account deleted successfully.");
+
+      // Delete the user's record from Firestore
+      const userDocRef = doc(db, "users", user.uid); // Assuming the user document ID is the user's UID
+      await deleteDoc(userDocRef);
+      dispatch(setOpenDrawer(false));
+      await auth.signOut();
+      dispatch(logoutUser());
+      router.push("/");
+    } catch (error) {
+      console.error("Incorrect password.");
+    }
   };
 
   return (
@@ -61,14 +105,20 @@ const DeleteAccountDrawer = () => {
                     <p className="text-blackFour font-semibold text-[15px]">
                       Enter Your Password
                     </p>
-                    <PasswordField />
+                    <PasswordField value={password} onChange={setPassword} />
                   </div>
 
                   <div className="flex gap-5 pt-5">
-                    <button className="flex justify-center bg-white text-black border border-black font-md py-2  rounded hover:bg-grayTwo gap-2 w-[100%]">
+                    <button
+                      onClick={() => setPassword("")}
+                      className="flex justify-center bg-white text-black border border-black font-md py-2  rounded hover:bg-grayTwo gap-2 w-[100%]"
+                    >
                       Cancel
                     </button>
-                    <button className="flex justify-center bg-redOne text-white font-md py-2  rounded hover:bg-redOne-600 gap-2 w-[100%]">
+                    <button
+                      onClick={handlePasswordDelete}
+                      className="flex justify-center bg-redOne text-white font-md py-2  rounded hover:bg-redOne-600 gap-2 w-[100%]"
+                    >
                       Delete
                     </button>
                   </div>

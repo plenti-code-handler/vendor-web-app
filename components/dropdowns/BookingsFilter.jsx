@@ -10,13 +10,13 @@ const BookingsFilter = ({ selectedFilter, onFilterChange }) => {
           value={selectedFilter}
           onChange={(e) => onFilterChange(e.target.value)}
         >
-          <option value="Active Bags" className="text-base truncate">
+          <option value="active" className="text-base truncate">
             Active Bags
           </option>
-          <option value="Past Bags" className="text-base truncate">
+          <option value="past" className="text-base truncate">
             Past Bags
           </option>
-          <option value="Scheduled Bags" className="text-base truncate">
+          <option value="scheduled" className="text-base truncate">
             Scheduled Bags
           </option>
         </select>
