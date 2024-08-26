@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { logoutIconAdminSvg } from "../../svgs";
 import Link from "next/link";
@@ -7,10 +7,14 @@ import AdminProfileDropdown from "../dropdowns/AdminProfileDropdown";
 import { setActivePage } from "../../redux/slices/headerSlice";
 import { menuItemsData } from "../../lib/admin_menu";
 import { appLogoUrl } from "../../lib/constant_data";
+import { getUserLocal, logoutUser } from "../../redux/slices/loggedInUserSlice";
+import { auth } from "../../app/firebase/config";
+import { useRouter } from "next/navigation";
 
 const AdminHeader = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [hoveredItem, setHoveredItem] = useState(null);
+  const [user, setUser] = useState({});
   const activePage = useSelector((state) => state.header.activePage);
   const dispatch = useDispatch();
 
@@ -18,8 +22,21 @@ const AdminHeader = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const router = useRouter();
+
   const handleLinkClick = (page) => {
     dispatch(setActivePage(page));
+  };
+
+  useEffect(() => {
+    const user = getUserLocal();
+    setUser(user);
+  }, []);
+
+  const handleLogout = async () => {
+    await auth.signOut();
+    dispatch(logoutUser());
+    router.push("/");
   };
 
   return (
@@ -42,7 +59,7 @@ const AdminHeader = () => {
             <button
               className="text-sm font-semibold leading-6 text-gray-900 p-3 transition-colors duration-200 ease-in-out hover:bg-mainLight hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-mainLight focus:ring-offset-2 rounded-lg"
               title="Logout"
-              // onClick={handleLogout}
+              onClick={handleLogout}
             >
               {logoutIconAdminSvg}
             </button>
@@ -87,17 +104,18 @@ const AdminHeader = () => {
             <div className="flex gap-2">
               <img
                 alt="User"
-                src="/User.png"
+                src={user.imageUrl || "/User.png"}
                 className="lg:h-11 lg:w-11 rounded-md hover:cursor-pointer focus:outline-none"
               />
               <div className="flex flex-col">
                 <p className="text-[14px] font-semibold text-black">
-                  Jacob Jones
+                  {user.name}
                 </p>
                 <p className="text-[12px] font-semibold text-gray-400">Admin</p>
               </div>
             </div>
             <button
+              onClick={handleLogout}
               className="p-2 transition-colors duration-200 ease-in-out hover:bg-gray-200 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2 rounded-lg"
               title="Logout"
             >

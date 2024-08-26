@@ -103,16 +103,26 @@ const RecentOrders = () => {
 
     try {
       setLoading(true);
-
       const colRef = collection(db, "bookings");
-      let q;
 
+      let q;
       if (lastVisible) {
-        // If lastVisible exists, start after it
-        q = query(colRef, orderBy("time"), startAfter(lastVisible), limit(10));
+        // If lastVisible exists, start after it and apply the where clause
+        q = query(
+          colRef,
+          where("vendorid", "==", user.uid),
+          orderBy("time"),
+          startAfter(lastVisible),
+          limit(10)
+        );
       } else {
-        // If lastVisible is null, just order and limit
-        q = query(colRef, orderBy("time"), limit(10));
+        // If lastVisible is null, apply the where clause, order, and limit
+        q = query(
+          colRef,
+          where("vendorid", "==", user.uid),
+          orderBy("time"),
+          limit(10)
+        );
       }
 
       const allBookingsSnapshot = await getDocs(q);
@@ -129,7 +139,7 @@ const RecentOrders = () => {
           const booking = entry.data();
 
           // Fetch user data based on the user ID in the booking
-          const userDocRef = doc(db, "users", booking.uid); // Assuming booking.uid is the field for user ID
+          const userDocRef = doc(db, "users", booking.uid);
           const userDocSnap = await getDoc(userDocRef);
 
           if (userDocSnap.exists()) {

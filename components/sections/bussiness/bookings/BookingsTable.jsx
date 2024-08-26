@@ -180,10 +180,21 @@ const BookingsTable = () => {
 
       if (lastVisible) {
         // If lastVisible exists, start after it
-        q = query(colRef, orderBy("time"), startAfter(lastVisible), limit(10));
+        q = query(
+          colRef,
+          where("vendorid", "==", user.uid),
+          orderBy("time"),
+          startAfter(lastVisible),
+          limit(10)
+        );
       } else {
         // If lastVisible is null, just order and limit
-        q = query(colRef, orderBy("time"), limit(10));
+        q = query(
+          colRef,
+          where("vendorid", "==", user.uid),
+          orderBy("time"),
+          limit(10)
+        );
       }
 
       const allBookingsSnapshot = await getDocs(q);

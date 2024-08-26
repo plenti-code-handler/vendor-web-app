@@ -11,6 +11,15 @@ import {
 } from "../../../../svgs";
 import { useDispatch } from "react-redux";
 import { setActivePage } from "../../../../redux/slices/headerSlice";
+import { db } from "../../../../app/firebase/config";
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  updateDoc,
+} from "firebase/firestore";
 
 const RestaurentBox = () => {
   const [showInput, setShowInput] = useState(false);
@@ -23,11 +32,34 @@ const RestaurentBox = () => {
     dispatch(setActivePage("Categories"));
   }, [dispatch]);
 
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const categoriesCollection = collection(db, "categories");
+
+      try {
+        const querySnapshot = await getDocs(categoriesCollection);
+        const categoriesList = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setCategories(categoriesList);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []); // Re-run the effect if categories state changes
+
   const handlePlusClick = () => {
     if (inputValue) {
-      handleAddCategory();
+      if (editingIndex !== null) {
+        handleEditCategory(editingIndex); // Call the edit handler
+      } else {
+        handleAddCategory(); // Call the add handler
+      }
     } else {
-      setShowInput(true);
+      setShowInput(true); // Show input field if it's hidden
     }
   };
 
@@ -39,27 +71,103 @@ const RestaurentBox = () => {
     setInputValue("");
   };
 
-  const handleAddCategory = () => {
-    if (editingIndex !== null) {
-      const updatedCategories = [...categories];
-      updatedCategories[editingIndex] = inputValue;
-      setCategories(updatedCategories);
-      setEditingIndex(null);
-    } else {
-      setCategories([...categories, inputValue]);
+  const handleAddCategory = async () => {
+    const categoriesCollection = collection(db, "categories");
+
+    try {
+      if (editingIndex !== null) {
+        // Update existing category in Firestore
+        setEditingIndex(null);
+      } else {
+        // Add new category to Firestore
+        await addDoc(categoriesCollection, {
+          name: inputValue,
+        });
+      }
+
+      // Refetch the categories to ensure the data is up-to-date
+      const querySnapshot = await getDocs(categoriesCollection);
+      const categoriesList = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setCategories(categoriesList);
+    } catch (error) {
+      console.error("Error adding/updating category:", error);
     }
+
     setInputValue("");
     setShowInput(false);
   };
 
-  const handleEditCategory = (index) => {
-    setInputValue(categories[index]);
-    setEditingIndex(index);
+  const handleEditCategory = async (id) => {
+    const categoryToUpdate = categories.find((category) => category.id === id);
+
+    // Set the input value to the name of the category being edited
+    setInputValue(categoryToUpdate.name);
+    // Show the input field for editing
     setShowInput(true);
+    // Set the editing index to the ID of the category being edited
+    setEditingIndex(id);
+
+    // Function to handle the actual update in Firestore
+    const handleCategoryUpdate = async () => {
+      try {
+        const categoryDocRef = doc(db, "categories", id);
+        await updateDoc(categoryDocRef, {
+          name: inputValue, // Update the name field in Firestore
+        });
+
+        console.log("Category updated successfully.");
+
+        // Refetch the categories from Firestore to refresh the data
+        const categoriesCollection = collection(db, "categories");
+        const querySnapshot = await getDocs(categoriesCollection);
+        const categoriesList = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setCategories(categoriesList);
+
+        // Reset input and hide input field after update
+        setInputValue("");
+        setEditingIndex(null);
+        setShowInput(false);
+      } catch (error) {
+        console.error("Error updating category:", error);
+      }
+    };
+
+    // Update the category when the user submits the updated name
+    setShowInput(true);
+    setInputValue(categoryToUpdate.name);
+
+    const handleInputConfirm = async () => {
+      if (editingIndex) {
+        await handleCategoryUpdate();
+      }
+    };
+
+    handleInputConfirm();
   };
 
-  const handleDeleteCategory = (index) => {
-    setCategories(categories.filter((_, i) => i !== index));
+  const handleDeleteCategory = async (index) => {
+    try {
+      // Delete the category from Firestore
+      const categoryDocRef = doc(db, "categories", index);
+      await deleteDoc(categoryDocRef);
+
+      // Optionally, refetch the categories to ensure the data is up-to-date
+      const categoriesCollection = collection(db, "categories");
+      const querySnapshot = await getDocs(categoriesCollection);
+      const categoriesList = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setCategories(categoriesList);
+    } catch (error) {
+      console.error("Error deleting category:", error);
+    }
   };
 
   return (
@@ -107,23 +215,25 @@ const RestaurentBox = () => {
       )}
 
       {/* CONTENT BOXES */}
-      {categories.map((category, index) => (
+      {categories.map((category) => (
         <div
-          key={index}
+          key={category.id}
           className={`flex justify-between w-full h-[37px] mb-[1%] p-2 ${
             showInput ? "opacity-30 pointer-events-none" : ""
           }`}
         >
-          <p className="font-semibold text-[14px] text-blackTwo">{category}</p>
+          <p className="font-semibold text-[14px] text-blackTwo">
+            {category.name}
+          </p>
           <div className="flex items-center gap-2">
             <span
-              onClick={() => handleDeleteCategory(index)}
+              onClick={() => handleDeleteCategory(category.id)}
               className="w-[30px] h-[30px] rounded-[6px] bg-gray-200 flex justify-center items-center hover:bg-gray-300 hover:cursor-pointer"
             >
               {deleteSvgSmall}
             </span>
             <span
-              onClick={() => handleEditCategory(index)}
+              onClick={() => handleEditCategory(category.id)}
               className="w-[30px] h-[30px] rounded-[6px] bg-gray-200 flex justify-center items-center hover:bg-gray-300 hover:cursor-pointer"
             >
               {editSvgSmall}
