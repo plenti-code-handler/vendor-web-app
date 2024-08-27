@@ -19,6 +19,9 @@ const BookingsFilter = ({ selectedFilter, onFilterChange }) => {
           <option value="scheduled" className="text-base truncate">
             Scheduled Bags
           </option>
+          <option value="cancel" className="text-base truncate">
+            Cancel
+          </option>
         </select>
         <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 lg:pr-1">
           {arrowDownGray}

@@ -47,7 +47,7 @@ const DateSelection = ({ selectedDates, setSelectedDates }) => {
               <ChevronUpIcon width="20px" height="20px" />
             </div>
             {selectedDates.map((date, index) => (
-              <div key={index} className="flex gap-1">
+              <div key={index} className="flex items-center gap-1">
                 <input
                   type="date"
                   value={date.date || ""}
@@ -75,7 +75,11 @@ const DateSelection = ({ selectedDates, setSelectedDates }) => {
                   className="block placeholder:font-bold rounded-lg border border-gray-300 py-2 px-2 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
                   placeholder="End Time"
                 />
-                <XMarkIcon onClick={() => removeDate(index)} />
+                <XMarkIcon
+                  width={15}
+                  height={15}
+                  onClick={() => removeDate(index)}
+                />
               </div>
             ))}
           </>

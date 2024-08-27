@@ -36,6 +36,14 @@ const Account = () => {
     }
   }, [user]);
 
+  useEffect(() => {
+    if (lat !== null && lng !== null) {
+      setMapUrl(
+        `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${lat},${lng}&zoom=${zoomLevel}`
+      );
+    }
+  }, [lat, lng]);
+
   const zoomLevel = 14;
 
   const [mapUrl, setMapUrl] = useState(

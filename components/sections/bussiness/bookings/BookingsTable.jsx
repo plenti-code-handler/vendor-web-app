@@ -86,13 +86,59 @@ const BookingsTable = () => {
   const [lastVisible, setLastVisible] = useState(null);
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState({});
-  const [onStatusChange, setOnStatusChange] = useState("");
-  const [bookingFilter, setOnBookingFilter] = useState("");
+  const [onStatusChange, setOnStatusChange] = useState("both");
+  const [bookingFilter, setOnBookingFilter] = useState("active");
 
   useEffect(() => {
     const localUser = getUserLocal();
     setUser(localUser);
   }, []);
+
+  const onBookingFilterChange = (status) => {
+    console.log(bookings);
+    setOnBookingFilter(status);
+
+    if (status === "cancel") {
+      const filtered = bookings.filter((booking) => booking.iscancelled);
+      setFilteredBookings(filtered);
+      return;
+    }
+
+    const getStatus = (dateArray) => {
+      const now = new Date();
+
+      for (let dateObj of dateArray) {
+        const { date, starttime, endtime } = dateObj;
+        const startDateTime = new Date(`${date}T${starttime}`);
+        const endDateTime = new Date(`${date}T${endtime}`);
+
+        if (now >= startDateTime && now <= endDateTime) {
+          return "active";
+        } else if (now < startDateTime) {
+          return "scheduled";
+        }
+      }
+      return "past";
+    };
+
+    const filtered = bookings.filter((booking) => {
+      const statusFromDates = getStatus(booking.bag.date);
+      return statusFromDates === status || status === "";
+    });
+
+    setFilteredBookings(filtered);
+  };
+
+  // const onFilterChange = (status) => {
+  //   console.log(bookings);
+  //   setOnStatusChange(status);
+  //   if (status === "cancel") {
+  //     const filtered = bookings.filter((booking) => booking.iscancelled);
+  //     setFilteredBookings(filtered);
+  //   } else if (status === "both" || status === "") {
+  //     setFilteredBookings(bookings); // Show all bookings without filtering
+  //   }
+  // };
 
   useEffect(() => {
     if (user && user.uid) {
@@ -140,7 +186,7 @@ const BookingsTable = () => {
             allBookingsSnapshot.docs[allBookingsSnapshot.docs.length - 1];
 
           setBookings(bookingsData);
-          setFilteredBookings(bookingsData);
+          // setFilteredBookings(bookingsData);
           setLastVisible(lastDoc);
         } catch (error) {
           console.error("Error fetching bookings:", error);
@@ -153,11 +199,12 @@ const BookingsTable = () => {
     }
   }, [user]);
 
+  // Apply search filtering to the already filtered bookings
   useEffect(() => {
     if (searchTerm === "") {
       setFilteredBookings(bookings);
     } else {
-      const filtered = bookings.filter(
+      const filtered = filteredBookings.filter(
         (booking) =>
           booking.user.username
             .toLowerCase()
@@ -166,7 +213,15 @@ const BookingsTable = () => {
       );
       setFilteredBookings(filtered);
     }
-  }, [searchTerm, bookings]);
+  }, [searchTerm]);
+
+  // Apply filters whenever bookings data changes
+  useEffect(() => {
+    if (bookings.length > 0) {
+      // onFilterChange(onStatusChange); // Apply the status filter
+      onBookingFilterChange(bookingFilter); // Apply the booking filter
+    }
+  }, [bookings, bookingFilter]);
 
   const fetchMoreBookings = async () => {
     // Prevent the function from running if it’s already loading
@@ -251,51 +306,12 @@ const BookingsTable = () => {
     }
   };
 
-  const onBookingFilterChange = (status) => {
-    setOnBookingFilter(status);
-
-    const getStatus = (dateArray) => {
-      const now = new Date();
-
-      for (let dateObj of dateArray) {
-        const { date, starttime, endtime } = dateObj;
-        const startDateTime = new Date(`${date}T${starttime}`);
-        const endDateTime = new Date(`${date}T${endtime}`);
-
-        if (now >= startDateTime && now <= endDateTime) {
-          return "active";
-        } else if (now < startDateTime) {
-          return "scheduled";
-        }
-      }
-      return "past";
-    };
-
-    const filtered = bookings.filter((booking) => {
-      const statusFromDates = getStatus(booking.bag.date);
-      return statusFromDates === status || status === "";
-    });
-
-    setFilteredBookings(filtered);
-  };
-
-  const onFilterChange = (status) => {
-    console.log(bookings);
-    setOnStatusChange(status);
-    if (status === "cancel") {
-      const filtered = bookings.filter((booking) => booking.iscancelled);
-      setFilteredBookings(filtered);
-    } else if (status === "both" || status === "") {
-      setFilteredBookings(bookings); // Show all bookings without filtering
-    }
-  };
-
   return (
     <div className="mt-4 w-full border border-gray-200 rounded-xl p-6 sm:px-4">
       <TableUpper
         setSearchTerm={setSearchTerm}
-        selectedFilter={onStatusChange}
-        onFilterChange={onFilterChange}
+        // selectedFilter={onStatusChange}
+        // onFilterChange={onFilterChange}
         bookingFilter={bookingFilter}
         onBookingFilterChange={onBookingFilterChange}
       />
@@ -311,73 +327,80 @@ const BookingsTable = () => {
               <th className="pb-[8px] px-2 pt-[18px] text-center">Quantity</th>
               <th className="pb-[8px] px-2 pt-[18px] text-center">Amount</th>
               <th className="pb-[8px] px-2 pt-[18px] text-center">
-                Scheduled At
+                Order Date
               </th>
               <th className="pb-[8px] px-2 pt-[18px] text-center">Status</th>
             </tr>
           </thead>
           <tbody>
-            {filteredBookings.map((booking, index) => (
-              <tr
-                key={index}
-                className="cursor-pointer border-b-[1px] border-[#E4E4E4] border-dashed hover:bg-[#f8f7f7]"
-              >
-                <td className="truncate pl-2 lg:pl-[5%] pr-2 w-[14.28%]">
-                  <div className="py-3">
-                    <div className="flex flex-row items-center gap-x-2">
-                      <div className="flex h-[40px] w-[40px] items-center justify-center overflow-hidden rounded-full">
-                        <Image
-                          src={booking.userimg ? booking.userimg : "/User.png"}
-                          alt="GetSpouse Logo"
-                          className="h-full w-full object-cover"
-                          width={40}
-                          height={40}
-                          priority
-                        />
-                      </div>
-                      <div className="flex flex-col gap-y-1">
-                        <p className="text-sm font-medium">
-                          {booking.user.username}
-                        </p>
+            {filteredBookings.map((booking, index) => {
+              console.log(booking);
+              return (
+                <tr
+                  key={index}
+                  className="cursor-pointer border-b-[1px] border-[#E4E4E4] border-dashed hover:bg-[#f8f7f7]"
+                >
+                  <td className="truncate pl-2 lg:pl-[5%] pr-2 w-[14.28%]">
+                    <div className="py-3">
+                      <div className="flex flex-row items-center gap-x-2">
+                        <div className="flex h-[40px] w-[40px] items-center justify-center overflow-hidden rounded-full">
+                          <Image
+                            src={
+                              booking.userimg ? booking.userimg : "/User.png"
+                            }
+                            alt="GetSpouse Logo"
+                            className="h-full w-full object-cover"
+                            width={40}
+                            height={40}
+                            priority
+                          />
+                        </div>
+                        <div className="flex flex-col gap-y-1">
+                          <p className="text-sm font-medium">
+                            {booking.user.username}
+                          </p>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </td>
-                <td className="truncate text-center px-2">
-                  <p className="text-sm font-semibold text-grayThree">
-                    {booking.name}
-                  </p>
-                </td>
-                <td className="truncate text-center px-2">
-                  <p className="text-sm font-semibold text-grayThree">
-                    {booking.size}
-                  </p>
-                </td>
-                <td className="truncate text-center px-2">
-                  <p className="text-sm font-semibold text-grayThree">
-                    {booking.quantity}
-                  </p>
-                </td>
-                <td className="truncate text-center px-2">
-                  <p className="text-sm font-semibold text-grayThree">
-                    € {booking.price}
-                  </p>
-                </td>
-                <td className="truncate text-center px-2">
-                  <p className="text-sm font-semibold text-grayThree">
-                    {booking.start}
-                  </p>
-                </td>
-                <td className="truncate text-center px-2">
-                  <StatusDropdown
-                    initialStatus={booking.status}
-                    onStatusChange={(newStatus) =>
-                      handleStatusChange(newStatus, booking.id)
-                    }
-                  />
-                </td>
-              </tr>
-            ))}
+                  </td>
+                  <td className="truncate text-center px-2">
+                    <p className="text-sm font-semibold text-grayThree">
+                      {booking.name}
+                    </p>
+                  </td>
+                  <td className="truncate text-center px-2">
+                    <p className="text-sm font-semibold text-grayThree">
+                      {booking.size}
+                    </p>
+                  </td>
+                  <td className="truncate text-center px-2">
+                    <p className="text-sm font-semibold text-grayThree">
+                      {booking.quantity}
+                    </p>
+                  </td>
+                  <td className="truncate text-center px-2">
+                    <p className="text-sm font-semibold text-grayThree">
+                      € {booking.price}
+                    </p>
+                  </td>
+                  <td className="truncate text-center px-2">
+                    <p className="text-sm font-semibold text-grayThree">
+                      {booking.start}
+                    </p>
+                  </td>
+                  <td className="truncate text-center px-2">
+                    <StatusDropdown
+                      bagDate={booking.bag.date}
+                      cancelled={booking.iscancelled}
+                      initialStatus={booking.status}
+                      onStatusChange={(newStatus) =>
+                        handleStatusChange(newStatus, booking.id)
+                      }
+                    />
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

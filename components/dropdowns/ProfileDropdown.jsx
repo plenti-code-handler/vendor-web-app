@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import {
   Menu,
   MenuButton,
@@ -18,10 +18,13 @@ import { useDispatch } from "react-redux";
 import { setOpenDrawer } from "../../redux/slices/updatePasswordSlice";
 import { setOpenDrawer as setDeleteDrawer } from "../../redux/slices/deleteAccountSlice";
 import { useRouter } from "next/navigation";
+import { getUserLocal } from "../../redux/slices/loggedInUserSlice";
 
 const ProfileDropdown = () => {
   const dispatch = useDispatch();
   const router = useRouter();
+
+  const [user, setUser] = useState({});
 
   const handleOpenDrawer = () => {
     dispatch(setOpenDrawer(true));
@@ -35,6 +38,11 @@ const ProfileDropdown = () => {
     router.replace("/business/profile");
   };
 
+  useEffect(() => {
+    const user = getUserLocal();
+    setUser(user);
+  }, []);
+
   return (
     <Menu
       as="div"
@@ -45,7 +53,7 @@ const ProfileDropdown = () => {
         <MenuButton className="flex items-center h-9 w-9 sm:h-10 sm:w-10 lg:h-10 lg:w-10 rounded-md focus:outline-none focus:ring-2 focus:ring-white hover:ring-2 hover:ring-white">
           <img
             alt="User"
-            src="/User.png"
+            src={user.img || "/User.png"}
             className="rounded-[6px] object-cover w-full h-full hover:cursor-pointer focus:outline-none"
           />
         </MenuButton>

@@ -1,36 +1,76 @@
-"use client";
+import { useState } from "react";
 
-import React, { useState } from "react";
+const StatusDropdown = ({
+  initialStatus,
+  onStatusChange,
+  bagDate,
+  cancelled,
+}) => {
+  // Determine the status based on the bagDate
 
-const StatusDropdown = ({ initialStatus, onStatusChange }) => {
-  const [status, setStatus] = useState(initialStatus);
+  const [optionStatus, setOptionStatus] = useState(initialStatus);
+
+  const getStatus = (dateArray) => {
+    const now = new Date();
+    for (let dateObj of dateArray) {
+      const { date, starttime, endtime } = dateObj;
+      const startDateTime = new Date(`${date}T${starttime}`);
+      const endDateTime = new Date(`${date}T${endtime}`);
+
+      if (now >= startDateTime && now <= endDateTime) {
+        return "active";
+      } else if (now < startDateTime) {
+        return "scheduled";
+      }
+    }
+    return "past";
+  };
 
   const handleChange = (event) => {
     const newStatus = event.target.value;
-    setStatus(newStatus);
+    setOptionStatus(newStatus);
     onStatusChange(newStatus);
   };
 
+  const status = getStatus(bagDate);
+
+  if (cancelled) {
+    return (
+      <select
+        disabled
+        value="cancel"
+        className="bg-[#FFCFD6] text-[#A0172D] font-semibold p-1 rounded-md text-sm cursor-not-allowed text-center"
+      >
+        <option value="cancel">Cancelled</option>
+      </select>
+    );
+  } else if (status === "scheduled") {
+    return (
+      <select
+        disabled
+        value="scheduled"
+        className="bg-scheduledBg text-badgeScheduled font-semibold p-1 rounded-md text-sm cursor-not-allowed text-center"
+      >
+        <option value="scheduled">Scheduled</option>
+      </select>
+    );
+  }
+
+  // For 'active' and 'past' statuses
   return (
     <select
-      value={status}
+      value={optionStatus}
       onChange={handleChange}
-      className={` ${
-        status.toLowerCase() === "active"
-          ? "bg-notPickedBg text-notPickedText"
-          : "bg-pickedBg text-pickedText "
+      className={`${
+        optionStatus === "picked"
+          ? "bg-grayFive text-green-400"
+          : "bg-grayFive text-red-400"
       } font-semibold p-1 rounded-md text-sm cursor-pointer text-center`}
     >
-      <option
-        value="past"
-        className="bg-pickedBg text-pickedText font-semibold p-1 rounded-md text-sm cursor-pointer text-center"
-      >
+      <option className="text-green-400" value="picked">
         Picked
       </option>
-      <option
-        value="active"
-        className="bg-notPickedBg text-notPickedText  font-semibold p-1 rounded-md text-sm cursor-pointer text-center"
-      >
+      <option className="text-red-400" value="not picked">
         Not Picked
       </option>
     </select>

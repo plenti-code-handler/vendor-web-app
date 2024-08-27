@@ -28,7 +28,7 @@ const ProfileCard = () => {
         <img
           alt="User"
           src={user.img ? user.img : "/User.png"}
-          className="rounded-full h-24 w-24 sm:h-[90%] sm:w-[25%] object-cover"
+          className="rounded-full h-[120px] w-[120px] object-cover"
         />
         <div className="flex flex-col lg:mt-5 lg:gap-y-2">
           <p className="text-lg font-semibold text-gray-900">{user.name}</p>
