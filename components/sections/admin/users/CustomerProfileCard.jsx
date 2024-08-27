@@ -27,7 +27,7 @@ const CustomerProfileCard = () => {
     if (!business || Object.keys(business).length === 0) {
       router.push("/admin/users");
     }
-    setName(business.name);
+    setName(business.username);
     setImage(business.imageUrl);
     setEmail(business.email);
   }, [business, router]);
