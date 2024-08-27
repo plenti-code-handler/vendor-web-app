@@ -245,13 +245,15 @@ const RecentOrders = () => {
                 <td className="truncate text-center px-2">
                   <div
                     className={`mx-auto ${
-                      booking.status.toLowerCase() == "active"
+                      booking.status.toLowerCase() == "picked"
                         ? "bg-pickedBg text-pickedText "
                         : "bg-notPickedBg text-notPickedText"
                     } font-semibold rounded-[4px] text-[12px] w-[77px] h-[26px] p-1 `}
                   >
                     <p>
-                      {booking.status === "active" ? "Picked" : "Not Picked"}
+                      {booking.status.toLowerCase() === "picked"
+                        ? "Picked"
+                        : "Not Picked"}
                     </p>
                   </div>
                 </td>
