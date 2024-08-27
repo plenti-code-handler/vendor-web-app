@@ -1,16 +1,64 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { adminCustomers } from "../../../../lib/constant_data";
 import { useRouter } from "next/navigation";
 import LoadMoreButton from "../../../buttons/LoadMoreButton";
+import { collection, getDocs, limit, query, where } from "firebase/firestore";
+import { db } from "../../../../app/firebase/config";
+import { useDispatch } from "react-redux";
+import { selectBusiness } from "../../../../redux/slices/selectedBusinessSlice";
 
 const CustomersTable = () => {
   const router = useRouter();
+  const dispatch = useDispatch();
 
-  const handleRowClick = (userId) => {
-    router.replace(`/admin/users/customer/${userId}`);
+  const handleRowClick = (user) => {
+    const { uid } = user;
+    dispatch(selectBusiness(user));
+    router.replace(`/admin/users/customer/${uid}`);
   };
+
+  const [users, setUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
+  // const [searchTerm, setSearchTerm] = useState("");
+  const [lastVisible, setLastVisible] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    // Ensure the user and user.uid are available
+    const fetchInitialUsers = async () => {
+      try {
+        const colRef = collection(db, "users");
+        const q = query(
+          colRef,
+          where("role", "==", "customer"),
+          // orderBy("time"),
+          limit(10)
+        );
+
+        const allBookingsSnapshot = await getDocs(q);
+        const usersData = await Promise.all(
+          allBookingsSnapshot.docs.map(async (entry) => {
+            const users = entry.data();
+            return {
+              ...users,
+            };
+          })
+        );
+        const lastDoc =
+          allBookingsSnapshot.docs[allBookingsSnapshot.docs.length - 1];
+
+        setUsers(usersData);
+        setFilteredUsers(usersData);
+        setLastVisible(lastDoc);
+      } catch (error) {
+        console.error("Error fetching bookings:", error);
+      }
+    };
+
+    fetchInitialUsers();
+  }, []);
 
   return (
     <div className="no-scrollbar w-full overflow-y-hidden lg:pl-10 lg:pr-10">
@@ -20,9 +68,7 @@ const CustomersTable = () => {
             <th className="pb-[8px] pl-2 pt-[18px] text-left w-[18.00%]">
               Customer
             </th>
-            <th className="pb-[8px] px-[14%] pt-[18px] text-left">
-              Email
-            </th>
+            <th className="pb-[8px] px-[14%] pt-[18px] text-left">Email</th>
             <th className="pb-[8px] px-2 pt-[18px] text-left w-[20.00%]">
               Total Spending
             </th>
@@ -32,18 +78,18 @@ const CustomersTable = () => {
           </tr>
         </thead>
         <tbody>
-          {adminCustomers.map((user, index) => (
+          {filteredUsers.map((user, index) => (
             <tr
               key={index}
               className="cursor-pointer border-b-[1px] border-[#E4E4E4] border-dashed hover:bg-[#f8f7f7]"
-              onClick={() => handleRowClick(user.id)}
+              onClick={() => handleRowClick(user)}
             >
               <td className="truncate pl-2 pr-2 w-[18.00%]">
                 <div className="py-3">
                   <div className="flex flex-row items-center gap-x-2">
                     <div className="flex h-[40px] w-[40px] items-center justify-center overflow-hidden rounded-full">
                       <Image
-                        src="/User.png"
+                        src={user.imageUrl || "/User.png"}
                         alt="GetSpouse Logo"
                         className="h-full w-full object-cover"
                         width={40}
@@ -52,7 +98,7 @@ const CustomersTable = () => {
                       />
                     </div>
                     <div className="flex flex-col gap-y-1">
-                      <p className="text-sm font-medium">{user.name}</p>
+                      <p className="text-sm font-medium">{user.username}</p>
                     </div>
                   </div>
                 </div>
@@ -76,7 +122,7 @@ const CustomersTable = () => {
           ))}
         </tbody>
       </table>
-      <LoadMoreButton/>
+      <LoadMoreButton />
     </div>
   );
 };

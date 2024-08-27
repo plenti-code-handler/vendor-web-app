@@ -25,7 +25,7 @@ export const registerUser = createAsyncThunk(
       if (img === placeholderImage) {
         userData = {
           email,
-          img,
+          imageUrl: img,
           name,
           loc,
           desc,
@@ -90,7 +90,7 @@ export const registerUser = createAsyncThunk(
             const myDocumentData = {
               ...userData,
               uid: user.uid,
-              img: downloadURL,
+              imageUrl: downloadURL,
             };
 
             // Define the document reference

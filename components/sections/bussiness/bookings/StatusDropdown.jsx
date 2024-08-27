@@ -5,6 +5,7 @@ const StatusDropdown = ({
   onStatusChange,
   bagDate,
   cancelled,
+  disabled,
 }) => {
   // Determine the status based on the bagDate
 
@@ -59,13 +60,16 @@ const StatusDropdown = ({
   // For 'active' and 'past' statuses
   return (
     <select
+      disabled={disabled}
       value={optionStatus}
       onChange={handleChange}
       className={`${
         optionStatus === "picked"
           ? "bg-grayFive text-green-400"
           : "bg-grayFive text-red-400"
-      } font-semibold p-1 rounded-md text-sm cursor-pointer text-center`}
+      } font-semibold p-1 rounded-md text-sm text-center ${
+        disabled ? "cursor-not-allowed" : "cursor-pointer"
+      }`}
     >
       <option className="text-green-400" value="picked">
         Picked

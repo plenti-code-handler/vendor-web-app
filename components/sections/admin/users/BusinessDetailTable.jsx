@@ -1,14 +1,299 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import DetailsTableUpper from "./DetailsTableUpper";
 import { users } from "../../../../lib/constant_data";
 import LoadMoreButton from "../../../buttons/LoadMoreButton";
+import { useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  limit,
+  query,
+  where,
+} from "firebase/firestore";
+import { db } from "../../../../app/firebase/config";
+import StatusDropdown from "../../bussiness/bookings/StatusDropdown";
 
 const BusinessDetailTable = () => {
+  const handleStatusChange = async (newStatus, bookingId) => {
+    const docRef = doc(db, "bookings", bookingId);
+    await updateDoc(docRef, {
+      status: newStatus,
+    });
+    const colRef = collection(db, "bookings");
+    const q = query(
+      colRef,
+      where("vendorid", "==", user.uid),
+      // orderBy("time"),
+      limit(10)
+    );
+
+    const allBookingsSnapshot = await getDocs(q);
+    const bookingsData = await Promise.all(
+      allBookingsSnapshot.docs.map(async (entry) => {
+        const booking = {
+          id: entry.id, // Include the document ID here
+          ...entry.data(),
+        };
+
+        // Fetch user data based on the user ID in the booking
+        const userDocRef = doc(db, "users", booking.uid); // Assuming booking.uid is the field for user ID
+        const userDocSnap = await getDoc(userDocRef);
+
+        const bagDocRef = doc(db, "bags", booking.bagid);
+        const bagDocSnap = await getDoc(bagDocRef);
+
+        if (userDocSnap.exists() && bagDocSnap.exists()) {
+          const userData = userDocSnap.data();
+          const bagData = bagDocSnap.data();
+
+          return {
+            ...booking,
+            user: userData, // Merge user data with booking
+            bag: bagData,
+          };
+        } else {
+          console.log("User data not found for UID:", booking.uid);
+          return booking; // Return booking without user data if not found
+        }
+      })
+    );
+    const lastDoc =
+      allBookingsSnapshot.docs[allBookingsSnapshot.docs.length - 1];
+
+    setBookings(bookingsData);
+    setFilteredBookings(bookingsData);
+    setLastVisible(lastDoc);
+  };
+
+  const [bookings, setBookings] = useState([]);
+  const [filteredBookings, setFilteredBookings] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [lastVisible, setLastVisible] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [onStatusChange, setOnStatusChange] = useState("both");
+  const [bookingFilter, setOnBookingFilter] = useState("active");
+
+  const onBookingFilterChange = (status) => {
+    console.log(bookings);
+    setOnBookingFilter(status);
+
+    if (status === "cancel") {
+      const filtered = bookings.filter((booking) => booking.iscancelled);
+      setFilteredBookings(filtered);
+      return;
+    }
+
+    const getStatus = (dateArray) => {
+      const now = new Date();
+
+      for (let dateObj of dateArray) {
+        const { date, starttime, endtime } = dateObj;
+        const startDateTime = new Date(`${date}T${starttime}`);
+        const endDateTime = new Date(`${date}T${endtime}`);
+
+        if (now >= startDateTime && now <= endDateTime) {
+          return "active";
+        } else if (now < startDateTime) {
+          return "scheduled";
+        }
+      }
+      return "past";
+    };
+
+    const filtered = bookings.filter((booking) => {
+      const statusFromDates = getStatus(booking.bag.date);
+      return statusFromDates === status || status === "";
+    });
+
+    setFilteredBookings(filtered);
+  };
+
+  const router = useRouter();
+  const business = useSelector(
+    (state) => state.selectBusiness.selectedBusiness
+  );
+
+  useEffect(() => {
+    if (!business || Object.keys(business).length === 0) {
+      console.log("Business is not defined, redirecting...");
+      router.push("/admin/users");
+    }
+  }, [business, router]);
+
+  useEffect(() => {
+    if (business.uid) {
+      const fetchInitialBookings = async () => {
+        try {
+          const colRef = collection(db, "bookings");
+          const q = query(
+            colRef,
+            where("vendorid", "==", business.uid),
+            limit(10)
+          );
+
+          const allBookingsSnapshot = await getDocs(q);
+          const bookingsData = await Promise.all(
+            allBookingsSnapshot.docs.map(async (entry) => {
+              const booking = {
+                id: entry.id,
+                ...entry.data(),
+              };
+
+              const userDocRef = doc(db, "users", booking.uid);
+              const userDocSnap = await getDoc(userDocRef);
+
+              const bagDocRef = doc(db, "bags", booking.bagid);
+              const bagDocSnap = await getDoc(bagDocRef);
+
+              if (userDocSnap.exists() && bagDocSnap.exists()) {
+                const userData = userDocSnap.data();
+                const bagData = bagDocSnap.data();
+                return {
+                  ...booking,
+                  user: userData,
+                  bag: bagData,
+                };
+              } else {
+                console.log("User or bag data not found for UID:", booking.uid);
+                return booking;
+              }
+            })
+          );
+          const lastDoc =
+            allBookingsSnapshot.docs[allBookingsSnapshot.docs.length - 1];
+
+          setBookings(bookingsData);
+          // setFilteredBookings(bookingsData);
+          setLastVisible(lastDoc);
+        } catch (error) {
+          console.error("Error fetching bookings:", error);
+        }
+      };
+
+      fetchInitialBookings();
+    } else {
+      console.log("business.uid is undefined:", business.uid);
+    }
+  }, [business.uid]);
+
+  useEffect(() => {
+    if (searchTerm === "") {
+      setFilteredBookings(bookings);
+    } else {
+      const filtered = filteredBookings.filter(
+        (booking) =>
+          booking.user.username
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
+          booking.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredBookings(filtered);
+    }
+  }, [searchTerm]);
+
+  // Apply filters whenever bookings data changes
+  useEffect(() => {
+    if (bookings.length > 0) {
+      // onFilterChange(onStatusChange); // Apply the status filter
+      onBookingFilterChange(bookingFilter); // Apply the booking filter
+    }
+  }, [bookings, bookingFilter]);
+
+  const fetchMoreBookings = async () => {
+    // Prevent the function from running if it’s already loading
+    if (loading) return;
+
+    try {
+      setLoading(true);
+
+      const colRef = collection(db, "bookings");
+      let q;
+
+      if (lastVisible) {
+        // If lastVisible exists, start after it
+        q = query(
+          colRef,
+          where("vendorid", "==", business.uid),
+          orderBy("time"),
+          startAfter(lastVisible),
+          limit(10)
+        );
+      } else {
+        // If lastVisible is null, just order and limit
+        q = query(
+          colRef,
+          where("vendorid", "==", business.uid),
+          orderBy("time"),
+          limit(10)
+        );
+      }
+
+      const allBookingsSnapshot = await getDocs(q);
+
+      // Handle empty snapshots (end of collection)
+      if (allBookingsSnapshot.empty) {
+        console.log("No more bookings to fetch");
+        setLoading(false);
+        return;
+      }
+
+      const bookingsData = await Promise.all(
+        allBookingsSnapshot.docs.map(async (entry) => {
+          const booking = {
+            id: entry.id, // Include the document ID here
+            ...entry.data(),
+          };
+
+          // Fetch user data based on the user ID in the booking
+          const userDocRef = doc(db, "users", booking.uid); // Assuming booking.uid is the field for user ID
+          const userDocSnap = await getDoc(userDocRef);
+
+          const bagDocRef = doc(db, "bags", booking.bagid);
+          const bagDocSnap = await getDoc(bagDocRef);
+
+          if (userDocSnap.exists() && bagDocSnap.exists()) {
+            const userData = userDocSnap.data();
+            const bagData = bagDocSnap.data();
+
+            return {
+              ...booking,
+              user: userData, // Merge user data with booking
+              bag: bagData,
+            };
+          } else {
+            console.log("User data not found for UID:", booking.uid);
+            return booking; // Return booking without user data if not found
+          }
+        })
+      );
+
+      // Determine the last document for pagination
+      const lastDoc =
+        allBookingsSnapshot.docs[allBookingsSnapshot.docs.length - 1];
+
+      // Update state with new data
+      setBookings((prevBookings) => [...prevBookings, ...bookingsData]);
+      // setFilteredBookings((prevBookings) => [...prevBookings, ...bookingsData]);
+      setLastVisible(lastDoc); // Set the last visible document for pagination
+    } catch (error) {
+      console.error("Error fetching more bookings:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="mt-4 w-full border border-gray-200 rounded-xl p-6 sm:px-4">
-      <DetailsTableUpper />
+      <DetailsTableUpper
+        bookingFilter={bookingFilter}
+        onBookingFilterChange={onBookingFilterChange}
+        setSearchTerm={setSearchTerm}
+      />
       <div className="no-scrollbar w-full  overflow-y-hidden">
         <table
           className="w-full table-auto truncate overflow-hidden rounded-2xl bg-white"
@@ -30,7 +315,7 @@ const BusinessDetailTable = () => {
             </tr>
           </thead>
           <tbody>
-            {users.map((user, index) => (
+            {filteredBookings.map((booking, index) => (
               <tr
                 key={index}
                 className="cursor-pointer border-b-[1px] border-[#E4E4E4] border-dashed hover:bg-[#f8f7f7]"
@@ -40,7 +325,7 @@ const BusinessDetailTable = () => {
                     <div className="flex flex-row items-center gap-x-2">
                       <div className="flex h-[40px] w-[40px] items-center justify-center overflow-hidden rounded-full">
                         <Image
-                          src="/User.png"
+                          src={booking.user.imageUrl || "/User.png"}
                           alt="GetSpouse Logo"
                           className="h-full w-full object-cover"
                           width={40}
@@ -49,53 +334,55 @@ const BusinessDetailTable = () => {
                         />
                       </div>
                       <div className="flex flex-col gap-y-1">
-                        <p className="text-sm font-medium">{user.name}</p>
+                        <p className="text-sm font-medium">
+                          {booking.user.username}
+                        </p>
                       </div>
                     </div>
                   </div>
                 </td>
                 <td className="truncate text-center px-2">
                   <p className="text-sm font-semibold text-grayThree">
-                    {user.dealName}
+                    {booking.name}
                   </p>
                 </td>
                 <td className="truncate text-center px-2">
                   <p className="text-sm font-semibold text-grayThree">
-                    {user.size}
+                    {booking.size}
                   </p>
                 </td>
                 <td className="truncate text-center px-2">
                   <p className="text-sm font-semibold text-grayThree">
-                    {user.quantity}
+                    {booking.quantity}
                   </p>
                 </td>
                 <td className="truncate text-center px-2">
                   <p className="text-sm font-semibold text-grayThree">
-                    € {user.amount}
+                    € {booking.price}
                   </p>
                 </td>
                 <td className="truncate text-center px-2">
                   <p className="text-sm font-semibold text-grayThree">
-                    {user.orderDate}
+                    {booking.start}
                   </p>
                 </td>
                 <td className="truncate text-center px-2">
-                  <div
-                    className={`mx-auto ${
-                      user.status.toLowerCase() == "picked"
-                        ? "bg-pickedBg text-pickedText "
-                        : "bg-notPickedBg text-notPickedText"
-                    } font-semibold rounded-[4px] text-[12px] w-[77px] h-[26px] p-1 `}
-                  >
-                    <p>{user.status}</p>
-                  </div>
+                  <StatusDropdown
+                    disabled={true}
+                    bagDate={booking.bag.date}
+                    cancelled={booking.iscancelled}
+                    initialStatus={booking.status}
+                    onStatusChange={(newStatus) =>
+                      handleStatusChange(newStatus, booking.id)
+                    }
+                  />
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      <LoadMoreButton/>
+      <LoadMoreButton loadMore={fetchMoreBookings} isLoading={loading} />
     </div>
   );
 };

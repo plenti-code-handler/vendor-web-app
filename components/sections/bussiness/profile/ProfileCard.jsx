@@ -27,7 +27,7 @@ const ProfileCard = () => {
       <div className="flex space-x-4">
         <img
           alt="User"
-          src={user.img ? user.img : "/User.png"}
+          src={user.imageUrl || "/User.png"}
           className="rounded-full h-[120px] w-[120px] object-cover"
         />
         <div className="flex flex-col lg:mt-5 lg:gap-y-2">

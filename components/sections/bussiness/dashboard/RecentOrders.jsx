@@ -201,7 +201,7 @@ const RecentOrders = () => {
                     <div className="flex flex-row items-center gap-x-2">
                       <div className="flex h-[40px] w-[40px] items-center justify-center overflow-hidden rounded-full">
                         <Image
-                          src={booking.userimg ? booking.userimg : "/User.png"}
+                          src={booking.user.imageUrl || "/User.png"}
                           alt="User"
                           className="h-full w-full object-cover"
                           width={40}

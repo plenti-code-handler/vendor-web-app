@@ -1,12 +1,33 @@
 "use client";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { businessStarSvg, locationIconSvg } from "../../../../svgs";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { setActivePage } from "../../../../redux/slices/headerSlice";
+import { useRouter } from "next/navigation";
 
 const BusinessProfileCard = () => {
+  const [name, setName] = useState("");
+  const [image, setImage] = useState("");
+  const [description, setDescription] = useState("");
+  const [location, setLocation] = useState("");
+
   const dispatch = useDispatch();
+  const router = useRouter();
+
+  const business = useSelector(
+    (state) => state.selectBusiness.selectedBusiness
+  );
+
+  useEffect(() => {
+    if (!business || Object.keys(business).length === 0) {
+      router.push("/admin/users");
+    }
+    setName(business.name);
+    setDescription(business.desc);
+    setImage(business.imageUrl);
+    setLocation(business.loc);
+  }, [business, router]);
 
   useEffect(() => {
     dispatch(setActivePage("Users"));
@@ -16,15 +37,15 @@ const BusinessProfileCard = () => {
       <div className="flex space-x-4">
         <img
           alt="User"
-          src="/User.png"
+          src={image || "/User.png"}
           className="rounded-full h-24 w-24 sm:h-40 sm:w-40 object-cover"
         />
         <div className="flex gap-5">
           <div className="flex flex-col lg:mt-5 lg:gap-y-2">
-            <p className="text-lg font-semibold text-gray-900">McDonald's</p>
+            <p className="text-lg font-semibold text-gray-900">{name}</p>
             <div className="flex items-center text-grayOne font-semibold space-x-2">
               {locationIconSvg}
-              <p className="text-sm">1425 Edinburg, United Kingdom</p>
+              <p className="text-sm">{location}</p>
             </div>
             <div className="flex flex-wrap gap-2 mt-2">
               <div className="bg-mainThree border border-mainThree rounded-md px-3 py-1">
@@ -45,11 +66,7 @@ const BusinessProfileCard = () => {
         </div>
       </div>
       <p className="text-left leading-5 text-graySeven font-medium text-[16px]">
-        Outlines keep you honest. They stop you from indulging in poorly
-        thought-out metaphors about driving and keep you focused on the overall
-        structure of your post Outlines keep you honest. They stop you from
-        indulging in poorly thought-out metaphors about driving and keep you
-        focused on the overall structure of your post
+        {description}
       </p>
     </>
   );

@@ -10,6 +10,7 @@ import editBagReducer from "./slices/editBagSlice";
 import loggedInUserReducer from "./slices/loggedInUserSlice";
 import registerUserReducer from "./slices/registerUserSlice";
 import contactUserReducer from "./slices/contactUserSlice";
+import selectedBusinessReducer from "./slices/selectedBusinessSlice";
 
 export const store = configureStore({
   reducer: {
@@ -24,6 +25,7 @@ export const store = configureStore({
     loggedInUser: loggedInUserReducer,
     registerUser: registerUserReducer,
     contactUser: contactUserReducer,
+    selectBusiness: selectedBusinessReducer,
   },
   devTools: process.env.NODE_ENV !== "production",
 });
