@@ -7,37 +7,109 @@ import {
 } from "@headlessui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { setOpenDrawer } from "../../redux/slices/addCategorySlice";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  updateDoc,
+} from "firebase/firestore";
+import { db } from "../../app/firebase/config";
+import { getUserLocal } from "../../redux/slices/loggedInUserSlice";
 
-const initialCategoryItems = [
-  { id: 1, text: "Category 1", selected: true },
-  { id: 2, text: "Category 2", selected: true },
-  { id: 3, text: "Category 3", selected: false },
-  { id: 4, text: "Category 4", selected: false },
-  { id: 5, text: "Category 5", selected: false },
-  { id: 6, text: "Category 6", selected: false },
-  { id: 7, text: "Category 7", selected: false },
-  { id: 8, text: "Category 8", selected: false },
-];
-
-const AddCategoryDrawer = () => {
+const AddCategoryDrawer = ({ items, setCategories: updateCategories }) => {
   const dispatch = useDispatch();
+  const [categories, setCategories] = useState([]);
   const open = useSelector((state) => state.addCategory.drawerOpen);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        // Reference to the `categories` collection
+        const colRef = collection(db, "categories");
+
+        // Fetch all documents from the collection
+        const snapshot = await getDocs(colRef);
+
+        // Extract data and format it
+        const fetchedCategories = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+          selected: items.some((item) => item.id === doc.id), // Set selected property based on `items` prop
+        }));
+
+        // Update state with fetched categories
+        setCategories(fetchedCategories);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, [items]); // Depend on `items` so that the effect runs when `items` prop changes
 
   const handleClose = () => {
     dispatch(setOpenDrawer(false));
   };
 
-  const [selectedItems, setSelectedItems] = useState(initialCategoryItems);
-
   const handleToggle = (clickedItem) => {
-    setSelectedItems((prevState) =>
-      prevState.map((item) =>
+    setCategories((prevCategories) =>
+      prevCategories.map((item) =>
         item.id === clickedItem.id
           ? { ...item, selected: !item.selected }
           : item
       )
     );
+  };
+
+  const handleSubmit = async () => {
+    const user = getUserLocal();
+
+    if (!user || !user.uid) {
+      console.error("User is not logged in or user ID is missing.");
+      return;
+    }
+
+    try {
+      // Filter and format selected categories
+      const formattedCategory = categories
+        .filter((category) => category.selected) // Keep only selected categories
+        .map(({ selected, ...rest }) => rest); // Remove the `selected` property
+
+      // Reference to the user document
+      const userRef = doc(db, "users", user.uid);
+
+      // Update the user document with the formatted categories
+      await updateDoc(userRef, {
+        categories: formattedCategory,
+      });
+
+      console.log("User profile updated successfully");
+      handleClose();
+      if (!user || !user.uid) return; // Ensure user is available
+
+      try {
+        const userDocRef = doc(db, "users", user.uid); // Reference to user document
+        const userDocSnapshot = await getDoc(userDocRef); // Fetch document snapshot
+
+        if (userDocSnapshot.exists()) {
+          const userData = userDocSnapshot.data();
+          if (userData.categories) {
+            updateCategories(userData.categories);
+          } else {
+            updateCategories([]); // Handle case where `categories` field is missing
+          }
+        } else {
+          console.log("No such document!");
+          updateCategories([]); // Handle case where document does not exist
+        }
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    } catch (error) {
+      console.error("Error updating user profile:", error);
+    }
   };
 
   return (
@@ -61,19 +133,24 @@ const AddCategoryDrawer = () => {
                 <div className="relative mt-3 pb-3 flex-1 px-4 sm:px-6">
                   <div className="flex flex-col gap-3">
                     <div className="flex gap-2 flex-wrap">
-                      {selectedItems.map((item) => (
+                      {categories.map((item) => (
                         <p
                           key={item.id}
                           onClick={() => handleToggle(item)}
                           className={`border text-[14px] border-gray px-[8px] rounded-[50px] py-[3px] hover:cursor-pointer transform active:translate-y-[2px] ${
-                            item.selected && "text-secondary border-secondary"
+                            item.selected
+                              ? "text-secondary border-secondary"
+                              : ""
                           }`}
                         >
-                          {item.text}
+                          {item.name}
                         </p>
                       ))}
                     </div>
-                    <button className="flex justify-center mt-4 bg-pinkBgDark text-white font-semibold py-2  rounded hover:bg-pinkBgDarkHover2 gap-2 lg:w-[100%]">
+                    <button
+                      onClick={handleSubmit}
+                      className="flex justify-center mt-4 bg-pinkBgDark text-white font-semibold py-2 rounded hover:bg-pinkBgDarkHover2 gap-2 lg:w-[100%]"
+                    >
                       Add Category
                     </button>
                   </div>

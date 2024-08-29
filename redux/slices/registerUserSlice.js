@@ -36,6 +36,7 @@ export const registerUser = createAsyncThunk(
           status: false,
           point,
           otp: 1234,
+          categories: [],
           uid: user.uid,
         };
 
@@ -60,6 +61,7 @@ export const registerUser = createAsyncThunk(
         bags: 0,
         rating: 0,
         status: false,
+        categories: [],
         point,
         otp: 1234, // Assuming OTP is fixed; otherwise, generate it dynamically
       };

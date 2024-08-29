@@ -12,7 +12,7 @@ const Drawers = () => {
   return (
     <>
       {true && <AddBagDrawer />}
-      {true && <AddCategoryDrawer />}
+      {/* {true && <AddCategoryDrawer />} */}
       {true && <UpdatePasswordDrawer />}
       {true && <DeleteAccountDrawer />}
       {true && <WithdrawAmountDrawer />}
