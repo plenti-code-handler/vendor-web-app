@@ -11,11 +11,20 @@ import {
 } from "../../../../svgs";
 import { useDispatch } from "react-redux";
 import { setActivePage } from "../../../../redux/slices/headerSlice";
+import { db } from "../../../../app/firebase/config";
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  updateDoc,
+} from "firebase/firestore";
 
 const FoodFiltersBox = () => {
   const [showInput, setShowInput] = useState(false);
   const [inputValue, setInputValue] = useState("");
-  const [categories, setCategories] = useState([]);
+  const [filters, setFilters] = useState([]);
   const [editingIndex, setEditingIndex] = useState(null);
   const dispatch = useDispatch();
 
@@ -23,11 +32,34 @@ const FoodFiltersBox = () => {
     dispatch(setActivePage("Categories"));
   }, [dispatch]);
 
+  useEffect(() => {
+    const fetchFilters = async () => {
+      const filtersCollection = collection(db, "filters");
+
+      try {
+        const querySnapshot = await getDocs(filtersCollection);
+        const filtersList = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setFilters(filtersList);
+      } catch (error) {
+        console.error("Error fetching filters:", error);
+      }
+    };
+
+    fetchFilters();
+  }, []); // Re-run the effect if filters state changes
+
   const handlePlusClick = () => {
     if (inputValue) {
-      handleAddCategory();
+      if (editingIndex !== null) {
+        handleEditFilter(editingIndex); // Call the edit handler
+      } else {
+        handleAddFilter(); // Call the add handler
+      }
     } else {
-      setShowInput(true);
+      setShowInput(true); // Show input field if it's hidden
     }
   };
 
@@ -39,43 +71,119 @@ const FoodFiltersBox = () => {
     setInputValue("");
   };
 
-  const handleAddCategory = () => {
-    if (editingIndex !== null) {
-      const updatedCategories = [...categories];
-      updatedCategories[editingIndex] = inputValue;
-      setCategories(updatedCategories);
-      setEditingIndex(null);
-    } else {
-      setCategories([...categories, inputValue]);
+  const handleAddFilter = async () => {
+    const filtersCollection = collection(db, "filters");
+
+    try {
+      if (editingIndex !== null) {
+        // Update existing filter in Firestore
+        setEditingIndex(null);
+      } else {
+        // Add new filter to Firestore
+        await addDoc(filtersCollection, {
+          name: inputValue,
+        });
+      }
+
+      // Refetch the filters to ensure the data is up-to-date
+      const querySnapshot = await getDocs(filtersCollection);
+      const filtersList = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setFilters(filtersList);
+    } catch (error) {
+      console.error("Error adding/updating filter:", error);
     }
+
     setInputValue("");
     setShowInput(false);
   };
 
-  const handleEditCategory = (index) => {
-    setInputValue(categories[index]);
-    setEditingIndex(index);
+  const handleEditFilter = async (id) => {
+    const filterToUpdate = filters.find((filter) => filter.id === id);
+
+    // Set the input value to the name of the filter being edited
+    setInputValue(filterToUpdate.name);
+    // Show the input field for editing
     setShowInput(true);
+    // Set the editing index to the ID of the filter being edited
+    setEditingIndex(id);
+
+    // Function to handle the actual update in Firestore
+    const handleFilterUpdate = async () => {
+      try {
+        const filterDocRef = doc(db, "filters", id);
+        await updateDoc(filterDocRef, {
+          name: inputValue, // Update the name field in Firestore
+        });
+
+        console.log("Filter updated successfully.");
+
+        // Refetch the filters from Firestore to refresh the data
+        const filtersCollection = collection(db, "filters");
+        const querySnapshot = await getDocs(filtersCollection);
+        const filtersList = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setFilters(filtersList);
+
+        // Reset input and hide input field after update
+        setInputValue("");
+        setEditingIndex(null);
+        setShowInput(false);
+      } catch (error) {
+        console.error("Error updating filter:", error);
+      }
+    };
+
+    // Update the filter when the user submits the updated name
+    setShowInput(true);
+    setInputValue(filterToUpdate.name);
+
+    const handleInputConfirm = async () => {
+      if (editingIndex) {
+        await handleFilterUpdate();
+      }
+    };
+
+    handleInputConfirm();
   };
 
-  const handleDeleteCategory = (index) => {
-    setCategories(categories.filter((_, i) => i !== index));
+  const handleDeleteFilter = async (index) => {
+    try {
+      // Delete the filter from Firestore
+      const filterDocRef = doc(db, "filters", index);
+      await deleteDoc(filterDocRef);
+
+      // Optionally, refetch the filters to ensure the data is up-to-date
+      const filtersCollection = collection(db, "filters");
+      const querySnapshot = await getDocs(filtersCollection);
+      const filtersList = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setFilters(filtersList);
+    } catch (error) {
+      console.error("Error deleting filter:", error);
+    }
   };
 
   return (
     <div className="flex flex-col w-[100%] lg:w-[50%] gap-y-3">
-      <div className="flex flex-col gap-5 lg:flex-row lg:gap-12 items-center w-[100%] justify-start lg:justify-between">
-        <p className="text-blackTwo xl:ml-10 font-semibold text-[18px] lg:text-[16px] xl:text-[18px] whitespace-nowrap">
+      <div className="flex flex-col gap-5 lg:flex-row lg:gap-4 items-center w-[100%] justify-start lg:justify-between">
+        <p className="text-blackTwo font-semibold text-[18px] lg:text-[16px] xl:text-[18px] xl:ml-10 whitespace-nowrap">
           Food Filters
         </p>
-        <div className="flex gap-5 lg:flex-grow w-full lg:justify-end justify-between items-center">
+        <div className="flex gap-5 lg:flex-grow w-full justify-between lg:justify-end items-center">
           <button
             onClick={handlePlusClick}
             className="bg-pinkBgDark w-[50px] h-[38px] rounded-[6px] flex justify-center items-center flex-shrink-0"
           >
             {inputValue ? whiteTickSvg : plusIconSvg}
           </button>
-          <div className="flex flex-grow items-center gap-x-2 rounded-[6px] lg:max-w-[238px] bg-[#F9F9F9] w-full px-5 overflow-hidden ">
+          <div className="flex flex-grow items-center gap-x-2 rounded-[6px] bg-[#F9F9F9] px-5 overflow-hidden w-full lg:max-w-[238px]">
             {magnifierSvg}
             <input
               type="text"
@@ -95,7 +203,7 @@ const FoodFiltersBox = () => {
             className="block w-full placeholder:font-semibold rounded-[6px] border border-gray-300 py-3 px-3 text-[13px] text-black placeholder-[#7E8299] focus:outline-none focus:ring-1 focus:ring-gray-300"
             value={inputValue}
             onChange={handleInputChange}
-            placeholder="Type Category Name"
+            placeholder="Type Filter Name"
           />
           <span
             onClick={handleClearInput}
@@ -107,23 +215,25 @@ const FoodFiltersBox = () => {
       )}
 
       {/* CONTENT BOXES */}
-      {categories.map((category, index) => (
+      {filters.map((filter) => (
         <div
-          key={index}
+          key={filter.id}
           className={`flex justify-between w-full h-[37px] mb-[1%] p-2 ${
             showInput ? "opacity-30 pointer-events-none" : ""
           }`}
         >
-          <p className="font-semibold text-[14px] text-blackTwo">{category}</p>
+          <p className="font-semibold text-[14px] text-blackTwo">
+            {filter.name}
+          </p>
           <div className="flex items-center gap-2">
             <span
-              onClick={() => handleDeleteCategory(index)}
+              onClick={() => handleDeleteFilter(filter.id)}
               className="w-[30px] h-[30px] rounded-[6px] bg-gray-200 flex justify-center items-center hover:bg-gray-300 hover:cursor-pointer"
             >
               {deleteSvgSmall}
             </span>
             <span
-              onClick={() => handleEditCategory(index)}
+              onClick={() => handleEditFilter(filter.id)}
               className="w-[30px] h-[30px] rounded-[6px] bg-gray-200 flex justify-center items-center hover:bg-gray-300 hover:cursor-pointer"
             >
               {editSvgSmall}

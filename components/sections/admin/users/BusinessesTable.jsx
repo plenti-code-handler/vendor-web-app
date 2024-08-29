@@ -109,7 +109,7 @@ const BusinessesTable = () => {
               </td>
               <td className="truncate text-left px-2">
                 <p className="text-sm font-semibold text-grayThree">
-                  {user.joinedAt}
+                  {/* {user.joinedAt} */}
                 </p>
               </td>
             </tr>

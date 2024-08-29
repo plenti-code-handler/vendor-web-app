@@ -1,5 +1,7 @@
 import { Textarea } from "@headlessui/react";
-import React, { useState } from "react";
+import { collection, getDocs } from "firebase/firestore";
+import React, { useEffect, useState } from "react";
+import { db } from "../../../app/firebase/config";
 
 const BagDetails = ({
   selectedTags,
@@ -16,6 +18,19 @@ const BagDetails = ({
 
   const [showTagOptions, setShowTagOptions] = useState(false);
   const [showCategoryOptions, setShowCategoryOptions] = useState(false);
+  const [allTags, setAllTags] = useState([]);
+
+  useEffect(() => {
+    const fetchTags = async () => {
+      const tagsCollection = collection(db, "filters");
+      const tagsSnapshot = await getDocs(tagsCollection);
+      const tagsList = tagsSnapshot.docs.map((doc) => doc.data().name);
+      setAllTags(tagsList);
+    };
+
+    fetchTags();
+  }, []);
+
   const handleTagInputChange = (e) => {
     setTagInput(e.target.value);
     setShowTagOptions(true);
@@ -47,13 +62,19 @@ const BagDetails = ({
       prevCategories.filter((c) => c !== category)
     );
   };
-  const allTags = ["Gluten Free", "Something", "IDK", "Hell"];
+  // const allTags = ["Gluten Free", "Something", "IDK", "Hell"];
   const allCategories = [
     "Category Name 1",
     "Category Name 2",
     "Category Name 3",
     "Category Name 4",
   ];
+  // const filteredTags = allTags.filter(
+  //   (tag) =>
+  //     tag.toLowerCase().includes(tagInput.toLowerCase()) &&
+  //     !selectedTags.includes(tag)
+  // );
+
   const filteredTags = allTags.filter(
     (tag) =>
       tag.toLowerCase().includes(tagInput.toLowerCase()) &&

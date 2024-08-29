@@ -4,6 +4,7 @@ import { auth, db } from "../../app/firebase/config";
 import { collection, addDoc, updateDoc, setDoc, doc } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from "../../app/firebase/config";
+import { formatDateTime } from "../../utility/date";
 
 export const registerUser = createAsyncThunk(
   "auth/registerUser",
@@ -37,6 +38,7 @@ export const registerUser = createAsyncThunk(
           point,
           otp: 1234,
           categories: [],
+          joinedAt: formatDateTime(new Date()),
           uid: user.uid,
         };
 
@@ -62,6 +64,7 @@ export const registerUser = createAsyncThunk(
         rating: 0,
         status: false,
         categories: [],
+        joinedAt: formatDateTime(new Date()),
         point,
         otp: 1234, // Assuming OTP is fixed; otherwise, generate it dynamically
       };
