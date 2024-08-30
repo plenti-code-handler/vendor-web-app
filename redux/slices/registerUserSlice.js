@@ -4,7 +4,7 @@ import { auth, db } from "../../app/firebase/config";
 import { collection, addDoc, updateDoc, setDoc, doc } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from "../../app/firebase/config";
-import { formatDateTime } from "../../utility/date";
+import { handleDate } from "../../utility/date";
 
 export const registerUser = createAsyncThunk(
   "auth/registerUser",
@@ -34,11 +34,11 @@ export const registerUser = createAsyncThunk(
           pass: password,
           bags: 0,
           rating: 0,
-          status: false,
+          status: "pending",
           point,
           otp: 1234,
           categories: [],
-          joinedAt: formatDateTime(new Date()),
+          joinedat: handleDate(new Date()),
           uid: user.uid,
         };
 
@@ -62,9 +62,9 @@ export const registerUser = createAsyncThunk(
         pass: password, // Caution: Storing passwords in Firestore is not recommended
         bags: 0,
         rating: 0,
-        status: false,
+        status: "pending",
         categories: [],
-        joinedAt: formatDateTime(new Date()),
+        joinedat: handleDate(new Date()),
         point,
         otp: 1234, // Assuming OTP is fixed; otherwise, generate it dynamically
       };

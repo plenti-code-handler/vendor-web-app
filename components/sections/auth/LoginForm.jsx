@@ -18,15 +18,19 @@ const LoginForm = () => {
     dispatch(loginUser({ email, password }))
       .unwrap()
       .then((user) => {
-        console.log(user);
         if (user.role === "vendor") {
           router.push("/business");
         } else if (user.role === "admin") {
           router.push("/admin");
+        } else {
+          console.error("Unknown role:", user.role);
+          // Optionally, handle unknown roles or redirect to a default page
         }
       })
       .catch((err) => {
         console.error("Login failed:", err);
+        // Optionally, display the error to the user
+        // e.g., set an error state or show a notification
       });
   };
 

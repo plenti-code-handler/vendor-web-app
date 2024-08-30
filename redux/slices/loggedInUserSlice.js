@@ -3,6 +3,7 @@ import { auth } from "../../app/firebase/config";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../app/firebase/config";
+import { toast } from "sonner";
 
 export const getloginUserData = createAsyncThunk(
   "auth/getloginUserData",
@@ -12,9 +13,32 @@ export const getloginUserData = createAsyncThunk(
       const userDoc = await getDoc(userDocRef);
 
       if (userDoc.exists()) {
-        return userDoc.data(); // Return the user data from Firestore
+        const userData = userDoc.data();
+
+        if (userData.status === "accepted") {
+          toast.success("Your request has been accepted", {
+            style: {
+              color: "green",
+            },
+          });
+          return userData; // Return the user data if the status is approved
+        } else if (userData.status === "rejected") {
+          toast.error("Your request has been declined", {
+            style: {
+              color: "red",
+            },
+          });
+        } else if (userData.status === "pending") {
+          toast.error("Your request is still pending", {
+            style: {
+              color: "red",
+            },
+          });
+        } else {
+          throw new Error("User status is invalid or not set.");
+        }
       } else {
-        throw new Error("User does not exist in Firestore");
+        throw new Error("User does not exist in Firestore.");
       }
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
@@ -32,11 +56,14 @@ export const loginUser = createAsyncThunk(
         password
       );
       const user = userCredential.user;
-      const userData = await thunkAPI
-        .dispatch(getloginUserData(user.uid))
-        .unwrap();
-
-      return userData;
+      try {
+        const userData = await thunkAPI
+          .dispatch(getloginUserData(user.uid))
+          .unwrap();
+        return userData;
+      } catch (err) {
+        return thunkAPI.rejectWithValue(err.message);
+      }
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }
