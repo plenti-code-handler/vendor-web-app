@@ -1,12 +1,10 @@
 "use client";
 import React from "react";
-import TableUpper from "./TableUpper";
 import ApprovalsTable from "../../../sections/admin/approvals/ApprovalsTable";
 
 const TableContainer = () => {
   return (
     <>
-      <TableUpper />
       <ApprovalsTable />
     </>
   );

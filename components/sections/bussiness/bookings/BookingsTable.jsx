@@ -204,7 +204,7 @@ const BookingsTable = () => {
     if (searchTerm === "") {
       setFilteredBookings(bookings);
     } else {
-      const filtered = filteredBookings.filter(
+      const filtered = bookings.filter(
         (booking) =>
           booking.user.username
             .toLowerCase()

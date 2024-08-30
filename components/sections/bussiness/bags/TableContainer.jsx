@@ -11,7 +11,7 @@ const TableContainer = () => {
     <div className="mt-4 w-full border border-gray-200 rounded-xl p-6 sm:px-4">
       {/* <TableUpper selectedFilter={filterType} onFilterChange={setFilterType} /> */}
       {filterType === "All Bags" && <BagsTable />}
-      {filterType === "Scheduled Bags" && <ScheduledBagsTable />}
+      {/* {filterType === "Scheduled Bags" && <ScheduledBagsTable />} */}
     </div>
   );
 };

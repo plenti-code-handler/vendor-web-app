@@ -15,6 +15,10 @@ export const getloginUserData = createAsyncThunk(
       if (userDoc.exists()) {
         const userData = userDoc.data();
 
+        if (userData.role === "admin") {
+          return userData;
+        }
+
         if (userData.status === "accepted") {
           toast.success("Your request has been accepted", {
             style: {

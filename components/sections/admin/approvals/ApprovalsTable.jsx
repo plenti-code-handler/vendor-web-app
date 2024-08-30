@@ -10,16 +10,22 @@ import {
   getDocs,
   limit,
   query,
+  startAfter,
   updateDoc,
   where,
 } from "firebase/firestore";
 import { db } from "../../../../app/firebase/config";
 import { convertTimestampToDDMMYYYY } from "../../../../utility/date";
 import emailjs from "@emailjs/browser";
+import TableUpper from "./TableUpper";
 
 const ApprovalsTable = () => {
   const [users, setUsers] = useState([]);
   const [lastVisible, setLastVisible] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredUsers, setFilteredUsers] = useState([]);
+  const [userFilter, setOnUserFilter] = useState("active");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     // Ensure the user and user.uid are available
@@ -50,7 +56,7 @@ const ApprovalsTable = () => {
         const lastDoc = allUsersSnapshot.docs[allUsersSnapshot.docs.length - 1];
 
         setUsers(usersData);
-        // setFilteredBookings(bookingsData);
+        setFilteredUsers(usersData);
         setLastVisible(lastDoc);
       } catch (error) {
         console.error("Error fetching bookings:", error);
@@ -59,6 +65,17 @@ const ApprovalsTable = () => {
 
     fetchInitialUsers();
   }, []);
+
+  useEffect(() => {
+    if (searchTerm === "") {
+      setFilteredUsers(users);
+    } else {
+      const filtered = users.filter((user) =>
+        user.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredUsers(filtered);
+    }
+  }, [searchTerm]);
 
   const handleApprove = async (user) => {
     // 1) make request to user and update its status field
@@ -113,6 +130,8 @@ const ApprovalsTable = () => {
     const lastDoc = allUsersSnapshot.docs[allUsersSnapshot.docs.length - 1];
 
     setUsers(usersData);
+    setFilteredUsers(usersData);
+    setLastVisible(lastDoc);
   };
 
   const handleReject = async (user) => {
@@ -168,10 +187,88 @@ const ApprovalsTable = () => {
     const lastDoc = allUsersSnapshot.docs[allUsersSnapshot.docs.length - 1];
 
     setUsers(usersData);
+    setFilteredUsers(usersData);
+    setLastVisible(lastDoc);
+  };
+
+  const onUserFilterChange = (status) => {
+    setOnUserFilter(status);
+
+    if (status === "newest") {
+      // Create a copy of the users array
+      const sortedUsers = [...users].sort((a, b) => {
+        // Get the current timestamp in seconds
+        const currentTime = Math.floor(Date.now() / 1000);
+
+        // Calculate the difference in time between joinedAt and the current time
+        const diffA = Math.abs(currentTime - a.joinedat.seconds);
+        const diffB = Math.abs(currentTime - b.joinedat.seconds);
+
+        // Sort based on the difference, with the smallest difference appearing first
+        return diffA - diffB;
+      });
+
+      // Update the filteredUsers state with the sorted array
+      setFilteredUsers(sortedUsers);
+    } else {
+      // Apply other filters as needed
+      setFilteredUsers(users);
+    }
+  };
+
+  const fetchMoreUsers = async () => {
+    if (!lastVisible) {
+      // If there is no lastVisible document, return early
+      return;
+    }
+    setLoading(true);
+    try {
+      const colRef = collection(db, "users");
+      const q = query(
+        colRef,
+        where("role", "==", "vendor"),
+        where("status", "==", "pending"),
+        // orderBy("time"), // Uncomment and adjust this line if needed
+        startAfter(lastVisible),
+        limit(10) // Limit the number of users fetched
+      );
+
+      const moreUsersSnapshot = await getDocs(q);
+      const moreUsersData = await Promise.all(
+        moreUsersSnapshot.docs.map(async (entry) => {
+          const booking = {
+            id: entry.id, // Include the document ID here
+            ...entry.data(),
+          };
+
+          return {
+            ...booking,
+          };
+        })
+      );
+
+      const lastDoc = moreUsersSnapshot.docs[moreUsersSnapshot.docs.length - 1];
+
+      // Update the state with the new set of users
+      setUsers((prevUsers) => [...prevUsers, ...moreUsersData]);
+      setFilteredUsers((prevFilteredUsers) => [
+        ...prevFilteredUsers,
+        ...moreUsersData,
+      ]);
+      setLastVisible(lastDoc);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching more users:", error);
+    }
   };
 
   return (
     <div className="no-scrollbar w-full overflow-y-hidden lg:pl-10 lg:pr-10">
+      <TableUpper
+        setSearchTerm={setSearchTerm}
+        userFilter={userFilter}
+        onUserFilterChange={onUserFilterChange}
+      />
       <table className="w-full table-auto truncate overflow-hidden rounded-2xl bg-white">
         <thead>
           <tr className="border-b-[1px] border-grayOne border-dashed border-opacity-20 text-sm font-semibold text-grayOne">
@@ -191,7 +288,7 @@ const ApprovalsTable = () => {
           </tr>
         </thead>
         <tbody>
-          {users.map((user, index) => (
+          {filteredUsers.map((user, index) => (
             <tr
               key={index}
               className="cursor-pointer border-b-[1px] border-[#E4E4E4] hover:bg-[#f8f7f7] border-dashed"
@@ -253,7 +350,7 @@ const ApprovalsTable = () => {
           ))}
         </tbody>
       </table>
-      <LoadMoreButton />
+      <LoadMoreButton loadMore={fetchMoreUsers} isLoading={loading} />
     </div>
   );
 };
