@@ -11,6 +11,7 @@ const BusinessProfileCard = () => {
   const [image, setImage] = useState("");
   const [description, setDescription] = useState("");
   const [location, setLocation] = useState("");
+  const [categories, setCategories] = useState([]);
 
   const dispatch = useDispatch();
   const router = useRouter();
@@ -27,11 +28,13 @@ const BusinessProfileCard = () => {
     setDescription(business.desc);
     setImage(business.imageUrl);
     setLocation(business.loc);
+    setCategories(business.categories);
   }, [business, router]);
 
   useEffect(() => {
     dispatch(setActivePage("Users"));
   }, [dispatch]);
+
   return (
     <>
       <div className="flex space-x-4">
@@ -48,12 +51,17 @@ const BusinessProfileCard = () => {
               <p className="text-sm">{location}</p>
             </div>
             <div className="flex flex-wrap gap-2 mt-2">
-              <div className="bg-mainThree border border-mainThree rounded-md px-3 py-1">
-                <p className="text-mainTwo text-sm font-medium">Category 1</p>
-              </div>
-              <div className="bg-mainThree border border-mainThree rounded-md px-3 py-1">
-                <p className="text-mainTwo text-sm font-medium">Category 2</p>
-              </div>
+              {categories &&
+                categories.map((category) => (
+                  <div
+                    key={category.id}
+                    className="bg-mainThree border border-mainThree rounded-md px-3 py-1"
+                  >
+                    <p className="text-mainTwo text-sm font-medium">
+                      {category.name}
+                    </p>
+                  </div>
+                ))}
             </div>
           </div>
           <div className="flex flex-col items-center lg:mt-5 lg:gap-y-2 lg:ml-12 md:gap-y-2 md:ml-12">

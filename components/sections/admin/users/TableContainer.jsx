@@ -1,16 +1,140 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TableUpper from "./TableUpper";
 import BusinessesTable from "../../../sections/admin/users/BusinessesTable";
 import CustomersTable from "../../../sections/admin/users/CustomersTable";
+import { db } from "../../../../app/firebase/config";
+import { collection, getDocs, limit, query, where } from "firebase/firestore";
 
 const TableContainer = () => {
   const [activeTable, setActiveTable] = useState("business");
+  const [searchTerm, setSearchTerm] = useState();
+  const [businessUsers, setBusinessUsers] = useState([]);
+  const [filteredBusinessUsers, setFilteredBusinessUsers] = useState([]);
+  const [businessLastVisible, setBusinessLastVisible] = useState([]);
+  const [customers, setCustomers] = useState([]);
+  const [filteredCustomers, setFilteredCustomers] = useState([]);
+  const [customerLastVisible, setCustomerLastVisible] = useState([]);
+
+  useEffect(() => {
+    // Ensure the user and user.uid are available
+    const fetchInitialBusinessUsers = async () => {
+      try {
+        const colRef = collection(db, "users");
+        const q = query(
+          colRef,
+          where("role", "==", "vendor"),
+          // orderBy("time"),
+          limit(10)
+        );
+
+        const allBookingsSnapshot = await getDocs(q);
+        const usersData = await Promise.all(
+          allBookingsSnapshot.docs.map(async (entry) => {
+            const users = entry.data();
+            return {
+              ...users,
+            };
+          })
+        );
+        const lastDoc =
+          allBookingsSnapshot.docs[allBookingsSnapshot.docs.length - 1];
+
+        setBusinessUsers(usersData);
+        setFilteredBusinessUsers(usersData);
+        setBusinessLastVisible(lastDoc);
+      } catch (error) {
+        console.error("Error fetching bookings:", error);
+      }
+    };
+
+    fetchInitialBusinessUsers();
+  }, []);
+
+  useEffect(() => {
+    // Ensure the user and user.uid are available
+    const fetchInitialCustomers = async () => {
+      try {
+        const colRef = collection(db, "users");
+        const q = query(
+          colRef,
+          where("role", "==", "customer"),
+          // orderBy("time"),
+          limit(10)
+        );
+
+        const allBookingsSnapshot = await getDocs(q);
+        const usersData = await Promise.all(
+          allBookingsSnapshot.docs.map(async (entry) => {
+            const users = entry.data();
+            return {
+              ...users,
+            };
+          })
+        );
+        const lastDoc =
+          allBookingsSnapshot.docs[allBookingsSnapshot.docs.length - 1];
+
+        setCustomers(usersData);
+        setFilteredCustomers(usersData);
+        setCustomerLastVisible(lastDoc);
+      } catch (error) {
+        console.error("Error fetching bookings:", error);
+      }
+    };
+
+    fetchInitialCustomers();
+  }, []);
+
+  useEffect(() => {
+    if (searchTerm === "") {
+      if (activeTable === "business") {
+        setFilteredBusinessUsers(businessUsers);
+      } else {
+        setFilteredCustomers(customers);
+      }
+    } else {
+      if (activeTable === "business") {
+        const filtered = businessUsers.filter((user) =>
+          user.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setFilteredBusinessUsers(filtered);
+      } else {
+        console.log(customers);
+        const filtered = customers.filter((user) =>
+          user.username.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setFilteredCustomers(filtered);
+      }
+    }
+  }, [searchTerm]);
 
   return (
     <div className="mt-4 w-full border border-gray-200 rounded-xl p-6 sm:px-4">
-      {/* <TableUpper activeTable={activeTable} setActiveTable={setActiveTable} /> */}
-      {activeTable === "business" ? <BusinessesTable /> : <CustomersTable />}
+      <TableUpper
+        setSearchTerm={setSearchTerm}
+        activeTable={activeTable}
+        setActiveTable={setActiveTable}
+      />
+      {activeTable === "business" ? (
+        <BusinessesTable
+          users={businessUsers}
+          setUsers={setBusinessUsers}
+          filteredUsers={filteredBusinessUsers}
+          setFilteredUsers={setFilteredBusinessUsers}
+          lastVisible={businessLastVisible}
+          setLastVisible={setBusinessLastVisible}
+        />
+      ) : (
+        <CustomersTable
+          users={customers}
+          setUsers={setCustomers}
+          filteredUsers={filteredCustomers}
+          setFilteredUsers={setFilteredCustomers}
+          lastVisible={customerLastVisible}
+          setLastVisible={setCustomerLastVisible}
+        />
+      )}
     </div>
   );
 };

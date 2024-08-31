@@ -5,7 +5,7 @@ import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setActivePage } from "../../../../redux/slices/headerSlice";
 
-const TableUpper = ({ activeTable, setActiveTable }) => {
+const TableUpper = ({ activeTable, setActiveTable, setSearchTerm }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -18,7 +18,11 @@ const TableUpper = ({ activeTable, setActiveTable }) => {
         {activeTable === "business" ? "Businesses" : "Customers"}
       </p>
       <div className="flex flex-col lg:flex-row md:flex-row gap-2 lg:gap-2">
-        <SearchField placeholder={"Search User"} className="w-full" />
+        <SearchField
+          setSearchTerm={setSearchTerm}
+          placeholder={"Search User"}
+          className="w-full"
+        />
         <div className="flex gap-3 w-full lg:w-auto justify-center">
           <button
             onClick={() => setActiveTable("business")}

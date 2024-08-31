@@ -15,6 +15,7 @@ import {
   startAfter,
 } from "firebase/firestore";
 import { db } from "../../../../app/firebase/config";
+import { convertTimestampToDDMMYYYY } from "../../../../utility/date";
 
 const RecentOrders = () => {
   const [bookings, setBookings] = useState([]);
@@ -169,7 +170,7 @@ const RecentOrders = () => {
               <th className="pb-[8px] px-2 pt-[18px] text-center">
                 Order Date
               </th>
-              <th className="pb-[8px] px-3 pt-[18px] text-left">Status</th>
+              <th className="pb-[8px] px-3 pt-[18px] text-center">Status</th>
             </tr>
           </thead>
           <tbody>
@@ -237,18 +238,22 @@ const RecentOrders = () => {
                 </td>
                 <td className="truncate text-center px-2">
                   <p className="text-sm font-semibold text-grayThree">
-                    {booking.start}
+                    {convertTimestampToDDMMYYYY(booking.bookingdate)}
                   </p>
                 </td>
                 <td className="truncate text-center justify-center items-center">
                   <div
-                    className={`${
+                    className={`mx-auto ${
                       booking.status.toLowerCase() == "picked"
                         ? "bg-pickedBg text-pickedText "
                         : "bg-notPickedBg text-notPickedText"
                     } font-semibold rounded-[4px] text-[12px] w-[77px] h-[26px] p-1 `}
                   >
-                    <p>{booking.status}</p>
+                    <p>
+                      {booking.status.toLowerCase() === "picked"
+                        ? "Picked"
+                        : "Not Picked"}
+                    </p>
                   </div>
                 </td>
               </tr>

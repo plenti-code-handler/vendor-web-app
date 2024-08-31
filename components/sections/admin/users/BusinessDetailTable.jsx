@@ -12,13 +12,29 @@ import {
   getDoc,
   getDocs,
   limit,
+  orderBy,
   query,
+  startAfter,
   where,
 } from "firebase/firestore";
 import { db } from "../../../../app/firebase/config";
 import StatusDropdown from "../../bussiness/bookings/StatusDropdown";
+import { convertTimestampToDDMMYYYY } from "../../../../utility/date";
 
 const BusinessDetailTable = () => {
+  const [bookings, setBookings] = useState([]);
+  const [filteredBookings, setFilteredBookings] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [lastVisible, setLastVisible] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [onStatusChange, setOnStatusChange] = useState("both");
+  const [bookingFilter, setOnBookingFilter] = useState("active");
+
+  const router = useRouter();
+  const business = useSelector(
+    (state) => state.selectBusiness.selectedBusiness
+  );
+
   const handleStatusChange = async (newStatus, bookingId) => {
     const docRef = doc(db, "bookings", bookingId);
     await updateDoc(docRef, {
@@ -27,7 +43,7 @@ const BusinessDetailTable = () => {
     const colRef = collection(db, "bookings");
     const q = query(
       colRef,
-      where("vendorid", "==", user.uid),
+      where("vendorid", "==", business.uid),
       // orderBy("time"),
       limit(10)
     );
@@ -70,16 +86,7 @@ const BusinessDetailTable = () => {
     setLastVisible(lastDoc);
   };
 
-  const [bookings, setBookings] = useState([]);
-  const [filteredBookings, setFilteredBookings] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [lastVisible, setLastVisible] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [onStatusChange, setOnStatusChange] = useState("both");
-  const [bookingFilter, setOnBookingFilter] = useState("active");
-
   const onBookingFilterChange = (status) => {
-    console.log(bookings);
     setOnBookingFilter(status);
 
     if (status === "cancel") {
@@ -88,42 +95,60 @@ const BusinessDetailTable = () => {
       return;
     }
 
-    const getStatus = (dateArray) => {
+    const getStatus = (dateArray, endtime, initialStatus) => {
       const now = new Date();
 
-      for (let dateObj of dateArray) {
+      let activeCount = 0;
+      let scheduledCount = 0;
+      let pastCount = 0;
+
+      dateArray.forEach((dateObj) => {
         const { date, starttime, endtime } = dateObj;
-        const startDateTime = new Date(`${date}T${starttime}`);
-        const endDateTime = new Date(`${date}T${endtime}`);
+        const startDateTime = starttime.toDate(); // Convert Firebase timestamp to JavaScript Date
+        const endDateTime = endtime.toDate(); // Convert Firebase timestamp to JavaScript Date
 
         if (now >= startDateTime && now <= endDateTime) {
-          return "active";
+          activeCount++;
         } else if (now < startDateTime) {
-          return "scheduled";
+          scheduledCount++;
+        } else {
+          pastCount++;
         }
+      });
+
+      const bookingEndTime = endtime.toDate();
+
+      if (initialStatus === "picked" || now > bookingEndTime) {
+        return "past";
       }
-      return "past";
+
+      if (activeCount > 0) {
+        return "active";
+      } else if (scheduledCount > 0) {
+        return "scheduled";
+      } else {
+        return "past";
+      }
     };
 
     const filtered = bookings.filter((booking) => {
-      const statusFromDates = getStatus(booking.bag.date);
+      const statusFromDates = getStatus(
+        booking.bag.date,
+        booking.endtime,
+        booking.status
+      );
       return statusFromDates === status || status === "";
     });
 
     setFilteredBookings(filtered);
   };
 
-  const router = useRouter();
-  const business = useSelector(
-    (state) => state.selectBusiness.selectedBusiness
-  );
-
-  useEffect(() => {
-    if (!business || Object.keys(business).length === 0) {
-      console.log("Business is not defined, redirecting...");
-      router.push("/admin/users");
-    }
-  }, [business, router]);
+  // useEffect(() => {
+  //   if (!business || Object.keys(business).length === 0) {
+  //     console.log("Business is not defined, redirecting...");
+  //     router.push("/admin/users");
+  //   }
+  // }, [business, router]);
 
   useEffect(() => {
     if (business.uid) {
@@ -185,7 +210,7 @@ const BusinessDetailTable = () => {
     if (searchTerm === "") {
       setFilteredBookings(bookings);
     } else {
-      const filtered = filteredBookings.filter(
+      const filtered = bookings.filter(
         (booking) =>
           booking.user.username
             .toLowerCase()
@@ -197,12 +222,12 @@ const BusinessDetailTable = () => {
   }, [searchTerm]);
 
   // Apply filters whenever bookings data changes
-  useEffect(() => {
-    if (bookings.length > 0) {
-      // onFilterChange(onStatusChange); // Apply the status filter
-      onBookingFilterChange(bookingFilter); // Apply the booking filter
-    }
-  }, [bookings, bookingFilter]);
+  // useEffect(() => {
+  //   if (bookings.length > 0) {
+  //     // onFilterChange(onStatusChange); // Apply the status filter
+  //     onBookingFilterChange(bookingFilter); // Apply the booking filter
+  //   }
+  // }, [bookings, bookingFilter]);
 
   const fetchMoreBookings = async () => {
     // Prevent the function from running if it’s already loading
@@ -219,18 +244,12 @@ const BusinessDetailTable = () => {
         q = query(
           colRef,
           where("vendorid", "==", business.uid),
-          orderBy("time"),
           startAfter(lastVisible),
           limit(10)
         );
       } else {
         // If lastVisible is null, just order and limit
-        q = query(
-          colRef,
-          where("vendorid", "==", business.uid),
-          orderBy("time"),
-          limit(10)
-        );
+        q = query(colRef, where("vendorid", "==", business.uid), limit(10));
       }
 
       const allBookingsSnapshot = await getDocs(q);
@@ -363,15 +382,15 @@ const BusinessDetailTable = () => {
                 </td>
                 <td className="truncate text-center px-2">
                   <p className="text-sm font-semibold text-grayThree">
-                    {booking.start}
+                    {convertTimestampToDDMMYYYY(booking.bookingdate)}
                   </p>
                 </td>
                 <td className="truncate text-center px-2">
                   <StatusDropdown
-                    disabled={true}
                     bagDate={booking.bag.date}
                     cancelled={booking.iscancelled}
                     initialStatus={booking.status}
+                    endtime={booking.endtime}
                     onStatusChange={(newStatus) =>
                       handleStatusChange(newStatus, booking.id)
                     }

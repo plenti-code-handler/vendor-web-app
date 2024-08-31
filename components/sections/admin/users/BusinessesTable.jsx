@@ -4,13 +4,27 @@ import Image from "next/image";
 import { adminBusinesses } from "../../../../lib/constant_data";
 import { useRouter } from "next/navigation";
 import LoadMoreButton from "../../../buttons/LoadMoreButton";
-import { collection, getDocs, limit, query, where } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  limit,
+  query,
+  startAfter,
+  where,
+} from "firebase/firestore";
 import { db } from "../../../../app/firebase/config";
 import { useDispatch } from "react-redux";
 import { selectBusiness } from "../../../../redux/slices/selectedBusinessSlice";
 import { convertTimestampToDDMMYYYY } from "../../../../utility/date";
 
-const BusinessesTable = () => {
+const BusinessesTable = ({
+  users,
+  setUsers,
+  filteredUsers,
+  setFilteredUsers,
+  lastVisible,
+  setLastVisible,
+}) => {
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -20,46 +34,40 @@ const BusinessesTable = () => {
     router.replace(`/admin/users/business/${uid}`);
   };
 
-  const [users, setUsers] = useState([]);
-  const [filteredUsers, setFilteredUsers] = useState([]);
+  // const [users, setUsers] = useState([]);
+  // const [filteredUsers, setFilteredUsers] = useState([]);
   // const [searchTerm, setSearchTerm] = useState("");
-  const [lastVisible, setLastVisible] = useState(null);
+  // const [lastVisible, setLastVisible] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    // Ensure the user and user.uid are available
-    const fetchInitialUsers = async () => {
-      try {
-        const colRef = collection(db, "users");
-        const q = query(
-          colRef,
-          where("role", "==", "vendor"),
-          // orderBy("time"),
-          limit(10)
-        );
+  const fetchMoreUsers = async () => {
+    if (!lastVisible) return; // Prevent fetching more if there's no last visible document
 
-        const allBookingsSnapshot = await getDocs(q);
-        const usersData = await Promise.all(
-          allBookingsSnapshot.docs.map(async (entry) => {
-            const users = entry.data();
-            return {
-              ...users,
-            };
-          })
-        );
-        const lastDoc =
-          allBookingsSnapshot.docs[allBookingsSnapshot.docs.length - 1];
+    setLoading(true); // Set loading state to true while fetching more users
 
-        setUsers(usersData);
-        setFilteredUsers(usersData);
-        setLastVisible(lastDoc);
-      } catch (error) {
-        console.error("Error fetching bookings:", error);
-      }
-    };
+    try {
+      const colRef = collection(db, "users");
+      const q = query(
+        colRef,
+        where("role", "==", "vendor"),
+        startAfter(lastVisible), // Start after the last document fetched
+        limit(10)
+      );
 
-    fetchInitialUsers();
-  }, []);
+      const moreBookingsSnapshot = await getDocs(q);
+      const moreUsersData = moreBookingsSnapshot.docs.map((doc) => doc.data());
+      const newLastVisible =
+        moreBookingsSnapshot.docs[moreBookingsSnapshot.docs.length - 1];
+
+      setUsers((prevUsers) => [...prevUsers, ...moreUsersData]); // Append new users to the existing list
+      setFilteredUsers((prevUsers) => [...prevUsers, ...moreUsersData]); // Update filtered users as well
+      setLastVisible(newLastVisible); // Update the last visible document
+    } catch (error) {
+      console.error("Error fetching more users:", error);
+    } finally {
+      setLoading(false); // Set loading state to false once fetching is complete
+    }
+  };
 
   return (
     <div className="no-scrollbar w-full overflow-y-hidden lg:pl-10 lg:pr-10 ">
@@ -117,7 +125,7 @@ const BusinessesTable = () => {
           ))}
         </tbody>
       </table>
-      <LoadMoreButton />
+      <LoadMoreButton loadMore={fetchMoreUsers} isLoading={loading} />
     </div>
   );
 };
