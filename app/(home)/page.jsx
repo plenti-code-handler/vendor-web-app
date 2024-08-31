@@ -4,8 +4,8 @@ import { GFS_Didot } from "next/font/google";
 import { Montserrat_Alternates } from "next/font/google";
 
 import React from "react";
-import ContactSection from "../../../components/sections/home/ContactSection";
-import { appleLogoSvg, googleLogoSvg, rightArrowIcon } from "../../../svgs";
+import ContactSection from "../../components/sections/home/ContactSection";
+import { appleLogoSvg, googleLogoSvg, rightArrowIcon } from "../../svgs";
 
 const gfsFont = GFS_Didot({ weight: "400", subsets: ["greek"] });
 const montserratFont = Montserrat_Alternates({

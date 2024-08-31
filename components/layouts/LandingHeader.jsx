@@ -82,6 +82,12 @@ const LandingHeader = () => {
             </div>
           </nav>
           <div className="hidden lg:flex items-center gap-5">
+            <Link
+              href={"/login"}
+              className="mr-3 mt-2 lg:m-0 flex items-center min-w-[150px] px-[12px] bg-pinkBgDark hover:border-2 text-white border-pinkBgDark border-2 py-[16px] text-center justify-center hover:border-pinkBgDark font-semibold rounded-[6px] hover:text-pinkBgDark hover:bg-white"
+            >
+              <span className="mr-3 ml-2 font-semibold">Login</span>
+            </Link>
             <button
               onClick={handleContactBtnClick}
               className="mr-3 mt-2 lg:m-0 flex items-center min-w-[150px] px-[12px] py-[16px] text-center justify-center bg-pinkBgDark text-white font-semibold rounded-[6px] hover:bg-pinkBgDarkHover2"

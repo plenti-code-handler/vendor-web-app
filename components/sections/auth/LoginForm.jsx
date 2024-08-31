@@ -63,9 +63,12 @@ const LoginForm = () => {
       >
         Login
       </button>
-      <p className="text-[#A1A5B7] text-[14px] font-medium text-center transition-colors hover:text-gray-500 hover:underline underline-offset-4 cursor-pointer">
+      {/* <Link
+        href={"/forget_password"}
+        className="text-[#A1A5B7] text-[14px] font-medium text-center transition-colors hover:text-gray-500 hover:underline underline-offset-4 cursor-pointer"
+      >
         Forget Password
-      </p>
+      </Link> */}
     </div>
   );
 };

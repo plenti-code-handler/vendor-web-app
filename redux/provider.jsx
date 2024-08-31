@@ -14,14 +14,15 @@ const Providers = ({ children }) => {
   const pathname = usePathname();
 
   if (
-    pathname === "/" ||
+    pathname === "/login" ||
     pathname === "/register" ||
-    pathname === "/forgot-password" ||
+    // pathname === "/forget_password" ||
     pathname === "/verify" ||
     pathname === "/setup_password" ||
     pathname === "/setup_profile" ||
-    pathname === "/awaiting" ||
-    pathname === "/reset-password"
+    pathname === "/awaiting"
+    // ||
+    // pathname === "/reset_password"
   ) {
     return (
       <Provider store={store}>
@@ -29,7 +30,7 @@ const Providers = ({ children }) => {
       </Provider>
     );
   } else if (
-    pathname === "/home" ||
+    pathname === "/" ||
     pathname === "/about_us" ||
     pathname === "/faqs" ||
     pathname === "/privacy" ||
