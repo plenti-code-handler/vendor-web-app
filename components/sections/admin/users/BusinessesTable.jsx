@@ -8,6 +8,7 @@ import { collection, getDocs, limit, query, where } from "firebase/firestore";
 import { db } from "../../../../app/firebase/config";
 import { useDispatch } from "react-redux";
 import { selectBusiness } from "../../../../redux/slices/selectedBusinessSlice";
+import { convertTimestampToDDMMYYYY } from "../../../../utility/date";
 
 const BusinessesTable = () => {
   const router = useRouter();
@@ -109,7 +110,7 @@ const BusinessesTable = () => {
               </td>
               <td className="truncate text-left px-2">
                 <p className="text-sm font-semibold text-grayThree">
-                  {/* {user.joinedAt} */}
+                  {convertTimestampToDDMMYYYY(user.joinedat)}
                 </p>
               </td>
             </tr>

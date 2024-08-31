@@ -6,6 +6,7 @@ const StatusDropdown = ({
   bagDate,
   cancelled,
   disabled,
+  endtime,
 }) => {
   // Determine the status based on the bagDate
 
@@ -13,18 +14,41 @@ const StatusDropdown = ({
 
   const getStatus = (dateArray) => {
     const now = new Date();
-    for (let dateObj of dateArray) {
+
+    let activeCount = 0;
+    let scheduledCount = 0;
+    let pastCount = 0;
+
+    dateArray.forEach((dateObj) => {
       const { date, starttime, endtime } = dateObj;
-      const startDateTime = new Date(`${date}T${starttime}`);
-      const endDateTime = new Date(`${date}T${endtime}`);
+      const startDateTime = starttime.toDate(); // Convert Firebase timestamp to JavaScript Date
+      const endDateTime = endtime.toDate(); // Convert Firebase timestamp to JavaScript Date
+
+      // Perform the status
 
       if (now >= startDateTime && now <= endDateTime) {
-        return "active";
+        activeCount++;
       } else if (now < startDateTime) {
-        return "scheduled";
+        scheduledCount++;
+      } else {
+        pastCount++;
       }
+    });
+
+    const currDate = new Date();
+    const bookingEndTime = endtime.toDate();
+
+    if (initialStatus === "picked" || currDate > bookingEndTime) {
+      return "past";
     }
-    return "past";
+
+    if (activeCount > 0) {
+      return "active";
+    } else if (scheduledCount > 0) {
+      return "scheduled";
+    } else {
+      return "past";
+    }
   };
 
   const handleChange = (event) => {
@@ -53,6 +77,22 @@ const StatusDropdown = ({
         className="bg-scheduledBg text-badgeScheduled font-semibold p-1 rounded-md text-sm cursor-not-allowed text-center"
       >
         <option value="scheduled">Scheduled</option>
+      </select>
+    );
+  } else if (status === "past") {
+    return (
+      <select
+        disabled
+        value="scheduled"
+        className={`${
+          optionStatus.toLowerCase() === "picked"
+            ? "bg-grayFive text-green-400"
+            : "bg-grayFive text-red-400"
+        } font-semibold p-1 rounded-md text-sm cursor-not-allowed text-center`}
+      >
+        <option value={initialStatus}>
+          {initialStatus.charAt(0).toUpperCase() + initialStatus.slice(1)}
+        </option>
       </select>
     );
   }

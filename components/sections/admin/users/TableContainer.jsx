@@ -9,7 +9,7 @@ const TableContainer = () => {
 
   return (
     <div className="mt-4 w-full border border-gray-200 rounded-xl p-6 sm:px-4">
-      <TableUpper activeTable={activeTable} setActiveTable={setActiveTable} />
+      {/* <TableUpper activeTable={activeTable} setActiveTable={setActiveTable} /> */}
       {activeTable === "business" ? <BusinessesTable /> : <CustomersTable />}
     </div>
   );

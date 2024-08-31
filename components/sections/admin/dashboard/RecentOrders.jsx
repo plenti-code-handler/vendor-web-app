@@ -79,7 +79,7 @@ const RecentOrders = () => {
       setFilteredBookings(bookings);
     } else {
       // const filtered = bookings.filter((booking) => {
-      const filtered = filteredBookings.filter((booking) => {
+      const filtered = bookings.filter((booking) => {
         return (
           booking.user.username
             .toLowerCase()

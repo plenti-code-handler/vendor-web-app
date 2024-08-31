@@ -21,6 +21,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../../../../app/firebase/config";
 import { getUserLocal } from "../../../../redux/slices/loggedInUserSlice";
+import { convertTimestampToDDMMYYYY } from "../../../../utility/date";
 
 const BookingsTable = () => {
   const dispatch = useDispatch();
@@ -95,7 +96,6 @@ const BookingsTable = () => {
   }, []);
 
   const onBookingFilterChange = (status) => {
-    console.log(bookings);
     setOnBookingFilter(status);
 
     if (status === "cancel") {
@@ -104,25 +104,48 @@ const BookingsTable = () => {
       return;
     }
 
-    const getStatus = (dateArray) => {
+    const getStatus = (dateArray, endtime, initialStatus) => {
       const now = new Date();
 
-      for (let dateObj of dateArray) {
+      let activeCount = 0;
+      let scheduledCount = 0;
+      let pastCount = 0;
+
+      dateArray.forEach((dateObj) => {
         const { date, starttime, endtime } = dateObj;
-        const startDateTime = new Date(`${date}T${starttime}`);
-        const endDateTime = new Date(`${date}T${endtime}`);
+        const startDateTime = starttime.toDate(); // Convert Firebase timestamp to JavaScript Date
+        const endDateTime = endtime.toDate(); // Convert Firebase timestamp to JavaScript Date
 
         if (now >= startDateTime && now <= endDateTime) {
-          return "active";
+          activeCount++;
         } else if (now < startDateTime) {
-          return "scheduled";
+          scheduledCount++;
+        } else {
+          pastCount++;
         }
+      });
+
+      const bookingEndTime = endtime.toDate();
+
+      if (initialStatus === "picked" || now > bookingEndTime) {
+        return "past";
       }
-      return "past";
+
+      if (activeCount > 0) {
+        return "active";
+      } else if (scheduledCount > 0) {
+        return "scheduled";
+      } else {
+        return "past";
+      }
     };
 
     const filtered = bookings.filter((booking) => {
-      const statusFromDates = getStatus(booking.bag.date);
+      const statusFromDates = getStatus(
+        booking.bag.date,
+        booking.endtime,
+        booking.status
+      );
       return statusFromDates === status || status === "";
     });
 
@@ -334,7 +357,6 @@ const BookingsTable = () => {
           </thead>
           <tbody>
             {filteredBookings.map((booking, index) => {
-              console.log(booking);
               return (
                 <tr
                   key={index}
@@ -383,7 +405,7 @@ const BookingsTable = () => {
                   </td>
                   <td className="truncate text-center px-2">
                     <p className="text-sm font-semibold text-grayThree">
-                      {booking.start}
+                      {convertTimestampToDDMMYYYY(booking.bookingdate)}
                     </p>
                   </td>
                   <td className="truncate text-center px-2">
@@ -391,6 +413,7 @@ const BookingsTable = () => {
                       bagDate={booking.bag.date}
                       cancelled={booking.iscancelled}
                       initialStatus={booking.status}
+                      endtime={booking.endtime}
                       onStatusChange={(newStatus) =>
                         handleStatusChange(newStatus, booking.id)
                       }

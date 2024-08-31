@@ -20,6 +20,7 @@ import {
   query,
   startAfter,
   where,
+  Timestamp,
 } from "firebase/firestore";
 import { db } from "../../../../app/firebase/config";
 import { BagsContext } from "../../../../contexts/BagsContext";
@@ -150,7 +151,27 @@ const BagsTable = () => {
     }
   };
   const handleEditClick = async (bag) => {
-    dispatch(setBagToUpdate(bag));
+    // Recontruct values from timestamps and store them in redux
+    const reverseDateArray = bag.date.map((item) => {
+      // Convert Firebase Timestamp to JavaScript Date
+      const dateObj = item.date.toDate();
+      const startTimeObj = item.starttime.toDate();
+      const endTimeObj = item.endtime.toDate();
+
+      // Format Date object to HTML date format (YYYY-MM-DD)
+      const date = dateObj.toISOString().split("T")[0];
+
+      // Format Time objects to HTML time format (HH:MM)
+      const starttime = startTimeObj.toTimeString().split(" ")[0].slice(0, 5);
+      const endtime = endTimeObj.toTimeString().split(" ")[0].slice(0, 5);
+
+      return {
+        date, // in 'YYYY-MM-DD' format
+        starttime, // in 'HH:MM' format
+        endtime, // in 'HH:MM' format
+      };
+    });
+    dispatch(setBagToUpdate({ ...bag, date: reverseDateArray }));
     dispatch(setOpenDrawer(true));
   };
 
@@ -185,19 +206,32 @@ const BagsTable = () => {
     const getStatus = (dateArray) => {
       const now = new Date();
 
-      for (let dateObj of dateArray) {
+      let activeCount = 0;
+      let scheduledCount = 0;
+      let pastCount = 0;
+
+      dateArray.forEach((dateObj) => {
         const { date, starttime, endtime } = dateObj;
-        const startDateTime = new Date(`${date}T${starttime}`);
-        const endDateTime = new Date(`${date}T${endtime}`);
+
+        const startDateTime = starttime.toDate(); // Convert Firebase timestamp to JavaScript Date
+        const endDateTime = endtime.toDate(); // Convert Firebase timestamp to JavaScript Date
 
         if (now >= startDateTime && now <= endDateTime) {
-          return "active";
+          activeCount++;
         } else if (now < startDateTime) {
-          return "scheduled";
+          scheduledCount++;
+        } else {
+          pastCount++;
         }
-      }
+      });
 
-      return "past";
+      if (activeCount > 0) {
+        return "active";
+      } else if (scheduledCount > 0) {
+        return "scheduled";
+      } else {
+        return "past";
+      }
     };
 
     const filtered = bags.filter((bag) => {
@@ -306,8 +340,41 @@ const BagsTable = () => {
 export default BagsTable;
 
 const RenderStatus = ({ dates }) => {
-  console.log(dates);
+  // Function to determine status based on current date and time
+  const getStatus = (dateArray) => {
+    const now = new Date();
 
+    let activeCount = 0;
+    let scheduledCount = 0;
+    let pastCount = 0;
+
+    dateArray.forEach((dateObj) => {
+      const { date, starttime, endtime } = dateObj;
+      const startDateTime = starttime.toDate(); // Convert Firebase timestamp to JavaScript Date
+      const endDateTime = endtime.toDate(); // Convert Firebase timestamp to JavaScript Date
+
+      if (now >= startDateTime && now <= endDateTime) {
+        activeCount++;
+      } else if (now < startDateTime) {
+        scheduledCount++;
+      } else {
+        pastCount++;
+      }
+    });
+
+    if (activeCount > 0) {
+      return "active";
+    } else if (scheduledCount > 0) {
+      return "scheduled";
+    } else {
+      return "past";
+    }
+  };
+
+  // Determine the overall status
+  const status = getStatus(dates);
+
+  // Function to decide style based on status
   const decideStyle = (status) => {
     switch (status) {
       case "active":
@@ -321,39 +388,13 @@ const RenderStatus = ({ dates }) => {
     }
   };
 
-  // Function to determine status based on current date and time
-  const getStatus = (dateObj) => {
-    const now = new Date();
-    const { date, starttime, endtime } = dateObj;
-    const startDateTime = new Date(`${date}T${starttime}`);
-    const endDateTime = new Date(`${date}T${endtime}`);
-
-    if (now >= startDateTime && now <= endDateTime) {
-      return "active";
-    } else if (now < startDateTime) {
-      return "scheduled";
-    } else {
-      return "past";
-    }
-  };
-
   return (
-    <div>
-      {dates.map((dateObj, index) => {
-        const status = getStatus(dateObj);
-        console.log(status);
-
-        return (
-          <div
-            key={index}
-            className={`mx-auto ${decideStyle(
-              status
-            )} font-semibold rounded-[4px] text-[12px] w-[77px] h-[26px] p-1`}
-          >
-            <p>{status.charAt(0).toUpperCase() + status.slice(1)}</p>
-          </div>
-        );
-      })}
+    <div
+      className={`mx-auto ${decideStyle(
+        status
+      )} font-semibold rounded-[4px] text-[12px] w-[77px] h-[26px] p-1`}
+    >
+      <p>{status.charAt(0).toUpperCase() + status.slice(1)}</p>
     </div>
   );
 };

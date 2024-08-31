@@ -154,7 +154,7 @@ const ApprovalsTable = () => {
       process.env.NEXT_PUBLIC_EMAILJS_SERVICE_KEY,
       process.env.NEXT_PUBLIC_EMAILJS_APPROVAL_TEMPLATE_KEY,
       {
-        message: `We are pleased to inform you that your request has been accepted`,
+        message: `Regrettably, your request has been declined by the admin.`,
         approval: "Rejected",
         to_email: user.email,
       },

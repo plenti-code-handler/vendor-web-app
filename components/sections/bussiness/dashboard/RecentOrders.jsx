@@ -17,6 +17,7 @@ import {
 } from "firebase/firestore";
 import LoadMoreButton from "../../../buttons/LoadMoreButton";
 import { getUserLocal } from "../../../../redux/slices/loggedInUserSlice";
+import { convertTimestampToDDMMYYYY } from "../../../../utility/date";
 
 const RecentOrders = () => {
   const [bookings, setBookings] = useState([]);
@@ -239,7 +240,7 @@ const RecentOrders = () => {
                 </td>
                 <td className="truncate text-center px-2">
                   <p className="text-sm font-semibold text-grayThree">
-                    {booking.start}
+                    {convertTimestampToDDMMYYYY(booking.bookingdate)}
                   </p>
                 </td>
                 <td className="truncate text-center px-2">

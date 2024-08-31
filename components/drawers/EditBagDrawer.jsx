@@ -23,6 +23,7 @@ import {
   query,
   updateDoc,
   where,
+  Timestamp,
 } from "firebase/firestore";
 import { db } from "../../app/firebase/config";
 import { getUserLocal } from "../../redux/slices/loggedInUserSlice";
@@ -94,7 +95,7 @@ const EditBagDrawer = () => {
       setDescription(bagToEdit.desc);
       setNumberOfBags(bagToEdit.bagaday);
       setPricing(bagToEdit.price);
-      // setOriginalPrice("");
+      setOriginalPrice(bagToEdit.originalprice);
       setDealTitle(bagToEdit.title);
       setStock(bagToEdit.stock);
     }
@@ -102,26 +103,45 @@ const EditBagDrawer = () => {
 
   const handleUpdateBag = async () => {
     try {
+      // Save the date array in firebase timestamp format
+      const updatedDateArray = selectedDates.map((item) => {
+        // Combine date with starttime and endtime
+        const dateStr = `${item.date}T00:00:00`; // Date with no time for selectedDateTime
+        const startDateTimeStr = `${item.date}T${item.starttime}:00`; // Combine date with starttime
+        const endDateTimeStr = `${item.date}T${item.endtime}:00`; // Combine date with endtime
+
+        // Create Date objects
+        const selectedDateTime = new Date(dateStr); // Date only
+        const startDateTime = new Date(startDateTimeStr); // Date with start time
+        const endDateTime = new Date(endDateTimeStr); // Date with end time
+
+        // Convert to Firebase timestamps
+        return {
+          date: Timestamp.fromDate(selectedDateTime),
+          starttime: Timestamp.fromDate(startDateTime),
+          endtime: Timestamp.fromDate(endDateTime),
+        };
+      });
       // Reference to the 'bags' collection
       const bagsCollectionRef = doc(db, "bags", bagToEdit.id);
 
       // Data to be added
       const newBag = {
         bagaday: numberOfBags,
-        date: selectedDates,
+        date: updatedDateArray,
         desc: description,
         img: selectedBag.img,
         loc: user.loc,
         type: selectedBag.type,
         tags: selectedTags,
         resname: user.name,
-        resimg: user.img,
+        resimg: user.imageUrl,
         title: dealTitle,
         stock: Number(stock),
         resuid: user.uid,
         // categories: selectedCategories,
         price: Number(pricing),
-        // originalPrice: originalPrice,
+        originalprice: Number(originalPrice),
         // createdAt: new Date(), // Optionally add a timestamp
       };
 
@@ -169,7 +189,7 @@ const EditBagDrawer = () => {
           <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-4">
             <DialogPanel
               transition
-              className="pointer-events-auto relative lg:w-screen max-w-md transform transition duration-500 ease-in-out data-[closed]:translate-x-full sm:duration-700"
+              className="pointer-events-auto relative lg:w-screen max-w-[29rem] transform transition duration-500 ease-in-out data-[closed]:translate-x-full sm:duration-700"
             >
               <div className="flex h-full flex-col overflow-y-scroll bg-white py-5 shadow-xl">
                 <DialogTitle className="flex px-4 sm:px-6 justify-between ">
