@@ -11,6 +11,7 @@ import {
   setRegisterEmail,
 } from "../../../redux/slices/registerUserSlice";
 import emailjs from "@emailjs/browser";
+import { toast } from "sonner";
 
 const ForgetPasswordForm = () => {
   const router = useRouter();
@@ -19,26 +20,17 @@ const ForgetPasswordForm = () => {
     Array.from({ length: 4 }, () => Math.floor(Math.random() * 10).toString())
   );
 
-  const dispatch = useDispatch();
-
   const handleContinue = async () => {
-    // if (email) {
-    //   dispatch(setRegisterEmail(email));
-    //   dispatch(setOtpCode(generatedOtp));
-    //   emailjs.send(
-    //     process.env.NEXT_PUBLIC_EMAILJS_SERVICE_KEY,
-    //     process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_KEY,
-    //     {
-    //       message: `Your OTP is ${generatedOtp.map((digit) => digit).join("")}`,
-    //       to_email: email,
-    //     },
-    //     { publicKey: process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY }
-    //   );
-    //   router.push("/reset_password");
-    // }
     try {
-      await sendPasswordResetEmail(auth, email);
-      console.log("Password reset email sent!");
+      await sendPasswordResetEmail(auth, email, {
+        url: `http://localhost:3000/reset_password?email=${email}`,
+        handleCodeInApp: true,
+      });
+      toast.success("Password reset email sent! Check your Email", {
+        style: {
+          color: "green",
+        },
+      });
     } catch (error) {
       console.error("Error sending password reset email:", error);
     }

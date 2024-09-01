@@ -63,12 +63,12 @@ const LoginForm = () => {
       >
         Login
       </button>
-      {/* <Link
+      <Link
         href={"/forget_password"}
         className="text-[#A1A5B7] text-[14px] font-medium text-center transition-colors hover:text-gray-500 hover:underline underline-offset-4 cursor-pointer"
       >
         Forget Password
-      </Link> */}
+      </Link>
     </div>
   );
 };

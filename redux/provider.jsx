@@ -16,13 +16,12 @@ const Providers = ({ children }) => {
   if (
     pathname === "/login" ||
     pathname === "/register" ||
-    // pathname === "/forget_password" ||
+    pathname === "/forget_password" ||
     pathname === "/verify" ||
     pathname === "/setup_password" ||
     pathname === "/setup_profile" ||
-    pathname === "/awaiting"
-    // ||
-    // pathname === "/reset_password"
+    pathname === "/awaiting" ||
+    pathname === "/reset_password"
   ) {
     return (
       <Provider store={store}>
