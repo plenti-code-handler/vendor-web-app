@@ -26,6 +26,7 @@ import { db } from "../../../../app/firebase/config";
 import { BagsContext } from "../../../../contexts/BagsContext";
 import { getUserLocal } from "../../../../redux/slices/loggedInUserSlice";
 import TableUpper from "./TableUpper";
+import Loader from "../../../loader/loader";
 
 const BagsTable = () => {
   const dispatch = useDispatch();
@@ -46,6 +47,7 @@ const BagsTable = () => {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState({});
   const [onStatusChange, setOnStatusChange] = useState("");
+  const [loader, setLoader] = useState(false);
 
   useEffect(() => {
     const localUser = getUserLocal();
@@ -57,6 +59,7 @@ const BagsTable = () => {
       // Ensure the user and user.uid are available
       const fetchInitialBags = async () => {
         try {
+          setLoader(true);
           const colRef = collection(db, "bags");
           const q = query(
             colRef,
@@ -77,6 +80,8 @@ const BagsTable = () => {
           setLastVisible(lastDoc);
         } catch (error) {
           console.error("Error fetching bookings:", error);
+        } finally {
+          setLoader(false);
         }
       };
 
@@ -98,6 +103,8 @@ const BagsTable = () => {
       setFilteredBags(filtered);
     }
   }, [searchTerm, bags]);
+
+  if (loader) return <Loader />;
 
   const fetchMoreBags = async () => {
     if (loading) return;
@@ -265,71 +272,79 @@ const BagsTable = () => {
           </tr>
         </thead>
         <tbody>
-          {filteredBags.map((bag, index) => (
-            <tr
-              key={index}
-              className="cursor-pointer border-b-[1px] border-[#E4E4E4] border-dashed hover:bg-[#f8f7f7]"
-            >
-              <td className="truncate pl-2 lg:pl-[5%] pr-2 w-[14.28%]">
-                <div className="py-3">
-                  <div className="flex flex-row items-center gap-x-2">
-                    <div className="flex h-[40px] w-[40px] items-center justify-center overflow-hidden rounded-full">
-                      <Image
-                        src={bag.img ? bag.img : "/User.png"}
-                        alt="GetSpouse Logo"
-                        className="h-full w-full object-cover"
-                        width={40}
-                        height={40}
-                        priority
-                      />
-                    </div>
-                    <div className="flex flex-col gap-y-1">
-                      <p className="text-sm font-medium">{bag.title}</p>
+          {filteredBags.length > 0 ? (
+            filteredBags.map((bag, index) => (
+              <tr
+                key={index}
+                className="cursor-pointer border-b-[1px] border-[#E4E4E4] border-dashed hover:bg-[#f8f7f7]"
+              >
+                <td className="truncate pl-2 lg:pl-[5%] pr-2 w-[14.28%]">
+                  <div className="py-3">
+                    <div className="flex flex-row items-center gap-x-2">
+                      <div className="flex h-[40px] w-[40px] items-center justify-center overflow-hidden rounded-full">
+                        <Image
+                          src={bag.img ? bag.img : "/User.png"}
+                          alt="GetSpouse Logo"
+                          className="h-full w-full object-cover"
+                          width={40}
+                          height={40}
+                          priority
+                        />
+                      </div>
+                      <div className="flex flex-col gap-y-1">
+                        <p className="text-sm font-medium">{bag.title}</p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </td>
-              <td className="truncate text-center px-2">
-                <p className="text-sm font-semibold text-grayThree">
-                  {bag.type}
-                </p>
-              </td>
-              <td className="truncate text-center px-2">
-                <p className="text-sm font-semibold text-grayThree">
-                  {bag.bagaday}
-                </p>
-              </td>
-              <td className="truncate text-center px-2">
-                <p className="text-sm font-semibold text-grayThree">
-                  {bag.stock}
-                </p>
-              </td>
-              <td className="truncate text-center px-2">
-                <p className="text-sm font-semibold text-grayThree">
-                  € {bag.price}
-                </p>
-              </td>
-              <td className="truncate text-center px-2">
-                <RenderStatus dates={bag.date} />
-              </td>
-              <td className="truncate text-center">
-                <div className="flex flex-row justify-center">
-                  <button
-                    onClick={() => handleEditClick(bag)}
-                    className="rounded-md bg-tableButtonBackground p-2 hover:bg-gray-200 hover:p-2"
-                  >
-                    {editSvg}
-                  </button>
-                  <button
-                    onClick={() => handleDelete(bag.id)}
-                    className="rounded-md bg-tableButtonBackground p-2 hover:bg-gray-200 hover:p-2"
-                  >
-                    {deleteSvg}
-                  </button>
-                </div>
+                </td>
+                <td className="truncate text-center px-2">
+                  <p className="text-sm font-semibold text-grayThree">
+                    {bag.type}
+                  </p>
+                </td>
+                <td className="truncate text-center px-2">
+                  <p className="text-sm font-semibold text-grayThree">
+                    {bag.bagaday}
+                  </p>
+                </td>
+                <td className="truncate text-center px-2">
+                  <p className="text-sm font-semibold text-grayThree">
+                    {bag.stock}
+                  </p>
+                </td>
+                <td className="truncate text-center px-2">
+                  <p className="text-sm font-semibold text-grayThree">
+                    € {bag.price}
+                  </p>
+                </td>
+                <td className="truncate text-center px-2">
+                  <RenderStatus dates={bag.date} />
+                </td>
+                <td className="truncate text-center">
+                  <div className="flex flex-row justify-center">
+                    <button
+                      onClick={() => handleEditClick(bag)}
+                      className="rounded-md bg-tableButtonBackground p-2 hover:bg-gray-200 hover:p-2"
+                    >
+                      {editSvg}
+                    </button>
+                    <button
+                      onClick={() => handleDelete(bag.id)}
+                      className="rounded-md bg-tableButtonBackground p-2 hover:bg-gray-200 hover:p-2"
+                    >
+                      {deleteSvg}
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="10" className="text-center py-10 text-grayOne">
+                No Bags found
               </td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
       <LoadMoreButton loadMore={fetchMoreBags} isLoading={loading} />

@@ -27,17 +27,9 @@ export const getloginUserData = createAsyncThunk(
           });
           return userData; // Return the user data if the status is approved
         } else if (userData.status === "rejected") {
-          toast.error("Your request has been declined", {
-            style: {
-              color: "red",
-            },
-          });
+          toast.error("Your request has been declined");
         } else if (userData.status === "pending") {
-          toast.error("Your request is still pending", {
-            style: {
-              color: "red",
-            },
-          });
+          toast.error("Your request is still pending");
         } else {
           throw new Error("User status is invalid or not set.");
         }

@@ -20,6 +20,7 @@ import { db } from "../../app/firebase/config";
 import { doc, updateDoc } from "firebase/firestore";
 import { logoutUser } from "../../redux/slices/loggedInUserSlice";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const UpdatePasswordDrawer = () => {
   const dispatch = useDispatch();
@@ -75,7 +76,7 @@ const UpdatePasswordDrawer = () => {
         setNewPassword("");
         setConfirmNewPassword("");
 
-        console.log("Password updated successfully in Firestore.");
+        toast.success("Password updated successfully in Firestore.");
         dispatch(setOpenDrawer(false));
         await auth.signOut();
         dispatch(logoutUser());
@@ -84,7 +85,7 @@ const UpdatePasswordDrawer = () => {
         console.error("Error updating password:", error);
       }
     } else {
-      console.error("New password and confirm password do not match.");
+      toast.error("Passwords do not match");
     }
   };
 

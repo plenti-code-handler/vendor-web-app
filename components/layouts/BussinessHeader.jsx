@@ -11,6 +11,7 @@ import { menuItemsData } from "../../lib/business_menu";
 import { logoutUser } from "../../redux/slices/loggedInUserSlice";
 import { useRouter } from "next/navigation";
 import { auth } from "../../app/firebase/config";
+import { toast } from "sonner";
 
 const BussinessHeader = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -41,6 +42,7 @@ const BussinessHeader = () => {
 
   const handleLogout = async () => {
     await auth.signOut();
+    toast.success("Signed Out Successfully!");
     dispatch(logoutUser());
     router.push("/");
   };

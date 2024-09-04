@@ -12,6 +12,8 @@ import {
 import { useRouter } from "next/navigation";
 import { useLoadScript } from "@react-google-maps/api";
 import { GeoPoint } from "firebase/firestore";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 const libraries = ["places"];
 
@@ -25,8 +27,8 @@ const ProfileForm = () => {
   const router = useRouter();
   const [preview, setPreview] = useState(placeholderImage); // State for image preview
   const [profileImage, setProfileImage] = useState(placeholderImage);
-  const [businessName, setBusinessName] = useState("");
-  const [description, setDescription] = useState("");
+  // const [businessName, setBusinessName] = useState("");
+  // const [description, setDescription] = useState("");
 
   const email = useSelector((state) => state.registerUser.email);
   const password = useSelector((state) => state.registerUser.password);
@@ -43,8 +45,9 @@ const ProfileForm = () => {
     }
   };
 
-  const handleSubmit = async () => {
+  const handleProfileSubmit = async (data) => {
     try {
+      const { businessName, description } = data;
       dispatch(setProfile(profileImage, businessName, location, description));
       // Dispatch the registerUser action
       const userData = dispatch(
@@ -61,9 +64,11 @@ const ProfileForm = () => {
         .unwrap()
         .then((register) => {
           console.log(register);
+          toast.success("Your request has been sent");
         })
         .catch((err) => {
-          console.error("Login failed:", err);
+          console.error("Register failed:", err);
+          toast.error("Something went wrong. Please try again");
         });
 
       router.push("/awaiting");
@@ -136,6 +141,12 @@ const ProfileForm = () => {
     }));
   };
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
   const handlePlaceChanged = async (address) => {
     if (!isLoaded) return;
     const place = address.getPlace();
@@ -172,7 +183,10 @@ const ProfileForm = () => {
   };
 
   return (
-    <div className="flex flex-col w-[390px] space-y-5">
+    <form
+      onSubmit={handleSubmit(handleProfileSubmit)}
+      className="flex flex-col w-[390px] space-y-5"
+    >
       <div className="flex flex-col space-y-3">
         <p className="text-black font-semibold text-[28px]">
           Setup Business Profile
@@ -211,9 +225,14 @@ const ProfileForm = () => {
       <input
         className="placeholder:font-bold rounded-md border border-gray-200 py-3 px-3 text-black text-[13px] font-semibold placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
         placeholder="Business Name"
-        value={businessName}
-        onChange={(e) => setBusinessName(e.target.value)}
+        name="businessName"
+        {...register("businessName", {
+          required: "Business name is required",
+        })}
       />
+      {errors.businessName && (
+        <p className="text-red-500 text-sm">{errors.businessName.message}</p>
+      )}
       <input
         value={input.completeAddress || input.streetAddress || ""}
         className="block w-full placeholder:font-bold rounded-lg border border-gray-300 py-3 px-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
@@ -236,17 +255,22 @@ const ProfileForm = () => {
       <Textarea
         className="block w-full placeholder:font-bold resize-none rounded-lg border border-gray-200 py-3 px-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
         rows={6}
+        name="description"
         placeholder="Description..."
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
+        {...register("description", {
+          required: "Description is required",
+        })}
       />
+      {errors.description && (
+        <p className="text-red-500 text-sm">{errors.description.message}</p>
+      )}
       <button
         onClick={handleSubmit}
         className="flex justify-center bg-pinkBgDark text-white font-semibold py-2 text-[16px] rounded hover:bg-pinkBgDarkHover2 gap-2 lg:w-[100%]"
       >
         Submit Request
       </button>
-    </div>
+    </form>
   );
 };
 

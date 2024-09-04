@@ -5,6 +5,7 @@ import BusinessesTable from "../../../sections/admin/users/BusinessesTable";
 import CustomersTable from "../../../sections/admin/users/CustomersTable";
 import { db } from "../../../../app/firebase/config";
 import { collection, getDocs, limit, query, where } from "firebase/firestore";
+import Loader from "../../../loader/loader";
 
 const TableContainer = () => {
   const [activeTable, setActiveTable] = useState("business");
@@ -15,11 +16,13 @@ const TableContainer = () => {
   const [customers, setCustomers] = useState([]);
   const [filteredCustomers, setFilteredCustomers] = useState([]);
   const [customerLastVisible, setCustomerLastVisible] = useState([]);
+  const [loader, setLoader] = useState(false);
 
   useEffect(() => {
     // Ensure the user and user.uid are available
     const fetchInitialBusinessUsers = async () => {
       try {
+        setLoader(true);
         const colRef = collection(db, "users");
         const q = query(
           colRef,
@@ -45,6 +48,8 @@ const TableContainer = () => {
         setBusinessLastVisible(lastDoc);
       } catch (error) {
         console.error("Error fetching bookings:", error);
+      } finally {
+        setLoader(false);
       }
     };
 
@@ -55,6 +60,7 @@ const TableContainer = () => {
     // Ensure the user and user.uid are available
     const fetchInitialCustomers = async () => {
       try {
+        setLoader(true);
         const colRef = collection(db, "users");
         const q = query(
           colRef,
@@ -80,6 +86,8 @@ const TableContainer = () => {
         setCustomerLastVisible(lastDoc);
       } catch (error) {
         console.error("Error fetching bookings:", error);
+      } finally {
+        setLoader(false);
       }
     };
 
@@ -108,6 +116,8 @@ const TableContainer = () => {
       }
     }
   }, [searchTerm]);
+
+  if (loader) return <Loader />;
 
   return (
     <div className="mt-4 w-full border border-gray-200 rounded-xl p-6 sm:px-4">

@@ -21,7 +21,7 @@ const AwaitingContent = () => {
         <p className="p-5 text-blackTwo">You’ll be notified via email</p>
       </div>
       <button
-        onClick={() => router.replace("/")}
+        onClick={() => router.replace("/login")}
         className="w-full bg-pinkBgDark text-[16px] text-white font-semibold py-2 rounded hover:bg-pinkBgDarkHover2"
       >
         Okay Got It

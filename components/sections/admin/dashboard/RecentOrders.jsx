@@ -16,6 +16,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../../../../app/firebase/config";
 import { convertTimestampToDDMMYYYY } from "../../../../utility/date";
+import Loader from "../../../loader/loader";
 
 const RecentOrders = () => {
   const [bookings, setBookings] = useState([]);
@@ -23,11 +24,13 @@ const RecentOrders = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [lastVisible, setLastVisible] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [loader, setLoader] = useState(false);
 
   useEffect(() => {
     // Ensure the user and user.uid are available
     const fetchInitialBookings = async () => {
       try {
+        setLoader(true);
         const colRef = collection(db, "bookings");
         const q = query(
           colRef,
@@ -69,6 +72,8 @@ const RecentOrders = () => {
         setLastVisible(lastDoc);
       } catch (error) {
         console.error("Error fetching bookings:", error);
+      } finally {
+        setLoader(false);
       }
     };
 
@@ -150,6 +155,8 @@ const RecentOrders = () => {
     }
   };
 
+  if (loader) return <Loader />;
+
   return (
     <div className="mt-4 w-full border border-gray-300 rounded-xl p-6 sm:px-4">
       <TableUpper setSearchTerm={setSearchTerm} />
@@ -174,90 +181,98 @@ const RecentOrders = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredBookings.map((booking, index) => (
-              <tr
-                key={index}
-                className="cursor-pointer border-b-[1px] border-[#E4E4E4] border-dashed hover:bg-[#f8f7f7]"
-              >
-                <td className="truncate pl-2 pr-2 w-[17.00%]">
-                  <div className="py-3">
-                    <div className="flex flex-row items-center gap-x-2">
-                      <div className="flex h-[40px] w-[40px] items-center justify-center overflow-hidden rounded-full">
-                        <Image
-                          src={booking.user.imageUrl || "./User.png"}
-                          alt="GetSpouse Logo"
-                          className="h-full w-full object-cover"
-                          width={40}
-                          height={40}
-                          priority
-                        />
-                      </div>
-                      <div className="flex flex-col gap-y-1">
-                        <p className="text-sm font-medium">
-                          {booking.user.username}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </td>
-                <td className="truncate pl-2 pr-2 w-[17.00]">
-                  <div className="py-3">
-                    <div className="flex flex-row items-center gap-x-2">
-                      <div className="flex h-[40px] w-[40px] items-center justify-center overflow-hidden rounded-full">
-                        <Image
-                          src={booking.bag.img || "/User.png"}
-                          alt="GetSpouse Logo"
-                          className="h-full w-full object-cover"
-                          width={40}
-                          height={40}
-                          priority
-                        />
-                      </div>
-                      <div className="flex flex-col gap-y-1">
-                        <p className="text-sm font-medium">
-                          {booking.bag.title}
-                        </p>
+            {filteredBookings.length > 0 ? (
+              filteredBookings.map((booking, index) => (
+                <tr
+                  key={index}
+                  className="cursor-pointer border-b-[1px] border-[#E4E4E4] border-dashed hover:bg-[#f8f7f7]"
+                >
+                  <td className="truncate pl-2 pr-2 w-[17.00%]">
+                    <div className="py-3">
+                      <div className="flex flex-row items-center gap-x-2">
+                        <div className="flex h-[40px] w-[40px] items-center justify-center overflow-hidden rounded-full">
+                          <Image
+                            src={booking.user.imageUrl || "./User.png"}
+                            alt="GetSpouse Logo"
+                            className="h-full w-full object-cover"
+                            width={40}
+                            height={40}
+                            priority
+                          />
+                        </div>
+                        <div className="flex flex-col gap-y-1">
+                          <p className="text-sm font-medium">
+                            {booking.user.username}
+                          </p>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </td>
-                <td className="truncate text-center px-2">
-                  <p className="text-sm font-semibold text-grayThree">
-                    {booking.size}
-                  </p>
-                </td>
-                <td className="truncate text-center px-2">
-                  <p className="text-sm font-semibold text-grayThree">
-                    {booking.quantity}
-                  </p>
-                </td>
-                <td className="truncate text-center px-2">
-                  <p className="text-sm font-semibold text-grayThree">
-                    € {booking.price}
-                  </p>
-                </td>
-                <td className="truncate text-center px-2">
-                  <p className="text-sm font-semibold text-grayThree">
-                    {convertTimestampToDDMMYYYY(booking.bookingdate)}
-                  </p>
-                </td>
-                <td className="truncate text-center justify-center items-center">
-                  <div
-                    className={`mx-auto ${
-                      booking.status.toLowerCase() == "picked"
-                        ? "bg-pickedBg text-pickedText "
-                        : "bg-notPickedBg text-notPickedText"
-                    } font-semibold rounded-[4px] text-[12px] w-[77px] h-[26px] p-1 `}
-                  >
-                    <p>
-                      {booking.status.toLowerCase() === "picked"
-                        ? "Picked"
-                        : "Not Picked"}
+                  </td>
+                  <td className="truncate pl-2 pr-2 w-[17.00]">
+                    <div className="py-3">
+                      <div className="flex flex-row items-center gap-x-2">
+                        <div className="flex h-[40px] w-[40px] items-center justify-center overflow-hidden rounded-full">
+                          <Image
+                            src={booking.bag.img || "/User.png"}
+                            alt="GetSpouse Logo"
+                            className="h-full w-full object-cover"
+                            width={40}
+                            height={40}
+                            priority
+                          />
+                        </div>
+                        <div className="flex flex-col gap-y-1">
+                          <p className="text-sm font-medium">
+                            {booking.bag.title}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="truncate text-center px-2">
+                    <p className="text-sm font-semibold text-grayThree">
+                      {booking.size}
                     </p>
-                  </div>
+                  </td>
+                  <td className="truncate text-center px-2">
+                    <p className="text-sm font-semibold text-grayThree">
+                      {booking.quantity}
+                    </p>
+                  </td>
+                  <td className="truncate text-center px-2">
+                    <p className="text-sm font-semibold text-grayThree">
+                      € {booking.price}
+                    </p>
+                  </td>
+                  <td className="truncate text-center px-2">
+                    <p className="text-sm font-semibold text-grayThree">
+                      {convertTimestampToDDMMYYYY(booking.bookingdate)}
+                    </p>
+                  </td>
+                  <td className="truncate text-center justify-center items-center">
+                    <div
+                      className={`mx-auto ${
+                        booking.status.toLowerCase() == "picked"
+                          ? "bg-pickedBg text-pickedText "
+                          : "bg-notPickedBg text-notPickedText"
+                      } font-semibold rounded-[4px] text-[12px] w-[77px] h-[26px] p-1 `}
+                    >
+                      <p>
+                        {booking.status.toLowerCase() === "picked"
+                          ? "Picked"
+                          : "Not Picked"}
+                      </p>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="10" className="text-center py-10 text-grayOne">
+                  No Orders found
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>

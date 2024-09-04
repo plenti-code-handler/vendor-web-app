@@ -14,7 +14,7 @@ export default function AuthLayout({ children }) {
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Toaster position="top-center" />
+        <Toaster richColors position="top-center" />
         <Providers>{children}</Providers>
       </body>
     </html>

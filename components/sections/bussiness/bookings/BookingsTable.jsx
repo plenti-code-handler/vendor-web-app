@@ -22,6 +22,7 @@ import {
 import { db } from "../../../../app/firebase/config";
 import { getUserLocal } from "../../../../redux/slices/loggedInUserSlice";
 import { convertTimestampToDDMMYYYY } from "../../../../utility/date";
+import Loader from "../../../loader/loader";
 
 const BookingsTable = () => {
   const dispatch = useDispatch();
@@ -87,6 +88,7 @@ const BookingsTable = () => {
   const [lastVisible, setLastVisible] = useState(null);
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState({});
+  const [loader, setLoader] = useState(false);
   const [onStatusChange, setOnStatusChange] = useState("both");
   const [bookingFilter, setOnBookingFilter] = useState("active");
 
@@ -168,6 +170,7 @@ const BookingsTable = () => {
       // Ensure the user and user.uid are available
       const fetchInitialBookings = async () => {
         try {
+          setLoader(true);
           const colRef = collection(db, "bookings");
           const q = query(
             colRef,
@@ -213,6 +216,8 @@ const BookingsTable = () => {
           setLastVisible(lastDoc);
         } catch (error) {
           console.error("Error fetching bookings:", error);
+        } finally {
+          setLoader(false);
         }
       };
 
@@ -245,6 +250,8 @@ const BookingsTable = () => {
       onBookingFilterChange(bookingFilter); // Apply the booking filter
     }
   }, [bookings, bookingFilter]);
+
+  if (loader) return <Loader />;
 
   const fetchMoreBookings = async () => {
     // Prevent the function from running if it’s already loading
@@ -356,72 +363,80 @@ const BookingsTable = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredBookings.map((booking, index) => {
-              return (
-                <tr
-                  key={index}
-                  className="cursor-pointer border-b-[1px] border-[#E4E4E4] border-dashed hover:bg-[#f8f7f7]"
-                >
-                  <td className="truncate pl-2 lg:pl-[5%] pr-2 w-[14.28%]">
-                    <div className="py-3">
-                      <div className="flex flex-row items-center gap-x-2">
-                        <div className="flex h-[40px] w-[40px] items-center justify-center overflow-hidden rounded-full">
-                          <Image
-                            src={booking.user.imageUrl || "/User.png"}
-                            alt="GetSpouse Logo"
-                            className="h-full w-full object-cover"
-                            width={40}
-                            height={40}
-                            priority
-                          />
-                        </div>
-                        <div className="flex flex-col gap-y-1">
-                          <p className="text-sm font-medium">
-                            {booking.user.username}
-                          </p>
+            {filteredBookings.length > 0 ? (
+              filteredBookings.map((booking, index) => {
+                return (
+                  <tr
+                    key={index}
+                    className="cursor-pointer border-b-[1px] border-[#E4E4E4] border-dashed hover:bg-[#f8f7f7]"
+                  >
+                    <td className="truncate pl-2 lg:pl-[5%] pr-2 w-[14.28%]">
+                      <div className="py-3">
+                        <div className="flex flex-row items-center gap-x-2">
+                          <div className="flex h-[40px] w-[40px] items-center justify-center overflow-hidden rounded-full">
+                            <Image
+                              src={booking.user.imageUrl || "/User.png"}
+                              alt="GetSpouse Logo"
+                              className="h-full w-full object-cover"
+                              width={40}
+                              height={40}
+                              priority
+                            />
+                          </div>
+                          <div className="flex flex-col gap-y-1">
+                            <p className="text-sm font-medium">
+                              {booking.user.username}
+                            </p>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </td>
-                  <td className="truncate text-center px-2">
-                    <p className="text-sm font-semibold text-grayThree">
-                      {booking.name}
-                    </p>
-                  </td>
-                  <td className="truncate text-center px-2">
-                    <p className="text-sm font-semibold text-grayThree">
-                      {booking.size}
-                    </p>
-                  </td>
-                  <td className="truncate text-center px-2">
-                    <p className="text-sm font-semibold text-grayThree">
-                      {booking.quantity}
-                    </p>
-                  </td>
-                  <td className="truncate text-center px-2">
-                    <p className="text-sm font-semibold text-grayThree">
-                      € {booking.price}
-                    </p>
-                  </td>
-                  <td className="truncate text-center px-2">
-                    <p className="text-sm font-semibold text-grayThree">
-                      {convertTimestampToDDMMYYYY(booking.bookingdate)}
-                    </p>
-                  </td>
-                  <td className="truncate text-center px-2">
-                    <StatusDropdown
-                      bagDate={booking.bag.date}
-                      cancelled={booking.iscancelled}
-                      initialStatus={booking.status}
-                      endtime={booking.endtime}
-                      onStatusChange={(newStatus) =>
-                        handleStatusChange(newStatus, booking.id)
-                      }
-                    />
-                  </td>
-                </tr>
-              );
-            })}
+                    </td>
+                    <td className="truncate text-center px-2">
+                      <p className="text-sm font-semibold text-grayThree">
+                        {booking.name}
+                      </p>
+                    </td>
+                    <td className="truncate text-center px-2">
+                      <p className="text-sm font-semibold text-grayThree">
+                        {booking.size}
+                      </p>
+                    </td>
+                    <td className="truncate text-center px-2">
+                      <p className="text-sm font-semibold text-grayThree">
+                        {booking.quantity}
+                      </p>
+                    </td>
+                    <td className="truncate text-center px-2">
+                      <p className="text-sm font-semibold text-grayThree">
+                        € {booking.price}
+                      </p>
+                    </td>
+                    <td className="truncate text-center px-2">
+                      <p className="text-sm font-semibold text-grayThree">
+                        {convertTimestampToDDMMYYYY(booking.bookingdate)}
+                      </p>
+                    </td>
+                    <td className="truncate text-center px-2">
+                      <StatusDropdown
+                        bagDate={booking.bag.date}
+                        cancelled={booking.iscancelled}
+                        initialStatus={booking.status}
+                        endtime={booking.endtime}
+                        onStatusChange={(newStatus) =>
+                          handleStatusChange(newStatus, booking.id)
+                        }
+                      />
+                    </td>
+                  </tr>
+                );
+              })
+            ) : (
+              <tr>
+                <td colSpan="10" className="text-center py-10 text-grayOne">
+                  No Bookings found
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>

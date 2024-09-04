@@ -20,12 +20,14 @@ import {
   getDocs,
   updateDoc,
 } from "firebase/firestore";
+import Loader from "../../../loader/loader";
 
 const RestaurentBox = () => {
   const [showInput, setShowInput] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [categories, setCategories] = useState([]);
   const [editingIndex, setEditingIndex] = useState(null);
+  const [loader, setLoader] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -34,6 +36,7 @@ const RestaurentBox = () => {
 
   useEffect(() => {
     const fetchCategories = async () => {
+      setLoader(true);
       const categoriesCollection = collection(db, "categories");
 
       try {
@@ -45,6 +48,8 @@ const RestaurentBox = () => {
         setCategories(categoriesList);
       } catch (error) {
         console.error("Error fetching categories:", error);
+      } finally {
+        setLoader(false);
       }
     };
 
@@ -170,6 +175,8 @@ const RestaurentBox = () => {
     }
   };
 
+  if (loader) return <Loader />;
+
   return (
     <div className="flex flex-col w-[100%] lg:w-[50%] gap-y-3">
       <div className="flex flex-col gap-5 lg:flex-row lg:gap-4 items-center w-[100%] justify-start lg:justify-between">
@@ -215,32 +222,38 @@ const RestaurentBox = () => {
       )}
 
       {/* CONTENT BOXES */}
-      {categories.map((category) => (
-        <div
-          key={category.id}
-          className={`flex justify-between w-full h-[37px] mb-[1%] p-2 ${
-            showInput ? "opacity-30 pointer-events-none" : ""
-          }`}
-        >
-          <p className="font-semibold text-[14px] text-blackTwo">
-            {category.name}
-          </p>
-          <div className="flex items-center gap-2">
-            <span
-              onClick={() => handleDeleteCategory(category.id)}
-              className="w-[30px] h-[30px] rounded-[6px] bg-gray-200 flex justify-center items-center hover:bg-gray-300 hover:cursor-pointer"
-            >
-              {deleteSvgSmall}
-            </span>
-            <span
-              onClick={() => handleEditCategory(category.id)}
-              className="w-[30px] h-[30px] rounded-[6px] bg-gray-200 flex justify-center items-center hover:bg-gray-300 hover:cursor-pointer"
-            >
-              {editSvgSmall}
-            </span>
+      {categories.length > 0 ? (
+        categories.map((category) => (
+          <div
+            key={category.id}
+            className={`flex justify-between w-full h-[37px] mb-[1%] p-2 ${
+              showInput ? "opacity-30 pointer-events-none" : ""
+            }`}
+          >
+            <p className="font-semibold text-[14px] text-blackTwo">
+              {category.name}
+            </p>
+            <div className="flex items-center gap-2">
+              <span
+                onClick={() => handleDeleteCategory(category.id)}
+                className="w-[30px] h-[30px] rounded-[6px] bg-gray-200 flex justify-center items-center hover:bg-gray-300 hover:cursor-pointer"
+              >
+                {deleteSvgSmall}
+              </span>
+              <span
+                onClick={() => handleEditCategory(category.id)}
+                className="w-[30px] h-[30px] rounded-[6px] bg-gray-200 flex justify-center items-center hover:bg-gray-300 hover:cursor-pointer"
+              >
+                {editSvgSmall}
+              </span>
+            </div>
           </div>
+        ))
+      ) : (
+        <div colSpan="10" className="text-center py-10 text-grayOne">
+          No Restaurant Categories Found
         </div>
-      ))}
+      )}
     </div>
   );
 };

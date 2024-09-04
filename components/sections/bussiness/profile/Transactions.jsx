@@ -23,10 +23,12 @@ import {
   where,
 } from "firebase/firestore";
 import { db } from "../../../../app/firebase/config";
+import Loader from "../../../loader/loader";
 
 const Transactions = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [withdrawals, setWithdrawals] = useState([]);
+  const [loader, setLoader] = useState(false);
   const auth = getAuth();
   const dispatch = useDispatch();
   const handleWithdraw = () => {
@@ -54,6 +56,7 @@ const Transactions = () => {
   useEffect(() => {
     const fetchWithdrawals = async (user) => {
       try {
+        setLoader(true);
         const vendorId = user.uid;
 
         // Create a query to get withdrawals where vendorId matches the current user's ID
@@ -77,6 +80,8 @@ const Transactions = () => {
         setWithdrawals(withdrawalsData);
       } catch (error) {
         console.error("Error fetching withdrawals: ", error);
+      } finally {
+        setLoader(false);
       }
     };
 
@@ -148,70 +153,74 @@ const Transactions = () => {
           <span className="ml-2">Withdraw Amount</span>
         </button>
       </div>
-      <div className="flex flex-col mt-4 p-3">
-        <p className="font-semibold text-[24px] text-blackTwo mb-2">
-          Transaction History
-        </p>
-        {withdrawals.length > 0 ? (
-          withdrawals.map((withdrawal) => {
-            const decideStyle = (status) => {
-              switch (status) {
-                case "paid":
-                  return "bg-green-200 border-green-500 text-green-500";
-                case "not paid":
-                  return "bg-red-200 text-red-500 border-red-500";
-                case "pending":
-                  return "bg-scheduledBg border-badgeScheduled text-badgeScheduled";
-                default:
-                  return "";
-              }
-            };
-            return (
-              <>
-                <div
-                  key={withdrawal.id}
-                  className="flex justify-between px-6 py-4 items-center bg-white shadow-lg transform translate-y-[-5px] p-2 rounded-lg mt-2 w-full"
-                >
-                  <div className="flex gap-2">
-                    {/* <span className="mt-2">{payPalSvg}</span> */}
-                    <div className="flex flex-col">
-                      <p className="text-cardNumber text-[16px] font-semibold">
-                        #{withdrawal.withdrawalno}
-                      </p>
-                      <p className="text-date text-[14px] font-medium">
-                        {new Intl.DateTimeFormat("en-GB", {
-                          day: "numeric",
-                          month: "short",
-                          year: "2-digit",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                          hour12: false,
-                        }).format(
-                          new Date(withdrawal.createdAt.seconds * 1000)
-                        )}
-                      </p>
+      {loader ? (
+        <Loader />
+      ) : (
+        <div className="flex flex-col mt-4 p-3">
+          <p className="font-semibold text-[24px] text-blackTwo mb-2">
+            Transaction History
+          </p>
+          {withdrawals.length > 0 ? (
+            withdrawals.map((withdrawal) => {
+              const decideStyle = (status) => {
+                switch (status) {
+                  case "paid":
+                    return "bg-green-200 border-green-500 text-green-500";
+                  case "not paid":
+                    return "bg-red-200 text-red-500 border-red-500";
+                  case "pending":
+                    return "bg-scheduledBg border-badgeScheduled text-badgeScheduled";
+                  default:
+                    return "";
+                }
+              };
+              return (
+                <>
+                  <div
+                    key={withdrawal.id}
+                    className="flex justify-between px-6 py-4 items-center bg-white shadow-lg transform translate-y-[-5px] p-2 rounded-lg mt-2 w-full"
+                  >
+                    <div className="flex gap-2">
+                      {/* <span className="mt-2">{payPalSvg}</span> */}
+                      <div className="flex flex-col">
+                        <p className="text-cardNumber text-[16px] font-semibold">
+                          #{withdrawal.withdrawalno}
+                        </p>
+                        <p className="text-date text-[14px] font-medium">
+                          {new Intl.DateTimeFormat("en-GB", {
+                            day: "numeric",
+                            month: "short",
+                            year: "2-digit",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: false,
+                          }).format(
+                            new Date(withdrawal.createdAt.seconds * 1000)
+                          )}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex gap-5 items-center">
+                      <div
+                        className={`${decideStyle(
+                          withdrawal.status
+                        )} font-semibold rounded-full text-center border text-[12px] px-5 py-1`}
+                      >
+                        {withdrawal.status}
+                      </div>
+                      <div className="text-amount text-[20px] font-semibold">
+                        €{withdrawal.amount}.00
+                      </div>
                     </div>
                   </div>
-                  <div className="flex gap-5 items-center">
-                    <div
-                      className={`${decideStyle(
-                        withdrawal.status
-                      )} font-semibold rounded-full text-center border text-[12px] px-5 py-1`}
-                    >
-                      {withdrawal.status}
-                    </div>
-                    <div className="text-amount text-[20px] font-semibold">
-                      €{withdrawal.amount}.00
-                    </div>
-                  </div>
-                </div>
-              </>
-            );
-          })
-        ) : (
-          <p>No withdrawals found.</p>
-        )}
-      </div>
+                </>
+              );
+            })
+          ) : (
+            <p>No withdrawals found.</p>
+          )}
+        </div>
+      )}
     </div>
   );
 };

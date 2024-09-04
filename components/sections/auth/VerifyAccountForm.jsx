@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { setOtpCode } from "../../../redux/slices/registerUserSlice";
 import emailjs from "@emailjs/browser";
+import { toast } from "sonner";
 
 const VerifyAccountForm = () => {
   const [otp, setOtp] = useState(new Array(4).fill(""));
@@ -82,6 +83,7 @@ const VerifyAccountForm = () => {
     if (otpMatches) {
       router.push("/setup_password");
     } else {
+      toast.error("Invalid OTP");
       console.log("OTP does not match. Please try again.");
     }
   };

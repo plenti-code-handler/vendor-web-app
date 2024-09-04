@@ -81,48 +81,56 @@ const BusinessesTable = ({
           </tr>
         </thead>
         <tbody>
-          {filteredUsers.map((user, index) => (
-            <tr
-              key={index}
-              className="cursor-pointer border-b-[1px] border-[#E4E4E4] border-dashed hover:bg-[#f8f7f7]"
-              onClick={() => handleRowClick(user)}
-            >
-              <td className="truncate pl-2 pr-2">
-                <div className="py-3">
-                  <div className="flex flex-row items-center gap-x-2">
-                    <div className="flex h-[40px] w-[40px] items-center justify-center overflow-hidden rounded-full">
-                      <Image
-                        src={user.imageUrl || "/User.png"}
-                        alt="GetSpouse Logo"
-                        className="h-full w-full object-cover"
-                        width={40}
-                        height={40}
-                        priority
-                      />
-                    </div>
-                    <div className="flex flex-col gap-y-1">
-                      <p className="text-sm font-medium">{user.name}</p>
+          {filteredUsers.length > 0 ? (
+            filteredUsers.map((user, index) => (
+              <tr
+                key={index}
+                className="cursor-pointer border-b-[1px] border-[#E4E4E4] border-dashed hover:bg-[#f8f7f7]"
+                onClick={() => handleRowClick(user)}
+              >
+                <td className="truncate pl-2 pr-2">
+                  <div className="py-3">
+                    <div className="flex flex-row items-center gap-x-2">
+                      <div className="flex h-[40px] w-[40px] items-center justify-center overflow-hidden rounded-full">
+                        <Image
+                          src={user.imageUrl || "/User.png"}
+                          alt="GetSpouse Logo"
+                          className="h-full w-full object-cover"
+                          width={40}
+                          height={40}
+                          priority
+                        />
+                      </div>
+                      <div className="flex flex-col gap-y-1">
+                        <p className="text-sm font-medium">{user.name}</p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </td>
-              <td className="truncate text-left px-2">
-                <p className="text-sm font-semibold text-grayThree">
-                  {user.loc}
-                </p>
-              </td>
-              <td className="relative text-left px-2">
-                <p className="text-sm font-semibold text-grayThree truncate overflow-hidden whitespace-nowrap tooltip-target">
-                  {user.desc}
-                </p>
-              </td>
-              <td className="truncate text-left px-2">
-                <p className="text-sm font-semibold text-grayThree">
-                  {convertTimestampToDDMMYYYY(user.joinedat)}
-                </p>
+                </td>
+                <td className="truncate text-left px-2">
+                  <p className="text-sm font-semibold text-grayThree">
+                    {user.loc}
+                  </p>
+                </td>
+                <td className="relative text-left px-2">
+                  <p className="text-sm font-semibold text-grayThree truncate overflow-hidden whitespace-nowrap tooltip-target">
+                    {user.desc}
+                  </p>
+                </td>
+                <td className="truncate text-left px-2">
+                  <p className="text-sm font-semibold text-grayThree">
+                    {convertTimestampToDDMMYYYY(user.joinedat)}
+                  </p>
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="10" className="text-center py-10 text-grayOne">
+                No Businesses found
               </td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
       <LoadMoreButton loadMore={fetchMoreUsers} isLoading={loading} />

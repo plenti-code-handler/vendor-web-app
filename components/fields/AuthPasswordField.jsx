@@ -3,9 +3,8 @@
 import { passwordHideSvgAuth, passwordShowSvg } from "../../svgs";
 import React, { useState } from "react";
 
-const AuthPasswordField = ({ value, onChange, placeholder }) => {
+const AuthPasswordField = ({ name, placeholder, register }) => {
   const [showPassword, setShowPassword] = useState(false);
-
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -16,8 +15,8 @@ const AuthPasswordField = ({ value, onChange, placeholder }) => {
         type={showPassword ? "text" : "password"}
         className="w-full placeholder:font-bold rounded-md border border-gray-200 py-3 px-3 text-[13px] text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
         placeholder={placeholder || "Password"}
-        value={value}
-        onChange={onChange}
+        {...register(name, { required: "Password is required" })}
+        name={name}
       />
       <span
         className="absolute right-3 text-black font-bold cursor-pointer"
