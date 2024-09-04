@@ -6,7 +6,7 @@ import TransactionsTable from "../../../sections/admin/transactions/Transactions
 const TableContainer = () => {
   return (
     <>
-      <TableUpper />
+      {/* <TableUpper /> */}
       <TransactionsTable />
     </>
   );

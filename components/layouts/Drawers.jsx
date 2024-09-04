@@ -15,8 +15,8 @@ const Drawers = () => {
       {/* {true && <AddCategoryDrawer />} */}
       {true && <UpdatePasswordDrawer />}
       {true && <DeleteAccountDrawer />}
-      {true && <WithdrawAmountDrawer />}
-      {true && <SuccessWithdrawDrawer />}
+      {/* {true && <WithdrawAmountDrawer />} */}
+      {/* {true && <SuccessWithdrawDrawer />} */}
       {true && <EditBagDrawer />}
       {true && <ContactDrawer />}
     </>

@@ -10,12 +10,12 @@ import { setOpenDrawer } from "../../redux/slices/withdrawSuccessSlice";
 import { crossIconWhiteSvg, payPalSvg, warningSvg } from "../../svgs";
 import { useState } from "react";
 
-const SuccessWithdrawDrawer = () => {
+const SuccessWithdrawDrawer = ({ amount, iban }) => {
   const dispatch = useDispatch();
   const open = useSelector((state) => state.withdrawSuccess.drawerOpen);
 
-  const [amount, setAmount] = useState("");
-  const currentBalance = 3150.7;
+  // const [amount, setAmount] = useState("");
+  // const currentBalance = 3150.7;
 
   const handleClose = () => {
     dispatch(setOpenDrawer(false));
@@ -61,11 +61,11 @@ const SuccessWithdrawDrawer = () => {
 
                     <div className="flex flex-col gap-2 items-center">
                       <p className="text-white text-[14px]">
-                        You have successfully withdrawn{" "}
+                        Your request has been received
                       </p>
 
                       <p className="text-white text-[50px] font-bold">
-                        € 5000.0
+                        € {amount}.0
                       </p>
 
                       <p className="text-white text-[14px]">to account</p>
@@ -75,7 +75,7 @@ const SuccessWithdrawDrawer = () => {
                       <div className="flex gap-2 items-center">
                         <span className="mt-1">{payPalSvg}</span>
                         <p className="text-white text-[16px] font-medium">
-                          xxxx xxxx xxxx 0354
+                          {iban}
                         </p>
                       </div>
                     </div>

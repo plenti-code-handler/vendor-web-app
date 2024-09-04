@@ -36,10 +36,12 @@ export const registerUser = createAsyncThunk(
           rating: 0,
           status: "pending",
           point,
-          otp: 1234,
           categories: [],
           joinedat: handleDate(new Date()),
+          token: null,
           uid: user.uid,
+          revenue: 0,
+          bankDetails: {},
         };
 
         const myCollection = collection(db, "users");
@@ -65,8 +67,10 @@ export const registerUser = createAsyncThunk(
         status: "pending",
         categories: [],
         joinedat: handleDate(new Date()),
+        token: null,
         point,
-        otp: 1234, // Assuming OTP is fixed; otherwise, generate it dynamically
+        revenue: 0,
+        bankDetails: {},
       };
 
       // Prepare user data to be stored in Firestore
