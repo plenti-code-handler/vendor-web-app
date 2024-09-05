@@ -179,18 +179,17 @@ const ApprovalsTable = () => {
     const allUsersSnapshot = await getDocs(q);
     const usersData = await Promise.all(
       allUsersSnapshot.docs.map(async (entry) => {
-        const booking = {
+        const users = {
           id: entry.id, // Include the document ID here
           ...entry.data(),
         };
 
         return {
-          ...booking,
+          ...users,
         };
       })
     );
     const lastDoc = allUsersSnapshot.docs[allUsersSnapshot.docs.length - 1];
-
     setUsers(usersData);
     setFilteredUsers(usersData);
     setLastVisible(lastDoc);
@@ -296,7 +295,7 @@ const ApprovalsTable = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredUsers > 0 ? (
+            {filteredUsers.length > 0 ? (
               filteredUsers.map((user, index) => (
                 <tr
                   key={index}

@@ -20,6 +20,7 @@ import {
 import { db } from "../../../../app/firebase/config";
 import StatusDropdown from "../../bussiness/bookings/StatusDropdown";
 import { convertTimestampToDDMMYYYY } from "../../../../utility/date";
+import Loader from "../../../loader/loader";
 
 const BusinessDetailTable = () => {
   const [bookings, setBookings] = useState([]);
@@ -29,6 +30,7 @@ const BusinessDetailTable = () => {
   const [loading, setLoading] = useState(false);
   const [onStatusChange, setOnStatusChange] = useState("both");
   const [bookingFilter, setOnBookingFilter] = useState("active");
+  const [loader, setLoader] = useState(false);
 
   const router = useRouter();
   const business = useSelector(
@@ -154,6 +156,7 @@ const BusinessDetailTable = () => {
     if (business.uid) {
       const fetchInitialBookings = async () => {
         try {
+          setLoader(true);
           const colRef = collection(db, "bookings");
           const q = query(
             colRef,
@@ -197,6 +200,8 @@ const BusinessDetailTable = () => {
           setLastVisible(lastDoc);
         } catch (error) {
           console.error("Error fetching bookings:", error);
+        } finally {
+          setLoader(false);
         }
       };
 
@@ -306,6 +311,8 @@ const BusinessDetailTable = () => {
     }
   };
 
+  if (loader) return <Loader />;
+
   return (
     <div className="mt-4 w-full border border-gray-200 rounded-xl p-6 sm:px-4">
       <DetailsTableUpper
@@ -334,70 +341,78 @@ const BusinessDetailTable = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredBookings.map((booking, index) => (
-              <tr
-                key={index}
-                className="cursor-pointer border-b-[1px] border-[#E4E4E4] border-dashed hover:bg-[#f8f7f7]"
-              >
-                <td className="truncate px-[4%] w-[20.00%]">
-                  <div className="py-3">
-                    <div className="flex flex-row items-center gap-x-2">
-                      <div className="flex h-[40px] w-[40px] items-center justify-center overflow-hidden rounded-full">
-                        <Image
-                          src={booking.user.imageUrl || "/User.png"}
-                          alt="GetSpouse Logo"
-                          className="h-full w-full object-cover"
-                          width={40}
-                          height={40}
-                          priority
-                        />
-                      </div>
-                      <div className="flex flex-col gap-y-1">
-                        <p className="text-sm font-medium">
-                          {booking.user.username}
-                        </p>
+            {filteredBookings.length > 0 ? (
+              filteredBookings.map((booking, index) => (
+                <tr
+                  key={index}
+                  className="cursor-pointer border-b-[1px] border-[#E4E4E4] border-dashed hover:bg-[#f8f7f7]"
+                >
+                  <td className="truncate px-[4%] w-[20.00%]">
+                    <div className="py-3">
+                      <div className="flex flex-row items-center gap-x-2">
+                        <div className="flex h-[40px] w-[40px] items-center justify-center overflow-hidden rounded-full">
+                          <Image
+                            src={booking.user.imageUrl || "/User.png"}
+                            alt="GetSpouse Logo"
+                            className="h-full w-full object-cover"
+                            width={40}
+                            height={40}
+                            priority
+                          />
+                        </div>
+                        <div className="flex flex-col gap-y-1">
+                          <p className="text-sm font-medium">
+                            {booking.user.username}
+                          </p>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </td>
-                <td className="truncate text-center px-2">
-                  <p className="text-sm font-semibold text-grayThree">
-                    {booking.name}
-                  </p>
-                </td>
-                <td className="truncate text-center px-2">
-                  <p className="text-sm font-semibold text-grayThree">
-                    {booking.size}
-                  </p>
-                </td>
-                <td className="truncate text-center px-2">
-                  <p className="text-sm font-semibold text-grayThree">
-                    {booking.quantity}
-                  </p>
-                </td>
-                <td className="truncate text-center px-2">
-                  <p className="text-sm font-semibold text-grayThree">
-                    € {booking.price}
-                  </p>
-                </td>
-                <td className="truncate text-center px-2">
-                  <p className="text-sm font-semibold text-grayThree">
-                    {convertTimestampToDDMMYYYY(booking.bookingdate)}
-                  </p>
-                </td>
-                <td className="truncate text-center px-2">
-                  <StatusDropdown
-                    bagDate={booking.bag.date}
-                    cancelled={booking.iscancelled}
-                    initialStatus={booking.status}
-                    endtime={booking.endtime}
-                    onStatusChange={(newStatus) =>
-                      handleStatusChange(newStatus, booking.id)
-                    }
-                  />
+                  </td>
+                  <td className="truncate text-center px-2">
+                    <p className="text-sm font-semibold text-grayThree">
+                      {booking.name}
+                    </p>
+                  </td>
+                  <td className="truncate text-center px-2">
+                    <p className="text-sm font-semibold text-grayThree">
+                      {booking.size}
+                    </p>
+                  </td>
+                  <td className="truncate text-center px-2">
+                    <p className="text-sm font-semibold text-grayThree">
+                      {booking.quantity}
+                    </p>
+                  </td>
+                  <td className="truncate text-center px-2">
+                    <p className="text-sm font-semibold text-grayThree">
+                      € {booking.price}
+                    </p>
+                  </td>
+                  <td className="truncate text-center px-2">
+                    <p className="text-sm font-semibold text-grayThree">
+                      {convertTimestampToDDMMYYYY(booking.bookingdate)}
+                    </p>
+                  </td>
+                  <td className="truncate text-center px-2">
+                    <StatusDropdown
+                      bagDate={booking.bag.date}
+                      cancelled={booking.iscancelled}
+                      initialStatus={booking.status}
+                      endtime={booking.endtime}
+                      onStatusChange={(newStatus) =>
+                        handleStatusChange(newStatus, booking.id)
+                      }
+                    />
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="10" className="text-center py-10 text-grayOne">
+                  No Booking found
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>

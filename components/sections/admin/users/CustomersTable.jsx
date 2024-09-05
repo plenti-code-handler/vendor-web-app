@@ -87,7 +87,7 @@ const CustomersTable = ({
           </tr>
         </thead>
         <tbody>
-          {filteredUsers > 0 ? (
+          {filteredUsers.length > 0 ? (
             filteredUsers.map((user, index) => (
               <tr
                 key={index}

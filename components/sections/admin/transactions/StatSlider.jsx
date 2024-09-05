@@ -5,7 +5,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import TransactionCard from "./TransactionCard";
 
-const StatSlider = () => {
+const StatSlider = ({ vendorCount, tenPercent }) => {
   const [current, setCurrent] = useState(0);
 
   var settings = {
@@ -75,7 +75,7 @@ const StatSlider = () => {
     <Slider {...settings}>
       <div className="px-4">
         <TransactionCard
-          title="€2,786.22"
+          title={`€${tenPercent.toFixed(2)}`}
           content={"Revenue Generated"}
           textColor={"text-secondary"}
           smallScreen={true}
@@ -83,7 +83,7 @@ const StatSlider = () => {
       </div>
       <div className="px-4">
         <TransactionCard
-          title="59,786"
+          title={vendorCount}
           content={"Total Businesses"}
           textColor={"text-blackTwo"}
           smallScreen={true}

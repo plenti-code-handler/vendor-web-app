@@ -1,9 +1,11 @@
 "use client";
-import React, { useMemo, useCallback } from "react";
+import React, { useMemo, useCallback, useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { addUserSvg, backButtonSvg } from "../../svgs";
 import { useDispatch } from "react-redux";
 import { setOpenDrawer } from "../../redux/slices/addBagSlice";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "../../app/firebase/config";
 
 const decidePath = (pathname) => {
   // Check for specific patterns
@@ -47,6 +49,7 @@ const Breadcrumb = () => {
   const pathname = usePathname();
   const dispatch = useDispatch();
   const router = useRouter();
+  const [pendingUsersCount, setPendingUsersCount] = useState(0);
 
   const handleOpenDrawer = useCallback(() => {
     dispatch(setOpenDrawer(true));
@@ -55,6 +58,29 @@ const Breadcrumb = () => {
   const handleBackClick = useCallback(() => {
     router.replace("/admin/users");
   }, [router]);
+
+  useEffect(() => {
+    const fetchPendingUsersCount = async () => {
+      try {
+        // Query the "users" collection for documents where "status" is "pending"
+        const q = query(
+          collection(db, "users"),
+          where("status", "==", "pending")
+        );
+
+        // Execute the query and get the documents
+        const querySnapshot = await getDocs(q);
+
+        // Set the count of pending users in state
+        setPendingUsersCount(querySnapshot.size);
+      } catch (error) {
+        console.error("Error fetching pending users:", error);
+        toast.error("An error occurred while fetching pending users.");
+      }
+    };
+
+    fetchPendingUsersCount();
+  }, []); // Empty dependency array to run this effect only once on mount
 
   const currentPath = useMemo(() => decidePath(pathname), [pathname]);
 
@@ -94,7 +120,7 @@ const Breadcrumb = () => {
         {currentPath}
       </p>
       <p className="text-lg sm:m-0 sm:text-xl md:text-2xl lg:text-3xl font-medium text-secondary">
-        {"(2 New)"}
+        {`(${pendingUsersCount} New)`}
       </p>
     </div>
   );

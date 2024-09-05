@@ -17,6 +17,7 @@ import { db } from "../../../../app/firebase/config";
 import { useSelector } from "react-redux";
 import { convertTimestampToDDMMYYYY } from "../../../../utility/date";
 import StatusDropdown from "../../bussiness/bookings/StatusDropdown";
+import Loader from "../../../loader/loader";
 
 const CustomerDetailTable = () => {
   const [bookings, setBookings] = useState([]);
@@ -25,6 +26,7 @@ const CustomerDetailTable = () => {
   const [lastVisible, setLastVisible] = useState(null);
   const [loading, setLoading] = useState(false);
   const [bookingFilter, setOnBookingFilter] = useState("active");
+  const [loader, setLoader] = useState(false);
 
   const customer = useSelector(
     (state) => state.selectBusiness.selectedBusiness
@@ -142,6 +144,7 @@ const CustomerDetailTable = () => {
     if (customer.uid) {
       const fetchInitialBookings = async () => {
         try {
+          setLoader(true);
           const colRef = collection(db, "bookings");
           const q = query(colRef, where("uid", "==", customer.uid), limit(10));
 
@@ -181,6 +184,8 @@ const CustomerDetailTable = () => {
           setLastVisible(lastDoc);
         } catch (error) {
           console.error("Error fetching bookings:", error);
+        } finally {
+          setLoader(false);
         }
       };
 
@@ -268,6 +273,8 @@ const CustomerDetailTable = () => {
     }
   };
 
+  if (loader) return <Loader />;
+
   return (
     <div className="mt-4 w-full border border-gray-200 rounded-xl p-6 sm:px-4">
       <DetailsTableUpper
@@ -294,49 +301,57 @@ const CustomerDetailTable = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredBookings.map((booking, index) => (
-              <tr
-                key={index}
-                className="cursor-pointer border-b-[1px] border-[#E4E4E4] border-dashed hover:bg-[#f8f7f7] h-[60px] w-[50px]"
-              >
-                <td className="truncate text-left px-[3%]">
-                  <p className="text-sm font-semibold text-grayThree">
-                    {booking.name}
-                  </p>
-                </td>
-                <td className="truncate text-center px-2">
-                  <p className="text-sm font-semibold text-grayThree">
-                    {booking.size}
-                  </p>
-                </td>
-                <td className="truncate text-center px-2">
-                  <p className="text-sm font-semibold text-grayThree">
-                    {booking.quantity}
-                  </p>
-                </td>
-                <td className="truncate text-center px-2">
-                  <p className="text-sm font-semibold text-grayThree">
-                    € {booking.price}
-                  </p>
-                </td>
-                <td className="truncate text-center px-2">
-                  <p className="text-sm font-semibold text-grayThree">
-                    {convertTimestampToDDMMYYYY(booking.bookingdate)}
-                  </p>
-                </td>
-                <td className="truncate text-center px-2">
-                  <StatusDropdown
-                    bagDate={booking.bag.date}
-                    cancelled={booking.iscancelled}
-                    initialStatus={booking.status}
-                    endtime={booking.endtime}
-                    onStatusChange={(newStatus) =>
-                      handleStatusChange(newStatus, booking.id)
-                    }
-                  />
+            {filteredBookings.length > 0 ? (
+              filteredBookings.map((booking, index) => (
+                <tr
+                  key={index}
+                  className="cursor-pointer border-b-[1px] border-[#E4E4E4] border-dashed hover:bg-[#f8f7f7] h-[60px] w-[50px]"
+                >
+                  <td className="truncate text-left px-[3%]">
+                    <p className="text-sm font-semibold text-grayThree">
+                      {booking.name}
+                    </p>
+                  </td>
+                  <td className="truncate text-center px-2">
+                    <p className="text-sm font-semibold text-grayThree">
+                      {booking.size}
+                    </p>
+                  </td>
+                  <td className="truncate text-center px-2">
+                    <p className="text-sm font-semibold text-grayThree">
+                      {booking.quantity}
+                    </p>
+                  </td>
+                  <td className="truncate text-center px-2">
+                    <p className="text-sm font-semibold text-grayThree">
+                      € {booking.price}
+                    </p>
+                  </td>
+                  <td className="truncate text-center px-2">
+                    <p className="text-sm font-semibold text-grayThree">
+                      {convertTimestampToDDMMYYYY(booking.bookingdate)}
+                    </p>
+                  </td>
+                  <td className="truncate text-center px-2">
+                    <StatusDropdown
+                      bagDate={booking.bag.date}
+                      cancelled={booking.iscancelled}
+                      initialStatus={booking.status}
+                      endtime={booking.endtime}
+                      onStatusChange={(newStatus) =>
+                        handleStatusChange(newStatus, booking.id)
+                      }
+                    />
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="10" className="text-center py-10 text-grayOne">
+                  No Booking found
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
