@@ -5,7 +5,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Card from "./Card";
 
-const StatSlider = () => {
+const StatSlider = ({ bagToday, totalBags, vendorCount, customerCount }) => {
   const [current, setCurrent] = useState(0);
 
   var settings = {
@@ -74,16 +74,26 @@ const StatSlider = () => {
   return (
     <Slider {...settings}>
       <div className="px-4">
-        <Card title="259,786" content={"Total Businesses"} />
+        <Card title={vendorCount} content={"Total Businesses"} />
       </div>
       <div className="px-4">
-        <Card title="15" content={"Today's Bag Made"} />
+        <Card
+          title={
+            totalBags.length === 0
+              ? 0
+              : totalBags.length.toLocaleString("en-US")
+          }
+          content={"Total Bag Made"}
+        />
       </div>
       <div className="px-4">
-        <Card title="259,786" content={"Total Customers"} />
+        <Card title={customerCount} content={"Total Customers"} />
       </div>
       <div className="px-4">
-        <Card title="15" content={"Today's Total Bags"} />{" "}
+        <Card
+          title={Number(bagToday).toLocaleString("en-US")}
+          content={"Today's Total Bags"}
+        />{" "}
       </div>
     </Slider>
   );

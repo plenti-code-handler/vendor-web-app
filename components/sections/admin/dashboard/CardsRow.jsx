@@ -2,16 +2,26 @@
 import React from "react";
 import Card from "./Card";
 
-const CardsRow = () => {
+const CardsRow = ({ totalBags, bagToday, vendorCount, customerCount }) => {
   return (
     <div className="hidden lg:flex flex-col lg:flex-row lg:w-[100%]">
       <div className="flex flex-col gap-5 lg:w-[100%]">
-        <Card title="259,786" content={"Total Businesses"} />
-        <Card title="15" content={"Today's Bag Made"} />
+        <Card title={vendorCount} content={"Total Businesses"} />
+        <Card
+          title={
+            totalBags.length === 0
+              ? 0
+              : totalBags.length.toLocaleString("en-US")
+          }
+          content={"Total Bag Made"}
+        />
       </div>
       <div className="flex flex-col gap-5 lg:w-[100%]">
-        <Card title="259,786" content={"Total Customers"} />
-        <Card title="15" content={"Today's Total Bags"} />
+        <Card title={customerCount} content={"Total Customers"} />
+        <Card
+          title={Number(bagToday).toLocaleString("en-US")}
+          content={"Today's Total Bags"}
+        />
       </div>
     </div>
   );
