@@ -20,17 +20,21 @@ const DateSelection = ({ selectedDates, setSelectedDates }) => {
     <>
       <div className="flex flex-col pb-5 mt-4 gap-1">
         <p className="text-black font-bold text-[20px]">Date & Time</p>
-        <form onSubmit>
+        <form onSubmit={(e) => e.preventDefault()}>
           <input
             type="date"
             value={selectedDate}
             onChange={(e) => {
               setSelectedDate(e.target.value);
-
               setSelectedDates((state) => {
                 return [
                   ...state,
-                  { date: e.target.value, starttime: "", endtime: "" },
+                  {
+                    date: e.target.value,
+                    starttime: "",
+                    endtime: "",
+                    isEditable: true,
+                  }, // New dates are editable
                 ];
               });
               setSelectedDate("");
@@ -54,7 +58,10 @@ const DateSelection = ({ selectedDates, setSelectedDates }) => {
                   onChange={(e) =>
                     handleDateChange(index, "date", e.target.value)
                   }
-                  className="block placeholder:font-bold rounded-lg border border-gray-300 py-2 px-2 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
+                  disabled={!date.isEditable} // Disable if it's not editable
+                  className={`block placeholder:font-bold rounded-lg border border-gray-300 py-2 px-2 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black ${
+                    !date.isEditable ? "bg-gray-200" : ""
+                  }`}
                   placeholder="Select Date"
                 />
                 <input
@@ -63,7 +70,10 @@ const DateSelection = ({ selectedDates, setSelectedDates }) => {
                   onChange={(e) =>
                     handleDateChange(index, "starttime", e.target.value)
                   }
-                  className="block placeholder:font-bold rounded-lg border border-gray-300 py-2 px-2 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
+                  disabled={!date.isEditable} // Disable if it's not editable
+                  className={`block placeholder:font-bold rounded-lg border border-gray-300 py-2 px-2 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black ${
+                    !date.isEditable ? "bg-gray-200" : ""
+                  }`}
                   placeholder="Start Time"
                 />
                 <input
@@ -72,14 +82,19 @@ const DateSelection = ({ selectedDates, setSelectedDates }) => {
                   onChange={(e) =>
                     handleDateChange(index, "endtime", e.target.value)
                   }
-                  className="block placeholder:font-bold rounded-lg border border-gray-300 py-2 px-2 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
+                  disabled={!date.isEditable} // Disable if it's not editable
+                  className={`block placeholder:font-bold rounded-lg border border-gray-300 py-2 px-2 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black ${
+                    !date.isEditable ? "bg-gray-200" : ""
+                  }`}
                   placeholder="End Time"
                 />
-                <XMarkIcon
-                  width={15}
-                  height={15}
-                  onClick={() => removeDate(index)}
-                />
+                {date.isEditable && (
+                  <XMarkIcon
+                    width={15}
+                    height={15}
+                    onClick={() => removeDate(index)}
+                  />
+                )}
               </div>
             ))}
           </>

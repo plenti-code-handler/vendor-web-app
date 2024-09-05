@@ -120,7 +120,7 @@ const CustomersTable = ({
                 </td>
                 <td className="relative text-left px-8">
                   <p className="text-sm font-semibold text-grayThree truncate overflow-hidden whitespace-nowrap tooltip-target">
-                    € {user.totalSpending}
+                    € {user.totalAmount}
                   </p>
                 </td>
                 <td className="truncate text-center px-2">

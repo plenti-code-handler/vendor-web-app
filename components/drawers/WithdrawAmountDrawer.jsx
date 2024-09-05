@@ -15,14 +15,17 @@ import {
   collection,
   doc,
   getDoc,
+  getDocs,
+  query,
   Timestamp,
   updateDoc,
+  where,
 } from "firebase/firestore";
 import { auth, db } from "../../app/firebase/config";
 import { getUserLocal } from "../../redux/slices/loggedInUserSlice";
 import SuccessWithdrawDrawer from "./SuccessWithdrawDrawer";
 
-const WithdrawAmountDrawer = () => {
+const WithdrawAmountDrawer = ({ balance, setBalance, setWithdrawals }) => {
   const dispatch = useDispatch();
   const open = useSelector((state) => state.withdrawAmount.drawerOpen);
   const [loading, setLoading] = useState(false);
@@ -32,7 +35,7 @@ const WithdrawAmountDrawer = () => {
   const [amount, setAmount] = useState("");
   // const currentBalance = 3150.7;
   const [currentBalance, setCurrentBalance] = useState(0);
-  const isInsufficient = parseFloat(amount) > currentBalance;
+  const isInsufficient = parseFloat(amount) > balance;
 
   const handleClose = () => {
     dispatch(setOpenDrawer(false));
@@ -66,6 +69,24 @@ const WithdrawAmountDrawer = () => {
             status: "pending",
           });
 
+          // Create a query to get withdrawals where vendorId matches the current user's ID
+          const q = query(
+            collection(db, "withdrawals"),
+            where("vendorId", "==", vendorId)
+          );
+
+          // Execute the query
+          const querySnapshot = await getDocs(q);
+
+          // Map through the querySnapshot and collect all withdrawal data
+          const withdrawalsData = querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+
+          // Update state with the fetched data
+          setWithdrawals(withdrawalsData);
+
           // Fetch the current revenue
           const userDocRef = doc(db, "users", vendorId);
           const userDocSnap = await getDoc(userDocRef);
@@ -75,6 +96,7 @@ const WithdrawAmountDrawer = () => {
 
             // Subtract the amount from the current revenue
             const updatedRevenue = currentRevenue - Number(amount);
+            setBalance(updatedRevenue);
 
             // Update the revenue in the user's document
             await updateDoc(userDocRef, {
@@ -112,9 +134,10 @@ const WithdrawAmountDrawer = () => {
 
           if (userDoc.exists()) {
             const userData = userDoc.data();
+            setBalance(userData.revenue);
+
             if (userData.bankDetails.iban) {
               setIban(userData.bankDetails?.iban);
-              setCurrentBalance(userData.revenue);
             } else {
             }
           } else {
@@ -179,7 +202,7 @@ const WithdrawAmountDrawer = () => {
                         Current Balance
                       </p>
                       <p className="text-amountStatus text-[16px] font-bold">
-                        € {currentBalance.toFixed(2)}
+                        € {Number(balance).toFixed(2)}
                       </p>
                     </div>
 

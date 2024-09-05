@@ -180,6 +180,7 @@ const AddBagDrawer = () => {
                   <DrawerHeader
                     dealTitle={dealTitle}
                     setDealTitle={setDealTitle}
+                    onAddClick={handleSubmitBag}
                   />
                 </DialogTitle>
                 <hr className="my-3 w-[90%] border-gray-300 ml-8" />

@@ -50,8 +50,9 @@ const CardsRow = () => {
         let sum = 0;
         querySnapshot.forEach((doc) => {
           const data = doc.data();
-          if (data.price) {
-            sum += data.price;
+          if (data.price && data.quantity) {
+            const total = data.price * data.quantity;
+            sum += total;
           }
         });
 

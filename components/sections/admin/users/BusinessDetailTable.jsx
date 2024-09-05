@@ -227,12 +227,12 @@ const BusinessDetailTable = () => {
   }, [searchTerm]);
 
   // Apply filters whenever bookings data changes
-  // useEffect(() => {
-  //   if (bookings.length > 0) {
-  //     // onFilterChange(onStatusChange); // Apply the status filter
-  //     onBookingFilterChange(bookingFilter); // Apply the booking filter
-  //   }
-  // }, [bookings, bookingFilter]);
+  useEffect(() => {
+    if (bookings.length > 0) {
+      // onFilterChange(onStatusChange); // Apply the status filter
+      onBookingFilterChange(bookingFilter); // Apply the booking filter
+    }
+  }, [bookings, bookingFilter]);
 
   const fetchMoreBookings = async () => {
     // Prevent the function from running if it’s already loading
@@ -395,6 +395,7 @@ const BusinessDetailTable = () => {
                   </td>
                   <td className="truncate text-center px-2">
                     <StatusDropdown
+                      disabled={true}
                       bagDate={booking.bag.date}
                       cancelled={booking.iscancelled}
                       initialStatus={booking.status}

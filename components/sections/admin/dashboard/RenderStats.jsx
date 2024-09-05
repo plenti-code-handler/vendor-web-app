@@ -3,7 +3,7 @@
 import CardsRow from "./CardsRow";
 import StatSlider from "./StatSlider";
 import React, { useEffect, useState } from "react";
-import RevenueChart from "../../../charts/RevenueChart";
+import RevenueChart from "../../admin/dashboard/RevenueChart";
 import { useDispatch } from "react-redux";
 import { setActivePage } from "../../../../redux/slices/headerSlice";
 import { collection, getDocs, query, where } from "firebase/firestore";
@@ -22,10 +22,7 @@ const RenderStats = () => {
     const fetchInitialBags = async () => {
       try {
         const colRef = collection(db, "bags");
-        const q = query(
-          colRef,
-          where("resuid", "==", user.uid) // Adjusted field to resuid
-        );
+        const q = query(colRef);
 
         const allBagsSnapshot = await getDocs(q);
         const bagsData = allBagsSnapshot.docs.map((doc) => ({

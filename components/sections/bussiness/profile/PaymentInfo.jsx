@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import TextField from "../../../fields/TextField";
 import { collection, doc, getDoc, updateDoc } from "firebase/firestore";
 import { auth, db } from "../../../../app/firebase/config";
+import Loader from "../../../loader/loader";
 
 const PaymentInfo = () => {
-  const [view, setView] = useState("");
+  const [view, setView] = useState("initial");
   const [accountHolder, setAccountHolder] = useState("");
   const [iban, setIban] = useState("");
   const [loading, setLoading] = useState(false);
+  const [loader, setLoader] = useState(false);
 
   const handleAddPaymentClick = () => setView("addCard");
   const handleAddBankClick = async () => {
@@ -67,6 +69,7 @@ const PaymentInfo = () => {
   useEffect(() => {
     const fetchIban = async () => {
       try {
+        setLoader(true);
         const user = auth.currentUser;
         console.log(auth.currentUser);
 
@@ -93,6 +96,7 @@ const PaymentInfo = () => {
         console.error("Error fetching IBAN: ", error);
       } finally {
         setLoading(false);
+        setLoader(false);
       }
     };
 
@@ -102,6 +106,8 @@ const PaymentInfo = () => {
   const formatIban = (iban) => {
     return iban.replace(/(.{4})/g, "$1 ").trim();
   };
+
+  if (loader) return <Loader />;
 
   return (
     <div className="flex flex-col justify-center">

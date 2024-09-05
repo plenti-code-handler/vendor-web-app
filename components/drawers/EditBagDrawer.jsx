@@ -28,6 +28,7 @@ import {
 import { db } from "../../app/firebase/config";
 import { getUserLocal } from "../../redux/slices/loggedInUserSlice";
 import { BagsContext } from "../../contexts/BagsContext";
+import { toast } from "sonner";
 
 const bagTypes = [
   {
@@ -82,7 +83,7 @@ const EditBagDrawer = () => {
   };
 
   useEffect(() => {
-    if (bagToEdit) {
+    if (bagToEdit.date) {
       if (bagToEdit.type === "Surprise") {
         setSelectedBag(bagTypes[0]);
       } else if (bagToEdit.type === "Large") {
@@ -90,8 +91,13 @@ const EditBagDrawer = () => {
       } else if (bagToEdit.type === "Small") {
         setSelectedBag(bagTypes[2]);
       }
+      const initializedDates = bagToEdit.date.map((date) => ({
+        ...date,
+        isEditable: false,
+      }));
       setSelectedTags(bagToEdit.tags);
-      setSelectedDates(bagToEdit.date);
+      setSelectedDates(initializedDates);
+      // setSelectedDates(bagToEdit.date);
       setDescription(bagToEdit.desc);
       setNumberOfBags(bagToEdit.bagaday);
       setPricing(bagToEdit.price);
@@ -147,6 +153,7 @@ const EditBagDrawer = () => {
 
       // Add the document to Firestore
       const docRef = await updateDoc(bagsCollectionRef, newBag);
+      toast.success("Bag Edited Successfully");
 
       // Optionally, reset the form state after successful submission
       resetForm();

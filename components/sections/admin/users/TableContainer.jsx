@@ -62,22 +62,37 @@ const TableContainer = () => {
       try {
         setLoader(true);
         const colRef = collection(db, "users");
-        const q = query(
-          colRef,
-          where("role", "==", "customer"),
-          // orderBy("time"),
-          limit(10)
-        );
+        const q = query(colRef, where("role", "==", "customer"), limit(10));
 
         const allBookingsSnapshot = await getDocs(q);
         const usersData = await Promise.all(
           allBookingsSnapshot.docs.map(async (entry) => {
             const users = entry.data();
+
+            // Fetch bookings where uid = entry.id
+            const bookingsRef = collection(db, "bookings");
+            const bookingsQuery = query(
+              bookingsRef,
+              where("uid", "==", entry.id)
+            );
+            const bookingsSnapshot = await getDocs(bookingsQuery);
+
+            // Calculate total for each booking
+            let totalAmount = 0;
+            bookingsSnapshot.forEach((bookingDoc) => {
+              const bookingData = bookingDoc.data();
+              const bookingTotal = bookingData.quantity * bookingData.price;
+              totalAmount += bookingTotal;
+            });
+
+            // Return user data with the total amount
             return {
               ...users,
+              totalAmount, // Add total amount to user data
             };
           })
         );
+
         const lastDoc =
           allBookingsSnapshot.docs[allBookingsSnapshot.docs.length - 1];
 

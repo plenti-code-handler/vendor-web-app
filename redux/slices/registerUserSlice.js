@@ -40,7 +40,7 @@ export const registerUser = createAsyncThunk(
           joinedat: handleDate(new Date()),
           token: null,
           uid: user.uid,
-          revenue: 0,
+          revenue: "0",
           bankDetails: {},
         };
 
@@ -69,7 +69,7 @@ export const registerUser = createAsyncThunk(
         joinedat: handleDate(new Date()),
         token: null,
         point,
-        revenue: 0,
+        revenue: "0",
         bankDetails: {},
       };
 

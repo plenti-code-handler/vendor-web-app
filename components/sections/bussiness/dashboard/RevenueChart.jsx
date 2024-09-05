@@ -9,11 +9,10 @@ import {
   getDocs,
   Timestamp,
 } from "firebase/firestore";
-import { auth, db } from "../../app/firebase/config";
+import { auth, db } from "../../../../app/firebase/config";
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
-
 const RevenueChart = () => {
   const [colorsLables] = useState(Array(12).fill("#7E8299"));
   const [chartData, setChartData] = useState({

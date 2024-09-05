@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   bottomWalletBackground,
   leftWalletBackground,
@@ -24,17 +24,20 @@ import {
 } from "firebase/firestore";
 import { db } from "../../../../app/firebase/config";
 import Loader from "../../../loader/loader";
+import { RevenueContext } from "../../../../contexts/RevenueContext";
 
 const Transactions = () => {
+  const { balance, setBalance, withdrawals, setWithdrawals } =
+    useContext(RevenueContext);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [withdrawals, setWithdrawals] = useState([]);
+  // const [withdrawals, setWithdrawals] = useState([]);
   const [loader, setLoader] = useState(false);
   const auth = getAuth();
   const dispatch = useDispatch();
   const handleWithdraw = () => {
     dispatch(setOpenDrawer(true));
   };
-  const [revenue, setRevenue] = useState(null);
+  // const [revenue, setRevenue] = useState(null);
 
   useEffect(() => {
     dispatch(setActivePage(""));
@@ -113,7 +116,8 @@ const Transactions = () => {
 
         if (userDoc.exists()) {
           const data = userDoc.data();
-          setRevenue(data.revenue); // Adjust if your field name is different
+          // setRevenue(data.revenue); // Adjust if your field name is different
+          setBalance(data.revenue); // Adjust if your field name is different
         } else {
           console.error("No such document!");
         }
@@ -127,7 +131,14 @@ const Transactions = () => {
 
   return (
     <div className="flex flex-col w-[100%] lg:w-[50%] md:w-[60%]">
-      {isAuthenticated && <WithdrawAmountDrawer />}
+      {isAuthenticated && (
+        <WithdrawAmountDrawer
+          balance={balance}
+          setBalance={setBalance}
+          withdrawals={withdrawals}
+          setWithdrawals={setWithdrawals}
+        />
+      )}
       <div
         className="flex flex-col justify-center bg-gradient-custom rounded-xl items-center shadow-lg p-6"
         style={{ width: "100%", height: "255px", position: "relative" }}
@@ -142,7 +153,7 @@ const Transactions = () => {
         <div className="absolute top-[0%] left-[15%] -z-0">
           {topLeftWalletBackground}
         </div>
-        <p className="text-[40px] font-bold text-white z-0">€{revenue}</p>
+        <p className="text-[40px] font-bold text-white z-0">€{balance}</p>
         <p className="text-[16px] font-medium text-white z-0">My Wallet</p>
 
         <button

@@ -26,8 +26,11 @@ const FoodFiltersBox = () => {
   const [showInput, setShowInput] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [filters, setFilters] = useState([]);
+  const [filteredFilters, setFilteredFilters] = useState([]);
   const [editingIndex, setEditingIndex] = useState(null);
   const [loader, setLoader] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -46,6 +49,7 @@ const FoodFiltersBox = () => {
           ...doc.data(),
         }));
         setFilters(filtersList);
+        setFilteredFilters(filtersList);
       } catch (error) {
         console.error("Error fetching filters:", error);
       } finally {
@@ -73,6 +77,7 @@ const FoodFiltersBox = () => {
   };
 
   const handleClearInput = () => {
+    setShowInput(false);
     setInputValue("");
   };
 
@@ -97,6 +102,7 @@ const FoodFiltersBox = () => {
         ...doc.data(),
       }));
       setFilters(filtersList);
+      setFilteredFilters(filtersList);
     } catch (error) {
       console.error("Error adding/updating filter:", error);
     }
@@ -133,6 +139,7 @@ const FoodFiltersBox = () => {
           ...doc.data(),
         }));
         setFilters(filtersList);
+        setFilteredFilters(filtersList);
 
         // Reset input and hide input field after update
         setInputValue("");
@@ -170,10 +177,22 @@ const FoodFiltersBox = () => {
         ...doc.data(),
       }));
       setFilters(filtersList);
+      setFilteredFilters(filtersList);
     } catch (error) {
       console.error("Error deleting filter:", error);
     }
   };
+
+  useEffect(() => {
+    if (searchTerm === "") {
+      setFilteredFilters(filters);
+    } else {
+      const filtered = filters.filter((filter) =>
+        filter.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredFilters(filtered);
+    }
+  }, [searchTerm]);
 
   if (loader) return <Loader />;
 
@@ -195,6 +214,8 @@ const FoodFiltersBox = () => {
             <input
               type="text"
               placeholder="Search"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               className="bg-[#F9F9F9] w-[10%]  p-2 text-md text-[#7E8299] placeholder:text-sm placeholder-[#7E8299] placeholder:font-semibold focus:outline-none flex-grow"
             />
           </div>
@@ -222,8 +243,8 @@ const FoodFiltersBox = () => {
       )}
 
       {/* CONTENT BOXES */}
-      {filters.length > 0 ? (
-        filters.map((filter) => (
+      {filteredFilters.length > 0 ? (
+        filteredFilters.map((filter) => (
           <div
             key={filter.id}
             className={`flex justify-between w-full h-[37px] mb-[1%] p-2 ${

@@ -9,7 +9,7 @@ import {
   getDocs,
   Timestamp,
 } from "firebase/firestore";
-import { auth, db } from "../../app/firebase/config";
+import { auth, db } from "../../../../app/firebase/config";
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
@@ -107,7 +107,6 @@ const RevenueChart = () => {
         try {
           const bookingQuery = query(
             collection(db, "bookings"),
-            where("vendorid", "==", user.uid), // Match vendorid with the authenticated user's uid
             where(
               "bookingdate",
               ">=",
@@ -134,8 +133,8 @@ const RevenueChart = () => {
 
             const index = lastSevenDays.indexOf(bookingDate);
             if (index !== -1) {
-              const percentage90 = data.price * data.quantity * 0.9;
-              revenueData[index] += percentage90; // Calculate revenue
+              const percentage10 = data.price * data.quantity * 0.1;
+              revenueData[index] += percentage10; // Calculate revenue
               console.log(
                 `Updated revenue for ${bookingDate}:`,
                 revenueData[index]

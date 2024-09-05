@@ -27,6 +27,7 @@ import { BagsContext } from "../../../../contexts/BagsContext";
 import { getUserLocal } from "../../../../redux/slices/loggedInUserSlice";
 import TableUpper from "./TableUpper";
 import Loader from "../../../loader/loader";
+import { toast } from "sonner";
 
 const BagsTable = () => {
   const dispatch = useDispatch();
@@ -165,8 +166,12 @@ const BagsTable = () => {
       const startTimeObj = item.starttime.toDate();
       const endTimeObj = item.endtime.toDate();
 
+      console.log(dateObj);
+      const year = dateObj.getFullYear();
+      const month = String(dateObj.getMonth() + 1).padStart(2, "0"); // Months are 0-based, so add 1
+      const day = String(dateObj.getDate()).padStart(2, "0"); // Get day of the month
       // Format Date object to HTML date format (YYYY-MM-DD)
-      const date = dateObj.toISOString().split("T")[0];
+      const date = `${year}-${month}-${day}`;
 
       // Format Time objects to HTML time format (HH:MM)
       const starttime = startTimeObj.toTimeString().split(" ")[0].slice(0, 5);
@@ -186,7 +191,7 @@ const BagsTable = () => {
     // Reference to the document to be deleted
     const docRef = doc(db, "bags", id);
     await deleteDoc(docRef);
-
+    toast.success("Bag Deleted Successfully");
     const colRef = collection(db, "bags");
     const q = query(
       colRef,

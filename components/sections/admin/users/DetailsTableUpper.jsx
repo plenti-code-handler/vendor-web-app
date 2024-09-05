@@ -11,7 +11,7 @@ const DetailsTableUpper = ({
   return (
     <div className="flex flex-col sm:flex-row sm:justify-between items-center mb-4 px-2 sm:px-4 lg:w-[100%]">
       <p className="text-[20px] font-bold text-blackTwo hidden sm:block w-full sm:w-auto lg:w-[40%]">
-        Bags Ordered
+        Bags Made
       </p>
       <div className="flex flex-col justify-end items-center gap-2 sm:flex-row w-full">
         <div className="flex flex-col sm:justify-end sm:flex-row gap-2 sm:gap-2 w-full">

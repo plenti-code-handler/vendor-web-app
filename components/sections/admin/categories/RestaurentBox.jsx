@@ -26,7 +26,9 @@ const RestaurentBox = () => {
   const [showInput, setShowInput] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [categories, setCategories] = useState([]);
+  const [filteredCategories, setFilteredCategories] = useState([]);
   const [editingIndex, setEditingIndex] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
   const [loader, setLoader] = useState(false);
   const dispatch = useDispatch();
 
@@ -46,6 +48,7 @@ const RestaurentBox = () => {
           ...doc.data(),
         }));
         setCategories(categoriesList);
+        setFilteredCategories(categoriesList);
       } catch (error) {
         console.error("Error fetching categories:", error);
       } finally {
@@ -73,6 +76,7 @@ const RestaurentBox = () => {
   };
 
   const handleClearInput = () => {
+    setShowInput(false);
     setInputValue("");
   };
 
@@ -97,6 +101,7 @@ const RestaurentBox = () => {
         ...doc.data(),
       }));
       setCategories(categoriesList);
+      setFilteredCategories(categoriesList);
     } catch (error) {
       console.error("Error adding/updating category:", error);
     }
@@ -133,6 +138,7 @@ const RestaurentBox = () => {
           ...doc.data(),
         }));
         setCategories(categoriesList);
+        setFilteredCategories(categoriesList);
 
         // Reset input and hide input field after update
         setInputValue("");
@@ -170,10 +176,22 @@ const RestaurentBox = () => {
         ...doc.data(),
       }));
       setCategories(categoriesList);
+      setFilteredCategories(categoriesList);
     } catch (error) {
       console.error("Error deleting category:", error);
     }
   };
+
+  useEffect(() => {
+    if (searchTerm === "") {
+      setFilteredCategories(categories);
+    } else {
+      const filtered = categories.filter((category) =>
+        category.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredCategories(filtered);
+    }
+  }, [searchTerm]);
 
   if (loader) return <Loader />;
 
@@ -195,6 +213,8 @@ const RestaurentBox = () => {
             <input
               type="text"
               placeholder="Search"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               className="bg-[#F9F9F9] w-[10%]  p-2 text-md text-[#7E8299] placeholder:text-sm placeholder-[#7E8299] placeholder:font-semibold focus:outline-none flex-grow"
             />
           </div>
@@ -222,8 +242,8 @@ const RestaurentBox = () => {
       )}
 
       {/* CONTENT BOXES */}
-      {categories.length > 0 ? (
-        categories.map((category) => (
+      {filteredCategories.length > 0 ? (
+        filteredCategories.map((category) => (
           <div
             key={category.id}
             className={`flex justify-between w-full h-[37px] mb-[1%] p-2 ${

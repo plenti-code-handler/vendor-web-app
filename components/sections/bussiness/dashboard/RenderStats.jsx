@@ -3,7 +3,7 @@
 import CardsRow from "./CardsRow";
 import StatSlider from "./StatSlider";
 import React, { useEffect, useState } from "react";
-import RevenueChart from "../../../charts/RevenueChart";
+import RevenueChart from "../../bussiness/dashboard/RevenueChart";
 import { useDispatch } from "react-redux";
 import { setActivePage } from "../../../../redux/slices/headerSlice";
 

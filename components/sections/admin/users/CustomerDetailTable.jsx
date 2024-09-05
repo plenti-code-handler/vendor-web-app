@@ -334,6 +334,7 @@ const CustomerDetailTable = () => {
                   </td>
                   <td className="truncate text-center px-2">
                     <StatusDropdown
+                      disabled={true}
                       bagDate={booking.bag.date}
                       cancelled={booking.iscancelled}
                       initialStatus={booking.status}
