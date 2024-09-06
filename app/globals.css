@@ -2,6 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Hide the Google Translate widget */
+.goog-te-gadget {
+  display: none !important;
+}
+
+/* Optional: Remove extra space caused by the banner */
+body {
+  top: 0px !important;
+}
+
+.VIpgJd-ZVi9od-aZ2wEe-wOHMyf {
+  display: none !important;
+}
+
+.skiptranslate {
+  display: none !important;
+}
+
 * {
   box-sizing: border-box;
   scroll-behavior: smooth;
