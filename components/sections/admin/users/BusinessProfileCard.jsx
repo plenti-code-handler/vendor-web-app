@@ -12,6 +12,7 @@ const BusinessProfileCard = () => {
   const [description, setDescription] = useState("");
   const [location, setLocation] = useState("");
   const [categories, setCategories] = useState([]);
+  const [averageRating, setAverageRating] = useState(0); // State to hold the average rating
 
   const dispatch = useDispatch();
   const router = useRouter();
@@ -23,12 +24,22 @@ const BusinessProfileCard = () => {
   useEffect(() => {
     if (!business || Object.keys(business).length === 0) {
       router.push("/admin/users");
+    } else {
+      setName(business.name);
+      setDescription(business.desc);
+      setImage(business.imageUrl);
+      setLocation(business.loc);
+      setCategories(business.categories);
+
+      // Calculate average rating from reviews
+      if (business.reviews && business.reviews.length > 0) {
+        const totalRating = business.reviews.reduce((sum, review) => sum + review.rating, 0);
+        const average = totalRating / business.reviews.length;
+        setAverageRating(average);
+      } else {
+        setAverageRating(0); // No reviews
+      }
     }
-    setName(business.name);
-    setDescription(business.desc);
-    setImage(business.imageUrl);
-    setLocation(business.loc);
-    setCategories(business.categories);
   }, [business, router]);
 
   useEffect(() => {
@@ -40,7 +51,7 @@ const BusinessProfileCard = () => {
       <div className="flex space-x-4">
         <img
           alt="User"
-          src={image || "/User.png"}
+          src={image  }
           className="rounded-full h-24 w-24 sm:h-40 sm:w-40 object-cover"
         />
         <div className="flex gap-5">
@@ -68,7 +79,7 @@ const BusinessProfileCard = () => {
             <p className="text-black font-semibold text-[14px]">Rating</p>
             <div className="flex gap-2 items-center">
               {businessStarSvg}
-              <p className="text-starItem font-bold text-[18px]">5.0</p>
+              <p className="text-starItem font-bold text-[18px]">{averageRating.toFixed(1)}</p> {/* Display the average rating */}
             </div>
           </div>
         </div>
@@ -81,3 +92,8 @@ const BusinessProfileCard = () => {
 };
 
 export default BusinessProfileCard;
+
+ 
+
+
+

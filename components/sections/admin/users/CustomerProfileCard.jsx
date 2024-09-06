@@ -37,7 +37,7 @@ const CustomerProfileCard = () => {
       <div className="flex space-x-4">
         <img
           alt="User"
-          src={image || "/User.png"}
+          src={image  }
           className="rounded-full h-24 w-24 sm:h-25 sm:w-25 object-cover"
         />
         <div className="flex mt-2 lg:mt-0">

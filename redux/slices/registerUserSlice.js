@@ -36,6 +36,7 @@ export const registerUser = createAsyncThunk(
           rating: 0,
           status: "pending",
           point,
+          reviews:[],
           categories: [],
           joinedat: handleDate(new Date()),
           token: null,
@@ -64,6 +65,7 @@ export const registerUser = createAsyncThunk(
         pass: password, // Caution: Storing passwords in Firestore is not recommended
         bags: 0,
         rating: 0,
+        reviews:[],
         status: "pending",
         categories: [],
         joinedat: handleDate(new Date()),

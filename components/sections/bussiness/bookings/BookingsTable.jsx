@@ -35,6 +35,7 @@ const BookingsTable = () => {
     const docRef = doc(db, "bookings", bookingId);
     await updateDoc(docRef, {
       status: newStatus,
+      ispic: true,  
     });
     const colRef = collection(db, "bookings");
     const q = query(
