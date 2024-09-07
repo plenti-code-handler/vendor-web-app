@@ -1,20 +1,47 @@
+import { useEffect, useState } from "react";
 import { arrowDown } from "../../svgs";
 
 const LanguageDropdown = () => {
+  const [selectedLanguage, setSelectedLanguage] = useState("");
+
+  useEffect(() => {
+    // Check if Google Translate cookie exists
+    const cookieValue = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("googtrans="))
+      ?.split("=")[1];
+
+    // Set initial language from the cookie if available
+    if (cookieValue) {
+      setSelectedLanguage(cookieValue.split("/")[2]);
+    }
+  }, []);
+
+  const changeLanguage = (lang) => {
+    // Set the Google Translate cookie for the chosen language
+    const googleTranslateCookie = `/auto/${lang}`;
+    document.cookie = `googtrans=${googleTranslateCookie};path=/`;
+    document.cookie = `googtrans=${googleTranslateCookie};domain=.${window.location.hostname};path=/`;
+
+    // Reload the page to apply the translation
+    window.location.reload();
+  };
+
   return (
     <form className="">
       <div className="relative xl:w-[229px] lg:w-[180px] h-[38px]">
         <select
-          id="countries"
+          id="language-select"
+          value={selectedLanguage}
+          onChange={(e) => changeLanguage(e.target.value)}
           className="bg-mainLight border border-mainLight text-textLight text-sm rounded-lg focus:ring-main focus:border-main w-full p-2.5 dark:bg-main dark:border-main dark:placeholder-main dark:text-white dark:focus:ring-main dark:focus:border-main appearance-none"
         >
-          <option className="text-base">Choose Language</option>
-          <option value="US" className="text-base">
+          <option value="en" className="text-base">
             English
           </option>
 
-          <option value="FR" className="text-base">
-            Urdu
+          <option value="sv" className="text-base">
+            Swedish
           </option>
         </select>
         <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center justify-end pr-2">
