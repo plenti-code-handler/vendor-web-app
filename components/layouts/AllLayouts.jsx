@@ -38,7 +38,7 @@ export const BusinessLayout = ({ children }) => {
 export const LandingLayout = ({ children }) => {
   return (
     <>
-      {true && <ContactDrawer />}
+      {/* {true && <ContactDrawer />} */}
       <Header />
       <div>{children}</div>
       <Footer />

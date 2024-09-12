@@ -1,3 +1,4 @@
+"use client";
 import {
   Disclosure,
   DisclosureButton,
@@ -8,10 +9,18 @@ import {
   ChevronRightIcon,
   ChevronUpIcon,
 } from "@heroicons/react/20/solid";
-import React from "react";
+import React, { useEffect } from "react";
 import { faqData } from "../../../lib/constant_data";
+import { setActivePage } from "../../../redux/slices/headerSlice";
+import { useDispatch } from "react-redux";
 
-const page = () => {
+const Page = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(setActivePage("FAQs"));
+  }, [dispatch]);
+
   return (
     <div className="text-[70%] md:text-[100%]">
       <div className="bg-[#F5F5F5] py-10">
@@ -160,4 +169,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

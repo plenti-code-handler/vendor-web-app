@@ -24,6 +24,7 @@ import {
   updateDoc,
   where,
   Timestamp,
+  deleteDoc,
 } from "firebase/firestore";
 import { db } from "../../app/firebase/config";
 import { getUserLocal } from "../../redux/slices/loggedInUserSlice";
@@ -65,6 +66,7 @@ const EditBagDrawer = () => {
   const [selectedDates, setSelectedDates] = useState(bagToEdit?.date || []);
   const [dealTitle, setDealTitle] = useState(bagToEdit?.title || "");
   const [user, setUser] = useState({});
+  const [bagId, setBagId] = useState(bagToEdit?.id || "");
 
   useEffect(() => {
     const user = getUserLocal();
@@ -95,6 +97,7 @@ const EditBagDrawer = () => {
         ...date,
         isEditable: false,
       }));
+      setBagId(bagToEdit.id);
       setSelectedTags(bagToEdit.tags);
       setSelectedDates(initializedDates);
       // setSelectedDates(bagToEdit.date);
@@ -185,6 +188,32 @@ const EditBagDrawer = () => {
     dispatch(setOpenDrawer(false));
   };
 
+  const handleDelete = async (id) => {
+    // Reference to the document to be deleted
+    const docRef = doc(db, "bags", id);
+    await deleteDoc(docRef);
+    toast.success("Bag Deleted Successfully");
+    dispatch(setOpenDrawer(false));
+    const colRef = collection(db, "bags");
+    const q = query(
+      colRef,
+      where("resuid", "==", user.uid), // Adjusted field to resuid
+      // orderBy("time"),
+      limit(10)
+    );
+
+    const allBagsSnapshot = await getDocs(q);
+    const bagsData = allBagsSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    const lastDoc = allBagsSnapshot.docs[allBagsSnapshot.docs.length - 1];
+
+    setBags(bagsData);
+    setFilteredBags(bagsData);
+    setLastVisible(lastDoc);
+  };
+
   return (
     <Dialog open={open} onClose={handleClose} className="relative z-999999">
       <DialogBackdrop
@@ -208,11 +237,11 @@ const EditBagDrawer = () => {
                     className="placeholder-grayThree text-lg placeholder:font-bold focus:outline-none"
                   />
                   <div className="flex gap-x-2">
-                    <button className="py-2 px-2 rounded hover:bg-pinkBgDark">
+                    <button
+                      onClick={() => handleDelete(bagId)}
+                      className="py-2 px-2 rounded hover:bg-pinkBgDark"
+                    >
                       {deleteSvg}
-                    </button>
-                    <button className=" bg-pinkBgDark py-2 px-2 rounded hover:bg-pinkBgDarkHover2">
-                      {recycleSvg}
                     </button>
                   </div>
                 </DialogTitle>

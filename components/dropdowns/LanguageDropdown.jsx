@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { arrowDown } from "../../svgs";
 
-const LanguageDropdown = () => {
+const LanguageDropdown = ({ background, textColor, borderColor }) => {
   const [selectedLanguage, setSelectedLanguage] = useState("");
 
   useEffect(() => {
@@ -34,7 +34,11 @@ const LanguageDropdown = () => {
           id="language-select"
           value={selectedLanguage}
           onChange={(e) => changeLanguage(e.target.value)}
-          className="bg-mainLight border border-mainLight text-textLight text-sm rounded-lg focus:ring-main focus:border-main w-full p-2.5 dark:bg-main dark:border-main dark:placeholder-main dark:text-white dark:focus:ring-main dark:focus:border-main appearance-none"
+          className={`${background ? `bg-${background}` : "bg-mainLight"} ${
+            textColor ? `text-${textColor}` : "text-textLight"
+          } border ${
+            borderColor ? `border-${borderColor}` : "border-mainLight"
+          }   text-sm rounded-lg focus:ring-main focus:border-main w-full p-2.5 dark:bg-main dark:border-main dark:placeholder-main dark:text-white dark:focus:ring-main dark:focus:border-main appearance-none`}
         >
           <option value="en" className="text-base">
             English

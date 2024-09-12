@@ -10,7 +10,7 @@ const BagTypes = ({ selectedBag, setSelectedBag, bagTypes }) => {
       <div className="flex flex-col pb-5">
         <p className="text-black font-bold text-[20px]">Choose Bag Type</p>
       </div>
-      <div className="flex gap-5">
+      <div className="flex gap-5 cursor-pointer">
         {bagTypes.map((bag) => (
           <div
             key={bag.type}

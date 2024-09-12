@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { rightArrowIcon } from "../../svgs";
 import { setActivePage } from "../../redux/slices/headerSlice";
 import { setOpenDrawer } from "../../redux/slices/contactUserSlice";
+import LanguageDropdown from "../dropdowns/LanguageDropdown";
 
 const LandingHeader = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -33,8 +34,8 @@ const LandingHeader = () => {
 
   return (
     <>
-      <header className="bg-white xl:px-[4%] justify-around">
-        <div className="mx-auto flex p-2 items-center justify-between py-5">
+      <header className="bg-white px-[2%] justify-around">
+        <div className="mx-auto flex py-3 items-center justify-between">
           <img alt="Foodie Finder Logo" src={appLogoUrl} />
           <div className="flex lg:hidden gap-3 items-center">
             <button
@@ -57,7 +58,7 @@ const LandingHeader = () => {
                 <Link
                   key={name}
                   href={href}
-                  className={`xl:text-[20px] font-semibold leading-6 transition-all rounded-md flex items-center justify-start lg:justify-center px-[3%] py-[1%] m-2 lg:m-0 ${
+                  className={`xl:text-[16px] font-semibold leading-6 transition-all rounded-md flex items-center justify-start lg:justify-center px-[3%] py-[1%] m-2 lg:m-0 ${
                     isSmallDevice ? "w-[100%]" : ""
                   }  ${
                     activePage === name
@@ -69,32 +70,43 @@ const LandingHeader = () => {
                   {name}
                 </Link>
               ))}
-              <div className="w-full lg:hidden">
-                {/* <LanguageDropdown /> */}
-                <button
-                  onClick={handleContactBtnClick}
+              <div className="w-full lg:hidden flex flex-col gap-2">
+                <LanguageDropdown
+                  background="white"
+                  textColor="black"
+                  borderColor="grayLight"
+                />
+                <Link
+                  href={"/login"}
                   className="mr-3 mt-2 lg:m-0 flex items-center w-full px-[12px] py-[16px] text-center justify-center bg-pinkBgDark text-white font-semibold rounded-[6px] hover:bg-pinkBgDarkHover2"
                 >
-                  <span className="mr-3 ml-2 font-semibold">Contact us</span>
+                  <span className="mr-3 ml-2 font-semibold">Login</span>
                   <span>{rightArrowIcon}</span>
-                </button>
+                </Link>
               </div>
             </div>
           </nav>
           <div className="hidden lg:flex items-center gap-5">
+            <LanguageDropdown
+              background="white"
+              textColor="black"
+              borderColor="grayLight"
+            />
+
             <Link
               href={"/login"}
-              className="mr-3 mt-2 lg:m-0 flex items-center min-w-[150px] px-[12px] bg-pinkBgDark hover:border-2 text-white border-pinkBgDark border-2 py-[16px] text-center justify-center hover:border-pinkBgDark font-semibold rounded-[6px] hover:text-pinkBgDark hover:bg-white"
+              className="mr-3 mt-2 lg:m-0 flex items-center min-w-[87px] bg-pinkBgDark text-white px-[16px] py-[14px] text-center justify-center font-semibold rounded-[8px]"
             >
               <span className="mr-3 ml-2 font-semibold">Login</span>
+              <span>{rightArrowIcon}</span>
             </Link>
-            <button
+            {/* <button
               onClick={handleContactBtnClick}
               className="mr-3 mt-2 lg:m-0 flex items-center min-w-[150px] px-[12px] py-[16px] text-center justify-center bg-pinkBgDark text-white font-semibold rounded-[6px] hover:bg-pinkBgDarkHover2"
             >
               <span className="mr-3 ml-2 font-semibold">Contact us</span>
               <span>{rightArrowIcon}</span>
-            </button>
+            </button> */}
           </div>
         </div>
       </header>

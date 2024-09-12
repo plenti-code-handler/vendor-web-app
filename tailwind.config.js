@@ -16,9 +16,12 @@ module.exports = {
           "linear-gradient(to right, rgba(116,213,179 , 0.6), #FFFFFF)",
         "gradient-hr-alt":
           "linear-gradient(to left, rgba(116,213,179 , 0.6), #FFFFFF)",
-        homeMain: "url('/intro.png')",
+        homeMain: "url('/banner.png')",
         homeSectionThree: "url('/home-third-section.png')",
+        homeSectionThreeMobile: "url('/home-third-section-mobile.png')",
         homeFooter: "url('/footer.png')",
+        homeFooterMobile: "url('/mobile-footer.png')",
+        homeMobile: "url('/mobile-banner.png')",
       },
       borderColor: {
         gray: "#AEAEAE",

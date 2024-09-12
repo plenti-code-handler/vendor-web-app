@@ -22,16 +22,16 @@ const Footer = () => {
 
   return (
     <div className="text-[70%] md:text-[100%]">
-      <div className="bg-homeFooter p-[5%] mb-20 bg-cover bg-center w-auto flex flex-col justify-center">
+      <div className="bg-homeFooterMobile md:bg-homeFooter p-[5%] mb-20 bg-cover bg-center w-auto flex flex-col justify-center">
         <div className="mx-auto flex flex-col gap-3">
           <div className="flex flex-col gap-5 items-center">
-            <h1 className="text-[3em] text-center lg:text-left text-white">
+            <h1 className="text-[2.188em] text-center uppercase lg:text-left text-white font-extrabold">
               Download FoodieFinder Today!
             </h1>
-            <p className="text-[#ddd] text-center text-[1.25em] font-[500]">
+            <p className="text-[#ddd] text-center text-[1em] font-[500] md:w-[547px]">
               FoodeFinder is free to download and free to use! Are you ready to
-              discover the best taste around you? <br /> Find best deals around
-              you today!
+              discover the best taste around you? Find best deals around you
+              today!
             </p>
             <div className="flex flex-col md:flex-row gap-[5%] space-y-5 md:space-y-0">
               <button className="flex items-center gap-3 w-[205px] px-4 py-2 bg-blackBtn hover:bg-slate-800 rounded-[12px] text-white">
@@ -115,13 +115,13 @@ const Footer = () => {
                 contact@foodiefinder.com
               </p>
               <div className="flex items-center gap-5">
-                <button
-                  onClick={openContactForm}
-                  className="mr-3 mt-2 lg:m-0 flex items-center min-w-[150px] px-[12px] py-[16px] text-center justify-center bg-secondary text-white font-semibold rounded-[6px] hover:bg-mainTwo"
+                <Link
+                  href={"/contact_us"}
+                  className="mr-3 mt-2 lg:m-0 flex items-center min-w-[150px] px-[16px] py-[14px] text-center justify-center bg-secondary text-white font-semibold rounded-[6px] hover:bg-mainTwo"
                 >
                   <span className="mr-3 ml-2 font-semibold">Contact us</span>
                   <span>{rightArrowIcon}</span>
-                </button>
+                </Link>
               </div>
             </div>
           </div>

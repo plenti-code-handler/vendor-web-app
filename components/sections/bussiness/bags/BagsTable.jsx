@@ -28,6 +28,7 @@ import { getUserLocal } from "../../../../redux/slices/loggedInUserSlice";
 import TableUpper from "./TableUpper";
 import Loader from "../../../loader/loader";
 import { toast } from "sonner";
+import EditBagDrawer from "../../../drawers/EditBagDrawer";
 
 const BagsTable = () => {
   const dispatch = useDispatch();
