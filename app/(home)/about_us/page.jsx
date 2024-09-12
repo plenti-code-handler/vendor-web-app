@@ -1,16 +1,17 @@
-import React from "react";
+"use client";
+import React, { useEffect } from "react";
 
-import { GFS_Didot } from "next/font/google";
-import { Montserrat_Alternates } from "next/font/google";
 import { homeDivider } from "../../../svgs";
+import { useDispatch } from "react-redux";
+import { setActivePage } from "../../../redux/slices/headerSlice";
 
-const gfsFont = GFS_Didot({ weight: "400", subsets: ["greek"] });
-const montserratFont = Montserrat_Alternates({
-  weight: ["700", "500"],
-  subsets: ["latin"],
-});
+const Page = () => {
+  const dispatch = useDispatch();
 
-const page = () => {
+  useEffect(() => {
+    dispatch(setActivePage("About us"));
+  }, [dispatch]);
+
   return (
     <div className="bg-[#F5F5F5] py-10">
       <div className="mx-14">
@@ -29,12 +30,10 @@ const page = () => {
         </div>
         <div className="flex flex-col gap-14 mb-24">
           <div>
-            <h2
-              className={`text-[30px] ${gfsFont.className} text-[400] text-pinkBgDark`}
-            >
+            <h2 className={`text-[30px] text-[400] text-pinkBgDark`}>
               Our Vision
             </h2>
-            <p className={`${montserratFont.className} leading-7`}>
+            <p className={`leading-7`}>
               Quos occaecati adipisci. Pariatur quae occaecati vel inventore.
               Quo labore omnis totam facilis rerum numquam. Autem dolorem
               sapiente eius enim ipsa corrupti. Et ea numquam aut voluptatibus
@@ -42,12 +41,10 @@ const page = () => {
             </p>
           </div>
           <div>
-            <h2
-              className={`text-[30px] ${gfsFont.className} text-[400] text-pinkBgDark`}
-            >
+            <h2 className={`text-[30px] text-[400] text-pinkBgDark`}>
               Why You Should Choose FoodieFinder
             </h2>
-            <p className={`${montserratFont.className} leading-7`}>
+            <p className={`leading-7`}>
               Ut sed ea vitae dolore ut. Est ullam et excepturi eum. Quas a qui
               modi aut qui. Distinctio autem amet ipsum illum qui dolore
               repellendus tempora. Repellat velit doloribus et aspernatur
@@ -55,12 +52,10 @@ const page = () => {
             </p>
           </div>
           <div>
-            <h2
-              className={`text-[30px] ${gfsFont.className} text-[400] text-pinkBgDark`}
-            >
+            <h2 className={`text-[30px] text-[400] text-pinkBgDark`}>
               Inclusive By Design
             </h2>
-            <p className={`${montserratFont.className} leading-7`}>
+            <p className={`leading-7`}>
               Id in facere nam deleniti vero facere qui. Repudiandae voluptatem
               esse ut dolores. Numquam quod voluptas ut optio autem rerum. Vitae
               inventore molestiae eaque deserunt aliquid laborum. Veniam
@@ -69,12 +64,10 @@ const page = () => {
             </p>
           </div>
           <div>
-            <h2
-              className={`text-[30px] ${gfsFont.className} text-[400] text-pinkBgDark`}
-            >
+            <h2 className={`text-[30px] text-[400] text-pinkBgDark`}>
               Features That Matter
             </h2>
-            <p className={`${montserratFont.className} leading-7`}>
+            <p className={`leading-7`}>
               Consequatur voluptas corrupti quod similique quia. Molestias
               aperiam quae consequatur rem. Quis ea sequi illo. Dolor quam aut
               perferendis sit ducimus totam sed. Ea eum atque incidunt numquam.
@@ -82,12 +75,10 @@ const page = () => {
             </p>
           </div>
           <div>
-            <h2
-              className={`text-[30px] ${gfsFont.className} text-[400] text-pinkBgDark`}
-            >
+            <h2 className={`text-[30px] text-[400] text-pinkBgDark`}>
               Heading #
             </h2>
-            <p className={`${montserratFont.className} leading-7`}>
+            <p className={`leading-7`}>
               Veritatis iure aut aut dolorum culpa ut quis error eligendi.
               Deleniti aliquam eos pariatur dolor delectus sint. Voluptate saepe
               placeat occaecati molestiae rerum excepturi ut sequi. Ex
@@ -97,12 +88,10 @@ const page = () => {
             </p>
           </div>
           <div>
-            <h2
-              className={`text-[30px] ${gfsFont.className} text-[400] text-pinkBgDark`}
-            >
+            <h2 className={`text-[30px] text-[400] text-pinkBgDark`}>
               Heading #
             </h2>
-            <p className={`${montserratFont.className} leading-7`}>
+            <p className={`leading-7`}>
               Aut fuga placeat fugit et labore. Accusantium nobis nulla aut.
               Numquam totam est beatae et eius. Vero impedit blanditiis
               consequatur exercitationem dolores. Dolorem magni fugiat ex
@@ -110,12 +99,10 @@ const page = () => {
             </p>
           </div>
           <div>
-            <h2
-              className={`text-[30px] ${gfsFont.className} text-[400] text-pinkBgDark`}
-            >
+            <h2 className={`text-[30px] text-[400] text-pinkBgDark`}>
               Heading #
             </h2>
-            <p className={`${montserratFont.className} leading-7`}>
+            <p className={`leading-7`}>
               Placeat aut ut rem quia consequatur tempore illo dolorem odio. Ex
               minus animi quia fuga est culpa. Optio odio rem reiciendis
               voluptate omnis sint dicta. Quam repellat deserunt laboriosam et.
@@ -124,12 +111,10 @@ const page = () => {
             </p>
           </div>
           <div>
-            <h2
-              className={`text-[30px] ${gfsFont.className} text-[400] text-pinkBgDark`}
-            >
+            <h2 className={`text-[30px] text-[400] text-pinkBgDark`}>
               Download FoodieFinder for Free
             </h2>
-            <p className={`${montserratFont.className} leading-7`}>
+            <p className={`leading-7`}>
               Et voluptatem molestiae temporibus cupiditate officiis. Hic non
               ipsam aut tempora et magni ut. Incidunt harum impedit temporibus
               in adipisci sit.
@@ -141,4 +126,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

@@ -17,7 +17,14 @@ const Header = () => {
   }, []);
 
   // Define routes based on conditions
-  const landingRoutes = ["/", "/about_us", "/faqs", "/privacy", "/terms"];
+  const landingRoutes = [
+    "/",
+    "/about_us",
+    "/faqs",
+    "/privacy",
+    "/terms",
+    "/contact_us",
+  ];
   const authRoutes = [
     "/awaiting",
     "/forget_password",

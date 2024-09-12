@@ -2,6 +2,7 @@ import { Textarea } from "@headlessui/react";
 import { collection, getDocs } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { db } from "../../../app/firebase/config";
+import { XMarkIcon } from "@heroicons/react/20/solid";
 
 const BagDetails = ({
   selectedTags,
@@ -110,7 +111,9 @@ const BagDetails = ({
               className="border border-main text-secondary px-2 py-1 rounded-2xl flex items-center gap-1"
             >
               <span>{tag}</span>
-              <button onClick={() => handleTagRemove(tag)}>x</button>
+              <button onClick={() => handleTagRemove(tag)}>
+                <XMarkIcon width={15} height={15} />
+              </button>
             </div>
           ))}
         </div>

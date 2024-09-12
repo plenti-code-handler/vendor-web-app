@@ -48,7 +48,6 @@ const DateSelection = ({ selectedDates, setSelectedDates }) => {
           <>
             <div className="flex items-center justify-between pb-3 mt-4 gap-2">
               <p className="text-black font-bold text-[20px]">Selected Dates</p>
-              <ChevronUpIcon width="20px" height="20px" />
             </div>
             {selectedDates.map((date, index) => (
               <div key={index} className="flex items-center gap-1">

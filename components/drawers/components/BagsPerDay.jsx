@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { PlusIcon } from "@heroicons/react/20/solid";
+import { MinusIcon } from "@heroicons/react/20/solid";
 
 const BagsPerDay = ({ numberOfBags, setNumberOfBags }) => {
   const handleIncrease = () => {
@@ -14,16 +16,16 @@ const BagsPerDay = ({ numberOfBags, setNumberOfBags }) => {
       <div className="flex items-center gap-2">
         <button
           onClick={handleDecrease}
-          className="bg-white border border-gray-400  text-gray-800 px-2 rounded-xl hover:bg-gray-100"
+          className="bg-white border border-gray-400  text-gray-800 p-1 rounded-xl hover:bg-gray-100"
         >
-          -
+          <MinusIcon width={15} height={15} />
         </button>
         <span>{numberOfBags}</span>
         <button
           onClick={handleIncrease}
-          className="bg-black text-white px-2 rounded-xl hover:bg-gray-800"
+          className="bg-black text-white p-1 hover:bg-gray-800 rounded-xl"
         >
-          +
+          <PlusIcon width={15} height={15} />
         </button>
       </div>
     </div>

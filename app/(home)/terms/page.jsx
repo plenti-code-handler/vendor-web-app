@@ -1,13 +1,5 @@
 import React from "react";
 import { homeDivider } from "../../../svgs";
-import { GFS_Didot } from "next/font/google";
-import { Montserrat_Alternates } from "next/font/google";
-
-const gfsFont = GFS_Didot({ weight: "400", subsets: ["greek"] });
-const montserratFont = Montserrat_Alternates({
-  weight: ["700", "500"],
-  subsets: ["latin"],
-});
 
 const page = () => {
   return (
@@ -34,12 +26,10 @@ const page = () => {
 
             <div className="flex flex-col gap-14 relative mb-24 lg:w-[60%]">
               <div>
-                <h2
-                  className={`text-[1.875em] ${gfsFont.className} text-[400] text-pinkBgDark`}
-                >
+                <h2 className={`text-[1.875em] text-[400] text-pinkBgDark`}>
                   Heading
                 </h2>
-                <p className={`${montserratFont.className} leading-7`}>
+                <p className={`leading-7`}>
                   Ut sed ea vitae dolore ut. Est ullam et excepturi eum. Quas a
                   qui modi aut qui. Distinctio autem amet ipsum illum qui dolore
                   repellendus tempora. Repellat velit doloribus et aspernatur
@@ -69,12 +59,10 @@ const page = () => {
                 </p>
               </div>
               <div>
-                <h2
-                  className={`text-[1.875em] ${gfsFont.className} text-[400] text-pinkBgDark`}
-                >
+                <h2 className={`text-[1.875em] text-[400] text-pinkBgDark`}>
                   Heading
                 </h2>
-                <p className={`${montserratFont.className} leading-7`}>
+                <p className={`leading-7`}>
                   Ut sed ea vitae dolore ut. Est ullam et excepturi eum. Quas a
                   qui modi aut qui. Distinctio autem amet ipsum illum qui dolore
                   repellendus tempora. Repellat velit doloribus et aspernatur
@@ -82,12 +70,10 @@ const page = () => {
                 </p>
               </div>
               <div>
-                <h2
-                  className={`text-[1.875em] ${gfsFont.className} text-[400] text-pinkBgDark`}
-                >
+                <h2 className={`text-[1.875em] text-[400] text-pinkBgDark`}>
                   Heading #
                 </h2>
-                <p className={`${montserratFont.className} leading-7`}>
+                <p className={`leading-7`}>
                   Id in facere nam deleniti vero facere qui. Repudiandae
                   voluptatem esse ut dolores. Numquam quod voluptas ut optio
                   autem rerum. Vitae inventore molestiae eaque deserunt aliquid
@@ -96,12 +82,10 @@ const page = () => {
                 </p>
               </div>
               <div>
-                <h2
-                  className={`text-[1.875em] ${gfsFont.className} text-[400] text-pinkBgDark`}
-                >
+                <h2 className={`text-[1.875em] text-[400] text-pinkBgDark`}>
                   Heading #
                 </h2>
-                <p className={`${montserratFont.className} leading-7`}>
+                <p className={`leading-7`}>
                   Id in facere nam deleniti vero facere qui. Repudiandae
                   voluptatem esse ut dolores. Numquam quod voluptas ut optio
                   autem rerum. Vitae inventore molestiae eaque deserunt aliquid
@@ -110,12 +94,10 @@ const page = () => {
                 </p>
               </div>
               <div>
-                <h2
-                  className={`text-[1.875em] ${gfsFont.className} text-[400] text-pinkBgDark`}
-                >
+                <h2 className={`text-[1.875em] text-[400] text-pinkBgDark`}>
                   Download FoodieFinder For Free
                 </h2>
-                <p className={`${montserratFont.className} leading-7`}>
+                <p className={`leading-7`}>
                   Id in facere nam deleniti vero facere qui. Repudiandae
                   voluptatem esse ut dolores. Numquam quod voluptas ut optio
                   autem rerum. Vitae inventore molestiae eaque deserunt aliquid
