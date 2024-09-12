@@ -3,15 +3,9 @@
 import React from "react";
 import { appLogoUrl } from "../../lib/constant_data";
 import { appleLogoSvg, googleLogoSvg, rightArrowIcon } from "../../svgs";
-import { Montserrat_Alternates } from "next/font/google";
 import { setOpenDrawer } from "../../redux/slices/contactUserSlice";
 import { useDispatch } from "react-redux";
 import Link from "next/link";
-
-const montserratFont = Montserrat_Alternates({
-  weight: ["400"],
-  subsets: ["latin"],
-});
 
 const Footer = () => {
   const dispatch = useDispatch();
@@ -22,13 +16,13 @@ const Footer = () => {
 
   return (
     <div className="text-[70%] md:text-[100%]">
-      <div className="bg-homeFooterMobile md:bg-homeFooter p-[5%] mb-20 bg-cover bg-center w-auto flex flex-col justify-center">
+      <div className="bg-homeFooterMobile md:bg-homeFooter p-[5%] bg-cover bg-center w-auto flex flex-col justify-center">
         <div className="mx-auto flex flex-col gap-3">
           <div className="flex flex-col gap-5 items-center">
             <h1 className="text-[2.188em] text-center uppercase lg:text-left text-white font-extrabold">
               Download FoodieFinder Today!
             </h1>
-            <p className="text-[#ddd] text-center text-[1em] font-[500] md:w-[547px]">
+            <p className="text-[#fff] text-center text-[1em] font-medium md:w-[547px]">
               FoodeFinder is free to download and free to use! Are you ready to
               discover the best taste around you? Find best deals around you
               today!
@@ -63,7 +57,7 @@ const Footer = () => {
               <img src="/logo-without-text.png" />
               <img src="/logo-white.png" />
             </div>
-            <ul className="text-white flex flex-col gap-3 text-[400] text-[1.5em]">
+            <ul className="text-white flex flex-col gap-3 text-[400] text-[1em]">
               <li>
                 <Link href="/about_us" className="flex items-center  gap-5">
                   {horizontalChecklistIcon}
@@ -97,7 +91,7 @@ const Footer = () => {
             </ul>
           </div>
           <div className="text-white pl-8 flex flex-col gap-4 border-white border-l">
-            <h2 className="text-[2em] text-[400]">Connect with us</h2>
+            <h2 className="text-[1.25em] text-[400]">Connect with us</h2>
             <div className="flex gap-4 items-center">
               <div>{facebookLogo}</div>
               <div>{instagramLogo}</div>
@@ -108,18 +102,16 @@ const Footer = () => {
             </div>
             <hr className="my-4" />
             <div className="flex flex-col gap-4">
-              <h2 className="text-[2em] text-[400]">Or drop us a line</h2>
-              <p
-                className={`${montserratFont.className} underline text-[1.5em]`}
-              >
-                contact@foodiefinder.com
-              </p>
+              <h2 className="text-[1.25em] text-[400]">Or drop us a line</h2>
+              <p className={`underline text-[1em]`}>contact@foodiefinder.com</p>
               <div className="flex items-center gap-5">
                 <Link
                   href={"/contact_us"}
-                  className="mr-3 mt-2 lg:m-0 flex items-center min-w-[150px] px-[16px] py-[14px] text-center justify-center bg-secondary text-white font-semibold rounded-[6px] hover:bg-mainTwo"
+                  className="mr-3 mt-2 lg:m-0 flex items-center min-w-[150px] px-[10px] py-[10px] text-center justify-center bg-secondary text-white font-semibold rounded-[6px] hover:bg-mainTwo"
                 >
-                  <span className="mr-3 ml-2 font-semibold">Contact us</span>
+                  <span className="mr-3 ml-2 font-semibold uppercase">
+                    Contact Us
+                  </span>
                   <span>{rightArrowIcon}</span>
                 </Link>
               </div>
@@ -127,7 +119,7 @@ const Footer = () => {
           </div>
         </div>
         <hr className="my-14" />
-        <p className="text-[#F0F0F0] text-[14px] text-[400]">
+        <p className="text-[#F0F0F0] text-[0.875em] text-[400]">
           FoodieFinder @2023
         </p>
       </div>

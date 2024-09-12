@@ -29,7 +29,7 @@ const LanguageDropdown = ({ background, textColor, borderColor }) => {
 
   return (
     <form className="">
-      <div className="relative xl:w-[229px] lg:w-[180px] h-[38px]">
+      <div className="relative lg:w-[160px] h-[38px]">
         <select
           id="language-select"
           value={selectedLanguage}
@@ -38,7 +38,7 @@ const LanguageDropdown = ({ background, textColor, borderColor }) => {
             textColor ? `text-${textColor}` : "text-textLight"
           } border ${
             borderColor ? `border-${borderColor}` : "border-mainLight"
-          }   text-sm rounded-lg focus:ring-main focus:border-main w-full p-2.5 dark:bg-main dark:border-main dark:placeholder-main dark:text-white dark:focus:ring-main dark:focus:border-main appearance-none`}
+          }   text-sm rounded-lg w-full p-2.5  appearance-none`}
         >
           <option value="en" className="text-base">
             English

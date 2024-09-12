@@ -9,7 +9,7 @@ const Page = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(setActivePage("About us"));
+    dispatch(setActivePage("About Us"));
   }, [dispatch]);
 
   return (

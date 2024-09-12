@@ -10,7 +10,7 @@ const Page = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(setActivePage("Contact us"));
+    dispatch(setActivePage("Contact Us"));
   }, [dispatch]);
 
   return (

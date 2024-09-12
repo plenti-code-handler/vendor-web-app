@@ -15,13 +15,13 @@ const Page = () => {
 
   return (
     <div className="text-[70%] md:text[90%] lg:text-[100%] bg-[#F5F5F5]">
-      <div className="lg:bg-homeMain bg-homeMobile bg-bottom bg-cover bg-no-repeat p-[5%] md:mx-[2%] md:h-[calc(100vh-96px)]">
-        <div className="flex flex-col justify-center h-full">
+      <div className="lg:bg-homeMain bg-homeMobile bg-bottom bg-cover bg-no-repeat p-[5%] md:p-0 md:mx-[2%] aspect-normal lg:aspect-auto md:h-[calc(100vh-96px)]">
+        <div className="flex flex-col md:justify-center h-full">
           <div className="flex flex-col gap-5">
             <h1 className="text-[3.75em] font-extrabold md:w-[680px]">
               Fresh, Delicious Meals, Ready to Go
             </h1>
-            <p className="md:w-[397px]">
+            <p className="md:w-[397px] font-medium">
               Choose from curated meal bags small, large, or surprise prepared
               by your favorite restaurants. Fast, easy, and always delicious.
               Download the app and grab your meal today!
@@ -49,7 +49,7 @@ const Page = () => {
           </div>
         </div>
       </div>
-      <div className="flex flex-col-reverse md:flex-row justify-center items-center p-[2%]">
+      <div className="flex flex-col-reverse md:flex-row justify-center items-center gap-[55px] p-[2%]">
         <div className="w-1/2 my-5 flex items-center justify-center">
           <img className="w-full h-full" src="/home-forth-section.png" />
         </div>
@@ -111,23 +111,20 @@ const Page = () => {
             </div>
           </div>
         </div>
-        <div className="flex justify-center items-center flex-wrap p-[5%]">
+        <div className="flex flex-col md:flex-row justify-center items-center p-[5%] gap-[55px]">
           <div className="lg:w-1/2 flex flex-col gap-3">
             <h2 className={`text-pinkTextOne text-[2.5em] font-bold`}>
               Why Choose FoodieFinder
             </h2>
             <p className={`text-[1em] text-[#222] font-[500]`}>
-              Accusantium ut fugit aut qui est aut harum sed. Et et cum et
-              debitis distinctio consequatur quas mollitia. Accusantium eum illo
-              expedita fugit perferendis in. Voluptate quod tempore omnis
-              molestias voluptates vero sed.
+              At FoodieFinder, we prioritize your dining experience by offering
+              delicious meal bags from local restaurants, seamless ordering, and
+              unbeatable convenience. Enjoy the thrill of discovering new
+              flavors while supporting your community. Our commitment to quality
+              and customer satisfaction ensures that every meal is a delightful
+              adventure. Choose us for fresh, affordable, and hassle-free
+              dining!
             </p>
-            <div className="flex items-center gap-5">
-              <button className="mr-3 mt-2 lg:m-0 flex items-center min-w-[150px] px-[12px] py-[16px] text-center justify-center bg-pinkBgDark text-white font-semibold rounded-[6px] hover:bg-pinkBgDarkHover2">
-                <span className="mr-3 ml-2 font-semibold">Get Started</span>
-                <span>{rightArrowIcon}</span>
-              </button>
-            </div>
           </div>
           <div className="w-1/2 my-5 flex items-center justify-center">
             <img className="w-full h-full" src="/home-fifth-section-1.png" />
@@ -136,7 +133,7 @@ const Page = () => {
         <ContactSection />
       </div>
 
-      <div className="flex flex-col-reverse md:flex-row justify-center items-center p-[5%]">
+      <div className="flex flex-col-reverse md:flex-row justify-center items-center p-[5%] gap-[55px]">
         <div className="w-1/2 my-5 flex items-center justify-center">
           <img src="/home-fifth-section-2.png" />
         </div>
@@ -153,7 +150,7 @@ const Page = () => {
           </p>
         </div>
       </div>
-      <div className="flex justify-center items-center flex-wrap p-[5%]">
+      <div className="flex flex-col md:flex-row justify-center items-center p-[5%] gap-[55px]">
         <div className="w-full lg:w-1/2 flex flex-col gap-3">
           <h2 className={` text-pinkTextOne text-[2.5em] font-bold`}>
             Restaurant Panel

@@ -35,6 +35,9 @@ module.exports = {
         faq1: "0px 1px 1px 0px rgba(0, 0, 0, 0.14)",
         faq2: "0px 2px 1px -1px rgba(0, 0, 0, 0.20)",
       },
+      aspectRatio: {
+        normal: "2 / 3",
+      },
       colors: {
         // texts
         main: "#39B88B",
