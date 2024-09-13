@@ -14,15 +14,19 @@ const ContactSection = () => {
   };
 
   return (
-<div className="bg-homeSectionThreeMobile lg:bg-homeSectionThree pt-[15%] pb-[15%] px-[5%] md:p-[7%] rounded-[20px] mx-[2%] bg-center bg-cover w-auto flex flex-col justify-center"> 
-       <div className="mx-auto flex flex-col gap-3 items-center">
+    <div className="bg-homeSectionThreeMobile lg:bg-homeSectionThree pt-[15%] pb-[15%] px-[5%] md:p-[5%] rounded-[20px] mx-[2%] bg-center bg-cover w-auto flex flex-col justify-center">
+      <div className="mx-auto flex flex-col gap-3 items-center">
         <h2 className="text-white text-[2.188em] font-extrabold text-center">
           Join the FoodieFinder Community!
         </h2>
-        <p className="text-[1em] text-white text-center   md:w-[547px]">
-          Become part of a vibrant community of food lovers and local
-          restaurants. Share your favorite meal bag experiences, discover new
-          culinary delights, and connect with fellow food enthusiasts.
+        <p className="text-[1em] text-white text-center   md:w-[810px]">
+          FoodieFinder is a committed platform that works to reduce food waste
+          and make sustainable choices easier, in line with the global goals. We
+          particularly focus on Goal 12, "Sustainable consumption and
+          production", where we contribute to the sub-goal of halving global
+          food waste per person at the retail and consumer level. By inspiring
+          and engaging our community, we strive to create positive change for
+          people and the planet.
         </p>
         <div className="flex items-center gap-5">
           <Link
