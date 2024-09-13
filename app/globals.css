@@ -44,15 +44,172 @@ tr:first-child td {
 }
 
 .image-section {
-  background-image: url("/banner.png"); /* Use your image path */
+  background-image: url("/banner.png");
+  /* Use your image path */
   background-size: 300% 200%;
   background-repeat: no-repeat;
   border-radius: 20px;
 }
 
 @media (max-width: 767px) {
-  .download-btn > svg {
+  .download-btn>svg {
     width: 100px;
     height: 30px;
   }
 }
+
+
+@media (min-width: 1024px) and (max-width: 1391px) {
+  .custom_text_box p {
+
+    width: 30%;
+
+  }
+
+
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .custom_text_box p {
+
+    width: 30%;
+
+  }
+
+
+}
+
+@media (min-width: 1024px) and (max-width: 1260px) {
+
+
+  .custom_text_box h1 {
+    font-size: 43px;
+    width: 50%;
+  }
+}
+
+@media (min-width: 1200px) and (max-width: 1391px) {
+  .download-btn>svg {
+    width: 160px;
+    height: 59px;
+  }
+}
+
+@media (min-width: 1009px) and (max-width: 1200px) {
+  .download-btn>svg {
+    width: 137px;
+    height: 39px;
+  }
+}
+
+@media (min-width: 920px) and (max-width: 1009px) {
+  .download-btn>svg {
+    width: 130px;
+    height: 41px;
+
+  }
+}
+
+@media (min-width: 768px) and (max-width: 920px) {
+  .download-btn>svg {
+    width: 100px;
+    height: 31px;
+
+  }
+}
+
+@media (min-width: 418px) and (max-width: 500px) {
+
+  .custom_text_box {
+    gap: 15px;
+  }
+
+  .custom_text_box h1 {
+    font-size: 30px;
+
+  }
+
+  .custom_text_box>div>.download-btn:last-child {
+    margin-top: 10px;
+  }
+}
+
+@media (min-width: 580px) and (max-width: 767px) {
+  .custom_top {
+    top: 8%;
+  }
+
+  .custom_text_box {
+    gap: 20px;
+  }
+
+  .custom_text_box h1 {
+    font-size: 40px;
+
+  }
+
+  .custom_text_box p {
+    font-size: 14px;
+
+  }
+
+  .custom_text_box>div>.download-btn:last-child {
+    margin-top: 10px;
+  }
+}
+
+@media (min-width: 410px) and (max-width: 580px) {
+
+
+  .custom_text_box {
+    gap: 10px;
+  }
+
+  .custom_text_box h1 {
+    font-size: 35px;
+
+  }
+
+
+
+  .custom_text_box>div>.download-btn:last-child {
+    margin-top: 10px;
+  }
+}
+
+@media (min-width: 320px) and (max-width: 410px) {
+
+
+  .custom_text_box {
+    gap: 10px;
+  }
+
+  .custom_text_box h1 {
+    font-size: 25px;
+
+  }
+
+
+
+  .custom_text_box>div>.download-btn:last-child {
+    margin-top: 10px;
+  }
+}
+
+
+
+/* @media (max-width: 767px) {
+
+  .custom_text_box {
+    gap: 15px;
+  }
+
+  .custom_text_box h1 {
+    font-size: 25px;
+
+  }
+
+  .custom_text_box>div>.download-btn:last-child {
+    margin-top: 10px;
+  }
+} */

@@ -18,9 +18,9 @@ const Page = () => {
       <div className="bg-bottom bg-cover bg-no-repeat p-[5%] md:p-0 md:mx-[2%] relative">
         <img src="/banner.png" className="relative hidden md:block" />
         <img src="/mobile-banner.png" className="relative md:hidden" />
-        <div className="flex flex-col md:justify-center absolute top-[20px] xl:top-[20%]">
-          <div className="flex flex-col gap-5">
-            <h1 className="lg:text-[3.75em] text-[100%] font-extrabold uppercase md:w-[680px]">
+        <div className="custom_top flex flex-col md:justify-center absolute top-[20px] md:top-[18%] lg:top-[15%] xl:top-[20%]">
+          <div className="custom_text_box flex flex-col gap-5">
+            <h1 className=" sm:text-[3em] md:text-[3em] lg:text-[3.75em] text-[100%] font-extrabold uppercase md:w-[50%] lg:w-[680px] xlg:w-[680px]">
               Fresh, Delicious Meals, Ready to Go
             </h1>
             <p className="md:w-[397px] font-medium">
@@ -35,11 +35,11 @@ const Page = () => {
           </div>
         </div>
       </div>
-      <div className="flex flex-col-reverse md:flex-row justify-center items-center gap-[55px] p-[2%]">
-        <div className="w-1/2 my-5 flex items-center justify-center">
+      <div className="flex flex-col-reverse md:flex-row justify-center items-center gap-[55px] p-[5%]">
+        <div className=" sm:w-full m:w-1/2 l:w-1/2 xl:w-1/2 my-5 flex items-center justify-center">
           <img className="w-full h-full" src="/home-forth-section.png" />
         </div>
-        <div className="w-full lg:w-1/2 flex flex-col gap-3">
+        <div className="  sm:w-full m:w-1/2 l:w-1/2 xl:w-1/2 flex flex-col gap-3">
           <h2 className="text-pinkTextOne text-[2.5em] font-bold">
             Experience Convenience at Your Fingertips
           </h2>
@@ -58,47 +58,51 @@ const Page = () => {
           <h1 className="text-center mb-8 text-white text-[2.188em] font-[400]">
             Take Advantage of FoodieFinder’s Amazing Features
           </h1>
-          <div className="flex items-center flex-wrap xl:flex-nowrap justify-center gap-5">
-            <div className="flex items-center justify-center">
-              <div className="flex flex-col items-center gap-3">
-                <div>{dineOutIcon}</div>
-                <div className={`text-center text-[0.875em] text-white`}>
-                  Explore meal bags, from small snacks to hearty options,
-                  crafted by local restaurants just for you.
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center justify-center">
-              <div className="flex flex-col items-center gap-3">
-                <div>{mobileIcon}</div>
-                <div className={`text-center text-[0.875em] text-white`}>
-                  Order in just a few taps! Our intuitive interface makes
-                  selecting your favorite meals effortless.
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center justify-center">
-              <div className="flex flex-col items-center gap-3">
-                <div>{communityIcon}</div>
-                <div className={`text-center text-[0.875em] text-white`}>
-                  Support your community by ordering from local restaurants.
-                  Enjoy delicious meals while giving back!
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center justify-center">
-              <div className="flex flex-col items-center gap-3">
-                <div>{giftIcon}</div>
-                <div className={`text-center text-[0.875em] text-white`}>
-                  Feeling adventurous? Try our surprise meal bags for a
-                  delightful mix of flavors from various cuisines.
-                </div>
-              </div>
-            </div>
-          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 justify-center gap-5">
+  <div className="flex items-center justify-center">
+    <div className="flex flex-col items-center gap-3">
+      <div>{dineOutIcon}</div>
+      <div className="w-[60%] sm:w-full text-center text-[0.875em] text-white">
+        Explore meal bags, from small snacks to hearty options,
+        crafted by local restaurants just for you.
+      </div>
+    </div>
+  </div>
+  
+  <div className="flex items-center justify-center">
+    <div className="flex flex-col items-center gap-3">
+      <div>{mobileIcon}</div>
+      <div className="w-[60%] sm:w-full text-center text-[0.875em] text-white">
+        Order in just a few taps! Our intuitive interface makes
+        selecting your favorite meals effortless.
+      </div>
+    </div>
+  </div>
+  
+  <div className="flex items-center justify-center">
+    <div className="flex flex-col items-center gap-3">
+      <div>{communityIcon}</div>
+      <div className="w-[60%] sm:w-full text-center text-[0.875em] text-white">
+        Support your community by ordering from local restaurants.
+        Enjoy delicious meals while giving back!
+      </div>
+    </div>
+  </div>
+  
+  <div className="flex items-center justify-center">
+    <div className="flex flex-col items-center gap-3">
+      <div>{giftIcon}</div>
+      <div className="w-[60%] sm:w-full text-center text-[0.875em] text-white">
+        Feeling adventurous? Try our surprise meal bags for a
+        delightful mix of flavors from various cuisines.
+      </div>
+    </div>
+  </div>
+</div>
+
         </div>
         <div className="flex flex-col md:flex-row justify-center items-center p-[5%] gap-[55px]">
-          <div className="lg:w-1/2 flex flex-col gap-3">
+          <div className="sm:w-full m:w-1/2 l:w-1/2 xl:w-1/2 flex flex-col gap-3">
             <h2 className={`text-pinkTextOne text-[2.5em] font-bold`}>
               Why Choose FoodieFinder
             </h2>
@@ -112,18 +116,18 @@ const Page = () => {
               dining!
             </p>
           </div>
-          <div className="w-1/2 my-5 flex items-center justify-center">
+          <div className="sm:w-full m:w-1/2 l:w-1/2 xl:w-1/2 my-5 flex items-center justify-center">
             <img className="w-full h-full" src="/home-fifth-section-1.png" />
           </div>
         </div>
         <ContactSection />
       </div>
 
-      <div className="flex flex-col-reverse md:flex-row justify-center items-center p-[5%] gap-[55px]">
-        <div className="w-1/2 my-5 flex items-center justify-center">
+      <div className="flex flex-col-reverse md:flex-row justify-center items-center pt-[5%] pr-[5%] pl-[5%] gap-[55px]">
+        <div className="sm:w-full m:w-1/2 l:w-1/2 xl:w-1/2 my-5 flex items-center justify-center">
           <img src="/home-fifth-section-2.png" />
         </div>
-        <div className="w-full lg:w-1/2 flex flex-col gap-3">
+        <div className="sm:w-full m:w-1/2 l:w-1/2 xl:w-1/2 lg:w-1/2 flex flex-col gap-3">
           <h2 className={` text-pinkTextOne text-[2.5em] font-bold`}>
             Unlock Your FoodieFinder App
           </h2>
@@ -137,7 +141,7 @@ const Page = () => {
         </div>
       </div>
       <div className="flex flex-col md:flex-row justify-center items-center p-[5%] gap-[55px]">
-        <div className="w-full lg:w-1/2 flex flex-col gap-3">
+        <div className="sm:w-full m:w-1/2 l:w-1/2 xl:w-1/2 lg:w-1/2 flex flex-col gap-3">
           <h2 className={` text-pinkTextOne text-[2.5em] font-bold`}>
             Restaurant Panel
           </h2>
@@ -147,7 +151,7 @@ const Page = () => {
             helps your restaurant thrive.
           </p>
         </div>
-        <div className="w-1/2 my-5 flex items-center justify-center">
+        <div className="sm:w-full m:w-1/2 l:w-1/2 xl:w-1/2 my-5 flex items-center justify-center">
           <img src="/home-fifth-section-4.png" />
         </div>
       </div>
