@@ -197,6 +197,10 @@ tr:first-child td {
 }
 
 
+.slick-list {
+  transition: height 0.5s ease-in-out;
+  /* Adjust timing and easing as needed */
+}
 
 /* @media (max-width: 767px) {
 
