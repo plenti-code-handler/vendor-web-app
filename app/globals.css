@@ -50,28 +50,9 @@ tr:first-child td {
   border-radius: 20px;
 }
 
-/* Positioning items in the grid */
-
-/* First row items: aligned to the right */
-.top-left {
-  grid-column: 2 / 3;
-  background-position: 50% 0%;
-}
-
-.top-right {
-  grid-column: 3 / 4;
-  background-position: 100% 0%;
-}
-
-/* Second row items */
-.bottom-left {
-  background-position: 0% 100%;
-}
-
-.bottom-center {
-  background-position: 50% 100%;
-}
-
-.bottom-right {
-  background-position: 100% 100%;
+@media (max-width: 767px) {
+  .download-btn > svg {
+    width: 100px;
+    height: 30px;
+  }
 }
