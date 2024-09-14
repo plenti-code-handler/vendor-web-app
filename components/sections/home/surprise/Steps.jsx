@@ -84,13 +84,13 @@ export default function FoodieFinderCarousel() {
   };
 
   return (
-    <div className="flex bg-[#191919] flex-row w-full gap-16 pl-[5%] pr-[5%] pt-[4%] pb-[4%]">
-      <div className="w-1/2 flex flex-col justify-center gap-6">
+    <div className="flex bg-[#191919] flex-col md:flex-row items-center w-full gap-12 md:gap-16 pl-[5%] pr-[5%] py-[10%] md:pt-[4%] md:pb-[4%]">
+      <div className="w-full md:w-1/2 flex flex-col justify-center gap-4 md:gap-6">
         <h2 className="text-main text-[2em] font-bold">
           Here's how FoodieFinder works - step by step:
         </h2>
 
-        <div className="w-4/5">
+        <div className="w-full md:w-4/5">
           <Slider ref={sliderRef} {...settings}>
             {steps.map((step, index) => (
               <div key={index}>
@@ -114,7 +114,7 @@ export default function FoodieFinderCarousel() {
           <CustomNextArrow onClick={() => sliderRef.current.slickNext()} />
         </div>
       </div>
-      <div className="w-1/2 ">
+      <div className="w-full md:w-1/2 ">
         <img
           className="rounded-lg"
           src="/Sqaures-image.png"

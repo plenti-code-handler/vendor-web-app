@@ -62,12 +62,12 @@ const LandingHeader = () => {
             } lg:static lg:block lg:bg-transparent lg:shadow-none lg:translate-y-0`}
             style={{ zIndex: 1000 }}
           >
-            <div className="flex flex-col lg:justify-center items-start lg:flex-row p-6 lg:p-0 ">
+            <div className="flex flex-col lg:justify-center items-start lg:flex-row p-6 lg:p-0 gap-5 lg:gap-0 ">
               {/* {menuItemsData.map(({ name, href }) => (
                 <Link
                   key={name}
                   href={href}
-                  className={`xl:text-[16px] font-semibold leading-6 transition-all rounded-md flex items-center justify-start lg:justify-center px-[3%] py-[1%] m-2 lg:m-0 ${
+                  className={`xl:text-[16px] font-semibold leading-6 transition-all rounded-md flex items-center justify-start lg:justify-center px-[3%] py-[1%]  ${
                     isSmallDevice ? "w-[100%]" : ""
                   }  ${
                     activePage === name
@@ -81,7 +81,7 @@ const LandingHeader = () => {
               ))} */}
               <Link
                 href="/"
-                className={`lg:text-[12px] font-semibold leading-6 transition-all rounded-md flex items-center justify-start lg:justify-center px-[3%] py-[1%] m-2 lg:m-0 ${
+                className={`lg:text-[14px] font-semibold leading-6 transition-all rounded-md flex items-center justify-start lg:justify-center w-full lg:w-auto  lg:px-[2%]  py-[1%]  ${
                   activePage === "Home"
                     ? "text-mainLight"
                     : "text-graySix lg:text-graySix hover:bg-pink hover:text-mainLight"
@@ -90,10 +90,14 @@ const LandingHeader = () => {
               >
                 Home
               </Link>
-              <Menu>
+              <Menu
+                as="div"
+                className="relative inline-block  lg:px-[2%]  w-full lg:w-auto py-[1%]"
+              >
                 <MenuButton
+                  as="button"
                   onClick={handleMenuClick}
-                  className="lg:text-[12px] w-full lg:w-fit font-semibold leading-6 transition-all rounded-md flex items-center justify-between lg:justify-center px-[3%] py-[1%] m-2 lg:m-0 data-[focus]:outline-1 data-[focus]:outline-white"
+                  className="truncate lg:text-[14px] w-full  lg:w-fit font-semibold leading-6 transition-all rounded-md flex items-center justify-between lg:justify-center   data-[focus]:outline-1 data-[focus]:outline-white"
                 >
                   Business Solutions
                   {isOpen ? (
@@ -103,56 +107,57 @@ const LandingHeader = () => {
                   )}
                   <ChevronDownIcon className="size-4 fill-black lg:block hidden" />
                 </MenuButton>
+
                 {/* Mobile Drop Down */}
                 <MenuItems
-                  transition
-                  className="block lg:hidden w-52 border border-white/5 bg-white p-1 text-sm/6 ml-10 lg:ml-0  text-black transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-95 data-[closed]:opacity-0 z-[10000]"
+                  as="div"
+                  className="block lg:hidden absolute top-full w-52 border border-white/5 bg-white p-1 text-sm/6 text-black mt-1 focus:outline-none z-[10000] transition duration-100 ease-out"
                 >
-                  <MenuItem>
+                  <MenuItem as="div">
                     <Link
                       href="/surprise"
-                      className="group flex w-full items-center hover:text-mainLight gap-2 py-1.5 px-3 data-[focus]:bg-white/10"
+                      className="group flex w-full items-center hover:text-mainLight gap-2 py-1.5 px-3"
                     >
                       Surprise Bags
                     </Link>
                   </MenuItem>
-                  <MenuItem>
+                  <MenuItem as="div">
                     <Link
                       href="/large"
-                      className="group flex w-full items-center hover:text-mainLight gap-2 py-1.5 px-3 data-[focus]:bg-white/10"
+                      className="group flex w-full items-center hover:text-mainLight gap-2 py-1.5 px-3"
                     >
                       Small & Large Bags
                     </Link>
                   </MenuItem>
                 </MenuItems>
-                {/* Desktop Drop Down */}
 
+                {/* Desktop Drop Down */}
                 <MenuItems
-                  transition
-                  anchor="bottom end"
-                  className="hidden lg:block w-52 mt-6 origin-top-right border drop-shadow-custom border-white/5 bg-white p-1 text-sm/6 text-black transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-95 data-[closed]:opacity-0 z-[10000]"
+                  as="div"
+                  className="hidden lg:block absolute top-full left-0 w-52 mt-2 origin-top-right border drop-shadow-custom border-white/5 bg-white p-1 text-sm/6 text-black z-[10000] focus:outline-none transition duration-100 ease-out"
                 >
-                  <MenuItem>
+                  <MenuItem as="div">
                     <Link
                       href="/surprise"
-                      className="group flex w-full items-center hover:text-mainLight gap-2 py-1.5 px-3 data-[focus]:bg-white/10"
+                      className="group flex w-full items-center hover:text-mainLight gap-2 py-1.5 px-3"
                     >
                       Surprise Bags
                     </Link>
                   </MenuItem>
-                  <MenuItem>
+                  <MenuItem as="div">
                     <Link
                       href="/large"
-                      className="group flex w-full items-center hover:text-mainLight gap-2 py-1.5 px-3 data-[focus]:bg-white/10"
+                      className="group flex w-full items-center hover:text-mainLight gap-2 py-1.5 px-3"
                     >
                       Small & Large Bags
                     </Link>
                   </MenuItem>
                 </MenuItems>
               </Menu>
+
               <Link
                 href="/faqs"
-                className={`lg:text-[12px] font-semibold leading-6 transition-all rounded-md flex items-center justify-start lg:justify-center px-[3%] py-[1%] m-2 lg:m-0 ${
+                className={`lg:text-[14px] font-semibold leading-6 transition-all rounded-md flex items-center justify-start lg:justify-center w-full lg:w-auto  lg:px-[2%]   py-[1%]  ${
                   activePage === "FAQs"
                     ? "text-mainLight"
                     : "text-graySix lg:text-graySix hover:bg-pink hover:text-mainLight"
@@ -164,7 +169,7 @@ const LandingHeader = () => {
 
               <Link
                 href="/about_us"
-                className={`lg:text-[12px] font-semibold leading-6 transition-all rounded-md flex items-center justify-start lg:justify-center px-[3%] py-[1%] m-2 lg:m-0 ${
+                className={`lg:text-[14px] font-semibold leading-6 transition-all rounded-md flex items-center justify-start lg:justify-center w-full lg:w-auto  lg:px-[2%]   py-[1%]  ${
                   activePage === "About Us"
                     ? "text-mainLight"
                     : "text-graySix lg:text-graySix hover:bg-pink hover:text-mainLight"
@@ -176,7 +181,7 @@ const LandingHeader = () => {
 
               <Link
                 href="/contact_us"
-                className={`lg:text-[12px] font-semibold leading-6 transition-all rounded-md flex items-center justify-start lg:justify-center px-[3%] py-[1%] m-2 lg:m-0 ${
+                className={`lg:text-[14px] font-semibold leading-6 transition-all rounded-md flex items-center justify-start lg:justify-center w-full lg:w-auto  lg:px-[2%]  py-[1%]  ${
                   activePage === "Contact Us"
                     ? "text-mainLight"
                     : "text-graySix lg:text-graySix hover:bg-pink hover:text-mainLight"

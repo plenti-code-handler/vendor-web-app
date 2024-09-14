@@ -263,7 +263,7 @@ const Page = () => {
         </div> */}
         <Steps />
         <WhyFoodiefinder />
-        <ContactSection />
+        {/* <ContactSection /> */}
       </div>
 
       <div className="flex flex-col-reverse md:flex-row justify-center items-center pt-[5%] pr-[5%] pl-[5%] gap-[55px]">

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { arrowDown } from "../../svgs";
+import { arrowDown1, arrowDown2 } from "../../svgs";
 
 const LanguageDropdown = ({ background, textColor, borderColor }) => {
   const [selectedLanguage, setSelectedLanguage] = useState("");
@@ -49,7 +49,7 @@ const LanguageDropdown = ({ background, textColor, borderColor }) => {
           </option>
         </select>
         <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center justify-end pr-2">
-          {arrowDown}
+          {textColor ? arrowDown1 : arrowDown2}
         </div>
       </div>
     </form>
