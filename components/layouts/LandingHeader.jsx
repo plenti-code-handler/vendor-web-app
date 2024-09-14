@@ -81,7 +81,7 @@ const LandingHeader = () => {
               ))} */}
               <Link
                 href="/"
-                className={`xl:text-[16px] font-semibold leading-6 transition-all rounded-md flex items-center justify-start lg:justify-center px-[3%] py-[1%] m-2 lg:m-0 ${
+                className={`lg:text-[12px] font-semibold leading-6 transition-all rounded-md flex items-center justify-start lg:justify-center px-[3%] py-[1%] m-2 lg:m-0 ${
                   activePage === "Home"
                     ? "text-mainLight"
                     : "text-graySix lg:text-graySix hover:bg-pink hover:text-mainLight"
@@ -93,7 +93,7 @@ const LandingHeader = () => {
               <Menu>
                 <MenuButton
                   onClick={handleMenuClick}
-                  className="xl:text-[16px] w-full lg:w-fit font-semibold leading-6 transition-all rounded-md flex items-center justify-between lg:justify-center px-[3%] py-[1%] m-2 lg:m-0 data-[focus]:outline-1 data-[focus]:outline-white"
+                  className="lg:text-[12px] w-full lg:w-fit font-semibold leading-6 transition-all rounded-md flex items-center justify-between lg:justify-center px-[3%] py-[1%] m-2 lg:m-0 data-[focus]:outline-1 data-[focus]:outline-white"
                 >
                   Business Solutions
                   {isOpen ? (
@@ -152,7 +152,7 @@ const LandingHeader = () => {
               </Menu>
               <Link
                 href="/faqs"
-                className={`xl:text-[16px] font-semibold leading-6 transition-all rounded-md flex items-center justify-start lg:justify-center px-[3%] py-[1%] m-2 lg:m-0 ${
+                className={`lg:text-[12px] font-semibold leading-6 transition-all rounded-md flex items-center justify-start lg:justify-center px-[3%] py-[1%] m-2 lg:m-0 ${
                   activePage === "FAQs"
                     ? "text-mainLight"
                     : "text-graySix lg:text-graySix hover:bg-pink hover:text-mainLight"
@@ -164,7 +164,7 @@ const LandingHeader = () => {
 
               <Link
                 href="/about_us"
-                className={`xl:text-[16px] font-semibold leading-6 transition-all rounded-md flex items-center justify-start lg:justify-center px-[3%] py-[1%] m-2 lg:m-0 ${
+                className={`lg:text-[12px] font-semibold leading-6 transition-all rounded-md flex items-center justify-start lg:justify-center px-[3%] py-[1%] m-2 lg:m-0 ${
                   activePage === "About Us"
                     ? "text-mainLight"
                     : "text-graySix lg:text-graySix hover:bg-pink hover:text-mainLight"
@@ -176,7 +176,7 @@ const LandingHeader = () => {
 
               <Link
                 href="/contact_us"
-                className={`xl:text-[16px] font-semibold leading-6 transition-all rounded-md flex items-center justify-start lg:justify-center px-[3%] py-[1%] m-2 lg:m-0 ${
+                className={`lg:text-[12px] font-semibold leading-6 transition-all rounded-md flex items-center justify-start lg:justify-center px-[3%] py-[1%] m-2 lg:m-0 ${
                   activePage === "Contact Us"
                     ? "text-mainLight"
                     : "text-graySix lg:text-graySix hover:bg-pink hover:text-mainLight"
