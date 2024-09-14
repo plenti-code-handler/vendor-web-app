@@ -34,7 +34,8 @@ const Providers = ({ children }) => {
     pathname === "/faqs" ||
     pathname === "/privacy" ||
     pathname === "/terms" ||
-    pathname === "/contact_us"
+    pathname === "/contact_us" ||
+    pathname === "/surprise"
   ) {
     return (
       <Provider store={store}>

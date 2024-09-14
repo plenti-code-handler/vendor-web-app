@@ -24,6 +24,7 @@ const Header = () => {
     "/privacy",
     "/terms",
     "/contact_us",
+    "/surprise",
   ];
   const authRoutes = [
     "/awaiting",

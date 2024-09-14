@@ -59,15 +59,21 @@ const Footer = () => {
             </div>
             <ul className="text-white flex flex-col gap-3 text-[400] text-[1em]">
               <li>
-                <Link href="/about_us" className="flex items-center  gap-5">
+                <Link href="/" className="flex items-center gap-5">
                   {horizontalChecklistIcon}
-                  <span>About us</span>
+                  <span>Home</span>
                 </Link>
               </li>
               <li>
-                <Link href="/home" className="flex items-center gap-5">
+                <Link href="/surprise" className="flex items-center  gap-5">
                   {horizontalChecklistIcon}
-                  <span>Home</span>
+                  <span>Surprise Bags</span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/about_us" className="flex items-center  gap-5">
+                  {horizontalChecklistIcon}
+                  <span>Small & Medium Bags</span>
                 </Link>
               </li>
               <li>
@@ -77,15 +83,15 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link href="/privacy" className="flex items-center  gap-5">
+                <Link href="/about_us" className="flex items-center  gap-5">
                   {horizontalChecklistIcon}
-                  <span>Privacy Policy</span>
+                  <span>About Us</span>
                 </Link>
               </li>
               <li>
-                <Link href="/terms" className="flex items-center gap-5">
+                <Link href="/contact_us" className="flex items-center gap-5">
                   {horizontalChecklistIcon}
-                  <span>Terms & Conditions</span>
+                  <span>Contact Us</span>
                 </Link>
               </li>
             </ul>

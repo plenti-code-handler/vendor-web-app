@@ -8,8 +8,13 @@ import { rightArrowIcon } from "../../svgs";
 import { setActivePage } from "../../redux/slices/headerSlice";
 import { setOpenDrawer } from "../../redux/slices/contactUserSlice";
 import LanguageDropdown from "../dropdowns/LanguageDropdown";
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+import { ChevronDownIcon, PlusIcon } from "@heroicons/react/16/solid";
+import { MinusIcon } from "@heroicons/react/20/solid";
 
 const LandingHeader = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSmallDevice, setIsSmallDevice] = useState(false);
   const activePage = useSelector((state) => state.header.activePage);
@@ -31,6 +36,10 @@ const LandingHeader = () => {
   // useEffect(() => {
   //   dispatch(setActivePage("Home"));
   // }, [dispatch]);
+
+  const handleMenuClick = () => {
+    setIsOpen((prevState) => !prevState);
+  };
 
   return (
     <>
@@ -54,7 +63,7 @@ const LandingHeader = () => {
             style={{ zIndex: 1000 }}
           >
             <div className="flex flex-col lg:justify-center items-start lg:flex-row p-6 lg:p-0 ">
-              {menuItemsData.map(({ name, href }) => (
+              {/* {menuItemsData.map(({ name, href }) => (
                 <Link
                   key={name}
                   href={href}
@@ -69,7 +78,114 @@ const LandingHeader = () => {
                 >
                   {name}
                 </Link>
-              ))}
+              ))} */}
+              <Link
+                href="/"
+                className={`xl:text-[16px] font-semibold leading-6 transition-all rounded-md flex items-center justify-start lg:justify-center px-[3%] py-[1%] m-2 lg:m-0 ${
+                  activePage === "Home"
+                    ? "text-mainLight"
+                    : "text-graySix lg:text-graySix hover:bg-pink hover:text-mainLight"
+                }`}
+                onClick={() => handleLinkClick("Home")}
+              >
+                Home
+              </Link>
+              <Menu>
+                <MenuButton
+                  onClick={handleMenuClick}
+                  className="xl:text-[16px] w-full lg:w-fit font-semibold leading-6 transition-all rounded-md flex items-center justify-between lg:justify-center px-[3%] py-[1%] m-2 lg:m-0 data-[focus]:outline-1 data-[focus]:outline-white"
+                >
+                  Business Solutions
+                  {isOpen ? (
+                    <MinusIcon className="size-6 fill-black lg:hidden block" />
+                  ) : (
+                    <PlusIcon className="size-6 fill-black lg:hidden block" />
+                  )}
+                  <ChevronDownIcon className="size-4 fill-black lg:block hidden" />
+                </MenuButton>
+                {/* Mobile Drop Down */}
+                <MenuItems
+                  transition
+                  className="block lg:hidden w-52 border border-white/5 bg-white p-1 text-sm/6 ml-10 lg:ml-0  text-black transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-95 data-[closed]:opacity-0 z-[10000]"
+                >
+                  <MenuItem>
+                    <Link
+                      href="/surprise"
+                      className="group flex w-full items-center hover:text-mainLight gap-2 py-1.5 px-3 data-[focus]:bg-white/10"
+                    >
+                      Surprise Bags
+                    </Link>
+                  </MenuItem>
+                  <MenuItem>
+                    <Link
+                      href="/large"
+                      className="group flex w-full items-center hover:text-mainLight gap-2 py-1.5 px-3 data-[focus]:bg-white/10"
+                    >
+                      Small & Large Bags
+                    </Link>
+                  </MenuItem>
+                </MenuItems>
+                {/* Desktop Drop Down */}
+
+                <MenuItems
+                  transition
+                  anchor="bottom end"
+                  className="hidden lg:block w-52 mt-6 origin-top-right border drop-shadow-custom border-white/5 bg-white p-1 text-sm/6 text-black transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-95 data-[closed]:opacity-0 z-[10000]"
+                >
+                  <MenuItem>
+                    <Link
+                      href="/surprise"
+                      className="group flex w-full items-center hover:text-mainLight gap-2 py-1.5 px-3 data-[focus]:bg-white/10"
+                    >
+                      Surprise Bags
+                    </Link>
+                  </MenuItem>
+                  <MenuItem>
+                    <Link
+                      href="/large"
+                      className="group flex w-full items-center hover:text-mainLight gap-2 py-1.5 px-3 data-[focus]:bg-white/10"
+                    >
+                      Small & Large Bags
+                    </Link>
+                  </MenuItem>
+                </MenuItems>
+              </Menu>
+              <Link
+                href="/faqs"
+                className={`xl:text-[16px] font-semibold leading-6 transition-all rounded-md flex items-center justify-start lg:justify-center px-[3%] py-[1%] m-2 lg:m-0 ${
+                  activePage === "FAQs"
+                    ? "text-mainLight"
+                    : "text-graySix lg:text-graySix hover:bg-pink hover:text-mainLight"
+                }`}
+                onClick={() => handleLinkClick("FAQs")}
+              >
+                FAQs
+              </Link>
+
+              <Link
+                href="/about_us"
+                className={`xl:text-[16px] font-semibold leading-6 transition-all rounded-md flex items-center justify-start lg:justify-center px-[3%] py-[1%] m-2 lg:m-0 ${
+                  activePage === "About Us"
+                    ? "text-mainLight"
+                    : "text-graySix lg:text-graySix hover:bg-pink hover:text-mainLight"
+                }`}
+                onClick={() => handleLinkClick("About Us")}
+              >
+                About Us
+              </Link>
+
+              <Link
+                href="/contact_us"
+                className={`xl:text-[16px] font-semibold leading-6 transition-all rounded-md flex items-center justify-start lg:justify-center px-[3%] py-[1%] m-2 lg:m-0 ${
+                  activePage === "Contact Us"
+                    ? "text-mainLight"
+                    : "text-graySix lg:text-graySix hover:bg-pink hover:text-mainLight"
+                }`}
+                onClick={() => handleLinkClick("Contact Us")}
+              >
+                Contact Us
+              </Link>
+
               <div className="w-full lg:hidden flex flex-col gap-2">
                 <LanguageDropdown
                   background="white"
