@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { logoutIconAdminSvg } from "../../svgs";
 import Link from "next/link";
@@ -8,9 +8,11 @@ import { setActivePage } from "../../redux/slices/headerSlice";
 import { menuItemsData } from "../../lib/admin_menu";
 import { appLogoUrl } from "../../lib/constant_data";
 import { getUserLocal, logoutUser } from "../../redux/slices/loggedInUserSlice";
-import { auth } from "../../app/firebase/config";
+import { auth, db } from "../../app/firebase/config";
 import { useRouter } from "next/navigation";
 import LanguageDropdown from "../dropdowns/LanguageDropdown";
+import { doc, getDoc } from "firebase/firestore";
+import { AdminContext } from "../../contexts/AdminContext";
 
 const AdminHeader = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -18,6 +20,7 @@ const AdminHeader = () => {
   const [user, setUser] = useState({});
   const activePage = useSelector((state) => state.header.activePage);
   const dispatch = useDispatch();
+  const { imageUrl, setImageUrl } = useContext(AdminContext);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -33,6 +36,33 @@ const AdminHeader = () => {
     const user = getUserLocal();
     setUser(user);
   }, []);
+
+  useEffect(() => {
+    if (user && user.uid) {
+      const fetchUserData = async () => {
+        // Retrieve user id from localStorage
+        const { uid } = user; // Extract uid from localStorage
+
+        try {
+          // Fetch the user data from Firestore
+          const userDoc = await getDoc(doc(db, "users", uid)); // Assuming 'users' collection
+
+          if (userDoc.exists()) {
+            const userData = userDoc.data();
+            setImageUrl(userData.imageUrl);
+          } else {
+            console.error("No such document!");
+          }
+        } catch (error) {
+          console.error("Error fetching user data: ", error);
+        }
+      };
+
+      fetchUserData();
+    } else {
+      console.error("user uid not available");
+    }
+  }, [user]); // Runs once on initial render
 
   const handleLogout = async () => {
     await auth.signOut();
@@ -50,7 +80,7 @@ const AdminHeader = () => {
             className="h-10 w-auto"
           />
           <div className="flex lg:hidden gap-3 items-center">
-            <AdminProfileDropdown />
+            <AdminProfileDropdown imageUrl={imageUrl} />
             <button
               onClick={toggleMenu}
               className="text-gray-900 hover:text-gray-700 focus:outline-none"
@@ -119,7 +149,7 @@ const AdminHeader = () => {
               <Link href="/admin/profile">
                 <img
                   alt="User"
-                  src={user.imageUrl || "/User.png"}
+                  src={imageUrl || "/User.png"}
                   className="lg:h-11 lg:w-11 rounded-md hover:cursor-pointer focus:outline-none"
                 />
               </Link>

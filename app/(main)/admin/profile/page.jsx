@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { setActivePage } from "../../../../redux/slices/headerSlice";
 import {
@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { pencilSvgProfile } from "../../../../svgs";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { AdminContext } from "../../../../contexts/AdminContext";
 
 const Page = () => {
   const [name, setName] = useState("");
@@ -27,6 +28,8 @@ const Page = () => {
   const [preview, setPreview] = useState(""); // State for image preview
   const [profileImage, setProfileImage] = useState("");
   const [email, setEmail] = useState("");
+
+  const { setImageUrl } = useContext(AdminContext);
 
   const dispatch = useDispatch();
   const [user, setUser] = useState({});
@@ -163,6 +166,8 @@ const Page = () => {
           try {
             // Get the download URL after the file is uploaded
             const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+
+            setImageUrl(downloadURL);
 
             const myCollection = collection(db, "users");
 

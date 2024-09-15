@@ -6,6 +6,7 @@ import Footer from "./Footer";
 import Main from "./Main";
 import ContactDrawer from "../drawers/ContactDrawer";
 import { BagsProvider } from "../../contexts/BagsContext";
+import { AdminProvider } from "../../contexts/AdminContext";
 
 export const PublicLayout = ({ children }) => {
   useProtectedRoute([]);
@@ -17,10 +18,10 @@ export const AdminLayout = ({ children }) => {
   useProtectedRoute(["admin"]);
 
   return (
-    <>
+    <AdminProvider>
       <Header />
       <AdminMain>{children}</AdminMain>
-    </>
+    </AdminProvider>
   );
 };
 
