@@ -173,6 +173,7 @@ const Page = () => {
             await updateDoc(myDocRef, {
               imageUrl: downloadURL,
             });
+
             toast.success("File Uploaded Successfully!");
           } catch (error) {
             console.error("Error saving document: ", error);
@@ -192,7 +193,7 @@ const Page = () => {
                 <img
                   src={preview || "/User.png"}
                   alt="Profile"
-                  className="object-cover rounded-full"
+                  className="object-cover rounded-full h-full"
                 />
               </div>
               <label

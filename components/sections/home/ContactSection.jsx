@@ -19,7 +19,7 @@ const ContactSection = () => {
         <h2 className="text-white text-[2.188em] font-extrabold text-center">
           Join the FoodieFinder Community!
         </h2>
-        <p className="text-[1em] text-white text-center   md:w-[810px]">
+        <p className="text-[1em] text-white text-center   md:w-[80%]">
           FoodieFinder is a committed platform that works to reduce food waste
           and make sustainable choices easier, in line with the global goals. We
           particularly focus on Goal 12, "Sustainable consumption and
@@ -31,7 +31,7 @@ const ContactSection = () => {
         <div className="flex items-center gap-5">
           <Link
             href={"/contact_us"}
-            className="mr-3 mt-2 lg:m-0 flex items-center min-w-[150px] px-[10px] py-[10px] text-center justify-center bg-secondary text-white font-semibold rounded-[6px] hover:bg-mainTwo"
+            className="mr-3 mt-2 lg:m-0 flex items-center min-w-[150px] px-[10px] py-[10px] text-center justify-center bg-mainLight text-white font-semibold rounded-[6px] hover:bg-pinkTextOne transition-colors duration-500"
           >
             <span className="mr-3 ml-2 font-semibold uppercase">
               Contact us

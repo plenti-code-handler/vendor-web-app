@@ -1,124 +1,266 @@
 "use client";
 import React, { useEffect } from "react";
 
-import { homeDivider } from "../../../svgs";
-import { useDispatch } from "react-redux";
 import { setActivePage } from "../../../redux/slices/headerSlice";
+import { useDispatch } from "react-redux";
+import Link from "next/link";
+import { rightArrowIcon } from "../../../svgs";
 
 const Page = () => {
   const dispatch = useDispatch();
-
   useEffect(() => {
     dispatch(setActivePage("About Us"));
   }, [dispatch]);
-
   return (
-    <div className="bg-[#F5F5F5] py-10">
-      <div className="mx-14">
-        <div className="text-center lg:w-[60%] mx-auto">
-          <h1 className="text-[48px] text-[500] text-pinkBgDark">About Us</h1>
-          <p className="text-[#474747]">
-            At FoodieFinder, We are Suscipit ducimus dolores expedita id.
-            Architecto nobis quia laboriosam ea eum eum ut ratione. Sequi
-            reprehenderit aut quam sunt. Magnam ratione eius ducimus et odio.
+    <div className="text-[75%] md:text[90%] lg:text-[100%] bg-[#F5F5F5]">
+      <div className="flex flex-col items-center gap-10 p-[5%] lg:px-[2%] lg:pt-[3%] lg:pb-[5%]">
+        <div className="flex flex-col gap-4 items-center">
+          <h1 className="text-center font-extrabold text-[2em] md:text-[2.75em] uppercase">
+            THE FOODIEFINDER PLATFORM <br></br>A COMPLETE SOLUTION FOR SURPLUS
+            FOOD
+          </h1>
+          <p className="font-semibold text-[1em] text-center w-[100%] md:w-[80%]">
+            The FoodieFinder platform helps stores optimize their revenue by
+            managing goods with a short shelf life. Our platform tracks and
+            redistributes food approaching its best-before date, making it
+            possible to sell surplus food instead of throwing it away.
           </p>
-          <div className="flex justify-center items-center my-10">
-            <div className="w-[100%] h-[1px] bg-gradient-hr-alt" />
-            {homeDivider}
-            <div className="w-[100%] h-[1px] bg-gradient-hr" />
+          <div className="flex items-center gap-5">
+            <Link
+              href={"/contact_us"}
+              className="mr-3 mt-2 lg:m-0 flex items-center min-w-[150px] px-[10px] py-[10px] text-center justify-center bg-mainLight text-white font-semibold rounded-[6px] hover:bg-pinkTextOne transition-colors duration-500"
+            >
+              <span className="mr-3 ml-2 font-semibold uppercase">
+                Contact us
+              </span>
+              <span>{rightArrowIcon}</span>
+            </Link>
           </div>
         </div>
-        <div className="flex flex-col gap-14 mb-24">
-          <div>
-            <h2 className={`text-[30px] text-[400] text-pinkBgDark`}>
-              Our Vision
-            </h2>
-            <p className={`leading-7`}>
-              Quos occaecati adipisci. Pariatur quae occaecati vel inventore.
-              Quo labore omnis totam facilis rerum numquam. Autem dolorem
-              sapiente eius enim ipsa corrupti. Et ea numquam aut voluptatibus
-              omnis eos eveniet. Qui voluptatem veniam officia sint et.
-            </p>
+
+        <img
+          src="/About-App-Web.webp"
+          className="w-full relative hidden md:block"
+        />
+        <img src="/About-App-Mob.webp" className="w-full relative md:hidden" />
+      </div>
+
+      <div className="flex  flex-col w-full gap-10 px-[5%] pb-[5%]">
+        <div className="flex  flex-col gap-4 items-center">
+          <h2 className="  text-[2.5em] font-extrabold text-center text-black">
+            Key Advantages
+          </h2>
+          <p className="w-[80%] text-center">
+            One app for all handling of goods with a short date.
+          </p>
+        </div>
+
+        <div className="flex flex-col gap-6">
+          <div className="flex flex-col md:flex-row gap-6">
+            <div className="w-full md:w-1/3 flex flex-col items-center   border-2 rounded-2xl p-6 gap-4">
+              <svg
+                width="100"
+                height="100"
+                viewBox="0 0 100 100"
+                fill="none"
+                xmlnsXlink="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M43.75 11.5C26.516 11.5 12.5 25.516 12.5 42.75C12.5 59.984 26.516 74 43.75 74C49.4766 74 54.844 72.4414 59.465 69.7422L74.137 84.4182C75.4729 85.7502 77.2815 86.5002 79.1682 86.5002C81.051 86.5002 82.8635 85.7502 84.1955 84.4182L85.4182 83.1955C86.7502 81.8635 87.5002 80.051 87.5002 78.1682C87.5002 76.2815 86.7502 74.4729 85.4182 73.137L70.7422 58.465C73.4414 53.8439 75 48.4767 75 42.75C75 25.516 60.984 11.5 43.75 11.5ZM43.75 15.668C58.73 15.668 70.832 27.77 70.832 42.75C70.832 57.73 58.73 69.832 43.75 69.832C28.77 69.832 16.668 57.73 16.668 42.75C16.668 27.77 28.77 15.668 43.75 15.668Z"
+                  fill="#74D5B3"
+                />
+                <path
+                  d="M52.082 32.332C50.9336 32.332 50 33.2656 50 34.4179C50 34.9687 50.2187 35.4999 50.6094 35.8906C51 36.2813 51.5313 36.5 52.0821 36.5H55.3868L45.8321 46.0547L38.9727 39.1953C38.1602 38.3789 36.8399 38.3789 36.0274 39.1953L25.6094 49.6093C24.7969 50.4257 24.7969 51.7421 25.6094 52.5546C26.4258 53.371 27.7422 53.371 28.5547 52.5546L37.5 43.6132L44.3594 50.4726C45.1758 51.2851 46.4922 51.2851 47.3047 50.4726L58.3317 39.4456V42.7503C58.3317 43.3011 58.5543 43.8323 58.945 44.223C59.3356 44.6136 59.8629 44.8324 60.4177 44.8324C60.9684 44.8324 61.4997 44.6136 61.8904 44.223C62.2811 43.8324 62.4997 43.3011 62.4997 42.7503V34.4183C62.4997 33.266 61.5661 32.3324 60.4177 32.3324L52.082 32.332Z"
+                  fill="#74D5B3"
+                />
+              </svg>
+              <div className="flex flex-col items-center">
+                <h2 className="text-[1em] font-bold  text-center text-black">
+                  TRACK
+                </h2>
+                <p className="text-[1.2em] text-center font-extrabold ">
+                  <strong>HANDLING OF GOODS WITH A SHORT DATE</strong>
+                </p>
+              </div>
+              <p className="text-center">
+                With the FoodieFinder platform, date checks of goods in the
+                store become easier and more efficient. Only 3-7% of goods need
+                to be checked daily, and the system provides clear reports to
+                help you stay on track.
+              </p>
+            </div>
+            <div className="w-full md:w-1/3 flex flex-col items-center  border-2 rounded-2xl p-6 gap-4">
+              <svg
+                width="100"
+                height="100"
+                viewBox="0 0 100 100"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M67.265 45.3004H62.1968C61.9539 44.5023 61.6326 43.7301 61.2377 42.9952L64.8246 39.4081C65.0562 39.1764 65.1863 38.8623 65.1863 38.5348C65.1863 38.2073 65.0562 37.8932 64.8246 37.6616L61.3384 34.1752C61.1068 33.9437 60.7927 33.8136 60.4652 33.8136C60.1377 33.8136 59.8236 33.9437 59.592 34.1752L56.0051 37.7623C55.2702 37.3674 54.4981 37.0461 53.7 36.8031V31.7348C53.7 31.5727 53.6681 31.4121 53.606 31.2622C53.5439 31.1124 53.453 30.9762 53.3383 30.8616C53.2236 30.7469 53.0875 30.6559 52.9376 30.5938C52.7878 30.5317 52.6272 30.4998 52.465 30.4998H47.5349C47.3727 30.4998 47.2121 30.5318 47.0623 30.5938C46.9125 30.6559 46.7763 30.7469 46.6616 30.8616C46.5469 30.9763 46.456 31.1124 46.3939 31.2622C46.3319 31.4121 46.2999 31.5727 46.3 31.7348V36.8032C45.501 37.0451 44.7279 37.3655 43.992 37.7595L40.408 34.1753C40.1764 33.9437 39.8623 33.8136 39.5348 33.8136C39.2072 33.8136 38.8931 33.9437 38.6616 34.1753L35.1753 37.6616C34.9438 37.8932 34.8137 38.2074 34.8137 38.5349C34.8137 38.8624 34.9438 39.1765 35.1753 39.4081L38.7594 42.9923C38.3653 43.7283 38.045 44.5014 37.8032 45.3004H32.735C32.5728 45.3004 32.4122 45.3324 32.2623 45.3945C32.1125 45.4565 31.9763 45.5475 31.8617 45.6622C31.747 45.7769 31.656 45.913 31.594 46.0629C31.5319 46.2127 31.5 46.3733 31.5 46.5355V51.4657C31.5 51.7932 31.6301 52.1073 31.8617 52.3389C32.0933 52.5706 32.4074 52.7007 32.735 52.7007H37.8032C38.0461 53.4988 38.3674 54.271 38.7623 55.0059L35.1753 58.593C34.9438 58.8246 34.8137 59.1387 34.8137 59.4662C34.8137 59.7938 34.9438 60.1079 35.1753 60.3395L38.6616 63.8258C38.7762 63.9405 38.9124 64.0315 39.0622 64.0935C39.212 64.1556 39.3726 64.1875 39.5348 64.1875C39.6969 64.1875 39.8575 64.1556 40.0074 64.0935C40.1572 64.0315 40.2933 63.9405 40.408 63.8258L43.9949 60.2388C44.7298 60.6336 45.5019 60.9549 46.3 61.1979V66.2663C46.3 66.5938 46.4301 66.908 46.6617 67.1396C46.8933 67.3712 47.2074 67.5013 47.535 67.5014H52.465C52.6272 67.5014 52.7878 67.4694 52.9376 67.4073C53.0875 67.3453 53.2236 67.2543 53.3383 67.1396C53.453 67.0249 53.544 66.8888 53.606 66.7389C53.6681 66.5891 53.7 66.4285 53.7 66.2663V61.1979C54.499 60.956 55.272 60.6357 56.008 60.2416L59.592 63.8258C59.7067 63.9405 59.8428 64.0315 59.9927 64.0935C60.1425 64.1556 60.3031 64.1875 60.4652 64.1875C60.6274 64.1875 60.788 64.1556 60.9378 64.0935C61.0876 64.0315 61.2238 63.9405 61.3384 63.8258L64.8247 60.3395C65.0562 60.1079 65.1863 59.7938 65.1863 59.4662C65.1863 59.1387 65.0562 58.8246 64.8247 58.593L61.2406 55.0088C61.6346 54.2728 61.9549 53.4997 62.1968 52.7007H67.265C67.4272 52.7007 67.5878 52.6688 67.7377 52.6067C67.8875 52.5446 68.0237 52.4536 68.1383 52.339C68.253 52.2243 68.344 52.0881 68.406 51.9383C68.4681 51.7885 68.5 51.6279 68.5 51.4657V46.5355C68.5 46.3733 68.4681 46.2127 68.406 46.0629C68.344 45.913 68.253 45.7769 68.1383 45.6622C68.0237 45.5475 67.8875 45.4565 67.7377 45.3944C67.5878 45.3324 67.4272 45.3004 67.265 45.3004ZM50 54.7564C48.8614 54.7565 47.7484 54.4191 46.8016 53.7868C45.8549 53.1544 45.1169 52.2556 44.6811 51.2038C44.2453 50.1521 44.1312 48.9948 44.3532 47.8782C44.5752 46.7616 45.1234 45.736 45.9284 44.9309C46.7334 44.1259 47.7591 43.5776 48.8758 43.3554C49.9924 43.1333 51.1499 43.2472 52.2018 43.6828C53.2537 44.1184 54.1528 44.8562 54.7854 45.8027C55.4179 46.7493 55.7556 47.8621 55.7556 49.0006C55.7557 50.527 55.1493 51.9909 54.0699 53.0704C52.9906 54.1498 51.5266 54.7563 50 54.7564ZM57.4986 78.4966L59.1102 84.8739C51.8862 86.6973 44.2801 86.2992 37.2859 83.7316C30.2918 81.1639 24.2351 76.5463 19.9073 70.4821C15.5796 64.418 13.1822 57.1894 13.0284 49.7412C12.8746 42.293 14.9717 34.9716 19.0455 28.734L13 22.6883H29.4445V39.1335L23.8191 33.5079C20.7668 38.683 19.3139 44.6453 19.6434 50.6442C19.9729 56.6432 22.07 62.4106 25.6707 67.2203C29.2713 72.03 34.2147 75.6671 39.8783 77.6737C45.5419 79.6803 51.6726 79.9666 57.4986 78.4966ZM80.946 69.2585L87 75.3128H70.5555V58.8677L76.171 64.4833C79.2246 59.3099 80.6789 53.3486 80.3506 47.3503C80.0222 41.352 77.926 35.585 74.3259 30.7757C70.7258 25.9663 65.7829 22.3298 60.1197 20.3241C54.4566 18.3184 48.3264 18.0332 42.5015 19.5045L40.8899 13.1272C48.113 11.3029 55.7185 11.7001 62.7122 14.2671C69.7059 16.834 75.7622 21.4512 80.0894 27.5149C84.4166 33.5787 86.8133 40.8069 86.9661 48.2545C87.1189 55.7021 85.0208 63.0224 80.946 69.2585Z"
+                  fill="#74D5B3"
+                />
+              </svg>
+
+              <div className="flex flex-col items-center">
+                <h2 className="text-[1em] font-bold  text-center text-black">
+                  OPTIMIZE
+                </h2>
+                <p className="text-[1.2em] text-center font-extrabold ">
+                  <strong>RECOMMENDED ACTIONS</strong>
+                </p>
+              </div>
+              <p className="text-center">
+                The FoodieFinder platform provides store employees with concrete
+                recommendations on how best to handle items with short
+                expiration dates. This could mean printing a discount label with
+                an optimized discount, creating a bag with known contents or a
+                surprise bag for sale, or donating the item.
+              </p>
+            </div>
+            <div className="w-full md:w-1/3 flex flex-col items-center  border-2 rounded-2xl p-6 gap-4">
+              <svg
+                width="100"
+                height="100"
+                viewBox="0 0 100 100"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M49.9974 9C49.5913 9 49.1809 9.09764 48.8245 9.29292L31.1391 18.9374C30.4926 19.2918 30.103 19.9066 30.103 20.5719V36.0024C30.103 36.6677 30.4967 37.2861 31.1433 37.6369L47.7846 46.71V57.2154H19.0496C17.8311 57.2154 16.8405 58.0797 16.8405 59.1428V70.7147H10.2091C8.99058 70.7147 8 71.579 8 72.6421V88.0726C8 89.1357 8.99057 90 10.2091 90H27.8944C29.1129 90 30.1035 89.1357 30.1035 88.0726V72.6421C30.1035 71.579 29.1129 70.7147 27.8944 70.7147H21.2629V61.0702H47.7888V70.7147H41.1573C39.9388 70.7147 38.9483 71.579 38.9483 72.6421V88.0726C38.9483 89.1357 39.9388 90 41.1573 90H58.8427C60.0612 90 61.0517 89.1357 61.0517 88.0726V72.6421C61.0517 71.579 60.0612 70.7147 58.8427 70.7147H52.2112V61.0702H78.7371V70.7147H72.1056C70.8871 70.7147 69.8965 71.579 69.8965 72.6421V88.0726C69.8965 89.1357 70.8871 90 72.1056 90H89.7909C91.0094 90 92 89.1357 92 88.0726V72.6421C92 71.579 91.0094 70.7147 89.7909 70.7147H83.1595V59.1428C83.1595 58.0797 82.1689 57.2154 80.9504 57.2154H52.2154V46.71L68.8567 37.6369C69.5033 37.2825 69.897 36.6677 69.897 36.0024V20.5719C69.897 19.9065 69.5033 19.2882 68.8567 18.9374L51.1714 9.29292C50.8149 9.09764 50.4088 9 50.0025 9H49.9974ZM49.9974 13.2057L63.5087 20.5719L49.9974 27.9417L36.4862 20.5719L49.9974 13.2057ZM65.4695 24.0509V34.9322L52.2065 42.1646V31.2833L65.4695 24.0509ZM34.5212 24.0545L47.7841 31.2869V42.1645L34.5212 34.9321V24.0545ZM12.4177 74.5765H25.6806V86.1484H12.4177V74.5765ZM43.366 74.5765H56.6289V86.1484H43.366V74.5765ZM74.3142 74.5765H87.5772V86.1484H74.3142V74.5765Z"
+                  fill="#74D5B3"
+                />
+              </svg>
+
+              <div className="flex flex-col items-center">
+                <h2 className="text-[1em] font-bold  text-center text-black">
+                  DISTRIBUTE
+                </h2>
+                <p className="text-[1.2em] text-center font-extrabold ">
+                  <strong>SMART DISCOUNT</strong>
+                </p>
+              </div>
+              <p className="text-center">
+                Through AI, product-level discounts are optimized to maximize
+                revenue from short-dated items. With a mobile printer, the staff
+                can quickly print discount labels and sell the goods in the
+                store, while discount information is smoothly integrated into
+                the store's ERP system.
+              </p>
+            </div>
           </div>
-          <div>
-            <h2 className={`text-[30px] text-[400] text-pinkBgDark`}>
-              Why You Should Choose FoodieFinder
-            </h2>
-            <p className={`leading-7`}>
-              Ut sed ea vitae dolore ut. Est ullam et excepturi eum. Quas a qui
-              modi aut qui. Distinctio autem amet ipsum illum qui dolore
-              repellendus tempora. Repellat velit doloribus et aspernatur
-              perferendis voluptatibus commodi adipisci ut.
-            </p>
-          </div>
-          <div>
-            <h2 className={`text-[30px] text-[400] text-pinkBgDark`}>
-              Inclusive By Design
-            </h2>
-            <p className={`leading-7`}>
-              Id in facere nam deleniti vero facere qui. Repudiandae voluptatem
-              esse ut dolores. Numquam quod voluptas ut optio autem rerum. Vitae
-              inventore molestiae eaque deserunt aliquid laborum. Veniam
-              recusandae quo natus alias. Quibusdam eligendi vitae explicabo non
-              sint aliquid.
-            </p>
-          </div>
-          <div>
-            <h2 className={`text-[30px] text-[400] text-pinkBgDark`}>
-              Features That Matter
-            </h2>
-            <p className={`leading-7`}>
-              Consequatur voluptas corrupti quod similique quia. Molestias
-              aperiam quae consequatur rem. Quis ea sequi illo. Dolor quam aut
-              perferendis sit ducimus totam sed. Ea eum atque incidunt numquam.
-              Cumque nihil ut nobis consequatur voluptas.
-            </p>
-          </div>
-          <div>
-            <h2 className={`text-[30px] text-[400] text-pinkBgDark`}>
-              Heading #
-            </h2>
-            <p className={`leading-7`}>
-              Veritatis iure aut aut dolorum culpa ut quis error eligendi.
-              Deleniti aliquam eos pariatur dolor delectus sint. Voluptate saepe
-              placeat occaecati molestiae rerum excepturi ut sequi. Ex
-              reprehenderit veritatis consequuntur dolorem qui debitis. Dicta
-              repellat a rerum odit et maxime excepturi nesciunt recusandae. Eos
-              tempore adipisci reiciendis.
-            </p>
-          </div>
-          <div>
-            <h2 className={`text-[30px] text-[400] text-pinkBgDark`}>
-              Heading #
-            </h2>
-            <p className={`leading-7`}>
-              Aut fuga placeat fugit et labore. Accusantium nobis nulla aut.
-              Numquam totam est beatae et eius. Vero impedit blanditiis
-              consequatur exercitationem dolores. Dolorem magni fugiat ex
-              incidunt.
-            </p>
-          </div>
-          <div>
-            <h2 className={`text-[30px] text-[400] text-pinkBgDark`}>
-              Heading #
-            </h2>
-            <p className={`leading-7`}>
-              Placeat aut ut rem quia consequatur tempore illo dolorem odio. Ex
-              minus animi quia fuga est culpa. Optio odio rem reiciendis
-              voluptate omnis sint dicta. Quam repellat deserunt laboriosam et.
-              Voluptates et assumenda cupiditate quisquam libero explicabo
-              reiciendis.
-            </p>
-          </div>
-          <div>
-            <h2 className={`text-[30px] text-[400] text-pinkBgDark`}>
-              Download FoodieFinder for Free
-            </h2>
-            <p className={`leading-7`}>
-              Et voluptatem molestiae temporibus cupiditate officiis. Hic non
-              ipsam aut tempora et magni ut. Incidunt harum impedit temporibus
-              in adipisci sit.
-            </p>
+
+          <div className="flex flex-col md:flex-row gap-6">
+            <div
+              className="w-full md:w-1/3 flex flex-col items-center 
+             border-2 rounded-2xl p-6 gap-4"
+            >
+              <svg
+                width="100"
+                height="100"
+                viewBox="0 0 100 100"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M54.8998 39.8958L58.2928 30.5093C59.0729 28.3502 58.6466 27.0045 57.5307 25.1296C56.0187 22.5834 53.3727 18.7913 50.887 16.4933C50.6572 16.2816 50.4425 16.076 50.2338 15.8794C48.7006 14.4219 47.3762 13.1609 44.1616 12.8555H14.2146C13.5463 12.8555 13.005 13.3968 13.005 14.0651C13.005 14.7334 13.5463 15.2747 14.2146 15.2747L44.0463 15.2686C46.3143 15.4894 47.1609 16.2968 48.5671 17.6334C48.7848 17.839 49.0086 18.0507 49.2445 18.2715C51.5366 20.3913 54.0194 23.9566 55.4497 26.3667C56.4113 27.9815 56.4355 28.5289 56.0182 29.6871L52.7584 38.6958C51.6183 38.1968 50.3936 37.8612 49.1053 37.7221L51.7422 28.7257C51.8813 28.2479 51.718 27.7369 51.3249 27.4314C49.193 25.7683 46.9613 24.7915 44.1399 23.5577L43.9766 23.4851C43.6652 23.349 43.3083 23.349 42.9999 23.4881L37.3904 25.992C37.2876 26.0404 37.1878 26.1009 37.1001 26.1735C34.0005 28.8043 34.5478 30.4313 35.7 32.8746C35.8542 33.2012 36.0235 33.558 36.1959 33.9542C36.2352 34.0419 36.2836 34.1265 36.341 34.2021L39.734 38.6565C39.7642 38.6988 39.8005 38.7351 39.8368 38.7744C40.7349 39.6816 41.0524 40.6886 40.7591 41.6835C40.4416 42.754 39.4225 43.6733 38.2825 43.9212C37.5476 44.0815 36.468 44.0361 35.5397 42.9717L32.3826 38.8379C30.5621 36.703 29.1953 36.1042 26.7066 35.1366C25.4093 34.6739 23.7703 32.7385 22.3218 29.9595C22.1131 29.5603 21.6988 29.3093 21.2483 29.3093L14.2145 29.3154C13.5462 29.3154 13.0049 29.8567 13.0049 30.525C13.0049 31.1933 13.5462 31.7346 14.2145 31.7346H20.5286C21.6444 33.7364 23.5767 36.5941 25.8629 37.4106C28.1188 38.2875 29.0925 38.7109 30.5017 40.362L33.6648 44.5049C34.3119 45.2488 35.086 45.7569 35.9177 46.0683C35.4611 47.3777 35.2282 48.7536 35.2282 50.1719C35.2282 57.0787 40.8468 62.7006 47.7538 62.7006C54.6637 62.7006 60.2857 57.082 60.2857 50.1719C60.2857 45.9201 58.1507 42.161 54.9 39.8967L54.8998 39.8958ZM43.499 25.9187C45.7912 26.9226 47.5573 27.7119 49.1842 28.855L46.5866 37.7243C46.3839 37.7425 46.1783 37.7516 45.9757 37.7818C45.6491 37.431 45.3376 36.8171 45.7156 35.8585L47.2579 30.9113C47.4091 30.4305 47.2458 29.9073 46.8466 29.5989C45.2832 28.3802 43.6654 27.5304 41.8026 26.6777L43.499 25.9187ZM38.3552 32.8557C38.1919 32.4898 38.0347 32.1571 37.8895 31.8457C36.9491 29.8498 36.8311 29.5958 38.5367 28.1322L38.833 27.9991C41.2099 29.0394 43.0243 29.8407 44.6935 31.008L43.4355 35.0481C42.9729 36.2183 43.0213 37.4068 43.5051 38.4108C43.245 38.5045 42.9819 38.5953 42.7249 38.7071C42.4497 38.1538 42.0869 37.6216 41.6121 37.1316L38.3552 32.8557ZM51.0164 55.59C50.4841 56.1192 49.7704 56.4729 48.9601 56.6574V57.48C48.9601 58.1483 48.4188 58.6896 47.7505 58.6896C47.0822 58.6896 46.5409 58.1483 46.5409 57.48V56.6544C44.7718 56.225 43.5531 54.8219 43.405 52.8714C43.3536 52.2061 43.8525 51.6255 44.5208 51.5741C45.1831 51.5227 45.7667 52.0216 45.8181 52.6899C45.8998 53.7847 46.5741 54.3894 47.7111 54.3894H47.7263C48.4067 54.3894 48.9782 54.2019 49.3048 53.8784C49.5165 53.6697 49.6163 53.4066 49.6163 53.077C49.6163 52.5599 49.6193 51.6073 47.5509 51.314C43.8495 50.6548 43.5531 48.1811 43.7013 46.7629C43.9583 45.0906 45.1709 44.0715 46.5409 43.6633V42.865C46.5409 42.1967 47.0822 41.6554 47.7505 41.6554C48.4188 41.6554 48.9601 42.1967 48.9601 42.865V43.5726C50.6142 43.9567 51.6937 45.2147 51.7149 46.8748C51.724 47.5431 51.1887 48.0904 50.5234 48.1025H50.5053C49.8461 48.1025 49.3048 47.5733 49.2957 46.911C49.2836 46.0582 48.4187 45.904 48.0498 45.8799C47.3664 45.8315 46.2505 46.1157 46.0993 47.0804C46.0207 47.8425 46.0963 48.6045 47.9319 48.9311C51.5063 49.4361 52.0385 51.7524 52.0355 53.0861C52.0415 54.0537 51.6877 54.9216 51.0164 55.59Z"
+                  fill="#74D5B3"
+                />
+                <path
+                  d="M77.6131 87.8507C77.353 87.8507 77.093 87.766 76.8692 87.5967L71.0994 83.103C70.0713 82.3379 68.1177 82.5526 66.9475 82.6826L58.1447 83.605C56.5329 83.6775 55.2598 83.741 53.5089 82.5829L32.5892 68.7659C29.7225 67 29.4745 64.2178 30.4754 62.3883C31.5187 60.4771 34.0588 59.2524 36.8954 60.6132L51.0413 68.0734C51.011 67.8345 50.9959 67.5956 51.005 67.3537C51.0746 65.0615 52.8708 62.8056 56.1821 62.8479L65.7652 62.5697C70.0804 62.2734 73.2708 64.8438 75.185 66.3709L75.6416 66.7338L86.5369 75.2858C87.0631 75.697 87.1538 76.4591 86.7425 76.9852C86.3282 77.5114 85.5692 77.6021 85.0431 77.1909L73.6724 68.2642C71.9276 66.8701 69.2876 64.7655 65.8799 64.9892L56.1876 65.2735C54.2946 65.2251 53.454 66.3319 53.4177 67.4356C53.3874 68.4033 54.0225 69.5555 55.8792 69.7278L62.9039 69.879C63.5722 69.8941 64.1015 70.4475 64.0863 71.1159C64.0712 71.7842 63.5329 72.3043 62.8494 72.2982L56.2329 72.153C56.1724 72.1591 56.1059 72.1652 56.0424 72.1591C55.9426 72.1561 55.8458 72.15 55.7521 72.141L53.7441 72.0986C53.5566 72.0956 53.3722 72.0472 53.2059 71.9595L35.8 62.782C34.2911 62.0563 33.0905 62.6429 32.5916 63.5562C32.144 64.3787 32.2106 65.7032 33.8828 66.7344L54.8358 80.5723C55.9275 81.295 56.5413 81.2678 58.0231 81.1952L58.8154 81.1619L66.6079 80.291C68.1955 80.1156 70.7448 79.8314 72.5561 81.1861L78.3441 85.6918C78.8703 86.1031 78.967 86.8621 78.5558 87.3883C78.329 87.6907 77.9752 87.851 77.6122 87.851L77.6131 87.8507Z"
+                  fill="#74D5B3"
+                />
+              </svg>
+
+              <div className="flex flex-col items-center">
+                <h2 className="text-[1em] font-bold  text-center text-black">
+                  DISTRIBUTE
+                </h2>
+                <p className="text-[1.2em] text-center font-extrabold ">
+                  <strong>SURPRISE BAGS IN THE MARKETPLACE</strong>
+                </p>
+              </div>
+              <p className="text-center">
+                Right from their PDA, store associates can easily create
+                surprise bags of surplus food and upload them to the
+                FoodieFinder marketplace, where local users can reserve and pick
+                them up.
+              </p>
+            </div>
+            <div className="w-full md:w-1/3 flex flex-col items-center  border-2 rounded-2xl p-6 gap-4">
+              <svg
+                width="100"
+                height="100"
+                viewBox="0 0 100 100"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M13.2144 37.0534C13.1367 39.1947 13.9013 41.336 15.278 43.0174C16.6548 44.6988 18.6408 45.8456 20.7821 46.1533C23.8403 46.6132 26.9761 45.3887 28.9619 42.9428C30.6433 45.0064 33.1669 46.2309 35.8428 46.2309C38.5187 46.2309 41.0423 45.0064 42.7237 42.9428C44.405 45.0064 46.9286 46.2309 49.6045 46.2309C52.2804 46.2309 54.804 45.0064 56.4854 42.9428C58.1668 45.0064 60.6904 46.2309 63.3663 46.2309C66.0422 46.2309 68.5657 45.0064 70.2471 42.9428C72.2362 45.3887 75.2943 46.6132 78.427 46.1533C80.5683 45.771 82.4796 44.6242 83.931 43.0174C85.3078 41.336 86.0724 39.1947 85.9947 37.0534V30.7848C85.9947 30.2502 85.8424 29.7156 85.5348 29.2557L76.2884 16.2554C75.8285 15.3386 75.1416 14.5741 74.2994 14.0395C73.4572 13.5049 72.4657 13.1973 71.4712 13.1973H27.5881C26.5936 13.1973 25.5991 13.5019 24.7599 14.0395C23.9177 14.5741 23.2308 15.3386 22.7709 16.2554L13.6744 29.3306C13.3697 29.7905 13.2144 30.3251 13.2144 30.8597L13.2144 37.0534Z"
+                  fill="#74D5B3"
+                />
+                <path
+                  d="M33.0146 62.127H47.5409V85.9057H33.0146V62.127Z"
+                  fill="#74D5B3"
+                />
+                <path
+                  d="M51.5186 62.127H66.0448V85.9057H51.5186V62.127Z"
+                  fill="#74D5B3"
+                />
+                <path
+                  d="M20.4776 85.9074H29.0397V61.4421C29.0397 60.5999 29.4219 59.7607 30.0342 59.0708C30.6464 58.4586 31.4856 58.0763 32.4055 58.0763H66.7318C67.574 58.0763 68.4132 58.4586 69.1031 59.0708C69.7154 59.683 70.0976 60.5222 70.0976 61.4421V85.9074H78.5825C79.807 85.9074 80.9538 85.4475 81.8707 84.5306C82.7129 83.6884 83.2474 82.467 83.2474 81.2425V47.1455C81.4138 48.37 79.2724 48.9792 77.0534 48.9792C74.6075 48.9792 72.1616 48.2146 70.1726 46.6855C68.1835 48.137 65.8153 48.9792 63.2917 48.9792C60.8458 48.9792 58.3999 48.2146 56.4108 46.6855C54.4218 48.137 52.0536 48.9792 49.53 48.9792C47.0064 48.9792 44.6381 48.2146 42.6491 46.6855C40.6601 48.137 38.2918 48.9792 35.7682 48.9792C33.3223 48.9792 30.8764 48.2146 28.8874 46.6855C26.8983 48.137 24.5301 48.9792 22.0065 48.9792C19.7906 48.9792 17.6492 48.3669 15.8125 47.1455V81.3197C15.8125 82.5442 16.2724 83.691 17.1893 84.6078C18.1062 85.5247 19.2531 85.9074 20.4776 85.9074Z"
+                  fill="#74D5B3"
+                />
+              </svg>
+
+              <div className="flex flex-col items-center">
+                <h2 className="text-[1em] font-bold  text-center text-black">
+                  DISTRIBUTE
+                </h2>
+                <p className="text-[1.2em] text-center font-extrabold ">
+                  <strong>DONATIONS</strong>
+                </p>
+              </div>
+              <p className="text-center">
+                With the FoodieFinder platform, store managers can download
+                ready-made CSV files with lists of donated products or integrate
+                via API with third-party donation systems or ERP.
+              </p>
+            </div>
+            <div className="w-full md:w-1/3 flex flex-col items-center  border-2 rounded-2xl p-6 gap-4">
+              <svg
+                width="100"
+                height="100"
+                viewBox="0 0 100 100"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M44.1808 9.00028H81.4268C83.2901 9.00028 84.8135 10.5237 84.8135 12.387V75.102C84.8135 76.9653 83.2901 78.4887 81.4268 78.4887H77.2198C77.1261 78.4887 77.048 78.4106 77.048 78.3168V18.9648C77.048 15.6836 74.3722 13.0078 71.091 13.0078H40.97C40.8762 13.0078 40.7981 12.9297 40.7981 12.8359V12.3867C40.7981 10.5234 42.3214 9.00028 44.1808 9.00028ZM50.8097 45.2233C50.8097 45.1764 50.7941 45.1334 50.759 45.0983C50.7238 45.0631 50.6847 45.0475 50.6379 45.0475H39.2859C39.1921 45.0475 39.114 44.9694 39.114 44.8756V33.5236C39.114 33.4767 39.0984 33.4338 39.0632 33.4025C39.0281 33.3674 38.989 33.3517 38.9382 33.3517C32.5593 33.4455 27.4152 38.6447 27.4152 45.0467C27.4152 51.5076 32.6535 56.7417 39.1102 56.7417C45.5164 56.7457 50.7152 51.6011 50.8092 45.2217L50.8097 45.2233ZM43.923 30.3793C43.8684 30.3597 43.8137 30.3715 43.7668 30.4027C43.7199 30.4379 43.6965 30.4847 43.6965 30.5433V40.2933C43.6965 40.3871 43.7746 40.4652 43.8684 40.4652H53.6184C53.677 40.4652 53.7238 40.4418 53.759 40.3949C53.7941 40.348 53.8019 40.2933 53.7824 40.2387C52.259 35.5825 48.5793 31.9028 43.923 30.3793ZM20.153 32.1723H18.7077C18.6609 32.1723 18.6179 32.1879 18.5867 32.2231L17.6218 33.1879C17.5867 33.2231 17.571 33.2621 17.571 33.309V87.61C17.571 88.2311 18.0867 88.7467 18.7077 88.7467H59.5127C60.1338 88.7467 60.6494 88.2311 60.6494 87.61L60.6533 27.02C60.6533 26.3989 60.1377 25.8833 59.5166 25.8833H25.0006C24.9538 25.8833 24.9108 25.8989 24.8795 25.9341L23.9147 26.8989C23.8795 26.9341 23.8639 26.9731 23.8639 27.02V28.4653C23.8639 30.5044 22.1959 32.1723 20.153 32.1723ZM35.684 83.3403C35.0669 83.3403 34.5629 82.8403 34.5629 82.2192C34.5629 81.602 35.0629 81.0981 35.684 81.0981H54.094C54.7112 81.0981 55.2151 81.5981 55.2151 82.2192C55.2151 82.8364 54.7151 83.3403 54.094 83.3403H35.684ZM23.414 83.0551C22.9805 82.6137 22.9883 81.9067 23.4258 81.4731C23.8672 81.0395 24.5742 81.0473 25.0078 81.4848L26.3125 82.8168C26.3476 82.852 26.3867 82.8676 26.4335 82.8676C26.4804 82.8676 26.5234 82.852 26.5546 82.8168L30.1952 79.1059C30.6288 78.6645 31.3358 78.6606 31.7772 79.0942C32.2186 79.5278 32.2225 80.2348 31.789 80.6762L27.2187 85.3403L27.2148 85.3442C26.7733 85.7778 26.0664 85.77 25.6367 85.3286L23.414 83.0551ZM35.684 75.3481H54.094C54.7112 75.3481 55.2151 74.8481 55.2151 74.227C55.2151 73.6098 54.7151 73.1059 54.094 73.1059H35.684C35.0669 73.1059 34.5629 73.6059 34.5629 74.227C34.5668 74.8442 35.0669 75.3481 35.684 75.3481ZM23.414 75.063C22.9805 74.6215 22.9883 73.9146 23.4258 73.481C23.8672 73.0474 24.5742 73.0552 25.0078 73.4927L26.3125 74.8247C26.3476 74.8598 26.3867 74.8755 26.4335 74.8755C26.4804 74.8755 26.5234 74.8598 26.5546 74.8247L30.1952 71.1138C30.6288 70.6724 31.3358 70.6685 31.7772 71.1021C32.2186 71.5357 32.2225 72.2427 31.789 72.6841L27.2187 77.3482L27.2148 77.3521C26.7733 77.7857 26.0664 77.7778 25.6367 77.3364L23.414 75.063ZM35.684 67.3521H54.094C54.7112 67.3521 55.2151 66.8521 55.2151 66.231C55.2151 65.6138 54.7151 65.1099 54.094 65.1099L35.684 65.1138C35.0669 65.1138 34.5629 65.6138 34.5629 66.2349C34.5668 66.8521 35.0669 67.3521 35.684 67.3521ZM23.414 67.0708C22.9805 66.6294 22.9883 65.9224 23.4258 65.4888C23.8672 65.0552 24.5742 65.063 25.0078 65.5005L26.3125 66.8325C26.3476 66.8677 26.3867 66.8833 26.4335 66.8833C26.4804 66.8833 26.5234 66.8677 26.5546 66.8325L30.1952 63.1216C30.6288 62.6802 31.3358 62.6763 31.7772 63.1099C32.2186 63.5435 32.2225 64.2505 31.789 64.6919L27.2187 69.356L27.2148 69.3599C26.7733 69.7935 26.0664 69.7857 25.6367 69.3443L23.414 67.0708ZM23.9336 23.3088C23.8867 23.3088 23.8437 23.3244 23.8125 23.3596L15.0508 32.1213C15.0156 32.1564 15 32.1955 15 32.2424V87.6094C15 89.6485 16.668 91.3203 18.7109 91.3203H59.5159C61.555 91.3203 63.2268 89.6523 63.2268 87.6094V27.0194C63.2268 24.9803 61.5588 23.3085 59.5159 23.3085L23.9336 23.3088ZM33.8438 15.5822C31.9805 15.5822 30.4571 17.1056 30.4571 18.9689V20.6017C30.4571 20.6955 30.5352 20.7736 30.629 20.7736H59.5159C62.9573 20.7736 65.7621 23.5783 65.7621 27.0197V84.8947C65.7621 84.9884 65.8402 85.0666 65.9339 85.0666H71.0862C72.9495 85.0666 74.4729 83.5432 74.4729 81.6799V18.9649C74.4729 17.1016 72.9495 15.5782 71.0862 15.5782L33.8438 15.5822Z"
+                  fill="#74D5B3"
+                />
+              </svg>
+
+              <div className="flex flex-col items-center">
+                <h2 className="text-[1em] font-bold  text-center text-black">
+                  REPORTING
+                </h2>
+                <p className="text-[1.2em] text-center font-extrabold ">
+                  <strong>SIMPLE AND EFFECTIVE ANALYSIS</strong>
+                </p>
+              </div>
+              <p className="text-center">
+                The platform enables data-driven decisions to effectively
+                prevent and manage food waste. Our customized reports help
+                stores to track developments, draw valuable insights and take
+                preventive measures to reduce wastage.
+              </p>
+            </div>
           </div>
         </div>
       </div>

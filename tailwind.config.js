@@ -20,8 +20,8 @@ module.exports = {
         "gradient-hr-alt":
           "linear-gradient(to left, rgba(116,213,179 , 0.6), #FFFFFF)",
         homeMain: "url('/banner.png')",
-        homeSectionThree: "url('/home-third-section.png')",
-        homeSectionThreeMobile: "url('/home-third-section-mobile.png')",
+        homeSectionThree: "url('/home-third-section.webp')",
+        homeSectionThreeMobile: "url('/home-third-section-mobile.webp')",
         homeFooter: "url('/footer.png')",
         homeFooterMobile: "url('/mobile-footer.png')",
         homeMobile: "url('/mobile-banner.png')",

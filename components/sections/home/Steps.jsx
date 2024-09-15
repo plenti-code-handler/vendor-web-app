@@ -117,7 +117,7 @@ export default function FoodieFinderCarousel() {
       <div className="w-full md:w-1/2 ">
         <img
           className="rounded-lg"
-          src="/Sqaures-image.png"
+          src="/Sqaures-image.webp"
           alt="App Feature"
         />
       </div>

@@ -4,7 +4,7 @@ export const WhyFoodiefinder = () => {
   return (
     <div className="flex  flex-col w-full gap-10 p-[5%]">
       <div className="flex  flex-col gap-4 items-center">
-        <h2 className="  text-[2.188em] font-extrabold text-center text-black">
+        <h2 className="  text-[2.5em] font-extrabold text-center text-black">
           Why Choose FoodieFinder?
         </h2>
         <p className="w-[80%] text-center">
@@ -41,7 +41,7 @@ export const WhyFoodiefinder = () => {
           </div>
         </div>
         <div className=" w-3/4 md:w-1/3">
-          <img className="w-full h-auto" src="/Middle-section-image.png" />
+          <img className="w-full h-auto" src="/Middle-section-image.webp" />
         </div>
         <div className="flex flex-col justify-center gap-6 md:gap-10   w-3/4 md:w-1/3">
           <div className="flex items-center md:items-start flex-col gap-3 ">
@@ -81,7 +81,7 @@ const icon1 = (
     height="50"
     viewBox="0 0 53 50"
     fill="none"
-    xmlns="http://www.w3.org/2000/svg"
+    xmlnsXlink="http://www.w3.org/2000/svg"
   >
     <path
       fill-rule="evenodd"

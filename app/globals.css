@@ -217,3 +217,26 @@ tr:first-child td {
     margin-top: 10px;
   }
 } */
+
+.policies ul {
+  list-style: disc;
+  margin-top: 0;
+  margin-inline-end: 0px;
+  margin-bottom: 0;
+  margin-inline-start: 16px;
+  padding-inline-start: 0;
+}
+
+.policies li {
+  margin-bottom: 5px;
+}
+
+.policies a {
+  text-decoration: underline;
+}
+
+.policies a:hover {
+
+  color: #74D5B3;
+  text-decoration: underline;
+}

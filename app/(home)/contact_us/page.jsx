@@ -35,7 +35,15 @@ const Page = () => {
               <div className="mx-10 flex flex-col gap-8">
                 <div className="flex md:flex-row flex-col font-[400] text-[1.5em] items-center justify-between">
                   <p>Or drop us a line</p>
-                  <p className="underline">contact@foodiefinder.com</p>
+                  <p>
+                    {" "}
+                    <a
+                      className="underline hover:text-pinkBgDark"
+                      href="mailto:kontakt@foodiefinder.se"
+                    >
+                      kontakt@foodiefinder.se
+                    </a>
+                  </p>
                 </div>
                 <div className="flex md:flex-row flex-col md:items-center gap-5 justify-between">
                   <div className="flex flex-col gap-3 basis-full">

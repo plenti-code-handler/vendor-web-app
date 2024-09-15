@@ -51,22 +51,28 @@ const Footer = () => {
         </div>
       </div>
       <div className="bg-blackBtn px-[5%] pt-[5%] pb-6">
-        <div className="flex flex-col gap-5 justify-between flex-wrap sm:flex-row">
+        <div className="flex flex-col gap-5 justify-between flex-wrap sm:flex-row pb-14">
           <div className="flex-1">
             <div className="flex mb-5 gap-3">
               <img src="/logo-without-text.png" />
               <img src="/logo-white.png" />
             </div>
             <div className="flex flex-col lg:flex-row gap-3 lg:justify-between">
-              <ul className="text-white flex flex-col gap-3 text-[400] text-[1em]">
+              <ul className="text-white flex flex-col gap-3 text-[400] text-[1em] w-full   lg:w-1/3">
                 <li>
-                  <Link href="/" className="flex items-center gap-5">
+                  <Link
+                    href="/"
+                    className="flex items-center gap-5 hover:text-main transition-colors duration-300 w-fit"
+                  >
                     {horizontalChecklistIcon}
                     <span>Home</span>
                   </Link>
                 </li>
                 <li>
-                  <Link href="/surprise" className="flex items-center  gap-5">
+                  <Link
+                    href="/surprise"
+                    className="flex items-center gap-5 hover:text-main transition-colors duration-300 w-fit"
+                  >
                     {horizontalChecklistIcon}
                     <span>Surprise Bags</span>
                   </Link>
@@ -74,40 +80,55 @@ const Footer = () => {
                 <li>
                   <Link
                     href="/small_medium_bags"
-                    className="flex items-center  gap-5"
+                    className="flex items-center gap-5 hover:text-main transition-colors duration-300 w-fit"
                   >
                     {horizontalChecklistIcon}
                     <span>Small & Medium Bags</span>
                   </Link>
                 </li>
                 <li>
-                  <Link href="/faqs" className="flex items-center  gap-5">
+                  <Link
+                    href="/faqs"
+                    className="flex items-center gap-5 hover:text-main transition-colors duration-300 w-fit"
+                  >
                     {horizontalChecklistIcon}
                     <span>FAQs</span>
                   </Link>
                 </li>
                 <li>
-                  <Link href="/about_us" className="flex items-center  gap-5">
+                  <Link
+                    href="/about_us"
+                    className="flex items-center gap-5 hover:text-main transition-colors duration-300 w-fit"
+                  >
                     {horizontalChecklistIcon}
-                    <span>About Us</span>
+                    <span>About App</span>
                   </Link>
                 </li>
                 <li>
-                  <Link href="/contact_us" className="flex items-center gap-5">
+                  <Link
+                    href="/contact_us"
+                    className="flex items-center gap-5 hover:text-main transition-colors duration-300 w-fit"
+                  >
                     {horizontalChecklistIcon}
                     <span>Contact Us</span>
                   </Link>
                 </li>
               </ul>
-              <ul className="text-white flex flex-col gap-3 text-[400] text-[1em]">
+              <ul className="text-white flex flex-col gap-3 text-[400] text-[1em] w-full  lg:w-1/3">
                 <li>
-                  <Link href="/privacy" className="flex items-center gap-5">
+                  <Link
+                    href="/privacy"
+                    className="flex items-center gap-5 hover:text-main transition-colors duration-300 w-fit"
+                  >
                     {horizontalChecklistIcon}
                     <span>Privacy Policy</span>
                   </Link>
                 </li>
                 <li>
-                  <Link href="/terms" className="flex items-center  gap-5">
+                  <Link
+                    href="/terms"
+                    className="flex items-center gap-5 hover:text-main transition-colors duration-300 w-fit"
+                  >
                     {horizontalChecklistIcon}
                     <span>Terms & Conditions</span>
                   </Link>
@@ -115,7 +136,7 @@ const Footer = () => {
                 <li>
                   <Link
                     href="/cookie_policy"
-                    className="flex items-center  gap-5"
+                    className="flex items-center gap-5 hover:text-main transition-colors duration-300 w-fit"
                   >
                     {horizontalChecklistIcon}
                     <span>Cookie Policy</span>
@@ -124,7 +145,7 @@ const Footer = () => {
                 <li>
                   <Link
                     href="/deliever_return_policy"
-                    className="flex items-center  gap-5"
+                    className="flex items-center gap-5 hover:text-main transition-colors duration-300 w-fit"
                   >
                     {horizontalChecklistIcon}
                     <span>Delivery and Return Policy</span>
@@ -133,24 +154,27 @@ const Footer = () => {
                 <li>
                   <Link
                     href="/payment_terms"
-                    className="flex items-center  gap-5"
+                    className="flex items-center gap-5 hover:text-main transition-colors duration-300 w-fit"
                   >
                     {horizontalChecklistIcon}
                     <span>Payment Terms</span>
                   </Link>
                 </li>
                 <li>
-                  <Link href="/ugc_policy" className="flex items-center gap-5">
+                  <Link
+                    href="/ugc_policy"
+                    className="flex items-center gap-5 hover:text-main transition-colors duration-300 w-fit"
+                  >
                     {horizontalChecklistIcon}
                     <span>UGC Policy</span>
                   </Link>
                 </li>
               </ul>
-              <ul className="text-white flex flex-col gap-3 text-[400] text-[1em]">
+              <ul className="text-white flex flex-col gap-3 text-[400] text-[1em] w-full   lg:w-1/3">
                 <li>
                   <Link
                     href="/security_policy"
-                    className="flex items-center  gap-5"
+                    className="flex items-center gap-5 hover:text-main transition-colors duration-300 w-fit"
                   >
                     {horizontalChecklistIcon}
                     <span>Security Policy</span>
@@ -159,7 +183,7 @@ const Footer = () => {
                 <li>
                   <Link
                     href="/accessibility_policy"
-                    className="flex items-center  gap-5"
+                    className="flex items-center gap-5 hover:text-main transition-colors duration-300 w-fit"
                   >
                     {horizontalChecklistIcon}
                     <span>Accessibility Policy</span>
@@ -168,7 +192,7 @@ const Footer = () => {
                 <li>
                   <Link
                     href="/ethical_policy"
-                    className="flex items-center  gap-5"
+                    className="flex items-center gap-5 hover:text-main transition-colors duration-300 w-fit"
                   >
                     {horizontalChecklistIcon}
                     <span>Ethical Policy</span>
@@ -177,7 +201,7 @@ const Footer = () => {
               </ul>
             </div>
           </div>
-          <div className="text-white pl-8 flex flex-col gap-4 border-white border-l">
+          <div className="text-white pl-8 flex flex-col gap-4 border-white border-l w-full md:w-1/2 lg:w-1/4">
             <h2 className="text-[1.25em] text-[400]">Connect with us</h2>
             <div className="flex gap-4 items-center">
               <div>{facebookLogo}</div>
@@ -190,7 +214,14 @@ const Footer = () => {
             <hr className="my-4" />
             <div className="flex flex-col gap-4">
               <h2 className="text-[1.25em] text-[400]">Or drop us a line</h2>
-              <p className={`underline text-[1em]`}>contact@foodiefinder.com</p>
+              <p className={`underline text-[1em]`}>
+                <a
+                  href="mailto:kontakt@foodiefinder.se"
+                  className="underline hover:text-secondary"
+                >
+                  kontakt@foodiefinder.se
+                </a>
+              </p>
               <div className="flex items-center gap-5">
                 <Link
                   href={"/contact_us"}
@@ -205,7 +236,7 @@ const Footer = () => {
             </div>
           </div>
         </div>
-        <hr className="my-14" />
+        <hr className="pb-6" />
         <p className="text-[#F0F0F0] text-[0.875em] text-[400]">
           FoodieFinder @2023
         </p>
@@ -218,7 +249,7 @@ export default Footer;
 
 const horizontalChecklistIcon = (
   <svg
-    width="32"
+    width="15"
     height="2"
     viewBox="0 0 32 2"
     fill="none"

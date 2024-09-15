@@ -23,8 +23,14 @@ const Page = () => {
 
   return (
     <div className="text-[70%] md:text-[100%]">
-      <div className="bg-[#F5F5F5] py-10">
-        <div className="flex lg:mx-14">
+      <div className="bg-[#F5F5F5] pl-[5%] pr-[5%] pb-[5%] pt-[3%]">
+        <div className="flex flex-col  ">
+          <div className="text-center   mx-auto pb-[30px] md:pb-[50px]">
+            <h1 className="text-[2.5em] text-[500] text-pinkBgDark font-semibold uppercase">
+              Frequently Asked Questions
+            </h1>
+            <p className="text-[#474747] font-medium">Read all the FAQs</p>
+          </div>
           <div className="mx-auto w-full divide-y flex flex-col gap-4 divide-gray-200 bg-white/5">
             <Disclosure as="div" className="px-6 border-0">
               <DisclosureButton className="group bg-white  flex w-full items-center shadow-faq1 rounded-xl justify-between p-6">

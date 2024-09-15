@@ -53,7 +53,11 @@ const LandingHeader = () => {
     <>
       <header className="bg-white px-[2%] justify-around">
         <div className="mx-auto flex py-3 items-center justify-between">
-          <img alt="Foodie Finder Logo" src={appLogoUrl} />
+          <img
+            alt="Foodie Finder Logo"
+            src="/logo-landing.png"
+            className="max-w-[240px]"
+          />
           <div className="flex lg:hidden gap-3 items-center">
             <button
               onClick={toggleMenu}
@@ -139,7 +143,11 @@ const LandingHeader = () => {
                   <div>
                     <Link
                       href="/surprise"
-                      className="group flex w-full items-center hover:text-mainLight gap-2 py-1.5 px-3"
+                      className={`group flex w-full items-center hover:text-mainLight gap-2 py-1.5 px-3 ${
+                        activePage === "Surprise Bag"
+                          ? "text-mainLight"
+                          : "text-graySix lg:text-graySix hover:bg-pink hover:text-mainLight"
+                      }`}
                     >
                       Surprise Bag
                     </Link>
@@ -147,7 +155,11 @@ const LandingHeader = () => {
                   <div>
                     <Link
                       href="/small_medium_bags"
-                      className="group flex w-full items-center hover:text-mainLight gap-2 py-1.5 px-3"
+                      className={`group flex w-full items-center hover:text-mainLight gap-2 py-1.5 px-3 ${
+                        activePage === "Small & Large Bag"
+                          ? "text-mainLight"
+                          : "text-graySix lg:text-graySix hover:bg-pink hover:text-mainLight"
+                      }`}
                     >
                       Small & Large Bag
                     </Link>
@@ -176,7 +188,7 @@ const LandingHeader = () => {
                 }`}
                 onClick={() => handleLinkClick("About Us")}
               >
-                About Us
+                About App
               </Link>
 
               <Link
@@ -199,7 +211,7 @@ const LandingHeader = () => {
                 />
                 <Link
                   href={"/login"}
-                  className="mr-3 mt-2 lg:m-0 flex items-center w-full px-[10px] py-[10px] text-center justify-center bg-pinkBgDark text-white font-semibold rounded-[6px] hover:bg-pinkBgDarkHover2"
+                  className="mr-3 mt-2 lg:m-0 flex items-center w-full px-[10px] py-[10px] text-center justify-center bg-pinkBgDark text-white font-semibold rounded-[6px] hover:bg-mainLight"
                 >
                   <span className="mr-3 ml-2 font-semibold">Login</span>
                   <span>{rightArrowIcon}</span>

@@ -3,39 +3,6 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-const steps = [
-  {
-    title: "Download and Register:",
-    description:
-      "Start by downloading the FoodieFinder app from the App Store or Google Play. Create an account by registering with your email address or via social media.",
-  },
-  {
-    title: " Customize your preferences:",
-    description:
-      "Enter your preferences and needs, such as dietary restrictions (eg vegetarian, vegan, gluten-free) and your favorite types of food. You can also set a desired price range and the areas you want to search in. FoodieFinder is the first to offer this possibility, so you can easily find offers that suit you.",
-  },
-  {
-    title: " Explore offers near you:",
-    description:
-      "Browse restaurants, cafes and shops connected to FoodieFinder. Here you can find both surprise bags and bags in different sizes with known contents. FoodieFinder is the first to offer this unique variety of bags, giving you the freedom to choose between exciting surprises and specific meals. You can therefore adapt your experience exactly as you want it, depending on what suits you best at the moment.",
-  },
-  {
-    title: "Reserve your meals:",
-    description:
-      "When you find something you like, reserve your case directly in the app. Choose between surprise bags for an exciting experience or bags where the contents are already specified if you want to know exactly what you're getting. Pay easily and conveniently directly via the app to secure your finds.",
-  },
-  {
-    title: "Pick up your food:",
-    description:
-      "Visit the specified restaurant, cafe or shop within the designated pick-up times. Show your confirmation in the app and collect your box. You help save food from being thrown away and at the same time get to enjoy a good meal at a good price!",
-  },
-  {
-    title: "Enjoy and make a difference:",
-    description:
-      "Enjoy your meal, and know that you have contributed to reducing food waste and supporting local businesses. Repeat the process to continue making sustainable choices and discover new places to eat!",
-  },
-];
-
 // Custom Navigation Arrows
 const CustomNextArrow = ({ onClick }) => (
   <button onClick={onClick} className="     ">
@@ -69,7 +36,7 @@ const CustomPrevArrow = ({ onClick }) => (
   </button>
 );
 
-export default function FoodieFinderCarousel({ image }) {
+export default function FoodieFinderCarousel({ heading, image, steps }) {
   const sliderRef = React.useRef(null);
 
   const settings = {
@@ -86,9 +53,7 @@ export default function FoodieFinderCarousel({ image }) {
   return (
     <div className="flex bg-[#191919] flex-col md:flex-row items-center w-full gap-12 md:gap-16 pl-[5%] pr-[5%] py-[10%] md:pt-[4%] md:pb-[4%]">
       <div className="w-full md:w-1/2 flex flex-col justify-center gap-4 md:gap-6">
-        <h2 className="text-main text-[2em] font-bold">
-          Here's how FoodieFinder works - step by step:
-        </h2>
+        <h2 className="text-main text-[2em] font-bold">{heading}</h2>
 
         <div className="w-full md:w-4/5">
           <Slider ref={sliderRef} {...settings}>
@@ -115,11 +80,7 @@ export default function FoodieFinderCarousel({ image }) {
         </div>
       </div>
       <div className="w-full md:w-1/2 ">
-        <img
-          className="rounded-lg"
-          src={image || "/Sqaures-image.png"}
-          alt="App Feature"
-        />
+        <img className="rounded-lg" src={image} alt="App Feature" />
       </div>
     </div>
   );
