@@ -225,7 +225,7 @@ const Footer = () => {
               <div className="flex items-center gap-5">
                 <Link
                   href={"/contact_us"}
-                  className="mr-3 mt-2 lg:m-0 flex items-center min-w-[150px] px-[10px] py-[10px] text-center justify-center bg-secondary text-white font-semibold rounded-[6px] hover:bg-mainTwo"
+                  className="mr-3 mt-2 lg:m-0 flex items-center min-w-[150px] px-[10px] py-[10px] text-center justify-center bg-secondary text-white font-semibold rounded-[6px] hover:bg-pinkTextOne transition-colors duration-500"
                 >
                   <span className="mr-3 ml-2 font-semibold uppercase">
                     Contact Us

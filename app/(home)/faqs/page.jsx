@@ -10,7 +10,7 @@ import {
   ChevronUpIcon,
 } from "@heroicons/react/20/solid";
 import React, { useEffect } from "react";
-import { faqData } from "../../../lib/constant_data";
+
 import { setActivePage } from "../../../redux/slices/headerSlice";
 import { useDispatch } from "react-redux";
 
@@ -32,142 +32,38 @@ const Page = () => {
             <p className="text-[#474747] font-medium">Read all the FAQs</p>
           </div>
           <div className="mx-auto w-full divide-y flex flex-col gap-4 divide-gray-200 bg-white/5">
-            <Disclosure as="div" className="px-6 border-0">
-              <DisclosureButton className="group bg-white  flex w-full items-center shadow-faq1 rounded-xl justify-between p-6">
-                <span className="text-[1.125em] leading-7 font-[600] text-left text-blackThree group-hover:text-blackThree/80">
-                  What is FoodieFinder, and why is it different from other Food
-                  apps?
-                </span>
-                <div className="flex items-center">
-                  <ChevronRightIcon className="h-6 w-6 text-blackThree/60 group-hover:text-blackThree/50 group-data-[open]:rotate-90" />
-                </div>
-              </DisclosureButton>
-              <DisclosurePanel className="mt-2 pb-2 text-sm text-blackThree/50">
-                {faqData}
-              </DisclosurePanel>
-            </Disclosure>
-            <Disclosure
-              as="div"
-              style={{ border: 0 }}
-              className="px-6 border-0"
-            >
-              <DisclosureButton className="group bg-white flex w-full items-center shadow-faq1 rounded-xl justify-between p-6">
-                <span className="text-[1.125em] leading-7 font-[600] text-left text-blackThree group-hover:text-blackThree/80">
-                  Is FoodieFinder free to use? Is there a subscription fee?
-                </span>
-                <div className="flex items-center">
-                  <ChevronRightIcon className="h-6 w-6 text-blackThree/60 group-hover:text-blackThree/50 group-data-[open]:rotate-90" />
-                </div>
-              </DisclosureButton>
-              <DisclosurePanel className="mt-2 pb-2 text-sm text-blackThree/50">
-                {faqData}
-              </DisclosurePanel>
-            </Disclosure>
-            <Disclosure as="div" style={{ border: 0 }} className="px-6">
-              <DisclosureButton className="group bg-white flex w-full items-center shadow-faq1 rounded-xl justify-between p-6">
-                <span className="text-[1.125em] leading-7 font-[600] text-left text-blackThree group-hover:text-blackThree/80">
-                  Minus qui assumenda minus repellat.
-                </span>
-                <div className="flex items-center">
-                  <ChevronRightIcon className="h-6 w-6 text-blackThree/60 group-hover:text-blackThree/50 group-data-[open]:rotate-90" />
-                </div>
-              </DisclosureButton>
-              <DisclosurePanel className="mt-2 pb-2 text-sm text-blackThree/50">
-                {faqData}
-              </DisclosurePanel>
-            </Disclosure>
-            <Disclosure as="div" style={{ border: 0 }} className="px-6">
-              <DisclosureButton className="group bg-white flex w-full items-center shadow-faq1 rounded-xl justify-between p-6">
-                <span className="text-[1.125em] leading-7 font-[600] text-left text-blackThree group-hover:text-blackThree/80">
-                  Aut odio voluptas sed qui dolores debitis.
-                </span>
-                <div className="flex items-center">
-                  <ChevronRightIcon className="h-6 w-6 text-blackThree/60 group-hover:text-blackThree/50 group-data-[open]:rotate-90" />
-                </div>
-              </DisclosureButton>
-              <DisclosurePanel className="mt-2 pb-2 text-sm text-blackThree/50">
-                {faqData}
-              </DisclosurePanel>
-            </Disclosure>
-            <Disclosure as="div" style={{ border: 0 }} className="px-6">
-              <DisclosureButton className="group bg-white flex w-full items-center shadow-faq1 rounded-xl justify-between p-6">
-                <span className="text-[1.125em] leading-7 font-[600] text-left text-blackThree group-hover:text-blackThree/80">
-                  Placeat natus ad laboriosam voluptatem.
-                </span>
-                <div className="flex items-center">
-                  <ChevronRightIcon className="h-6 w-6 text-blackThree/60 group-hover:text-blackThree/50 group-data-[open]:rotate-90" />
-                </div>
-              </DisclosureButton>
-              <DisclosurePanel className="mt-2 pb-2 text-sm text-blackThree/50">
-                {faqData}
-              </DisclosurePanel>
-            </Disclosure>
-            <Disclosure as="div" style={{ border: 0 }} className="px-6">
-              <DisclosureButton className="bg-white group flex w-full items-center shadow-faq1 rounded-xl justify-between p-6">
-                <span className="text-[1.125em] leading-7 font-[600] text-left text-blackThree group-hover:text-blackThree/80">
-                  Qui nostrum fugit eligendi nemo ex.
-                </span>
-                <div className="flex items-center">
-                  <ChevronRightIcon className="h-6 w-6 text-blackThree/60 group-hover:text-blackThree/50 group-data-[open]:rotate-90" />
-                </div>
-              </DisclosureButton>
-              <DisclosurePanel className="mt-2 pb-2 text-sm text-blackThree/50">
-                {faqData}
-              </DisclosurePanel>
-            </Disclosure>
-            <Disclosure as="div" style={{ border: 0 }} className="px-6">
-              <DisclosureButton className="bg-white group flex w-full items-center shadow-faq1 rounded-xl justify-between p-6">
-                <span className="text-[1.125em] leading-7 font-[600] text-left text-blackThree group-hover:text-blackThree/80">
-                  Neque debitis quas quae magni error minima quae.
-                </span>
-                <div className="flex items-center">
-                  <ChevronRightIcon className="h-6 w-6 text-blackThree/60 group-hover:text-blackThree/50 group-data-[open]:rotate-90" />
-                </div>
-              </DisclosureButton>
-              <DisclosurePanel className="mt-2 pb-2 text-sm text-blackThree/50">
-                {faqData}
-              </DisclosurePanel>
-            </Disclosure>
-            <Disclosure as="div" style={{ border: 0 }} className="px-6">
-              <DisclosureButton className="bg-white group flex w-full  items-center shadow-faq1 rounded-xl justify-between p-6">
-                <span className="text-[1.125em] leading-7 font-[600] text-left text-blackThree group-hover:text-blackThree/80">
-                  Omnis sapiente vel sequi aliquid.
-                </span>
-                <div className="flex items-center">
-                  <ChevronRightIcon className="h-6 w-6 text-blackThree/60 group-hover:text-blackThree/50 group-data-[open]:rotate-90" />
-                </div>
-              </DisclosureButton>
-              <DisclosurePanel className="mt-2 pb-2 text-sm text-blackThree/50">
-                {faqData}
-              </DisclosurePanel>
-            </Disclosure>
-            <Disclosure as="div" style={{ border: 0 }} className="px-6">
-              <DisclosureButton className="bg-white group flex w-full items-center shadow-faq1 rounded-xl justify-between p-6">
-                <span className="text-[1.125em] leading-7 font-[600] text-left text-blackThree group-hover:text-blackThree/80">
-                  Commodi sint veritatis adipisci.
-                </span>
-                <div className="flex items-center">
-                  <ChevronRightIcon className="h-6 w-6 text-blackThree/60 group-hover:text-blackThree/50 group-data-[open]:rotate-90" />
-                </div>
-              </DisclosureButton>
-              <DisclosurePanel className="mt-2 pb-2 text-sm text-blackThree/50">
-                {faqData}
-              </DisclosurePanel>
-            </Disclosure>
-            <Disclosure as="div" style={{ border: 0 }} className="px-6">
-              <DisclosureButton className="bg-white group flex w-full items-center shadow-faq1 rounded-xl justify-between p-6">
-                <span className="text-[1.125em] leading-7 font-[600] text-left text-blackThree group-hover:text-blackThree/80">
-                  Repellendus iure soluta est sunt dolorem aut molestiae modi
-                  ex.
-                </span>
-                <div className="flex items-center">
-                  <ChevronRightIcon className="h-6 w-6 text-blackThree/60 group-hover:text-blackThree/50 group-data-[open]:rotate-90" />
-                </div>
-              </DisclosureButton>
-              <DisclosurePanel className="mt-2 pb-2 text-sm text-blackThree/50">
-                {faqData}
-              </DisclosurePanel>
-            </Disclosure>
+            {faqData.map((faq, index) => (
+              <Disclosure
+                key={index}
+                as="div"
+                className="border-none transition-all"
+              >
+                {({ open }) => (
+                  <>
+                    <DisclosureButton className="group bg-white flex w-full items-center shadow-faq1 rounded-xl justify-between p-6">
+                      <span className="text-[1.125em] leading-7 font-[600] text-left text-blackThree group-hover:text-blackThree/80">
+                        {faq.question}
+                      </span>
+                      <div className="flex items-center">
+                        <ChevronRightIcon
+                          className={`h-6 w-6 text-blackThree/60 group-hover:text-blackThree/50 transition-transform duration-200 ${
+                            open ? "rotate-90" : ""
+                          }`}
+                        />
+                      </div>
+                    </DisclosureButton>
+                    <div className={`overflow-hidden `}>
+                      <DisclosurePanel
+                        transition
+                        className="mt-2 pb-2   text-black px-6 py-4 transition duration-200 ease-in-out   data-[closed]:opacity-0"
+                      >
+                        {faq.answer}
+                      </DisclosurePanel>
+                    </div>
+                  </>
+                )}
+              </Disclosure>
+            ))}
           </div>
         </div>
       </div>
@@ -176,3 +72,35 @@ const Page = () => {
 };
 
 export default Page;
+const faqData = [
+  {
+    question:
+      "What is FoodieFinder, and why is it different from other Food apps?",
+    answer:
+      "Odio ex ducimus consequatur. Voluptatem esse expedita id quam eos et quo earum perferendis. Beatae totam velit ut. Fuga est sint non quidem sed commodi nostrum velit. Laborum est magnam occaecati placeat id a numquam repellendus. Aut ipsa veniam ad debitis dolor. Sed alias placeat fuga. Voluptates voluptatem ea itaque consequatur qui totam et et. Eum quia dolores vel rerum quia. Eum sequi ut quasi. Enim magnam ut labore. Quia libero sit et. Inventore perferendis unde aliquam dolorem debitis aperiam. Maxime et ex eius dolores.",
+  },
+  {
+    question:
+      "What is FoodieFinder, and why is it different from other Food apps?",
+    answer:
+      "Odio ex ducimus consequatur. Voluptatem esse expedita id quam eos et quo earum perferendis. Beatae totam velit ut. Fuga est sint non quidem sed commodi nostrum velit. Laborum est magnam occaecati placeat id a numquam repellendus. Aut ipsa veniam ad debitis dolor. Sed alias placeat fuga. Voluptates voluptatem ea itaque consequatur qui totam et et. Eum quia dolores vel rerum quia. Eum sequi ut quasi. Enim magnam ut labore. Quia libero sit et. Inventore perferendis unde aliquam dolorem debitis aperiam. Maxime et ex eius dolores.",
+  },
+  {
+    question:
+      "What is FoodieFinder, and why is it different from other Food apps?",
+    answer:
+      "Odio ex ducimus consequatur. Voluptatem esse expedita id quam eos et quo earum perferendis. Beatae totam velit ut. Fuga est sint non quidem sed commodi nostrum velit. Laborum est magnam occaecati placeat id a numquam repellendus. Aut ipsa veniam ad debitis dolor. Sed alias placeat fuga. Voluptates voluptatem ea itaque consequatur qui totam et et. Eum quia dolores vel rerum quia. Eum sequi ut quasi. Enim magnam ut labore. Quia libero sit et. Inventore perferendis unde aliquam dolorem debitis aperiam. Maxime et ex eius dolores.",
+  },
+  {
+    question:
+      "What is FoodieFinder, and why is it different from other Food apps?",
+    answer:
+      "Odio ex ducimus consequatur. Voluptatem esse expedita id quam eos et quo earum perferendis. Beatae totam velit ut. Fuga est sint non quidem sed commodi nostrum velit. Laborum est magnam occaecati placeat id a numquam repellendus. Aut ipsa veniam ad debitis dolor. Sed alias placeat fuga. Voluptates voluptatem ea itaque consequatur qui totam et et. Eum quia dolores vel rerum quia. Eum sequi ut quasi. Enim magnam ut labore. Quia libero sit et. Inventore perferendis unde aliquam dolorem debitis aperiam. Maxime et ex eius dolores.",
+  },
+  {
+    question:
+      "What is FoodieFinder, and why is it different from other Food apps?",
+    answer:
+      "Odio ex ducimus consequatur. Voluptatem esse expedita id quam eos et quo earum perferendis. Beatae totam velit ut. Fuga est sint non quidem sed commodi nostrum velit. Laborum est magnam occaecati placeat id a numquam repellendus. Aut ipsa veniam ad debitis dolor. Sed alias placeat fuga. Voluptates voluptatem ea itaque consequatur qui totam et et. Eum quia dolores vel rerum quia. Eum sequi ut quasi. Enim magnam ut labore. Quia libero sit et. Inventore perferendis unde aliquam dolorem debitis aperiam. Maxime et ex eius dolores.",
+  },
+];
