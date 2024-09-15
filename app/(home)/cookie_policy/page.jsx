@@ -6,7 +6,7 @@ import React, { useEffect } from "react";
 import { setActivePage } from "../../../redux/slices/headerSlice";
 import { useDispatch } from "react-redux";
 
-const page = () => {
+const Page = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -129,4 +129,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
