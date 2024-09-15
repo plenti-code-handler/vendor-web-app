@@ -8,7 +8,15 @@ import { rightArrowIcon } from "../../svgs";
 import { setActivePage } from "../../redux/slices/headerSlice";
 import { setOpenDrawer } from "../../redux/slices/contactUserSlice";
 import LanguageDropdown from "../dropdowns/LanguageDropdown";
-import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+import {
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuItems,
+  Popover,
+  PopoverButton,
+  PopoverPanel,
+} from "@headlessui/react";
 import { ChevronDownIcon, PlusIcon } from "@heroicons/react/16/solid";
 import { MinusIcon } from "@heroicons/react/20/solid";
 
@@ -90,14 +98,10 @@ const LandingHeader = () => {
               >
                 Home
               </Link>
-              <Menu
-                as="div"
-                className="relative inline-block  lg:px-[2%]  w-full lg:w-auto py-[1%]"
-              >
-                <MenuButton
-                  as="button"
+              <div className="relative inline-block group lg:px-[2%]  w-full lg:w-auto py-[1%]">
+                <button
                   onClick={handleMenuClick}
-                  className="truncate lg:text-[14px] w-full  lg:w-fit font-semibold leading-6 transition-all rounded-md flex items-center justify-between lg:justify-center   data-[focus]:outline-1 data-[focus]:outline-white"
+                  className="truncate lg:text-[14px] w-full lg:w-fit font-semibold leading-6 transition-all rounded-md flex items-center justify-between lg:justify-center   data-[focus]:outline-1 data-[focus]:outline-white"
                 >
                   Business Solutions
                   {isOpen ? (
@@ -106,54 +110,50 @@ const LandingHeader = () => {
                     <PlusIcon className="size-6 fill-black lg:hidden block" />
                   )}
                   <ChevronDownIcon className="size-4 fill-black lg:block hidden" />
-                </MenuButton>
+                </button>
 
                 {/* Mobile Drop Down */}
-                <MenuItems
-                  as="div"
-                  className="block lg:hidden absolute top-full w-52 border border-white/5 bg-white p-1 text-sm/6 text-black mt-1 focus:outline-none z-[10000] transition duration-100 ease-out"
-                >
-                  <MenuItem as="div">
-                    <Link
-                      href="/surprise"
-                      className="group flex w-full items-center hover:text-mainLight gap-2 py-1.5 px-3"
-                    >
-                      Surprise Bags
-                    </Link>
-                  </MenuItem>
-                  <MenuItem as="div">
-                    <Link
-                      href="/large"
-                      className="group flex w-full items-center hover:text-mainLight gap-2 py-1.5 px-3"
-                    >
-                      Small & Large Bags
-                    </Link>
-                  </MenuItem>
-                </MenuItems>
+                {isOpen && (
+                  <div className="block lg:hidden w-52 border border-white/5 bg-white p-1 text-sm/6 text-black mt-1 focus:outline-none z-[10000] transition duration-100 ease-out">
+                    <div>
+                      <Link
+                        href="/surprise"
+                        className="group flex w-full items-center hover:text-mainLight gap-2 py-1.5 px-3"
+                      >
+                        Surprise Bags
+                      </Link>
+                    </div>
+                    <div>
+                      <Link
+                        href="/small_medium_bags"
+                        className="group flex w-full items-center hover:text-mainLight gap-2 py-1.5 px-3"
+                      >
+                        Small & Large Bags
+                      </Link>
+                    </div>
+                  </div>
+                )}
 
                 {/* Desktop Drop Down */}
-                <MenuItems
-                  as="div"
-                  className="hidden lg:block absolute top-full left-0 w-52 mt-2 origin-top-right border drop-shadow-custom border-white/5 bg-white p-1 text-sm/6 text-black z-[10000] focus:outline-none transition duration-100 ease-out"
-                >
-                  <MenuItem as="div">
+                <div className="hidden absolute top-full left-0 w-52 origin-top-right border drop-shadow-custom border-white/5 bg-white p-1 text-sm/6 text-black z-[10000] focus:outline-none transition duration-100 ease-out lg:group-hover:block">
+                  <div>
                     <Link
                       href="/surprise"
                       className="group flex w-full items-center hover:text-mainLight gap-2 py-1.5 px-3"
                     >
-                      Surprise Bags
+                      Surprise Bag
                     </Link>
-                  </MenuItem>
-                  <MenuItem as="div">
+                  </div>
+                  <div>
                     <Link
-                      href="/large"
+                      href="/small_medium_bags"
                       className="group flex w-full items-center hover:text-mainLight gap-2 py-1.5 px-3"
                     >
-                      Small & Large Bags
+                      Small & Large Bag
                     </Link>
-                  </MenuItem>
-                </MenuItems>
-              </Menu>
+                  </div>
+                </div>
+              </div>
 
               <Link
                 href="/faqs"

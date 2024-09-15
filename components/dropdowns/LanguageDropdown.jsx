@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { arrowDown1, arrowDown2 } from "../../svgs";
 
-const LanguageDropdown = ({ background, textColor, borderColor }) => {
+const LanguageDropdown = ({ background, textColor, borderColor, width }) => {
   const [selectedLanguage, setSelectedLanguage] = useState("");
 
   useEffect(() => {
@@ -29,7 +29,11 @@ const LanguageDropdown = ({ background, textColor, borderColor }) => {
 
   return (
     <form className="">
-      <div className="relative lg:w-[160px] h-[38px]">
+      <div
+        className={`relative ${
+          width === "small" ? "lg:w-[120px]" : "lg:w-[160px]"
+        }  h-[38px]`}
+      >
         <select
           id="language-select"
           value={selectedLanguage}

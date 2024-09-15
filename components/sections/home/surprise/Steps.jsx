@@ -69,7 +69,7 @@ const CustomPrevArrow = ({ onClick }) => (
   </button>
 );
 
-export default function FoodieFinderCarousel() {
+export default function FoodieFinderCarousel({ image }) {
   const sliderRef = React.useRef(null);
 
   const settings = {
@@ -117,7 +117,7 @@ export default function FoodieFinderCarousel() {
       <div className="w-full md:w-1/2 ">
         <img
           className="rounded-lg"
-          src="/Sqaures-image.png"
+          src={image || "/Sqaures-image.png"}
           alt="App Feature"
         />
       </div>

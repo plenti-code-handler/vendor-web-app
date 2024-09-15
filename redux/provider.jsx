@@ -35,7 +35,15 @@ const Providers = ({ children }) => {
     pathname === "/privacy" ||
     pathname === "/terms" ||
     pathname === "/contact_us" ||
-    pathname === "/surprise"
+    pathname === "/surprise" ||
+    pathname === "/small_medium_bags" ||
+    pathname === "/cookie_policy" ||
+    pathname === "/deliever_return_policy" ||
+    pathname === "/payment_terms" ||
+    pathname === "/ugc_policy" ||
+    pathname === "/security_policy" ||
+    pathname === "/accessibility_policy" ||
+    pathname === "/ethical_policy"
   ) {
     return (
       <Provider store={store}>

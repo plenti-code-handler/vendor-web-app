@@ -52,49 +52,130 @@ const Footer = () => {
       </div>
       <div className="bg-blackBtn px-[5%] pt-[5%] pb-6">
         <div className="flex flex-col gap-5 justify-between flex-wrap sm:flex-row">
-          <div className="">
+          <div className="flex-1">
             <div className="flex mb-5 gap-3">
               <img src="/logo-without-text.png" />
               <img src="/logo-white.png" />
             </div>
-            <ul className="text-white flex flex-col gap-3 text-[400] text-[1em]">
-              <li>
-                <Link href="/" className="flex items-center gap-5">
-                  {horizontalChecklistIcon}
-                  <span>Home</span>
-                </Link>
-              </li>
-              <li>
-                <Link href="/surprise" className="flex items-center  gap-5">
-                  {horizontalChecklistIcon}
-                  <span>Surprise Bags</span>
-                </Link>
-              </li>
-              <li>
-                <Link href="/about_us" className="flex items-center  gap-5">
-                  {horizontalChecklistIcon}
-                  <span>Small & Medium Bags</span>
-                </Link>
-              </li>
-              <li>
-                <Link href="/faqs" className="flex items-center  gap-5">
-                  {horizontalChecklistIcon}
-                  <span>FAQs</span>
-                </Link>
-              </li>
-              <li>
-                <Link href="/about_us" className="flex items-center  gap-5">
-                  {horizontalChecklistIcon}
-                  <span>About Us</span>
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact_us" className="flex items-center gap-5">
-                  {horizontalChecklistIcon}
-                  <span>Contact Us</span>
-                </Link>
-              </li>
-            </ul>
+            <div className="flex flex-col lg:flex-row gap-3 lg:justify-between">
+              <ul className="text-white flex flex-col gap-3 text-[400] text-[1em]">
+                <li>
+                  <Link href="/" className="flex items-center gap-5">
+                    {horizontalChecklistIcon}
+                    <span>Home</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/surprise" className="flex items-center  gap-5">
+                    {horizontalChecklistIcon}
+                    <span>Surprise Bags</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/small_medium_bags"
+                    className="flex items-center  gap-5"
+                  >
+                    {horizontalChecklistIcon}
+                    <span>Small & Medium Bags</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/faqs" className="flex items-center  gap-5">
+                    {horizontalChecklistIcon}
+                    <span>FAQs</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/about_us" className="flex items-center  gap-5">
+                    {horizontalChecklistIcon}
+                    <span>About Us</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/contact_us" className="flex items-center gap-5">
+                    {horizontalChecklistIcon}
+                    <span>Contact Us</span>
+                  </Link>
+                </li>
+              </ul>
+              <ul className="text-white flex flex-col gap-3 text-[400] text-[1em]">
+                <li>
+                  <Link href="/privacy" className="flex items-center gap-5">
+                    {horizontalChecklistIcon}
+                    <span>Privacy Policy</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/terms" className="flex items-center  gap-5">
+                    {horizontalChecklistIcon}
+                    <span>Terms & Conditions</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/cookie_policy"
+                    className="flex items-center  gap-5"
+                  >
+                    {horizontalChecklistIcon}
+                    <span>Cookie Policy</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/deliever_return_policy"
+                    className="flex items-center  gap-5"
+                  >
+                    {horizontalChecklistIcon}
+                    <span>Delivery and Return Policy</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/payment_terms"
+                    className="flex items-center  gap-5"
+                  >
+                    {horizontalChecklistIcon}
+                    <span>Payment Terms</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/ugc_policy" className="flex items-center gap-5">
+                    {horizontalChecklistIcon}
+                    <span>UGC Policy</span>
+                  </Link>
+                </li>
+              </ul>
+              <ul className="text-white flex flex-col gap-3 text-[400] text-[1em]">
+                <li>
+                  <Link
+                    href="/security_policy"
+                    className="flex items-center  gap-5"
+                  >
+                    {horizontalChecklistIcon}
+                    <span>Security Policy</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/accessibility_policy"
+                    className="flex items-center  gap-5"
+                  >
+                    {horizontalChecklistIcon}
+                    <span>Accessibility Policy</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/ethical_policy"
+                    className="flex items-center  gap-5"
+                  >
+                    {horizontalChecklistIcon}
+                    <span>Ethical Policy</span>
+                  </Link>
+                </li>
+              </ul>
+            </div>
           </div>
           <div className="text-white pl-8 flex flex-col gap-4 border-white border-l">
             <h2 className="text-[1.25em] text-[400]">Connect with us</h2>

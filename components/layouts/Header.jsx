@@ -25,6 +25,14 @@ const Header = () => {
     "/terms",
     "/contact_us",
     "/surprise",
+    "/small_medium_bags",
+    "/cookie_policy",
+    "/deliever_return_policy",
+    "/payment_terms",
+    "/ugc_policy",
+    "/security_policy",
+    "/accessibility_policy",
+    "/ethical_policy",
   ];
   const authRoutes = [
     "/awaiting",

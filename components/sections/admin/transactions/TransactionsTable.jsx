@@ -146,6 +146,9 @@ const TransactionsTable = () => {
                   Amount Requested
                 </th>
                 <th className="pb-[8px] px-2 pt-[18px] text-center ">
+                  Account Holder Name
+                </th>
+                <th className="pb-[8px] px-2 pt-[18px] text-center ">
                   Account Number
                 </th>
                 <th className="pb-[8px] px-2 pt-[18px] text-center">
@@ -182,6 +185,11 @@ const TransactionsTable = () => {
                     <td className="truncate text-center px-2">
                       <p className="text-sm font-semibold text-grayThree">
                         € {withdrawal.amount}
+                      </p>
+                    </td>
+                    <td className="truncate text-center px-2">
+                      <p className="text-sm font-semibold text-grayThree">
+                        {withdrawal.accountHolder}
                       </p>
                     </td>
                     <td className="truncate text-center px-2">

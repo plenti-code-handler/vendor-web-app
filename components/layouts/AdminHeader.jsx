@@ -10,6 +10,7 @@ import { appLogoUrl } from "../../lib/constant_data";
 import { getUserLocal, logoutUser } from "../../redux/slices/loggedInUserSlice";
 import { auth } from "../../app/firebase/config";
 import { useRouter } from "next/navigation";
+import LanguageDropdown from "../dropdowns/LanguageDropdown";
 
 const AdminHeader = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -42,7 +43,7 @@ const AdminHeader = () => {
   return (
     <>
       <header className="bg-white border-b-2 xl:px-[6%] justify-around">
-        <div className="mx-auto flex max-w-8xl items-center justify-between p-2">
+        <div className="mx-auto flex items-center justify-between p-2">
           <img
             alt="Foodie Finder Logo"
             src={appLogoUrl}
@@ -97,30 +98,45 @@ const AdminHeader = () => {
                   </div>
                 </Link>
               ))}
+              <div className="w-full lg:hidden">
+                <LanguageDropdown
+                  background="white"
+                  textColor="black"
+                  borderColor="grayLight"
+                />
+              </div>
             </div>
           </nav>
-          {/* User Profile Section */}
-          <div className="hidden lg:flex border-2 border-dotted	rounded-xl min-w-[220px] justify-between p-2 h-[66px]">
-            <div className="flex gap-2">
-              <img
-                alt="User"
-                src={user.imageUrl || "/User.png"}
-                className="lg:h-11 lg:w-11 rounded-md hover:cursor-pointer focus:outline-none"
-              />
-              <div className="flex flex-col">
+          <div className="hidden lg:flex items-center gap-5">
+            <LanguageDropdown
+              background="white"
+              textColor="black"
+              borderColor="grayLight"
+              width="small"
+            />
+            {/* User Profile Section */}
+            <div className="hidden lg:flex items-center border-2 min-w-[110px] border-dotted rounded-xl justify-between p-2">
+              <Link href="/admin/profile">
+                <img
+                  alt="User"
+                  src={user.imageUrl || "/User.png"}
+                  className="lg:h-11 lg:w-11 rounded-md hover:cursor-pointer focus:outline-none"
+                />
+              </Link>
+              {/* <div className="flex flex-col">
                 <p className="text-[14px] font-semibold text-black">
                   {user.name}
                 </p>
                 <p className="text-[12px] font-semibold text-gray-400">Admin</p>
-              </div>
+              </div> */}
+              <button
+                onClick={handleLogout}
+                className="p-2 transition-colors duration-200 ease-in-out hover:bg-gray-200 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2 rounded-lg"
+                title="Logout"
+              >
+                {logoutIconAdminSvg}
+              </button>
             </div>
-            <button
-              onClick={handleLogout}
-              className="p-2 transition-colors duration-200 ease-in-out hover:bg-gray-200 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2 rounded-lg"
-              title="Logout"
-            >
-              {logoutIconAdminSvg}
-            </button>
           </div>
         </div>
       </header>
