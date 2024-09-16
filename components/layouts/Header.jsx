@@ -19,7 +19,7 @@ const Header = () => {
   // Define routes based on conditions
   const landingRoutes = [
     "/",
-    "/about_us",
+    "/about_app",
     "/faqs",
     "/privacy",
     "/terms",

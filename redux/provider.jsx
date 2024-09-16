@@ -30,7 +30,7 @@ const Providers = ({ children }) => {
     );
   } else if (
     pathname === "/" ||
-    pathname === "/about_us" ||
+    pathname === "/about_app" ||
     pathname === "/faqs" ||
     pathname === "/privacy" ||
     pathname === "/terms" ||

@@ -97,7 +97,7 @@ const Footer = () => {
                 </li>
                 <li>
                   <Link
-                    href="/about_us"
+                    href="/about_app"
                     className="flex items-center gap-5 hover:text-main transition-colors duration-300 w-fit"
                   >
                     {horizontalChecklistIcon}

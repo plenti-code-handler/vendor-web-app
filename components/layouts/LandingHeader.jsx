@@ -233,7 +233,7 @@ const LandingHeader = () => {
               </Link>
 
               <Link
-                href="/about_us"
+                href="/about_app"
                 className={`lg:text-[14px] font-semibold leading-6 transition-all rounded-md flex items-center justify-start lg:justify-center w-full lg:w-auto  lg:px-[2%]   py-[1%]  ${
                   activePage === "About Us"
                     ? "text-mainLight"
