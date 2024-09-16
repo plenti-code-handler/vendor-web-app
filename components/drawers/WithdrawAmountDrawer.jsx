@@ -5,6 +5,7 @@ import {
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
+import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import { setOpenDrawer } from "../../redux/slices/withdrawAmountSlice";
 import { setOpenDrawer as setOpenSuccessDrawer } from "../../redux/slices/withdrawSuccessSlice";
@@ -46,6 +47,12 @@ const WithdrawAmountDrawer = ({ balance, setBalance, setWithdrawals }) => {
     setLocalUser(user);
   }, []);
 
+  useEffect(() => {
+    if (open) {
+      setAmount(""); // Reset amount when the drawer opens
+    }
+  }, [open]);
+
   const handleContinue = async () => {
     if (!isInsufficient && amount !== 0) {
       if (localUser) {
@@ -55,19 +62,37 @@ const WithdrawAmountDrawer = ({ balance, setBalance, setWithdrawals }) => {
 
           // Get the required details
           const vendorId = localUser.uid; // Assuming vendorId is the current user's ID
-          const iban = localUser.bankDetails.iban; // Replace with the actual variable holding the IBAN
-          const holderName = localUser.bankDetails.accountHolder; // Replace with the actual variable holding the holder name
 
-          // Create a new withdrawal document
-          await addDoc(collection(db, "withdrawals"), {
-            vendorId: vendorId,
-            createdAt: Timestamp.now(),
-            amount: Number(amount),
-            iban: iban,
-            accountHolder: holderName,
-            withdrawalno: withdrawalNo,
-            status: "pending",
-          });
+          const userDocRef1 = doc(db, "users", vendorId);
+
+          const userSnapshot = await getDoc(userDocRef1);
+
+          if (userSnapshot.exists()) {
+            const userData = userSnapshot.data();
+
+            const iban = userData.bankDetails?.iban;
+            const holderName = userData.bankDetails?.accountHolder;
+
+            if (!iban || !holderName) {
+              toast.error("Add your bank details to withdraw money");
+              throw new Error("Bank details not found for the user");
+            }
+
+            // Create a new withdrawal document
+            await addDoc(collection(db, "withdrawals"), {
+              vendorId: vendorId,
+              createdAt: Timestamp.now(),
+              amount: String(amount), // Convert the amount to a string
+              iban: iban,
+              accountHolder: holderName,
+              withdrawalno: withdrawalNo,
+              status: "pending",
+            });
+
+            console.log("Withdrawal document successfully created!");
+          } else {
+            console.error("No such user!");
+          }
 
           // Create a query to get withdrawals where vendorId matches the current user's ID
           const q = query(
@@ -96,11 +121,11 @@ const WithdrawAmountDrawer = ({ balance, setBalance, setWithdrawals }) => {
 
             // Subtract the amount from the current revenue
             const updatedRevenue = currentRevenue - Number(amount);
-            setBalance(updatedRevenue);
+            setBalance(updatedRevenue.toString());
 
             // Update the revenue in the user's document
             await updateDoc(userDocRef, {
-              revenue: updatedRevenue,
+              revenue: updatedRevenue.toString(),
             });
 
             // Dispatch actions to close the current drawer and open the success drawer
@@ -121,40 +146,45 @@ const WithdrawAmountDrawer = ({ balance, setBalance, setWithdrawals }) => {
   };
 
   useEffect(() => {
+    // Fetch IBAN whenever the drawer opens
     const fetchIban = async () => {
-      try {
-        const user = auth.currentUser;
+      if (open) {
+        // Only fetch if the drawer is open
+        try {
+          const user = auth.currentUser;
 
-        console.log(user);
+          console.log(user);
 
-        if (user) {
-          // Get a reference to the user's document
-          const userDocRef = doc(collection(db, "users"), user.uid);
-          const userDoc = await getDoc(userDocRef);
+          if (user) {
+            // Get a reference to the user's document
+            const userDocRef = doc(collection(db, "users"), user.uid);
+            const userDoc = await getDoc(userDocRef);
 
-          if (userDoc.exists()) {
-            const userData = userDoc.data();
-            setBalance(userData.revenue);
+            if (userDoc.exists()) {
+              const userData = userDoc.data();
+              setBalance(userData.revenue);
 
-            if (userData.bankDetails.iban) {
-              setIban(userData.bankDetails?.iban);
+              if (userData.bankDetails?.iban) {
+                setIban(userData.bankDetails?.iban);
+              } else {
+                setIban(""); // Handle case where no IBAN is found
+              }
             } else {
+              console.error("No such document!");
             }
           } else {
-            console.error("No such document!");
+            console.error("No user is currently logged in");
           }
-        } else {
-          console.error("No user is currently logged in");
+        } catch (error) {
+          console.error("Error fetching IBAN: ", error);
+        } finally {
+          setLoading(false);
         }
-      } catch (error) {
-        console.error("Error fetching IBAN: ", error);
-      } finally {
-        setLoading(false);
       }
     };
 
     fetchIban();
-  }, []);
+  }, [open]); // Trigger the effect when `open` state changes
 
   const formatIban = (iban) => {
     return iban.replace(/(.{4})/g, "$1 ").trim();
@@ -188,7 +218,7 @@ const WithdrawAmountDrawer = ({ balance, setBalance, setWithdrawals }) => {
                   </DialogTitle>
                   <hr className="my-3 w-[90%] border-gray-300 ml-8" />
                   <div className="flex flex-col mt-3 pb-3 flex-1 px-4 sm:px-6 space-y-4 items-center gap-5">
-                    <div className="flex justify-between items-center bg-[#8adbbf] shadow-lg transform translate-y-[-5px] p-2 rounded-lg mt-2 lg:w-[80%]">
+                    <div className="flex justify-between items-center bg-[#8adbbf] shadow-lg transform translate-y-[-5px] p-3 rounded-lg mt-2 lg:w-[80%]">
                       <div className="flex gap-2 items-center">
                         {/* <span className="mt-1">{payPalSvg}</span> */}
                         <p className="text-white text-[16px] font-medium">
@@ -198,10 +228,8 @@ const WithdrawAmountDrawer = ({ balance, setBalance, setWithdrawals }) => {
                     </div>
 
                     <div className="flex flex-col items-center">
-                      <p className="text-amountStatus text-[14px]">
-                        Current Balance
-                      </p>
-                      <p className="text-amountStatus text-[16px] font-bold">
+                      <p className="text-white text-[14px]">Current Balance</p>
+                      <p className="text-white text-[16px] font-bold">
                         € {Number(balance).toFixed(2)}
                       </p>
                     </div>
@@ -211,7 +239,14 @@ const WithdrawAmountDrawer = ({ balance, setBalance, setWithdrawals }) => {
                       <input
                         type="number"
                         value={amount}
-                        onChange={(e) => setAmount(e.target.value)}
+                        onChange={(e) => {
+                          const value = e.target.value;
+
+                          // Allow only up to 2 decimal places
+                          if (value.match(/^\d*\.?\d{0,2}$/)) {
+                            setAmount(value);
+                          }
+                        }}
                         className="block placeholder-white/50 text-[50px] w-full rounded-lg border-none py-3 px-3 text-sm text-white focus:outline-none"
                         style={{
                           background:

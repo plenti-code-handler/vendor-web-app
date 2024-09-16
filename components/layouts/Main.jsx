@@ -5,7 +5,7 @@ import Drawers from "./Drawers";
 
 const Main = ({ children }) => {
   return (
-    <main className="flex flex-col justify-center lg:px-20 lg:py-5 lg:mx-10">
+    <main className="flex flex-col justify-center md:px-10 md:py-2   lg:px-20 lg:py-5  ">
       <BreadCrump />
       {children}
       <Drawers />

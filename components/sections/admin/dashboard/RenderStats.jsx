@@ -45,7 +45,8 @@ const RenderStats = () => {
         // Query the "users" collection for documents where "role" is "vendor"
         const vendorQuery = query(
           collection(db, "users"),
-          where("role", "==", "vendor")
+          where("role", "==", "vendor"),
+          where("status", "==", "accepted")
         );
         const vendorSnapshot = await getDocs(vendorQuery);
 

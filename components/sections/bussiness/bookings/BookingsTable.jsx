@@ -35,7 +35,7 @@ const BookingsTable = () => {
     const docRef = doc(db, "bookings", bookingId);
     await updateDoc(docRef, {
       status: newStatus,
-      ispic: true,  
+      ispic: true,
     });
     const colRef = collection(db, "bookings");
     const q = query(
@@ -269,7 +269,7 @@ const BookingsTable = () => {
         q = query(
           colRef,
           where("vendorid", "==", user.uid),
-          orderBy("time"),
+          // orderBy("time"),
           startAfter(lastVisible),
           limit(10)
         );
@@ -278,7 +278,7 @@ const BookingsTable = () => {
         q = query(
           colRef,
           where("vendorid", "==", user.uid),
-          orderBy("time"),
+          // orderBy("time"),
           limit(10)
         );
       }
@@ -371,13 +371,12 @@ const BookingsTable = () => {
                     key={index}
                     className="cursor-pointer border-b-[1px] border-[#E4E4E4] border-dashed hover:bg-[#f8f7f7]"
                   >
-                    <td className="truncate pl-2 lg:pl-[5%] pr-2 w-[14.28%]">
+                    <td className="truncate pl-2 lg:pl-[5%] pr-6   md:pr-2 w-[14.28%]">
                       <div className="py-3">
                         <div className="flex flex-row items-center gap-x-2">
                           <div className="flex h-[40px] w-[40px] items-center justify-center overflow-hidden rounded-full">
                             <Image
                               src={booking.user.imageUrl || "/User.png"}
-                              alt="GetSpouse Logo"
                               className="h-full w-full object-cover"
                               width={40}
                               height={40}
@@ -385,8 +384,10 @@ const BookingsTable = () => {
                             />
                           </div>
                           <div className="flex flex-col gap-y-1">
-                            <p className="text-sm font-medium">
-                              {booking.user.username}
+                            <p className="text-sm font-semibold text-grayThree truncate overflow-hidden whitespace-nowrap  ">
+                              {booking.user.username.length > 20
+                                ? `${booking.user.username.slice(0, 20)}...`
+                                : booking.user.username}
                             </p>
                           </div>
                         </div>

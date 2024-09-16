@@ -5,7 +5,7 @@ import { RevenueProvider } from "../../../../contexts/RevenueContext";
 
 const Page = () => {
   return (
-    <div className="flex flex-col md:flex-row gap-10">
+    <div className="flex flex-col md:flex-row gap-0 md:gap-10">
       <ProfileCard />
       <RevenueProvider>
         <Transactions />

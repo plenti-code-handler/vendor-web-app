@@ -94,13 +94,12 @@ const CustomersTable = ({
                 className="cursor-pointer border-b-[1px] border-[#E4E4E4] border-dashed hover:bg-[#f8f7f7]"
                 onClick={() => handleRowClick(user)}
               >
-                <td className="truncate pl-2 pr-2 w-[18.00%]">
+                <td className="truncate pl-2 pr-6   md:pr-2 w-[18.00%]">
                   <div className="py-3">
                     <div className="flex flex-row items-center gap-x-2">
                       <div className="flex h-[40px] w-[40px] items-center justify-center overflow-hidden rounded-full">
                         <Image
                           src={user.imageUrl || "/User.png"}
-                          alt="GetSpouse Logo"
                           className="h-full w-full object-cover"
                           width={40}
                           height={40}

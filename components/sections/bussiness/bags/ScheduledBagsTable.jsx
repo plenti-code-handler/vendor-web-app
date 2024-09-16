@@ -34,7 +34,6 @@ const ScheduledBagsTable = () => {
                     <div className="flex h-[40px] w-[40px] items-center justify-center overflow-hidden rounded-full">
                       <Image
                         src="/User.png"
-                        alt="GetSpouse Logo"
                         className="h-full w-full object-cover"
                         width={40}
                         height={40}

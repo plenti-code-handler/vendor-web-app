@@ -101,11 +101,10 @@ const TransactionsTable = () => {
 
       if (userDoc.exists()) {
         const userData = userDoc.data();
-        const currentRevenue = userData.revenue || 0;
+        const currentRevenue = parseFloat(userData.revenue) || 0;
 
-        // Add the withdrawal amount to the user's revenue
         await updateDoc(userRef, {
-          revenue: currentRevenue + withdrawal.amount,
+          revenue: (currentRevenue + Number(withdrawal.amount)).toFixed(2),
         });
 
         console.log("Withdrawal rejected and user revenue updated.");
@@ -114,6 +113,45 @@ const TransactionsTable = () => {
       }
     } catch (error) {
       console.error("Error updating withdrawal status or user revenue:", error);
+    }
+    try {
+      setLoader(true);
+      const colRef = collection(db, "withdrawals");
+      const q = query(colRef, where("status", "==", "pending"), limit(10));
+
+      const allWithdrawalsSnapshot = await getDocs(q);
+      const withdrawalsData = await Promise.all(
+        allWithdrawalsSnapshot.docs.map(async (entry) => {
+          const withdrawal = entry.data();
+          const id = entry.id;
+
+          // Fetch user data based on the user ID in the withdrawal
+          const userDocRef = doc(db, "users", withdrawal.vendorId); // Assuming withdrawal.uid is the field for user ID
+          const userDocSnap = await getDoc(userDocRef);
+
+          if (userDocSnap.exists()) {
+            const userData = userDocSnap.data();
+            return {
+              id,
+              ...withdrawal,
+              user: userData, // Merge user data with booking
+            };
+          } else {
+            console.log("User data not found for UID:", withdrawal.uid);
+            return withdrawal; // Return booking without user data if not found
+          }
+        })
+      );
+      const lastDoc =
+        allWithdrawalsSnapshot.docs[allWithdrawalsSnapshot.docs.length - 1];
+
+      setWithdrawals(withdrawalsData);
+      setFilteredWithdrawals(withdrawalsData);
+      setLastVisible(lastDoc);
+    } catch (error) {
+      console.error("Error fetching withdrawals:", error);
+    } finally {
+      setLoader(false);
     }
   };
 
@@ -127,6 +165,46 @@ const TransactionsTable = () => {
       console.log("Withdrawal approved and status updated to paid.");
     } catch (error) {
       console.error("Error updating withdrawal status:", error);
+    }
+
+    try {
+      setLoader(true);
+      const colRef = collection(db, "withdrawals");
+      const q = query(colRef, where("status", "==", "pending"), limit(10));
+
+      const allWithdrawalsSnapshot = await getDocs(q);
+      const withdrawalsData = await Promise.all(
+        allWithdrawalsSnapshot.docs.map(async (entry) => {
+          const withdrawal = entry.data();
+          const id = entry.id;
+
+          // Fetch user data based on the user ID in the withdrawal
+          const userDocRef = doc(db, "users", withdrawal.vendorId); // Assuming withdrawal.uid is the field for user ID
+          const userDocSnap = await getDoc(userDocRef);
+
+          if (userDocSnap.exists()) {
+            const userData = userDocSnap.data();
+            return {
+              id,
+              ...withdrawal,
+              user: userData, // Merge user data with booking
+            };
+          } else {
+            console.log("User data not found for UID:", withdrawal.uid);
+            return withdrawal; // Return booking without user data if not found
+          }
+        })
+      );
+      const lastDoc =
+        allWithdrawalsSnapshot.docs[allWithdrawalsSnapshot.docs.length - 1];
+
+      setWithdrawals(withdrawalsData);
+      setFilteredWithdrawals(withdrawalsData);
+      setLastVisible(lastDoc);
+    } catch (error) {
+      console.error("Error fetching withdrawals:", error);
+    } finally {
+      setLoader(false);
     }
   };
 
@@ -167,7 +245,6 @@ const TransactionsTable = () => {
                           <div className="flex h-[40px] w-[40px] items-center justify-center overflow-hidden rounded-full">
                             <Image
                               src={withdrawal.user.imageUrl || "/User.png"}
-                              alt="GetSpouse Logo"
                               className="h-full w-full object-cover"
                               width={40}
                               height={40}
@@ -281,7 +358,7 @@ const TransactionsTable = () => {
                     <div className="flex h-[40px] w-[40px] items-center justify-center overflow-hidden rounded-full">
                       <Image
                         src="/User.png"
-                        alt="GetSpouse Logo"
+            
                         className="h-full w-full object-cover"
                         width={40}
                         height={40}

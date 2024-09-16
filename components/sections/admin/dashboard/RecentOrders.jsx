@@ -35,7 +35,7 @@ const RecentOrders = () => {
         const q = query(
           colRef,
           // orderBy("time"),
-          limit(10)
+          limit(5)
         );
 
         const allBookingsSnapshot = await getDocs(q);
@@ -109,7 +109,7 @@ const RecentOrders = () => {
           colRef,
           // orderBy("time"),
           startAfter(lastVisible), // Start after the last visible document
-          limit(10) // Fetch the next 10 bookings
+          limit(5) // Fetch the next 10 bookings
         );
 
         const newBookingsSnapshot = await getDocs(q);
@@ -187,13 +187,12 @@ const RecentOrders = () => {
                   key={index}
                   className="cursor-pointer border-b-[1px] border-[#E4E4E4] border-dashed hover:bg-[#f8f7f7]"
                 >
-                  <td className="truncate pl-2 pr-2 w-[17.00%]">
+                  <td className="truncate pr-6   md:pr-2  pl-2 w-[17.00%]">
                     <div className="py-3">
                       <div className="flex flex-row items-center gap-x-2">
                         <div className="flex h-[40px] w-[40px] items-center justify-center overflow-hidden rounded-full">
                           <Image
                             src={booking.user.imageUrl || "./User.png"}
-                            alt="GetSpouse Logo"
                             className="h-full w-full object-cover"
                             width={40}
                             height={40}
@@ -201,29 +200,50 @@ const RecentOrders = () => {
                           />
                         </div>
                         <div className="flex flex-col gap-y-1">
-                          <p className="text-sm font-medium">
-                            {booking.user.username}
+                          <p className="text-sm font-medium truncate overflow-hidden whitespace-nowrap  ">
+                            {booking.username.length > 15
+                              ? `${booking.username.slice(0, 15)}...`
+                              : booking.username}
                           </p>
                         </div>
                       </div>
                     </div>
                   </td>
-                  <td className="truncate pl-2 pr-2 w-[17.00]">
+                  <td className="truncate pl-2 pr-6 md:pr-2 w-[17.00]">
                     <div className="py-3">
                       <div className="flex flex-row items-center gap-x-2">
                         <div className="flex h-[40px] w-[40px] items-center justify-center overflow-hidden rounded-full">
-                          <Image
-                            src={booking.bag.img || "/User.png"}
-                            alt="GetSpouse Logo"
-                            className="h-full w-full object-cover"
-                            width={40}
-                            height={40}
-                            priority
-                          />
+                          {booking.size === "Surprise" ? (
+                            <Image
+                              src={`/Round-${booking.size}.png`}
+                              className="h-full w-full object-cover"
+                              width={40}
+                              height={40}
+                              priority
+                            />
+                          ) : booking.size === "Large" ? (
+                            <Image
+                              src={`/Round-${booking.size}.png`}
+                              className="h-full w-full object-cover"
+                              width={40}
+                              height={40}
+                              priority
+                            />
+                          ) : booking.size === "Small" ? (
+                            <Image
+                              src={`/Round-${booking.size}.png`}
+                              className="h-full w-full object-cover"
+                              width={40}
+                              height={40}
+                              priority
+                            />
+                          ) : null}
                         </div>
                         <div className="flex flex-col gap-y-1">
-                          <p className="text-sm font-medium">
-                            {booking.bag.title}
+                          <p className="text-sm font-medium truncate overflow-hidden whitespace-nowrap  ">
+                            {booking.bag.title.length > 15
+                              ? `${booking.bag.title.slice(0, 15)}...`
+                              : booking.bag.title}
                           </p>
                         </div>
                       </div>

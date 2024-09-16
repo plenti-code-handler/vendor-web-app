@@ -21,6 +21,22 @@ const BussinessHeader = () => {
 
   const router = useRouter();
 
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkIsMobile = () => {
+      if (typeof window !== "undefined") {
+        setIsMobile(window.innerWidth < 1024);
+      }
+    };
+
+    checkIsMobile();
+
+    window.addEventListener("resize", checkIsMobile);
+
+    return () => window.removeEventListener("resize", checkIsMobile);
+  }, []);
+
   useEffect(() => {
     const handleResize = () => {
       setIsSmallDevice(window.innerWidth < 1024);
@@ -47,11 +63,29 @@ const BussinessHeader = () => {
     router.push("/");
   };
 
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [isMenuOpen]);
+
   return (
     <>
       <header className="bg-main xl:px-[6%] justify-around">
         <div className="mx-auto flex p-2 items-center justify-between py-5">
-          <img alt="Foodie Finder Logo" src={appLogoUrl} />
+          <a href="/">
+            <img
+              alt="Foodie Finder Logo"
+              src={"/auth_logo.png"}
+              className="max-w-[180px] md:max-w-[240px]"
+            />
+          </a>
           <div className="flex lg:hidden gap-3 items-center">
             {/* <ProfileDropdown /> */}
             <button
@@ -88,7 +122,12 @@ const BussinessHeader = () => {
                       ? "bg-mainLight text-white"
                       : "text-white lg:text-textLight hover:bg-mainLight "
                   }`}
-                  onClick={() => handleLinkClick(name)}
+                  onClick={() => {
+                    handleLinkClick(name);
+                    if (isMobile) {
+                      toggleMenu(); // Only trigger toggleMenu on mobile devices
+                    }
+                  }}
                 >
                   {name}
                 </Link>

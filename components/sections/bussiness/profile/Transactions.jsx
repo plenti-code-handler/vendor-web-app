@@ -130,7 +130,7 @@ const Transactions = () => {
   }, [auth.currentUser]);
 
   return (
-    <div className="flex flex-col w-[100%] lg:w-[50%] md:w-[60%]">
+    <div className="flex flex-col w-[100%] lg:w-[50%] md:w-[60%] p-5 md:p-0">
       {isAuthenticated && (
         <WithdrawAmountDrawer
           balance={balance}
@@ -153,7 +153,9 @@ const Transactions = () => {
         <div className="absolute top-[0%] left-[15%] -z-0">
           {topLeftWalletBackground}
         </div>
-        <p className="text-[40px] font-bold text-white z-0">€{balance}</p>
+        <p className="text-[40px] font-bold text-white z-0">
+          € {Number(balance).toFixed(2)}
+        </p>
         <p className="text-[16px] font-medium text-white z-0">My Wallet</p>
 
         <button
@@ -217,10 +219,16 @@ const Transactions = () => {
                           withdrawal.status
                         )} font-semibold rounded-full text-center border text-[12px] px-5 py-1`}
                       >
-                        {withdrawal.status}
+                        {withdrawal.status === "paid"
+                          ? "Accepted"
+                          : withdrawal.status === "not paid"
+                          ? "Rejected"
+                          : withdrawal.status === "pending"
+                          ? "Pending"
+                          : ""}
                       </div>
                       <div className="text-amount text-[20px] font-semibold">
-                        €{withdrawal.amount}.00
+                        €{Number(withdrawal.amount).toFixed(2)}
                       </div>
                     </div>
                   </div>

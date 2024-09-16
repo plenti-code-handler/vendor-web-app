@@ -3,6 +3,7 @@ import TextField from "../../../fields/TextField";
 import { collection, doc, getDoc, updateDoc } from "firebase/firestore";
 import { auth, db } from "../../../../app/firebase/config";
 import Loader from "../../../loader/loader";
+import { toast } from "sonner";
 
 const PaymentInfo = () => {
   const [view, setView] = useState("initial");
@@ -10,12 +11,25 @@ const PaymentInfo = () => {
   const [iban, setIban] = useState("");
   const [loading, setLoading] = useState(false);
   const [loader, setLoader] = useState(false);
+  const [error, setError] = useState("");
 
   const handleAddPaymentClick = () => setView("addCard");
   const handleAddBankClick = async () => {
     try {
       const user = auth.currentUser;
+      console.log(iban);
+      if (!validateName(accountHolder) || !validateName(iban)) {
+        toast.error("Fields are empty or invalid"); // Show toast error
+        return;
+      }
+      if (!validateIban(iban)) {
+        setError("Invalid IBAN format");
+        toast.error("Invalid IBAN format"); // Show toast error
+        return;
+      }
 
+      // Reset error
+      setError("");
       if (user) {
         // Get a reference to the user's document
         const userDocRef = doc(collection(db, "users"), user.uid);
@@ -33,6 +47,8 @@ const PaymentInfo = () => {
 
         // Set the view or handle success
         setView("linkedBank");
+
+        toast.success("Data saved successfully!");
       } else {
         console.error("No user is currently logged in");
       }
@@ -58,6 +74,8 @@ const PaymentInfo = () => {
         setView("initial");
         setIban("");
         setAccountHolder("");
+
+        toast.success("Data removed successfully!");
       } else {
         console.error("No user is currently logged in");
       }
@@ -103,14 +121,37 @@ const PaymentInfo = () => {
     fetchIban();
   }, []);
 
-  const formatIban = (iban) => {
-    return iban.replace(/(.{4})/g, "$1 ").trim();
-  };
-
   if (loader) return <Loader />;
 
+  const validateIban = (value) => {
+    const ibanRegex = /^[A-Z]{2}\d{2}(?:\s?[A-Z0-9]{1,30})*$/;
+    return ibanRegex.test(value);
+  };
+
+  const validateName = (value) => {
+    if (value == "") {
+      return false;
+    }
+    return true;
+  };
+  const formatIban = (value) => {
+    // Remove all non-alphanumeric characters
+    const cleanedValue = value.replace(/[^A-Z0-9]/g, "");
+
+    // Format the cleaned value with spaces
+    const formattedValue = cleanedValue.replace(/(.{4})/g, "$1 ").trim(); // Add space every 4 characters
+
+    return formattedValue;
+  };
+
+  const handleIbanChange = (e) => {
+    const value = e.target.value.toUpperCase(); // Convert to uppercase
+    const formattedValue = formatIban(value); // Format with spaces
+    setIban(formattedValue);
+  };
+
   return (
-    <div className="flex flex-col justify-center">
+    <div className="flex flex-col justify-center pt-[30px] pb-[30px]">
       {view === "initial" && (
         <div className="flex flex-col items-center gap-3">
           <p className="font-md text-[14px] text-gray-800 text-center">
@@ -137,13 +178,11 @@ const PaymentInfo = () => {
               value={accountHolder}
               onChange={(e) => setAccountHolder(e.target.value)}
             />
-            {/* <span className="absolute right-3 text-black font-bold mt-2">
-              <img src="/masterCard.png" alt="MasterCard" />
-            </span> */}
+
             <TextField
               placeholder="IBAN Number"
               value={iban}
-              onChange={(e) => setIban(e.target.value)}
+              onChange={handleIbanChange} // Update state with formatted value
             />
           </div>
           <div className="flex gap-10 pt-2">

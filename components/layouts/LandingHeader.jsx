@@ -27,6 +27,22 @@ const LandingHeader = () => {
   const [isSmallDevice, setIsSmallDevice] = useState(false);
   const activePage = useSelector((state) => state.header.activePage);
 
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkIsMobile = () => {
+      if (typeof window !== "undefined") {
+        setIsMobile(window.innerWidth < 1024);
+      }
+    };
+
+    checkIsMobile();
+
+    window.addEventListener("resize", checkIsMobile);
+
+    return () => window.removeEventListener("resize", checkIsMobile);
+  }, []);
+
   const dispatch = useDispatch();
 
   const toggleMenu = () => {
@@ -41,6 +57,21 @@ const LandingHeader = () => {
     dispatch(setOpenDrawer(true));
   };
 
+  useEffect(() => {
+    if (isMenuOpen) {
+      // Disable scrolling by adding a class to the body
+      document.body.style.overflow = "hidden";
+    } else {
+      // Re-enable scrolling
+      document.body.style.overflow = "auto";
+    }
+
+    // Cleanup when component is unmounted or when state changes
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [isMenuOpen]);
+
   // useEffect(() => {
   //   dispatch(setActivePage("Home"));
   // }, [dispatch]);
@@ -53,11 +84,13 @@ const LandingHeader = () => {
     <>
       <header className="bg-white px-[2%] justify-around">
         <div className="mx-auto flex py-3 items-center justify-between">
-          <img
-            alt="Foodie Finder Logo"
-            src="/logo-landing.png"
-            className="max-w-[240px]"
-          />
+          <a href="/">
+            <img
+              alt="Foodie Finder Logo"
+              src={"/auth_logo.png"}
+              className="max-w-[180px] md:max-w-[240px]"
+            />
+          </a>
           <div className="flex lg:hidden gap-3 items-center">
             <button
               onClick={toggleMenu}
@@ -98,7 +131,12 @@ const LandingHeader = () => {
                     ? "text-mainLight"
                     : "text-graySix lg:text-graySix hover:bg-pink hover:text-mainLight"
                 }`}
-                onClick={() => handleLinkClick("Home")}
+                onClick={() => {
+                  handleLinkClick("Home");
+                  if (isMobile) {
+                    toggleMenu(); // Only trigger toggleMenu on mobile devices
+                  }
+                }}
               >
                 Home
               </Link>
@@ -123,6 +161,11 @@ const LandingHeader = () => {
                       <Link
                         href="/surprise"
                         className="group flex w-full items-center hover:text-mainLight gap-2 py-1.5 px-3"
+                        onClick={() => {
+                          if (isMobile) {
+                            toggleMenu(); // Only trigger toggleMenu on mobile devices
+                          }
+                        }}
                       >
                         Surprise Bags
                       </Link>
@@ -131,6 +174,11 @@ const LandingHeader = () => {
                       <Link
                         href="/small_medium_bags"
                         className="group flex w-full items-center hover:text-mainLight gap-2 py-1.5 px-3"
+                        onClick={() => {
+                          if (isMobile) {
+                            toggleMenu(); // Only trigger toggleMenu on mobile devices
+                          }
+                        }}
                       >
                         Small & Large Bags
                       </Link>
@@ -174,7 +222,12 @@ const LandingHeader = () => {
                     ? "text-mainLight"
                     : "text-graySix lg:text-graySix hover:bg-pink hover:text-mainLight"
                 }`}
-                onClick={() => handleLinkClick("FAQs")}
+                onClick={() => {
+                  handleLinkClick("FAQs");
+                  if (isMobile) {
+                    toggleMenu(); // Only trigger toggleMenu on mobile devices
+                  }
+                }}
               >
                 FAQs
               </Link>
@@ -186,7 +239,12 @@ const LandingHeader = () => {
                     ? "text-mainLight"
                     : "text-graySix lg:text-graySix hover:bg-pink hover:text-mainLight"
                 }`}
-                onClick={() => handleLinkClick("About Us")}
+                onClick={() => {
+                  handleLinkClick("About Us");
+                  if (isMobile) {
+                    toggleMenu(); // Only trigger toggleMenu on mobile devices
+                  }
+                }}
               >
                 About App
               </Link>
@@ -198,7 +256,12 @@ const LandingHeader = () => {
                     ? "text-mainLight"
                     : "text-graySix lg:text-graySix hover:bg-pink hover:text-mainLight"
                 }`}
-                onClick={() => handleLinkClick("Contact Us")}
+                onClick={() => {
+                  handleLinkClick("Contact Us");
+                  if (isMobile) {
+                    toggleMenu(); // Only trigger toggleMenu on mobile devices
+                  }
+                }}
               >
                 Contact Us
               </Link>

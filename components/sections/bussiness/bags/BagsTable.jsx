@@ -266,7 +266,7 @@ const BagsTable = () => {
       <table className="w-full table-auto truncate overflow-hidden bg-white">
         <thead>
           <tr className="border-b-[1px] border-grayOne border-dashed border-opacity-45 text-sm font-semibold text-grayOne">
-            <th className="pb-[8px] pl-[5%] pt-[18px] text-left w-[18.00%]">
+            <th className="pb-[8px] pl-[5%] pt-[18px] text-left w-[25.00%]">
               Bag Deal Title
             </th>
             <th className="pb-[8px] px-2 pt-[18px] text-center">Size</th>
@@ -284,21 +284,42 @@ const BagsTable = () => {
                 key={index}
                 className="cursor-pointer border-b-[1px] border-[#E4E4E4] border-dashed hover:bg-[#f8f7f7]"
               >
-                <td className="truncate pl-2 lg:pl-[5%] pr-2 w-[14.28%]">
+                <td className="truncate pl-2 lg:pl-[5%] pr-6   md:pr-2 w-[14.28%]">
                   <div className="py-3">
                     <div className="flex flex-row items-center gap-x-2">
                       <div className="flex h-[40px] w-[40px] items-center justify-center overflow-hidden rounded-full">
-                        <Image
-                          src={bag.img ? bag.img : "/User.png"}
-                          alt="GetSpouse Logo"
-                          className="h-full w-full object-cover"
-                          width={40}
-                          height={40}
-                          priority
-                        />
+                        {bag.type === "Surprise" ? (
+                          <Image
+                            src={`/Round-${bag.type}.png`}
+                            className="h-full w-full object-cover"
+                            width={40}
+                            height={40}
+                            priority
+                          />
+                        ) : bag.type === "Large" ? (
+                          <Image
+                            src={`/Round-${bag.type}.png`}
+                            className="h-full w-full object-cover"
+                            width={40}
+                            height={40}
+                            priority
+                          />
+                        ) : bag.type === "Small" ? (
+                          <Image
+                            src={`/Round-${bag.type}.png`}
+                            className="h-full w-full object-cover"
+                            width={40}
+                            height={40}
+                            priority
+                          />
+                        ) : null}
                       </div>
                       <div className="flex flex-col gap-y-1">
-                        <p className="text-sm font-medium">{bag.title}</p>
+                        <p className="text-sm font-medium truncate overflow-hidden whitespace-nowrap  ">
+                          {bag.title.length > 25
+                            ? `${bag.title.slice(0, 25)}...`
+                            : bag.title}
+                        </p>
                       </div>
                     </div>
                   </div>

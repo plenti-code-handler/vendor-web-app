@@ -22,6 +22,22 @@ const AdminHeader = () => {
   const dispatch = useDispatch();
   const { imageUrl, setImageUrl } = useContext(AdminContext);
 
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkIsMobile = () => {
+      if (typeof window !== "undefined") {
+        setIsMobile(window.innerWidth < 1024);
+      }
+    };
+
+    checkIsMobile();
+
+    window.addEventListener("resize", checkIsMobile);
+
+    return () => window.removeEventListener("resize", checkIsMobile);
+  }, []);
+
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -64,6 +80,18 @@ const AdminHeader = () => {
     }
   }, [user]); // Runs once on initial render
 
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [isMenuOpen]);
+
   const handleLogout = async () => {
     await auth.signOut();
     dispatch(logoutUser());
@@ -74,11 +102,13 @@ const AdminHeader = () => {
     <>
       <header className="bg-white border-b-2 xl:px-[6%] justify-around">
         <div className="mx-auto flex items-center justify-between p-2">
-          <img
-            alt="Foodie Finder Logo"
-            src={appLogoUrl}
-            className="h-10 w-auto"
-          />
+          <a href="/">
+            <img
+              alt="Foodie Finder Logo"
+              src={"/auth_logo.png"}
+              className="max-w-[180px] md:max-w-[240px]"
+            />
+          </a>
           <div className="flex lg:hidden gap-3 items-center">
             <AdminProfileDropdown imageUrl={imageUrl} />
             <button
@@ -109,14 +139,19 @@ const AdminHeader = () => {
                 <Link
                   key={name}
                   href={href}
-                  className={`lg:text-[15px] font-semibold flex flex-col gap-10 leading-6 transition-all rounded-md pt-3 pb-3 pl-4 pr-4 lg:w-[96px] lg:h-[80px] ${
+                  className={`lg:text-[15px] font-semibold flex flex-col gap-10 leading-6   transition-colors duration-500 rounded-md pt-3 pb-3 pl-4 pr-4 lg:w-[96px] lg:h-[80px] ${
                     activePage === name
                       ? "bg-secondary text-white"
                       : "text-menuItem lg:text-menuItem hover:bg-secondary hover:text-white  decoration-mainLight"
                   }`}
                   onMouseEnter={() => setHoveredItem(name)}
                   onMouseLeave={() => setHoveredItem(null)}
-                  onClick={() => handleLinkClick(name)}
+                  onClick={() => {
+                    handleLinkClick(name);
+                    if (isMobile) {
+                      toggleMenu(); // Only trigger toggleMenu on mobile devices
+                    }
+                  }}
                 >
                   <div className="flex lg:flex-col items-center gap-3 text-[15px]">
                     <div>

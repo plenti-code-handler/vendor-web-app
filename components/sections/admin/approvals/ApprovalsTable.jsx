@@ -19,6 +19,7 @@ import { convertTimestampToDDMMYYYY } from "../../../../utility/date";
 import emailjs from "@emailjs/browser";
 import TableUpper from "./TableUpper";
 import Loader from "../../../loader/loader";
+import { Tooltip } from "@nextui-org/tooltip";
 
 const ApprovalsTable = () => {
   const [users, setUsers] = useState([]);
@@ -299,7 +300,7 @@ const ApprovalsTable = () => {
               filteredUsers.map((user, index) => (
                 <tr
                   key={index}
-                  className="cursor-pointer border-b-[1px] border-[#E4E4E4] hover:bg-[#f8f7f7] border-dashed"
+                  className="cursor-pointer border-b-[1px] border-[#E4E4E4] hover:bg-[#f8f7f7] transition-colors duration-500 border-dashed"
                 >
                   <td className="truncate pl-2 pr-2 w-[18.00%]">
                     <div className="py-3">
@@ -321,34 +322,54 @@ const ApprovalsTable = () => {
                     </div>
                   </td>
                   <td className="truncate text-center px-2 w-[18.00%]">
-                    <p className="text-sm font-semibold text-grayThree">
-                      {user.loc}
-                    </p>
+                    <Tooltip
+                      key="1"
+                      content={user.loc}
+                      color="primary"
+                      className="bg-white w-[80%] m-auto text-black rounded-2xl shadow-md p-4 text-[12px]"
+                      placement="bottom"
+                      width="10px"
+                    >
+                      <p className="text-sm font-semibold text-grayThree truncate overflow-hidden whitespace-nowrap  ">
+                        {user.loc.length > 20
+                          ? `${user.loc.slice(0, 20)}...`
+                          : user.loc}
+                      </p>
+                    </Tooltip>
                   </td>
                   <td className="relative text-left px-2 w-[15.00%]">
-                    <p
-                      className="text-sm font-semibold text-grayThree truncate overflow-hidden whitespace-nowrap tooltip-target"
-                      style={{ maxWidth: "280px" }}
+                    <Tooltip
+                      key="2"
+                      content={user.desc}
+                      color="primary"
+                      className="bg-white w-[50%] m-auto text-black rounded-2xl shadow-md p-4 text-[12px]"
+                      placement="Bottom"
+                      width="10px"
                     >
-                      {user.desc}
-                    </p>
+                      <p className="text-sm font-semibold text-grayThree truncate overflow-hidden whitespace-nowrap  ">
+                        {user.desc.length > 40
+                          ? `${user.desc.slice(0, 40)}...`
+                          : user.desc}
+                      </p>
+                    </Tooltip>
                   </td>
                   <td className="truncate text-center px-2">
                     <p className="text-sm font-semibold text-grayThree">
                       {convertTimestampToDDMMYYYY(user.joinedat)}
                     </p>
                   </td>
+
                   <td className="truncate text-center ">
                     <div className="flex flex-row justify-center gap-2">
                       <button
                         onClick={() => handleReject(user)}
-                        className="rounded-md bg-white border border-redOne p-3 hover:bg-red-50"
+                        className="rounded-md bg-white border border-redOne p-3 hover:bg-red-100 transition-colors duration-500"
                       >
                         {redCrossSvg}
                       </button>
                       <button
                         onClick={() => handleApprove(user)}
-                        className="rounded-md bg-secondary p-2 hover:bg-main"
+                        className="rounded-md bg-secondary p-2 hover:bg-main transition-colors duration-500"
                       >
                         {whiteTickSvg}
                       </button>
@@ -370,5 +391,13 @@ const ApprovalsTable = () => {
     </div>
   );
 };
-
+const colors = [
+  "default",
+  "primary",
+  "secondary",
+  "success",
+  "warning",
+  "danger",
+  "foreground",
+];
 export default ApprovalsTable;

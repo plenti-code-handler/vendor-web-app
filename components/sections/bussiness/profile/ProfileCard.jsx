@@ -59,7 +59,7 @@ const ProfileCard = () => {
         <div className="flex space-x-4">
           <img
             alt="User"
-            src={user.imageUrl || "/User.png"}
+            src={user.imageUrl}
             className="rounded-full h-[120px] w-[120px] object-cover"
           />
           <div className="flex flex-col lg:mt-5 lg:gap-y-2">

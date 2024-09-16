@@ -160,7 +160,7 @@ const Account = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 pt-[30px] pb-[30px]">
       <TextField
         placeholder={user.name}
         value={name}

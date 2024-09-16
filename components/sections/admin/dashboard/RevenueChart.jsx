@@ -16,6 +16,8 @@ const ReactApexChart = dynamic(() => import("react-apexcharts"), {
 
 const RevenueChart = () => {
   const [colorsLables] = useState(Array(12).fill("#7E8299"));
+  const [totalRevenue, setTotalRevenue] = useState(0); // State for total revenue
+
   const [chartData, setChartData] = useState({
     series: [
       {
@@ -86,6 +88,7 @@ const RevenueChart = () => {
 
   useEffect(() => {
     const fetchRevenueData = async () => {
+      var total = 0.0; // To hold total revenue
       const today = new Date();
       const lastSevenDays = Array.from({ length: 7 }, (_, i) => {
         const date = new Date();
@@ -113,9 +116,17 @@ const RevenueChart = () => {
               Timestamp.fromDate(new Date(lastSevenDays[6])) // Convert date to Firebase Timestamp
             )
           );
+
+          const revenueQuery = query(collection(db, "bookings"));
           console.log("Booking query created for user:", user.uid); // Log the Firestore query
 
           const querySnapshot = await getDocs(bookingQuery);
+
+          const querySnapshotrevenue = await getDocs(revenueQuery);
+
+          querySnapshotrevenue.forEach((doc) => {
+            total += doc.data().price;
+          });
           console.log(
             "Query snapshot received, number of bookings:",
             querySnapshot.size
@@ -133,7 +144,7 @@ const RevenueChart = () => {
 
             const index = lastSevenDays.indexOf(bookingDate);
             if (index !== -1) {
-              const percentage10 = data.price * data.quantity * 0.1;
+              const percentage10 = data.price * 0.1;
               revenueData[index] += percentage10; // Calculate revenue
               console.log(
                 `Updated revenue for ${bookingDate}:`,
@@ -141,6 +152,10 @@ const RevenueChart = () => {
               ); // Log updated revenue for the specific day
             }
           });
+
+          console.log("Total Revenue: ", total * 0.1);
+
+          setTotalRevenue(total * 0.1);
 
           // Update chart data with the new revenue data and dates
           console.log("Final revenue data for the last 7 days:", revenueData); // Log the final revenue data
@@ -174,14 +189,11 @@ const RevenueChart = () => {
     <div className="flex h-full flex-col justify-between py-2.5 border border-gray-300 rounded-2xl lg:w-full">
       <div className="flex flex-col mt-4 ml-8">
         <h1 className="text-[18px] font-semibold leading-[28px] text-black">
-          Revenue
+          Total Revenue
         </h1>
         <h1 className="text-[40px] leading-[28px] text-mainLight font-bold my-4">
           <sup className="text-[24px] text-mainLight font-semibold">€</sup>
-          {chartData.series[0].data
-            .reduce((acc, curr) => acc + curr, 0)
-            .toLocaleString()}{" "}
-          {/* Total Revenue */}
+          {totalRevenue.toLocaleString()} {/* Use the totalRevenue state */}
         </h1>
       </div>
       <div id="chart" className="w-full">

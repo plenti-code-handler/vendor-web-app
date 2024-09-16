@@ -18,7 +18,11 @@ const CardsRow = () => {
       setLoader(true);
       try {
         // Create a query to fetch all users where role is "vendor"
-        const q = query(collection(db, "users"), where("role", "==", "vendor"));
+        const q = query(
+          collection(db, "users"),
+          where("role", "==", "vendor"),
+          where("status", "==", "accepted")
+        );
 
         // Execute the query and get the documents
         const querySnapshot = await getDocs(q);
@@ -51,7 +55,7 @@ const CardsRow = () => {
         querySnapshot.forEach((doc) => {
           const data = doc.data();
           if (data.price && data.quantity) {
-            const total = data.price * data.quantity;
+            const total = data.price;
             sum += total;
           }
         });

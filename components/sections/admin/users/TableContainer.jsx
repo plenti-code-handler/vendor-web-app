@@ -27,6 +27,7 @@ const TableContainer = () => {
         const q = query(
           colRef,
           where("role", "==", "vendor"),
+          where("status", "==", "accepted"),
           // orderBy("time"),
           limit(10)
         );
@@ -81,7 +82,7 @@ const TableContainer = () => {
             let totalAmount = 0;
             bookingsSnapshot.forEach((bookingDoc) => {
               const bookingData = bookingDoc.data();
-              const bookingTotal = bookingData.quantity * bookingData.price;
+              const bookingTotal = bookingData.price;
               totalAmount += bookingTotal;
             });
 

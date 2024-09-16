@@ -65,7 +65,7 @@ const SuccessWithdrawDrawer = ({ amount, iban }) => {
                       </p>
 
                       <p className="text-white text-[50px] font-bold">
-                        € {amount}.0
+                        € {amount}
                       </p>
 
                       <p className="text-white text-[14px]">to account</p>
@@ -73,7 +73,6 @@ const SuccessWithdrawDrawer = ({ amount, iban }) => {
 
                     <div className="flex justify-between items-center bg-[#8adbbf] shadow-lg transform translate-y-[-5px] p-2 rounded-lg mt-2 lg:w-[80%]">
                       <div className="flex gap-2 items-center">
-                        <span className="mt-1">{payPalSvg}</span>
                         <p className="text-white text-[16px] font-medium">
                           {iban}
                         </p>

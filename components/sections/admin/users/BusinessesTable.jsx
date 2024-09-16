@@ -88,13 +88,12 @@ const BusinessesTable = ({
                 className="cursor-pointer border-b-[1px] border-[#E4E4E4] border-dashed hover:bg-[#f8f7f7]"
                 onClick={() => handleRowClick(user)}
               >
-                <td className="truncate pl-2 pr-2">
+                <td className="truncate pl-2 pr-6   md:pr-2">
                   <div className="py-3">
                     <div className="flex flex-row items-center gap-x-2">
                       <div className="flex h-[40px] w-[40px] items-center justify-center overflow-hidden rounded-full">
                         <Image
                           src={user.imageUrl || "/User.png"}
-                          alt="GetSpouse Logo"
                           className="h-full w-full object-cover"
                           width={40}
                           height={40}
@@ -102,21 +101,30 @@ const BusinessesTable = ({
                         />
                       </div>
                       <div className="flex flex-col gap-y-1">
-                        <p className="text-sm font-medium">{user.name}</p>
+                        <p className="text-sm font-medium   truncate overflow-hidden whitespace-nowrap tooltip-target">
+                          {user.name.length > 10
+                            ? `${user.name.slice(0, 10)}...`
+                            : user.name}
+                        </p>
                       </div>
                     </div>
                   </div>
                 </td>
                 <td className="truncate text-left px-2">
-                  <p className="text-sm font-semibold text-grayThree">
-                    {user.loc}
+                  <p className="text-sm font-semibold text-grayThree truncate overflow-hidden whitespace-nowrap tooltip-target">
+                    {user.loc.length > 40
+                      ? `${user.loc.slice(0, 40)}...`
+                      : user.loc}
                   </p>
                 </td>
                 <td className="relative text-left px-2">
                   <p className="text-sm font-semibold text-grayThree truncate overflow-hidden whitespace-nowrap tooltip-target">
-                    {user.desc}
+                    {user.desc.length > 60
+                      ? `${user.desc.slice(0, 60)}...`
+                      : user.desc}
                   </p>
                 </td>
+
                 <td className="truncate text-left px-2">
                   <p className="text-sm font-semibold text-grayThree">
                     {convertTimestampToDDMMYYYY(user.joinedat)}
