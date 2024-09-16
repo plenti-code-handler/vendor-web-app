@@ -15,7 +15,7 @@ const Footer = () => {
   };
 
   return (
-    <div className="text-[70%] md:text-[100%]">
+    <div className="text-[75%] md:text-[100%]">
       <div className="bg-homeFooterMobile md:bg-homeFooter p-[5%] bg-cover bg-center w-auto flex flex-col justify-center">
         <div className="mx-auto flex flex-col gap-3">
           <div className="flex flex-col gap-5 items-center">

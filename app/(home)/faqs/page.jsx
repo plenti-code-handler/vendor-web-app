@@ -22,7 +22,7 @@ const Page = () => {
   }, [dispatch]);
 
   return (
-    <div className="text-[70%] md:text-[100%]">
+    <div className="text-[75%] md:text-[100%]">
       <div className="bg-[#F5F5F5] pl-[5%] pr-[5%] pb-[5%] pt-[3%]">
         <div className="flex flex-col  ">
           <div className="text-center   mx-auto pb-[30px] md:pb-[50px]">

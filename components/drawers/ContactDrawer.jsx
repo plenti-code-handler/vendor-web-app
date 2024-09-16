@@ -32,7 +32,7 @@ const ContactDrawer = () => {
               className="pointer-events-auto relative lg:w-[700px] transform transition duration-500 ease-in-out data-[closed]:translate-x-full sm:duration-700"
             >
               <div className="flex h-full flex-col overflow-y-scroll bg-white py-5 shadow-xl">
-                <div className="text-[70%] md:text-[100%]">
+                <div className="text-[75%] md:text-[100%]">
                   <div className="mx-10 flex flex-col gap-8">
                     <div className="flex justify-between items-center">
                       <h1 className="text-[#404146] text-[1.875em] font-[500]">

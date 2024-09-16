@@ -31,7 +31,7 @@ const Page = () => {
         </div>
         <div className="flex justify-center">
           <div className="flex h-full flex-col py-5 w-[896px]">
-            <div className="text-[70%] md:text-[100%]">
+            <div className="text-[75%] md:text-[100%]">
               <div className="mx-10 flex flex-col gap-8">
                 <div className="flex md:flex-row flex-col font-[400] text-[1.5em] items-center justify-between">
                   <p>Or drop us a line</p>
