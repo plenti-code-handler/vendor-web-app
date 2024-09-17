@@ -87,10 +87,8 @@ const RecentOrders = () => {
       // const filtered = bookings.filter((booking) => {
       const filtered = bookings.filter((booking) => {
         return (
-          booking.user.username
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase()) ||
-          booking.bag.title.toLowerCase().includes(searchTerm.toLowerCase())
+          booking.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          booking.name.toLowerCase().includes(searchTerm.toLowerCase())
         );
       });
       setFilteredBookings(filtered);
@@ -192,7 +190,7 @@ const RecentOrders = () => {
                       <div className="flex flex-row items-center gap-x-2">
                         <div className="flex h-[40px] w-[40px] items-center justify-center overflow-hidden rounded-full">
                           <Image
-                            src={booking.user.imageUrl || "./User.png"}
+                            src={booking.resimg || "./User.png"}
                             className="h-full w-full object-cover"
                             width={40}
                             height={40}
@@ -241,9 +239,9 @@ const RecentOrders = () => {
                         </div>
                         <div className="flex flex-col gap-y-1">
                           <p className="text-sm font-medium truncate overflow-hidden whitespace-nowrap  ">
-                            {booking.bag.title.length > 15
-                              ? `${booking.bag.title.slice(0, 15)}...`
-                              : booking.bag.title}
+                            {booking.name.length > 15
+                              ? `${booking.name.slice(0, 15)}...`
+                              : booking.name}
                           </p>
                         </div>
                       </div>

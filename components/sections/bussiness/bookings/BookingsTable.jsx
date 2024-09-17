@@ -114,19 +114,16 @@ const BookingsTable = () => {
       let scheduledCount = 0;
       let pastCount = 0;
 
-      dateArray.forEach((dateObj) => {
-        const { date, starttime, endtime } = dateObj;
-        const startDateTime = starttime.toDate(); // Convert Firebase timestamp to JavaScript Date
-        const endDateTime = endtime.toDate(); // Convert Firebase timestamp to JavaScript Date
+      const startDateTime = dateArray.toDate(); // Convert Firebase timestamp to JavaScript Date
+      const endDateTime = endtime.toDate(); // Convert Firebase timestamp to JavaScript Date
 
-        if (now >= startDateTime && now <= endDateTime) {
-          activeCount++;
-        } else if (now < startDateTime) {
-          scheduledCount++;
-        } else {
-          pastCount++;
-        }
-      });
+      if (now >= startDateTime && now <= endDateTime) {
+        activeCount++;
+      } else if (now < startDateTime) {
+        scheduledCount++;
+      } else {
+        pastCount++;
+      }
 
       const bookingEndTime = endtime.toDate();
 
@@ -145,7 +142,7 @@ const BookingsTable = () => {
 
     const filtered = bookings.filter((booking) => {
       const statusFromDates = getStatus(
-        booking.bag.date,
+        booking.starttime,
         booking.endtime,
         booking.status
       );
@@ -235,9 +232,7 @@ const BookingsTable = () => {
     } else {
       const filtered = bookings.filter(
         (booking) =>
-          booking.user.username
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase()) ||
+          booking.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
           booking.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setFilteredBookings(filtered);
@@ -376,7 +371,7 @@ const BookingsTable = () => {
                         <div className="flex flex-row items-center gap-x-2">
                           <div className="flex h-[40px] w-[40px] items-center justify-center overflow-hidden rounded-full">
                             <Image
-                              src={booking.user.imageUrl || "/User.png"}
+                              src={booking.img || "/User.png"}
                               className="h-full w-full object-cover"
                               width={40}
                               height={40}
@@ -385,9 +380,9 @@ const BookingsTable = () => {
                           </div>
                           <div className="flex flex-col gap-y-1">
                             <p className="text-sm font-semibold text-grayThree truncate overflow-hidden whitespace-nowrap  ">
-                              {booking.user.username.length > 20
-                                ? `${booking.user.username.slice(0, 20)}...`
-                                : booking.user.username}
+                              {booking.username.length > 20
+                                ? `${booking.username.slice(0, 20)}...`
+                                : booking.username}
                             </p>
                           </div>
                         </div>
@@ -420,9 +415,10 @@ const BookingsTable = () => {
                     </td>
                     <td className="truncate text-center px-2">
                       <StatusDropdown
-                        bagDate={booking.bag.date}
+                        bagDate={booking.bookingdate}
                         cancelled={booking.iscancelled}
                         initialStatus={booking.status}
+                        starttime={booking.starttime}
                         endtime={booking.endtime}
                         onStatusChange={(newStatus) =>
                           handleStatusChange(newStatus, booking.id)

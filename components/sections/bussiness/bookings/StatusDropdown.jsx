@@ -6,6 +6,7 @@ const StatusDropdown = ({
   bagDate,
   cancelled,
   disabled,
+  starttime,
   endtime,
 }) => {
   // Determine the status based on the bagDate
@@ -19,21 +20,18 @@ const StatusDropdown = ({
     let scheduledCount = 0;
     let pastCount = 0;
 
-    dateArray.forEach((dateObj) => {
-      const { date, starttime, endtime } = dateObj;
-      const startDateTime = starttime.toDate(); // Convert Firebase timestamp to JavaScript Date
-      const endDateTime = endtime.toDate(); // Convert Firebase timestamp to JavaScript Date
+    const startDateTime = starttime.toDate(); // Convert Firebase timestamp to JavaScript Date
+    const endDateTime = endtime.toDate(); // Convert Firebase timestamp to JavaScript Date
 
-      // Perform the status
+    // Perform the status
 
-      if (now >= startDateTime && now <= endDateTime) {
-        activeCount++;
-      } else if (now < startDateTime) {
-        scheduledCount++;
-      } else {
-        pastCount++;
-      }
-    });
+    if (now >= startDateTime && now <= endDateTime) {
+      activeCount++;
+    } else if (now < startDateTime) {
+      scheduledCount++;
+    } else {
+      pastCount++;
+    }
 
     const currDate = new Date();
     const bookingEndTime = endtime.toDate();
