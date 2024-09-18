@@ -10,11 +10,11 @@ import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 
 const LoginForm = () => {
-  // const [email, setEmail] = useState("");
-  // const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const router = useRouter();
   const { isLoading, error } = useSelector((state) => state.loggedInUser);
+
+  const [loading, setLoading] = useState(false); // Initialize loading state to false
 
   const {
     register,
@@ -23,6 +23,7 @@ const LoginForm = () => {
   } = useForm();
 
   const handleLogin = (data) => {
+    setLoading(true); // Set loading to true when login starts
     const { email, password } = data;
     dispatch(loginUser({ email, password }))
       .unwrap()
@@ -30,17 +31,16 @@ const LoginForm = () => {
         if (user.role === "vendor") {
           router.push("/business");
         } else if (user.role === "admin") {
-          toast.success("Admin Logged In Succesfully");
+          toast.success("Admin Logged In Successfully");
           router.push("/admin");
         } else {
           console.error("Unknown role:", user.role);
-          // Optionally, handle unknown roles or redirect to a default page
         }
+        setLoading(false); // Set loading to false after successful login
       })
       .catch((err) => {
         toast.error("Login Failed");
-        // Optionally, display the error to the user
-        // e.g., set an error state or show a notification
+        setLoading(false); // Set loading to false after failed login
       });
   };
 
@@ -84,9 +84,12 @@ const LoginForm = () => {
       )}
       <button
         type="submit"
-        className="flex justify-center bg-pinkBgDark text-white font-semibold py-2 rounded hover:bg-pinkBgDarkHover2 gap-2 lg:w-[100%]"
+        disabled={loading} // Disable button when loading
+        className={`flex justify-center bg-pinkBgDark text-white font-semibold py-2 rounded hover:bg-pinkBgDarkHover2 gap-2 lg:w-[100%] ${
+          loading ? "opacity-50 cursor-not-allowed" : ""
+        }`} // Add styling for disabled state
       >
-        Login
+        {loading ? "Logging in.." : "Login"} {/* Show loader text */}
       </button>
 
       <Link

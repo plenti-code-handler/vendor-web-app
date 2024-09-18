@@ -17,6 +17,7 @@ import { toast } from "sonner";
 const RegisterForm = () => {
   const router = useRouter();
   const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false); // Added loading state
   const [generatedOtp, setGeneratedOtp] = useState(
     Array.from({ length: 4 }, () => Math.floor(Math.random() * 10).toString())
   );
@@ -33,6 +34,7 @@ const RegisterForm = () => {
     const { email } = data;
 
     if (email) {
+      setLoading(true); // Start loading when form is submitted
       try {
         // Query the users collection to check if the email already exists
         const q = query(collection(db, "users"), where("email", "==", email));
@@ -41,6 +43,7 @@ const RegisterForm = () => {
         if (!querySnapshot.empty) {
           // Email already exists in the users collection
           toast.error("User Already Registered");
+          setLoading(false); // Stop loading after failure
           return; // Exit the function to prevent further actions
         }
 
@@ -67,6 +70,8 @@ const RegisterForm = () => {
         toast.error(
           "An error occurred while checking email. Please try again."
         );
+      } finally {
+        setLoading(false); // Stop loading after success or failure
       }
     }
   };
@@ -101,9 +106,12 @@ const RegisterForm = () => {
       )}
       <button
         type="submit"
-        className="flex justify-center bg-pinkBgDark text-white font-semibold py-2  rounded hover:bg-pinkBgDarkHover2 gap-2 lg:w-[100%]"
+        disabled={loading} // Disable button while loading
+        className={`flex justify-center bg-pinkBgDark text-white font-semibold py-2  rounded hover:bg-pinkBgDarkHover2 gap-2 lg:w-[100%] ${
+          loading ? "opacity-50 cursor-not-allowed" : ""
+        }`} // Add opacity and disabled cursor style when loading
       >
-        Continue
+        {loading ? "Processing..." : "Continue"} {/* Show loading text */}
       </button>
     </form>
   );

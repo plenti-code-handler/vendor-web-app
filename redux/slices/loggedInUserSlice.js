@@ -20,13 +20,14 @@ export const getloginUserData = createAsyncThunk(
         }
 
         if (userData.status === "accepted") {
-          toast.success("Your request has been accepted", {
-            style: {
-              color: "green",
-            },
-          });
+          // toast.success("Your request has been accepted", {
+          //   style: {
+          //     color: "green",
+          //   },
+          // });
           return userData; // Return the user data if the status is approved
-        } else if (userData.status === "rejected") {
+        } else
+         if (userData.status === "rejected") {
           toast.error("Your request has been declined");
         } else if (userData.status === "pending") {
           toast.error("Your request is still pending");

@@ -79,48 +79,60 @@ const Page = () => {
       return;
     }
 
-    const credential = EmailAuthProvider.credential(
-      authenticatedUser.email,
-      oldPassword
-    );
-
     try {
-      //   Update Name in collection
-
-      if (oldPassword === "") {
+      // If the name (username) is provided and the old password is not, update the name
+      if (name && oldPassword === "") {
         const userDocRef = doc(db, "users", user.uid); // Assuming the user document ID is the user's UID
         await updateDoc(userDocRef, {
-          name: name,
+          name: name, // Update the user's name
         });
         toast.success("Name Updated Successfully!");
         return;
-      } else {
-        await reauthenticateWithCredential(authenticatedUser, credential);
       }
 
-      // Password is correct, proceed to the next step
-      if (newPassword === confirmNewPassword) {
-        try {
+      // If the oldPassword is provided, proceed to reauthenticate and update the password
+      if (oldPassword && newPassword && confirmNewPassword) {
+        // Reauthenticate user with old password
+        const credential = EmailAuthProvider.credential(
+          authenticatedUser.email,
+          oldPassword
+        );
+        await reauthenticateWithCredential(authenticatedUser, credential);
+
+        // Check if new password matches confirm password
+        if (newPassword === confirmNewPassword) {
           // Update password in Firebase Authentication
           await updateFirebasePassword(authenticatedUser, newPassword);
           console.log("Password updated successfully in Firebase Auth.");
 
+          // Clear the password fields
           setOldPassword("");
           setNewPassword("");
           setConfirmNewPassword("");
 
-          toast.success("Password updated successfully in Firestore.");
+          toast.success("Password updated successfully.");
+
+          // Log out the user after updating the password
           await auth.signOut();
           dispatch(logoutUser());
           router.push("/");
-        } catch (error) {
-          console.error("Error updating password:", error);
+        } else {
+          toast.error("Passwords do not match.");
         }
-      } else {
-        toast.error("Passwords do not match");
+      } else if (oldPassword || newPassword || confirmNewPassword) {
+        toast.error(
+          "Please fill in all password fields to update your password."
+        );
       }
     } catch (error) {
-      console.error(error);
+      console.error("Error updating user details:", error);
+      if (error.code === "auth/invalid-credential") {
+        toast.error("Password is incorrect.");
+      } else if (error.code === "auth/weak-password") {
+        toast.success("Weak password. Please use a stronger password.");
+      } else {
+        toast.error("An error occurred while updating details.");
+      }
     }
   };
 

@@ -20,6 +20,7 @@ import { db } from "../../app/firebase/config";
 import { deleteDoc, doc } from "firebase/firestore";
 import { logoutUser } from "../../redux/slices/loggedInUserSlice";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const DeleteAccountDrawer = () => {
   const dispatch = useDispatch();
@@ -48,7 +49,7 @@ const DeleteAccountDrawer = () => {
       await reauthenticateWithCredential(user, credential);
       // Delete the user from Firebase Authentication
       await deleteUser(user);
-      console.log("User account deleted successfully.");
+      toast.error("Account deleted successfully.");
 
       // Delete the user's record from Firestore
       const userDocRef = doc(db, "users", user.uid); // Assuming the user document ID is the user's UID
@@ -58,7 +59,7 @@ const DeleteAccountDrawer = () => {
       dispatch(logoutUser());
       router.push("/");
     } catch (error) {
-      console.error("Incorrect password.");
+      toast.error("Incorrect password.");
     }
   };
 

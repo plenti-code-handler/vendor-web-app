@@ -139,7 +139,7 @@ const AdminHeader = () => {
                 <Link
                   key={name}
                   href={href}
-                  className={`lg:text-[15px] font-semibold flex flex-col gap-10 leading-6   transition-colors duration-500 rounded-md pt-3 pb-3 pl-4 pr-4 lg:w-[96px] lg:h-[80px] ${
+                  className={`lg:text-[15px] font-semibold flex flex-col gap-10 leading-6   transition-colors duration-500 rounded-md pt-3 pb-3 pl-3 pr-3 min-w-[90px]   lg:h-[80px] ${
                     activePage === name
                       ? "bg-secondary text-white"
                       : "text-menuItem lg:text-menuItem hover:bg-secondary hover:text-white  decoration-mainLight"

@@ -44,9 +44,11 @@ const TransactionsTable = () => {
             const withdrawal = entry.data();
             const id = entry.id;
 
+            // Fetch user data
             const userDocRef = doc(db, "users", withdrawal.vendorId);
             const userDocSnap = await getDoc(userDocRef);
 
+            // If user exists, return the withdrawal with user data
             if (userDocSnap.exists()) {
               const userData = userDocSnap.data();
               return {
@@ -55,16 +57,22 @@ const TransactionsTable = () => {
                 user: userData,
               };
             } else {
-              console.log("User data not found for UID:", withdrawal.uid);
-              return withdrawal;
+              // Log and return null for non-existent users
+              console.log("User data not found for UID:", withdrawal.vendorId);
+              return null; // This ensures invalid entries are skipped
             }
           })
         );
+
+        const validWithdrawals = withdrawalsData.filter(
+          (withdrawal) => withdrawal !== null
+        );
+
         const lastDoc =
           allWithdrawalsSnapshot.docs[allWithdrawalsSnapshot.docs.length - 1];
 
-        setWithdrawals(withdrawalsData);
-        setFilteredWithdrawals(withdrawalsData);
+        setWithdrawals(validWithdrawals);
+        setFilteredWithdrawals(validWithdrawals);
         setLastVisible(lastDoc);
       } catch (error) {
         console.error("Error fetching withdrawals:", error);

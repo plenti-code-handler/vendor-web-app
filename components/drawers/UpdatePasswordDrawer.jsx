@@ -54,7 +54,7 @@ const UpdatePasswordDrawer = () => {
       // Password is correct, proceed to the next step
       setShowFields(true);
     } catch (error) {
-      console.error("Incorrect password.");
+      toast.error("Incorrect password.");
     }
   };
 
@@ -76,12 +76,15 @@ const UpdatePasswordDrawer = () => {
         setNewPassword("");
         setConfirmNewPassword("");
 
-        toast.success("Password updated successfully in Firestore.");
+        toast.success("Password updated successfully.");
         dispatch(setOpenDrawer(false));
         await auth.signOut();
         dispatch(logoutUser());
         router.push("/");
       } catch (error) {
+        if (error.code === "auth/weak-password") {
+          toast.success("Weak password. Please use a stronger password.");
+        }
         console.error("Error updating password:", error);
       }
     } else {
