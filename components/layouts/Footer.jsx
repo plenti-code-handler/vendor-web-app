@@ -204,13 +204,43 @@ const Footer = () => {
           <div className="text-white pl-8 flex flex-col gap-4 border-white border-l w-full md:w-1/2 lg:w-1/4">
             <h2 className="text-[1.25em] text-[400]">Connect with us</h2>
             <div className="flex gap-4 items-center">
-              <div>{facebookLogo}</div>
-              <div>{instagramLogo}</div>
-              <div>{twitterLogo}</div>
-              <div>{youtubeLogo}</div>
-              <div>{tiktokLogo}</div>
-              <div>{snapchatLogo}</div>
+              <a
+                href="https://www.facebook.com/profile.php?id=100067991773746"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:scale-110 hover:text-blue-600 transition transform duration-300 ease-in-out"
+              >
+                {facebookLogo}
+              </a>
+              <a
+                href="https://www.instagram.com/foodie.finder/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:scale-110 hover:text-pink-500 transition transform duration-300 ease-in-out"
+              >
+                {instagramLogo}
+              </a>
+              {/* Uncomment and add links as needed */}
+              {/* 
+  <a
+    href="https://twitter.com"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="hover:scale-110 hover:text-blue-400 transition transform duration-300 ease-in-out"
+  >
+    {twitterLogo}
+  </a>
+  <a
+    href="https://youtube.com"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="hover:scale-110 hover:text-red-600 transition transform duration-300 ease-in-out"
+  >
+    {youtubeLogo}
+  </a>
+  */}
             </div>
+
             <hr className="my-4" />
             <div className="flex flex-col gap-4">
               <h2 className="text-[1.25em] text-[400]">Or drop us a line</h2>
