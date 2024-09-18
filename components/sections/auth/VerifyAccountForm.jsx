@@ -67,6 +67,7 @@ const VerifyAccountForm = () => {
         {
           message: `Your OTP is ${otpCode.map((digit) => digit).join("")}`,
           to_email: email,
+          reply_to: "kontakt@foodiefinder.se",
         },
         { publicKey: process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY }
       );

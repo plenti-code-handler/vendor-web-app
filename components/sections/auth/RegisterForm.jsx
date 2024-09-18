@@ -56,6 +56,7 @@ const RegisterForm = () => {
               .map((digit) => digit)
               .join("")}`,
             to_email: email,
+            reply_to: "kontakt@foodiefinder.se",
           },
           process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
         );

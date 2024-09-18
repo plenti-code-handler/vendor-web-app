@@ -20,6 +20,7 @@ import emailjs from "@emailjs/browser";
 import TableUpper from "./TableUpper";
 import Loader from "../../../loader/loader";
 import { Tooltip } from "@nextui-org/tooltip";
+import { toast } from "sonner";
 
 const ApprovalsTable = () => {
   const [users, setUsers] = useState([]);
@@ -106,10 +107,11 @@ const ApprovalsTable = () => {
         message: `We are pleased to inform you that your request has been accepted`,
         approval: "Accepted",
         to_email: user.email,
+        reply_to: "kontakt@foodiefinder.se",
       },
       { publicKey: process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY }
     );
-
+    toast.success("Email Sent Successfully");
     // 3) re fetch the users again
     const colRef = collection(db, "users");
     const q = query(
@@ -163,9 +165,12 @@ const ApprovalsTable = () => {
         message: `Regrettably, your request has been declined by the admin.`,
         approval: "Rejected",
         to_email: user.email,
+        reply_to: "kontakt@foodiefinder.se",
       },
       { publicKey: process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY }
     );
+
+    toast.success("Email Sent Successfully");
 
     // 3) re fetch the users again
     const colRef = collection(db, "users");

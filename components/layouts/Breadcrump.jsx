@@ -9,9 +9,10 @@ import { db } from "../../app/firebase/config";
 
 const decidePath = (pathname) => {
   // Check for specific patterns
-  if (pathname.match(/\/admin\/users\/business\/[a-z0-9]+/)) {
+  console.log(pathname);
+  if (pathname.match(/\/admin\/users\/business\/[a-zA-Z0-9]+/)) {
     return "Business Details";
-  } else if (pathname.match(/\/admin\/users\/customer\/[a-z0-9]+/)) {
+  } else if (pathname.match(/\/admin\/users\/customer\/[a-zA-Z0-9]+/)) {
     return "Customer Details";
   }
 

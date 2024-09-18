@@ -33,7 +33,11 @@ const ForgetPasswordForm = () => {
 
     try {
       // Check if the email exists in the users collection
-      const q = query(collection(db, "users"), where("email", "==", email));
+      const q = query(
+        collection(db, "users"),
+        where("email", "==", email),
+        where("role", "==", "vendor")
+      );
       const querySnapshot = await getDocs(q);
 
       if (querySnapshot.empty) {
@@ -42,7 +46,6 @@ const ForgetPasswordForm = () => {
         return;
       }
 
-      // If email exists, proceed with sending the password reset email
       await sendPasswordResetEmail(auth, email, {
         url: `http://localhost:3000/reset_password?email=${email}`,
         handleCodeInApp: true,
@@ -85,7 +88,7 @@ const ForgetPasswordForm = () => {
         })}
       />
       {errors.email && (
-        <p className="text-red-500 text-sm">{errors.email.message}</p>
+        <p className="text-red-500 text-sm mt-2">{errors.email.message}</p>
       )}
       <button
         type="submit"

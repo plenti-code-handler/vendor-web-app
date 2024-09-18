@@ -99,20 +99,16 @@ const CustomerDetailTable = () => {
       let scheduledCount = 0;
       let pastCount = 0;
 
-      dateArray.forEach((dateObj) => {
-        const { date, starttime, endtime } = dateObj;
-        const startDateTime = starttime.toDate(); // Convert Firebase timestamp to JavaScript Date
-        const endDateTime = endtime.toDate(); // Convert Firebase timestamp to JavaScript Date
+      const startDateTime = dateArray.toDate(); // Convert Firebase timestamp to JavaScript Date
+      const endDateTime = endtime.toDate(); // Convert Firebase timestamp to JavaScript Date
 
-        if (now >= startDateTime && now <= endDateTime) {
-          activeCount++;
-        } else if (now < startDateTime) {
-          scheduledCount++;
-        } else {
-          pastCount++;
-        }
-      });
-
+      if (now >= startDateTime && now <= endDateTime) {
+        activeCount++;
+      } else if (now < startDateTime) {
+        scheduledCount++;
+      } else {
+        pastCount++;
+      }
       const bookingEndTime = endtime.toDate();
 
       if (initialStatus === "picked" || now > bookingEndTime) {
@@ -130,13 +126,12 @@ const CustomerDetailTable = () => {
 
     const filtered = bookings.filter((booking) => {
       const statusFromDates = getStatus(
-        booking.bag.date,
+        booking.starttime,
         booking.endtime,
         booking.status
       );
       return statusFromDates === status || status === "";
     });
-
     setFilteredBookings(filtered);
   };
 
@@ -335,9 +330,10 @@ const CustomerDetailTable = () => {
                   <td className="truncate text-center px-2">
                     <StatusDropdown
                       disabled={true}
-                      bagDate={booking.bag.date}
+                      bagDate={booking.bookingdate}
                       cancelled={booking.iscancelled}
                       initialStatus={booking.status}
+                      starttime={booking.starttime}
                       endtime={booking.endtime}
                       onStatusChange={(newStatus) =>
                         handleStatusChange(newStatus, booking.id)

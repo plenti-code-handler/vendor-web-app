@@ -65,17 +65,14 @@ const ResetPasswordForm = () => {
             // Update the pass field with the new password
             await updateDoc(userDocRef, { pass: password });
 
-            toast.success(
-              "Password updated successfully for user with email:",
-              email
-            );
+            toast.success("Password updated successfully");
           });
         } else {
           toast.error("No user found with the provided email.");
         }
         router.push("/login");
       } catch (error) {
-        console.error("Failed to reset password: " + error.message);
+        toast.success("Failed to reset password");
       }
       router.push("/login");
     } else {

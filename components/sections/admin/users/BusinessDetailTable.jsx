@@ -184,7 +184,6 @@ const BusinessDetailTable = () => {
                   bag: bagData,
                 };
               } else {
-                console.log("User or bag data not found for UID:", booking.uid);
                 return booking;
               }
             })

@@ -65,16 +65,12 @@ const Page = () => {
             setEmail(userData.email);
             setName(userData.name || "");
           } else {
-            console.error("No such document!");
           }
-        } catch (error) {
-          console.error("Error fetching user data: ", error);
-        }
+        } catch (error) {}
       };
 
       fetchUserData();
     } else {
-      console.error("user uid not available");
     }
   }, [user]); // Runs once on initial render
 

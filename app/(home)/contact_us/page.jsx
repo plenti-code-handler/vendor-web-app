@@ -1,17 +1,64 @@
 "use client";
-import React, { useEffect } from "react";
-
+import React, { useEffect, useState } from "react";
 import { homeDivider } from "../../../svgs";
 import { Input, Textarea } from "@headlessui/react";
 import { useDispatch } from "react-redux";
 import { setActivePage } from "../../../redux/slices/headerSlice";
+import emailjs from "@emailjs/browser";
 
 const Page = () => {
   const dispatch = useDispatch();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [query, setQuery] = useState("");
+  const [nameValid, setNameValid] = useState(true);
+  const [emailValid, setEmailValid] = useState(true);
+  const [queryValid, setQueryValid] = useState(true);
 
   useEffect(() => {
     dispatch(setActivePage("Contact Us"));
   }, [dispatch]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Validate fields
+    const isNameValid = name.trim() !== "";
+    const isEmailValid = email.trim() !== "";
+    const isQueryValid = query.trim() !== "";
+
+    setNameValid(isNameValid);
+    setEmailValid(isEmailValid);
+    setQueryValid(isQueryValid);
+
+    if (!isNameValid || !isEmailValid || !isQueryValid) {
+      return; // Prevent form submission if any field is invalid
+    }
+    console.log(name, email, query);
+    try {
+      // Sending the email using EmailJS (commented out for now)
+      await emailjs.send(
+        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_KEY,
+        process.env.NEXT_PUBLIC_EMAILJS_USER_CONTACT_TEMPLATE_KEY,
+        {
+          message: query,
+          name: name,
+          user_email: email,
+          reply_to: email,
+        },
+        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
+      );
+
+      // Clear the form fields after successful submission
+      setName("");
+      setEmail("");
+      setQuery("");
+      console.log("Send successfully"); // Log the error for debugging
+    } catch (error) {
+      console.error("Failed to send your message:", error); // Log the error for debugging
+    } finally {
+    }
+  };
 
   return (
     <div className="bg-[#F5F5F5] py-10">
@@ -36,7 +83,6 @@ const Page = () => {
                 <div className="flex md:flex-row flex-col font-[400] text-[1.5em] items-center justify-between">
                   <p>Or drop us a line</p>
                   <p>
-                    {" "}
                     <a
                       className="underline hover:text-pinkBgDark"
                       href="mailto:kontakt@foodiefinder.se"
@@ -45,26 +91,75 @@ const Page = () => {
                     </a>
                   </p>
                 </div>
-                <div className="flex md:flex-row flex-col md:items-center gap-5 justify-between">
-                  <div className="flex flex-col gap-3 basis-full">
-                    <label>Name *</label>
-                    <Input className="px-4 w-full bg-transparent rounded-[6px] h-[60px] border-2 border-[#404146]" />
+                <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+                  <div className="flex md:flex-row flex-col md:items-center gap-5 justify-between">
+                    <div className="flex flex-col gap-3 basis-full">
+                      <label
+                        className={`${
+                          nameValid ? "text-black" : "text-red-500"
+                        }`}
+                      >
+                        Name *
+                      </label>
+                      <Input
+                        className={`px-4 w-full bg-transparent rounded-[6px] h-[60px] border-2 ${
+                          nameValid ? "border-[#404146]" : "border-red-500"
+                        }`}
+                        value={name}
+                        onChange={(e) => {
+                          setName(e.target.value);
+                          setNameValid(true); // Reset validation state on input
+                        }}
+                      />
+                    </div>
+                    <div className="flex flex-col gap-3 basis-full">
+                      <label
+                        className={`${
+                          emailValid ? "text-black" : "text-red-500"
+                        }`}
+                      >
+                        Email *
+                      </label>
+                      <Input
+                        className={`px-4 w-full bg-transparent rounded-[6px] h-[60px] border-2 ${
+                          emailValid ? "border-[#404146]" : "border-red-500"
+                        }`}
+                        value={email}
+                        onChange={(e) => {
+                          setEmail(e.target.value);
+                          setEmailValid(true); // Reset validation state on input
+                        }}
+                        type="email" // Ensure it's an email input
+                      />
+                    </div>
                   </div>
                   <div className="flex flex-col gap-3 basis-full">
-                    <label>Email *</label>
-                    <Input className="px-4 w-full bg-transparent rounded-[6px] h-[60px] border-2 border-[#404146]" />
+                    <label
+                      className={`${
+                        queryValid ? "text-black" : "text-red-500"
+                      }`}
+                    >
+                      Message *
+                    </label>
+                    <Textarea
+                      rows={5}
+                      className={`p-4 w-full rounded-[6px] bg-transparent border-2 ${
+                        queryValid ? "border-[#404146]" : "border-red-500"
+                      }`}
+                      value={query}
+                      onChange={(e) => {
+                        setQuery(e.target.value);
+                        setQueryValid(true); // Reset validation state on input
+                      }}
+                    />
                   </div>
-                </div>
-                <div className="flex flex-col gap-3 basis-full">
-                  <label>Message *</label>
-                  <Textarea
-                    rows={5}
-                    className="p-4 w-full rounded-[6px] bg-transparent border-2 border-[#404146]"
-                  />
-                </div>
-                <button className="flex self-center justify-center bg-pinkBgDark text-white font-bold py-3 px-4 rounded hover:bg-pinkBgDarkHover2 w-full sm:w-auto sm:px-6 lg:w-[35%]">
-                  Submit
-                </button>
+                  <button
+                    type="submit"
+                    className={`flex self-center justify-center bg-pinkBgDark text-white font-bold py-3 px-4 rounded hover:bg-pinkBgDarkHover2 w-full sm:w-auto sm:px-6 lg:w-[35%]  `}
+                  >
+                    Submit
+                  </button>
+                </form>
               </div>
             </div>
           </div>

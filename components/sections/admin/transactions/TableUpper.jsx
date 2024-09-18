@@ -24,7 +24,7 @@ const TableUpper = ({ setSearchTerm }) => {
           {/* <SortByAmount /> */}
           <SearchField
             setSearchTerm={setSearchTerm}
-            placeholder={"Search By Restaurent"}
+            placeholder={"Search By Business"}
           />
         </div>
       </div>

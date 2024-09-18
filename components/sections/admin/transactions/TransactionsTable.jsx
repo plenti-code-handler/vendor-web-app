@@ -4,6 +4,9 @@ import Image from "next/image";
 import { transactionsData } from "../../../../lib/constant_data";
 import LoadMoreButton from "../../../buttons/LoadMoreButton";
 import TableUpper from "./TableUpper";
+import { getAuth } from "firebase/auth";
+import emailjs from "@emailjs/browser";
+
 import {
   collection,
   doc,
@@ -17,6 +20,7 @@ import {
 import { db } from "../../../../app/firebase/config";
 import { redCrossSvg, whiteTickSvg } from "../../../../svgs";
 import Loader from "../../../loader/loader";
+import { toast } from "sonner";
 
 const TransactionsTable = () => {
   const [withdrawals, setWithdrawals] = useState([]);
@@ -24,9 +28,10 @@ const TransactionsTable = () => {
   const [lastVisible, setLastVisible] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [loader, setLoader] = useState(false);
+  const [loadingApproveId, setLoadingApproveId] = useState(null);
+  const [loadingRejectId, setLoadingRejectId] = useState(null);
 
   useEffect(() => {
-    // Ensure the user and user.uid are available
     const fetchInitialWithdrawals = async () => {
       try {
         setLoader(true);
@@ -39,8 +44,7 @@ const TransactionsTable = () => {
             const withdrawal = entry.data();
             const id = entry.id;
 
-            // Fetch user data based on the user ID in the withdrawal
-            const userDocRef = doc(db, "users", withdrawal.vendorId); // Assuming withdrawal.uid is the field for user ID
+            const userDocRef = doc(db, "users", withdrawal.vendorId);
             const userDocSnap = await getDoc(userDocRef);
 
             if (userDocSnap.exists()) {
@@ -48,11 +52,11 @@ const TransactionsTable = () => {
               return {
                 id,
                 ...withdrawal,
-                user: userData, // Merge user data with booking
+                user: userData,
               };
             } else {
               console.log("User data not found for UID:", withdrawal.uid);
-              return withdrawal; // Return booking without user data if not found
+              return withdrawal;
             }
           })
         );
@@ -84,28 +88,59 @@ const TransactionsTable = () => {
   }, [searchTerm]);
 
   const handleReject = async (withdrawal) => {
-    // Reference to the withdrawal document
+    setLoadingRejectId(withdrawal.id);
+
     const withdrawalRef = doc(db, "withdrawals", withdrawal.id);
 
-    // Reference to the user document
     const userRef = doc(db, "users", withdrawal.vendorId);
 
     try {
-      // Update the withdrawal status to "not paid"
-      await updateDoc(withdrawalRef, {
-        status: "not paid",
-      });
-
-      // Fetch the user document to get the current revenue
       const userDoc = await getDoc(userRef);
 
       if (userDoc.exists()) {
         const userData = userDoc.data();
         const currentRevenue = parseFloat(userData.revenue) || 0;
 
+        const formattedDate = withdrawal.createdAt.toDate();
+
+        const options = { day: "numeric", month: "short", year: "2-digit" };
+        const formattedDateString = formattedDate.toLocaleDateString(
+          "en-GB",
+          options
+        );
+        const formattedTimeString = formattedDate.toLocaleTimeString("en-GB", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        });
+        const finalFormattedString = `${formattedDateString}, ${formattedTimeString}`;
+
+        emailjs.send(
+          process.env.NEXT_PUBLIC_EMAILJS_SERVICE_KEY,
+          process.env.NEXT_PUBLIC_EMAILJS_TRANSACTION_REQUEST_TEMPLATE_KEY,
+          {
+            approval: "Rejected",
+            message: `We hope this message finds you well. Unfortunately, your recent withdrawal request has been rejected. We understand this may be disappointing, and we encourage you to review the following details of your transaction:`,
+            Amount: withdrawal.amount,
+            Date: finalFormattedString,
+            IBAN: withdrawal.iban,
+            message2:
+              "If you believe this decision has been made in error or if you have any further questions, please do not hesitate to contact us for clarification.",
+            to_email: userData.email,
+            reply_to: "kontakt@foodiefinder.se",
+          },
+          { publicKey: process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY }
+        );
+
+        await updateDoc(withdrawalRef, {
+          status: "not paid",
+        });
+
         await updateDoc(userRef, {
           revenue: (currentRevenue + Number(withdrawal.amount)).toFixed(2),
         });
+
+        toast.success("Withdrawal rejected.");
 
         console.log("Withdrawal rejected and user revenue updated.");
       } else {
@@ -125,8 +160,7 @@ const TransactionsTable = () => {
           const withdrawal = entry.data();
           const id = entry.id;
 
-          // Fetch user data based on the user ID in the withdrawal
-          const userDocRef = doc(db, "users", withdrawal.vendorId); // Assuming withdrawal.uid is the field for user ID
+          const userDocRef = doc(db, "users", withdrawal.vendorId);
           const userDocSnap = await getDoc(userDocRef);
 
           if (userDocSnap.exists()) {
@@ -134,11 +168,11 @@ const TransactionsTable = () => {
             return {
               id,
               ...withdrawal,
-              user: userData, // Merge user data with booking
+              user: userData,
             };
           } else {
             console.log("User data not found for UID:", withdrawal.uid);
-            return withdrawal; // Return booking without user data if not found
+            return withdrawal;
           }
         })
       );
@@ -152,59 +186,122 @@ const TransactionsTable = () => {
       console.error("Error fetching withdrawals:", error);
     } finally {
       setLoader(false);
+      setLoadingRejectId(null);
     }
+    setLoadingRejectId(null);
   };
 
   const handleApprove = async (withdrawal) => {
     try {
-      const withdrawalRef = doc(db, "withdrawals", withdrawal.id);
+      setLoadingApproveId(withdrawal.id);
 
-      await updateDoc(withdrawalRef, {
-        status: "paid",
-      });
-      console.log("Withdrawal approved and status updated to paid.");
-    } catch (error) {
-      console.error("Error updating withdrawal status:", error);
-    }
+      const formattedDate = withdrawal.createdAt.toDate();
 
-    try {
-      setLoader(true);
-      const colRef = collection(db, "withdrawals");
-      const q = query(colRef, where("status", "==", "pending"), limit(10));
-
-      const allWithdrawalsSnapshot = await getDocs(q);
-      const withdrawalsData = await Promise.all(
-        allWithdrawalsSnapshot.docs.map(async (entry) => {
-          const withdrawal = entry.data();
-          const id = entry.id;
-
-          // Fetch user data based on the user ID in the withdrawal
-          const userDocRef = doc(db, "users", withdrawal.vendorId); // Assuming withdrawal.uid is the field for user ID
-          const userDocSnap = await getDoc(userDocRef);
-
-          if (userDocSnap.exists()) {
-            const userData = userDocSnap.data();
-            return {
-              id,
-              ...withdrawal,
-              user: userData, // Merge user data with booking
-            };
-          } else {
-            console.log("User data not found for UID:", withdrawal.uid);
-            return withdrawal; // Return booking without user data if not found
-          }
-        })
+      const options = { day: "numeric", month: "short", year: "2-digit" };
+      const formattedDateString = formattedDate.toLocaleDateString(
+        "en-GB",
+        options
       );
-      const lastDoc =
-        allWithdrawalsSnapshot.docs[allWithdrawalsSnapshot.docs.length - 1];
+      const formattedTimeString = formattedDate.toLocaleTimeString("en-GB", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      });
+      const finalFormattedString = `${formattedDateString}, ${formattedTimeString}`;
 
-      setWithdrawals(withdrawalsData);
-      setFilteredWithdrawals(withdrawalsData);
-      setLastVisible(lastDoc);
+      try {
+        const auth = getAuth();
+        const user = auth.currentUser;
+        if (!user) {
+          toast.error("User is not authenticated.");
+          return;
+        }
+
+        const userRef = doc(db, "users", withdrawal.vendorId);
+        const userDoc = await getDoc(userRef);
+
+        if (!userDoc.exists()) {
+          toast.error("User data not found in Firestore.");
+
+          return;
+        }
+        const { email } = userDoc.data();
+
+        console.log(
+          email,
+          withdrawal.amount,
+          finalFormattedString,
+          withdrawal.iban
+        );
+
+        emailjs.send(
+          process.env.NEXT_PUBLIC_EMAILJS_SERVICE_KEY,
+          process.env.NEXT_PUBLIC_EMAILJS_TRANSACTION_REQUEST_TEMPLATE_KEY,
+          {
+            approval: "Accepted",
+            message: `We are pleased to inform you that your recent transaction has been approved. Please find the details of the transaction below:`,
+            Amount: withdrawal.amount,
+            Date: finalFormattedString,
+            IBAN: withdrawal.iban,
+            message2:
+              "The approved payment will be processed and deposited into the provided IBAN account. If you have any further questions or need assistance, feel free to contact us.",
+            to_email: email,
+            reply_to: "kontakt@foodiefinder.se",
+          },
+          { publicKey: process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY }
+        );
+        const withdrawalRef = doc(db, "withdrawals", withdrawal.id);
+        await updateDoc(withdrawalRef, {
+          status: "paid",
+        });
+
+        toast.success("Withdrawal approved successfully.");
+      } catch (error) {
+        console.error("Error updating withdrawal status:", error);
+      }
+
+      try {
+        setLoader(true);
+        const colRef = collection(db, "withdrawals");
+        const q = query(colRef, where("status", "==", "pending"), limit(10));
+
+        const allWithdrawalsSnapshot = await getDocs(q);
+        const withdrawalsData = await Promise.all(
+          allWithdrawalsSnapshot.docs.map(async (entry) => {
+            const withdrawal = entry.data();
+            const id = entry.id;
+
+            const userDocRef = doc(db, "users", withdrawal.vendorId);
+            const userDocSnap = await getDoc(userDocRef);
+
+            if (userDocSnap.exists()) {
+              const userData = userDocSnap.data();
+              return {
+                id,
+                ...withdrawal,
+                user: userData,
+              };
+            } else {
+              console.log("User data not found for UID:", withdrawal.uid);
+              return withdrawal;
+            }
+          })
+        );
+        const lastDoc =
+          allWithdrawalsSnapshot.docs[allWithdrawalsSnapshot.docs.length - 1];
+
+        setWithdrawals(withdrawalsData);
+        setFilteredWithdrawals(withdrawalsData);
+        setLastVisible(lastDoc);
+      } catch (error) {
+        console.error("Error fetching withdrawals:", error);
+      } finally {
+        setLoader(false);
+      }
     } catch (error) {
-      console.error("Error fetching withdrawals:", error);
+      console.error("Error ", error);
     } finally {
-      setLoader(false);
+      setLoadingApproveId(null);
     }
   };
 
@@ -289,24 +386,70 @@ const TransactionsTable = () => {
                       </p>
                     </td>
                     <td className="truncate text-center px-2">
-                      <p className="text-sm font-semibold text-grayThree">
-                        {withdrawal.status === "pending" && (
-                          <div className="flex flex-row justify-center gap-2">
-                            <button
-                              onClick={() => handleReject(withdrawal)}
-                              className="rounded-md bg-white border border-redOne p-3 hover:bg-red-50"
-                            >
-                              {redCrossSvg}
-                            </button>
-                            <button
-                              onClick={() => handleApprove(withdrawal)}
-                              className="rounded-md bg-secondary p-2 hover:bg-main"
-                            >
-                              {whiteTickSvg}
-                            </button>
-                          </div>
-                        )}
-                      </p>
+                      {withdrawal.status === "pending" && (
+                        <div className="flex flex-row justify-center gap-2">
+                          <button
+                            onClick={() => handleReject(withdrawal)}
+                            className={`w-[40px] h-[40px] rounded-md bg-white border border-redOne p-3 hover:bg-red-50 flex items-center justify-center`}
+                            disabled={loadingRejectId === withdrawal.id}
+                          >
+                            {loadingRejectId === withdrawal.id ? (
+                              <div className="loader">
+                                {" "}
+                                {/* Loader element */}
+                                <svg
+                                  className="animate-spin h-5 w-5 text-white"
+                                  width="22"
+                                  height="22"
+                                  viewBox="0 0 22 22"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="M11 2.75C9.36831 2.75 7.77325 3.23385 6.41655 4.14038C5.05984 5.0469 4.00242 6.33537 3.378 7.84286C2.75357 9.35035 2.5902 11.0092 2.90853 12.6095C3.22685 14.2098 4.01259 15.6798 5.16637 16.8336C6.32016 17.9874 7.79017 18.7732 9.39051 19.0915C10.9909 19.4098 12.6497 19.2464 14.1571 18.622C15.6646 17.9976 16.9531 16.9402 17.8596 15.5835C18.7662 14.2267 19.25 12.6317 19.25 11"
+                                    stroke="#F1416C"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                  />
+                                </svg>
+                              </div>
+                            ) : (
+                              redCrossSvg
+                            )}
+                          </button>
+                          <button
+                            onClick={() => handleApprove(withdrawal)}
+                            className={`w-[40px] h-[40px] rounded-md bg-secondary p-2 hover:bg-main flex items-center justify-center`}
+                            disabled={loadingApproveId === withdrawal.id}
+                          >
+                            {loadingApproveId === withdrawal.id ? (
+                              <div className="loader">
+                                {" "}
+                                {/* Loader element */}
+                                <svg
+                                  className="animate-spin h-5 w-5 text-white"
+                                  width="22"
+                                  height="22"
+                                  viewBox="0 0 22 22"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="M11 2.75C9.36831 2.75 7.77325 3.23385 6.41655 4.14038C5.05984 5.0469 4.00242 6.33537 3.378 7.84286C2.75357 9.35035 2.5902 11.0092 2.90853 12.6095C3.22685 14.2098 4.01259 15.6798 5.16637 16.8336C6.32016 17.9874 7.79017 18.7732 9.39051 19.0915C10.9909 19.4098 12.6497 19.2464 14.1571 18.622C15.6646 17.9976 16.9531 16.9402 17.8596 15.5835C18.7662 14.2267 19.25 12.6317 19.25 11"
+                                    stroke="white"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                  />
+                                </svg>
+                              </div>
+                            ) : (
+                              whiteTickSvg
+                            )}
+                          </button>
+                        </div>
+                      )}
                     </td>
                   </tr>
                 ))
