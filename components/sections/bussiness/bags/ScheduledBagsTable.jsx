@@ -17,7 +17,7 @@ const ScheduledBagsTable = () => {
             <th className="pb-[8px] px-2 pt-[18px] text-center">Size</th>
             <th className="pb-[8px] px-2 pt-[18px] text-center">Daily Serve</th>
             <th className="pb-[8px] px-2 pt-[18px] text-center">In Stock</th>
-            <th className="pb-[8px] px-2 pt-[18px] text-center">Bag Price</th>
+            <th className="pb-[8px] px-2 pt-[18px] text-center">Pouch Price</th>
             <th className="pb-[8px] px-2 pt-[18px] text-center">Date</th>
             <th className="pb-[8px] px-2 pt-[18px] text-center">Actions</th>
           </tr>

@@ -144,13 +144,13 @@ const StatSlider = () => {
               ? 0
               : totalBags.length.toLocaleString("en-US")
           }
-          content={"Total Bags Made"}
+          content={"Total Pouches Made"}
         />
       </div>
       <div className="px-4">
         <Card
           title={Number(bagToday).toLocaleString("en-US")}
-          content={"Today's Bag"}
+          content={"Today's Pouch"}
         />
       </div>
     </Slider>

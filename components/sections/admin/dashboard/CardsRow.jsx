@@ -13,14 +13,14 @@ const CardsRow = ({ totalBags, bagToday, vendorCount, customerCount }) => {
               ? 0
               : totalBags.length.toLocaleString("en-US")
           }
-          content={"Total Bag Made"}
+          content={"Total Pouches Made"}
         />
       </div>
       <div className="flex flex-col gap-5 lg:w-[100%]">
         <Card title={customerCount} content={"Total Customers"} />
         <Card
           title={Number(bagToday).toLocaleString("en-US")}
-          content={"Today's Total Bags"}
+          content={"Today's Total pouches"}
         />
       </div>
     </div>

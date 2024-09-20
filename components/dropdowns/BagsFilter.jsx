@@ -11,16 +11,16 @@ const BagsFilter = ({ selectedFilter, onFilterChange }) => {
           onChange={(e) => onFilterChange(e.target.value)}
         >
           <option value="" className="text-base">
-            All Bags
+            All Pouches
           </option>
           <option value="scheduled" className="text-base">
-            Scheduled Bags
+            Scheduled Pouches
           </option>
           <option value="active" className="text-base">
-            Active Bags
+            Active Pouches
           </option>
           <option value="past" className="text-base">
-            Past Bags
+            Past Pouches
           </option>
         </select>
 

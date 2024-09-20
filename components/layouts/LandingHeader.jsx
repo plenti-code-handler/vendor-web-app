@@ -167,7 +167,7 @@ const LandingHeader = () => {
                           }
                         }}
                       >
-                        Surprise Bags
+                        Surprise Pouch
                       </Link>
                     </div>
                     <div>
@@ -180,7 +180,7 @@ const LandingHeader = () => {
                           }
                         }}
                       >
-                        Small & Large Bags
+                        Small & Large Pouch
                       </Link>
                     </div>
                   </div>
@@ -197,7 +197,7 @@ const LandingHeader = () => {
                           : "text-graySix lg:text-graySix hover:bg-pink hover:text-mainLight"
                       }`}
                     >
-                      Surprise Bag
+                      Surprise Pouch
                     </Link>
                   </div>
                   <div>
@@ -209,7 +209,7 @@ const LandingHeader = () => {
                           : "text-graySix lg:text-graySix hover:bg-pink hover:text-mainLight"
                       }`}
                     >
-                      Small & Large Bag
+                      Small & Large Pouch
                     </Link>
                   </div>
                 </div>

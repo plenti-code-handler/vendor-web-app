@@ -81,7 +81,7 @@ const Page = () => {
             <div className="text-[75%] md:text-[100%]">
               <div className="mx-10 flex flex-col gap-8">
                 <div className="flex md:flex-row flex-col font-[400] text-[1.5em] items-center justify-between">
-                  <p>Or drop us a line</p>
+                  <p>drop us a line</p>
                   <p>
                     <a
                       className="underline hover:text-pinkBgDark"
@@ -157,7 +157,7 @@ const Page = () => {
                     type="submit"
                     className={`flex self-center justify-center bg-pinkBgDark text-white font-bold py-3 px-4 rounded hover:bg-pinkBgDarkHover2 w-full sm:w-auto sm:px-6 lg:w-[35%]  `}
                   >
-                    Submit
+                    Contact us
                   </button>
                 </form>
               </div>

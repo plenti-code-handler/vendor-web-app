@@ -24,7 +24,7 @@ const decidePath = (pathname) => {
     case "business":
       return "My Dashboard";
     case "manage-bags":
-      return "Manage Bags";
+      return "Manage Pouches";
     case "bookings":
       return "Bookings";
     case "more":
@@ -103,12 +103,12 @@ const Breadcrumb = () => {
       <p className="m-4 text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-one">
         {currentPath}
       </p>
-      {currentPath === "Manage Bags" && (
+      {currentPath === "Manage Pouches" && (
         <button
           onClick={handleOpenDrawer}
           className="mr-3 mt-2 lg:m-0 flex items-center text-center justify-center bg-pinkBgDark text-white font-semibold py-2 px-4 rounded-[6px] hover:bg-pinkBgDarkHover2"
         >
-          <span className="mr-3 ml-2 font-semibold">New Bag</span>
+          <span className="mr-3 ml-2 font-semibold">New Pouch</span>
           <span>{addUserSvg}</span>
         </button>
       )}

@@ -272,7 +272,7 @@ const BagsTable = () => {
             <th className="pb-[8px] px-2 pt-[18px] text-center">Size</th>
             <th className="pb-[8px] px-2 pt-[18px] text-center">Daily Serve</th>
             <th className="pb-[8px] px-2 pt-[18px] text-center">In Stock</th>
-            <th className="pb-[8px] px-2 pt-[18px] text-center">Bag Price</th>
+            <th className="pb-[8px] px-2 pt-[18px] text-center">Pouch Price</th>
             <th className="pb-[8px] px-2 pt-[18px] text-center">Status</th>
             <th className="pb-[8px] px-2 pt-[18px] text-center">Actions</th>
           </tr>
@@ -368,7 +368,7 @@ const BagsTable = () => {
           ) : (
             <tr>
               <td colSpan="10" className="text-center py-10 text-grayOne">
-                No Bags found
+                No Pouch found
               </td>
             </tr>
           )}

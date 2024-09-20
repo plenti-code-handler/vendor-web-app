@@ -125,7 +125,7 @@ const faqData = [
       "Unfortunately, since the crates consist of goods with a short date, cancellations cannot be made after you have reserved a crate. Make sure you can pick up the till before making a reservation.",
   },
   {
-    question: "What happens if I'm not happy with my bag?",
+    question: "What happens if I'm not happy with my pouch?",
     answer:
       "If you are unhappy with the contents of your box, contact our support via the app and we will help you resolve the issue.",
   },

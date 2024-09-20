@@ -15,7 +15,7 @@ const Page = () => {
       <div className="flex flex-col items-center gap-10 p-[5%] lg:px-[2%] lg:pt-[3%] lg:pb-[5%]">
         <div className="flex flex-col gap-4 items-center">
           <h1 className="text-center font-extrabold text-[3em] md:text-[3.75em] uppercase">
-            SMALL & LARGE BAG
+            SMALL & LARGE pouch
           </h1>
           <p className="font-semibold text-[1em] text-center w-[100%] md:w-[80%]">
             At FoodieFinder, we offer both small and large bags with known
@@ -41,11 +41,11 @@ const Page = () => {
       </div>
       <Steps
         steps={steps}
-        heading={"Here's how Small & Large Bag works - step by step:"}
+        heading={"Here's how Small & Large pouch works - step by step:"}
         image={"/Sqaures-image-2.webp"}
       />
       <Faqs
-        heading={"Questions and Answers about Small & Large Bag for Business"}
+        heading={"Questions and Answers about Small & Large pouch for Business"}
         faqData={faqData}
       />
     </div>
@@ -53,12 +53,12 @@ const Page = () => {
 };
 const faqData = [
   {
-    question: "How do known content checkouts work for businesses?",
+    question: "How do known content pouches work for businesses?",
     answer:
       "Businesses can sell unsold items by creating cases with known contents in the FoodieFinder app. You specify exactly what is in each case, giving customers the opportunity to know what they are getting before they reserve and collect from you.",
   },
   {
-    question: "What can I put in a box with known contents?",
+    question: "What can I put in a Pouch with known contents?",
     answer:
       "You can put in specific items that are left over but still of high quality, such as ready meals, single products or combinations of items that would otherwise be thrown away.",
   },
@@ -70,38 +70,40 @@ const faqData = [
   {
     question: "How do bags with known content help my business?",
     answer:
-      "By selling boxes with known contents, you can reduce food waste, get revenue for goods that would otherwise be lost and give customers an attractive offer. It also provides a chance to showcase your range and attract repeat customers.",
+      "By selling Pouches with known contents, you can reduce food waste, get revenue for goods that would otherwise be lost and give customers an attractive offer. It also provides a chance to showcase your range and attract repeat customers.",
   },
   {
-    question: "What does my company gain from using boxes with known content?",
+    question:
+      "What does my company gain from using Pouches with known content?",
     answer:
       "You get revenue for products that would otherwise have gone to waste, and you can attract new customers to your business by offering transparency and great deals. Customers appreciate knowing what they are buying, which can build trust and lead to repeat purchases.",
   },
   {
-    question: "How do I set up checkouts with known content in the app?",
+    question: "How do I set up pouches with known content in the app?",
     answer:
       "Log in to your business account in the FoodieFinder app, create a new case by specifying the items included, the number of cases and pick-up times. Publish the checkout to make it visible for customers to reserve.",
   },
   {
     question: "How do I handle the collection of bags with known contents?",
     answer:
-      "Prepare the checkouts with the specific items you entered in the app. When customers come to pick up their crates, they show their confirmation from the app, and you hand out the prepared crates.",
+      "Prepare the pouches with the specific items you entered in the app. When customers come to pick up their crates, they show their confirmation from the app, and you hand out the prepared crates.",
   },
   {
-    question: "What happens if no customers reserve my checkouts?",
+    question: "What happens if no customers reserve my pouches?",
     answer:
       "If cash registers are not reserved, your business is not negatively affected; you still tried to reduce food waste. You can adjust the number of crates or their contents to better match demand in the future.",
   },
   {
-    question: "How do I communicate the contents of the box to the customers?",
+    question:
+      "How do I communicate the contents of the Pouch to the customers?",
     answer:
-      "When you create the checkout in the app, you clearly list what's included, so customers know exactly what they're buying. This creates trust and makes it easy for customers to choose the bag that suits them best.",
+      "When you create the checkout in the app, you clearly list what's included, so customers know exactly what they're buying. This creates trust and makes it easy for customers to choose the pouch that suits them best.",
   },
   {
     question:
-      "How do we ensure that the food in the boxes with known contents is of high quality?",
+      "How do we ensure that the food in the Pouches with known contents is of high quality?",
     answer:
-      "Only items that are still fully edible and of good quality should be included in the checkouts. It is important that your company continues to maintain its standard of quality and that all food is handled in accordance with current hygiene and safety regulations.",
+      "Only items that are still fully edible and of good quality should be included in the pouches. It is important that your company continues to maintain its standard of quality and that all food is handled in accordance with current hygiene and safety regulations.",
   },
 ];
 
@@ -119,17 +121,17 @@ const steps = [
   {
     title: "Create bags with known contents",
     description:
-      "Choose whether you want to create small or large bags depending on the amount of surplus goods. Describe exactly which products are included in each box so that customers clearly know what they are getting. Be careful to include details such as type of food, number of servings, or specific products.",
+      "Choose whether you want to create small or large bags depending on the amount of surplus goods. Describe exactly which products are included in each Pouch so that customers clearly know what they are getting. Be careful to include details such as type of food, number of servings, or specific products.",
   },
   {
     title: "Set price and collection times",
     description:
-      "As a business, you have the freedom to set the price of your checkouts yourself, giving you full control over your offers. However, we recommend pricing the checkouts at around 1/3 of the regular price, which makes them attractive to customers and contributes to faster sales. Also enter the times when customers can pick up their boxes.",
+      "As a business, you have the freedom to set the price of your pouches yourself, giving you full control over your offers. However, we recommend pricing the pouches at around 1/3 of the regular price, which makes them attractive to customers and contributes to faster sales. Also enter the times when customers can pick up their Pouches.",
   },
   {
-    title: "Publish checkouts to the app",
+    title: "Publish pouches to the app",
     description:
-      "Once you've set up the checkouts, publish them to the FoodieFinder app so they're visible to customers. Customers will be able to see the description of the content and the price, making it easy for them to make a decision.",
+      "Once you've set up the pouches, publish them to the FoodieFinder app so they're visible to customers. Customers will be able to see the description of the content and the price, making it easy for them to make a decision.",
   },
   {
     title: "Customers reserve cases",
@@ -144,12 +146,12 @@ const steps = [
   {
     title: "Pick-up management",
     description:
-      "Customers come to your store or restaurant during the specified pick-up times. They show their confirmation from the app, and you hand out the prepared boxes with known contents.",
+      "Customers come to your store or restaurant during the specified pick-up times. They show their confirmation from the app, and you hand out the prepared Pouches with known contents.",
   },
   {
     title: "Follow up and optimize",
     description:
-      "After each round of sales, analyze what sold best and adjust your checkouts and prices accordingly. Be responsive to customer feedback and use it to improve your offerings and increase sales.",
+      "After each round of sales, analyze what sold best and adjust your pouches and prices accordingly. Be responsive to customer feedback and use it to improve your offerings and increase sales.",
   },
 ];
 
