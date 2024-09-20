@@ -53,12 +53,12 @@ const Footer = () => {
       <div className="bg-blackBtn px-[5%] pt-[5%] pb-6">
         <div className="flex flex-col gap-5 justify-between flex-wrap sm:flex-row pb-14">
           <div className="flex-1">
-            <div className="flex mb-5 gap-3">
+            <div className="flex mb-8 gap-3">
               <img src="/logo-without-text.png" />
               <img src="/logo-white.png" />
             </div>
             <div className="flex flex-col lg:flex-row gap-3 lg:justify-between">
-              <ul className="text-white flex flex-col gap-3 text-[400] text-[1em] w-full   lg:w-1/3">
+              <ul className=" text-white flex flex-col gap-5 text-[400] text-[1em] w-full   lg:w-1/3">
                 <li>
                   <Link
                     href="/"
@@ -74,7 +74,7 @@ const Footer = () => {
                     className="flex items-center gap-5 hover:text-main transition-colors duration-300 w-fit"
                   >
                     {horizontalChecklistIcon}
-                    <span>Surprise Bags</span>
+                    <span>Surprise Pouch</span>
                   </Link>
                 </li>
                 <li>
@@ -83,7 +83,7 @@ const Footer = () => {
                     className="flex items-center gap-5 hover:text-main transition-colors duration-300 w-fit"
                   >
                     {horizontalChecklistIcon}
-                    <span>Small & Medium Bags</span>
+                    <span>Small & Medium Pouch</span>
                   </Link>
                 </li>
                 <li>
@@ -114,7 +114,7 @@ const Footer = () => {
                   </Link>
                 </li>
               </ul>
-              <ul className="text-white flex flex-col gap-3 text-[400] text-[1em] w-full  lg:w-1/3">
+              <ul className=" text-white flex flex-col gap-5 text-[400] text-[1em] w-full  lg:w-1/3">
                 <li>
                   <Link
                     href="/privacy"
@@ -170,7 +170,7 @@ const Footer = () => {
                   </Link>
                 </li>
               </ul>
-              <ul className="text-white flex flex-col gap-3 text-[400] text-[1em] w-full   lg:w-1/3">
+              <ul className=" text-white flex flex-col gap-5 text-[400] text-[1em] w-full   lg:w-1/3">
                 <li>
                   <Link
                     href="/security_policy"
@@ -243,7 +243,7 @@ const Footer = () => {
 
             <hr className="my-4" />
             <div className="flex flex-col gap-4">
-              <h2 className="text-[1.25em] text-[400]">Or drop us a line</h2>
+              <h2 className="text-[1.25em] text-[400]">drop us a line</h2>
               <p className={`underline text-[1em]`}>
                 <a
                   href="mailto:kontakt@foodiefinder.se"
@@ -268,7 +268,7 @@ const Footer = () => {
         </div>
         <hr className="pb-6" />
         <p className="text-[#F0F0F0] text-[0.875em] text-[400]">
-          FoodieFinder @2023
+          FoodieFinder @2024
         </p>
       </div>
     </div>
@@ -279,13 +279,25 @@ export default Footer;
 
 const horizontalChecklistIcon = (
   <svg
-    width="15"
-    height="2"
-    viewBox="0 0 32 2"
+    width="10"
+    height="11"
+    viewBox="0 0 10 11"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <rect y="0.509766" width="32" height="1" fill="white" />
+    <g clip-path="url(#clip0_3693_503)">
+      <path
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        d="M0 11L10 5.5L0 0C1.53199 3.53801 1.53199 7.47807 0 11Z"
+        fill="white"
+      />
+    </g>
+    <defs>
+      <clipPath id="clip0_3693_503">
+        <rect width="10" height="11" fill="white" />
+      </clipPath>
+    </defs>
   </svg>
 );
 
