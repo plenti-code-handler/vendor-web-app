@@ -13,7 +13,7 @@ export const metadata = {
 
 export default function AuthLayout({ children }) {
   return (
-    <html lang="en">
+    <html>
       <body className={inter.className}>
         {/* Google Translate Element for background translation */}
         <div id="google_translate_element" style={{ display: "none" }}></div>
@@ -33,7 +33,7 @@ export default function AuthLayout({ children }) {
             __html: `
       function googleTranslateElementInit() {
         new google.translate.TranslateElement({
-          pageLanguage: 'en',
+         
           autoDisplay: false
         }, 'google_translate_element');
       }
