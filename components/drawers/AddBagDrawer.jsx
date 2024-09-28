@@ -107,6 +107,7 @@ const AddBagDrawer = () => {
       // Data to be added
       const newBag = {
         bagaday: numberOfBags,
+        lastUpdated: new Date(),
         perbag: numberOfBags,
         date: updatedDateArray,
         desc: description,
