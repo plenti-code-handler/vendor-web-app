@@ -16,11 +16,21 @@ import {
   getAuth,
   reauthenticateWithCredential,
 } from "firebase/auth";
-import { db } from "../../app/firebase/config";
-import { deleteDoc, doc } from "firebase/firestore";
-import { logoutUser } from "../../redux/slices/loggedInUserSlice";
+import { auth, db } from "../../app/firebase/config";
+
+import { logoutUser, loginUser } from "../../redux/slices/loggedInUserSlice";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+
+import {
+  doc,
+  getDocs,
+  query,
+  collection,
+  where,
+  deleteDoc,
+  getDoc,
+} from "firebase/firestore"; // Import necessary Firestore functions
 
 const DeleteAccountDrawer = () => {
   const dispatch = useDispatch();
@@ -37,29 +47,66 @@ const DeleteAccountDrawer = () => {
   const auth = getAuth();
   const user = auth.currentUser;
 
-  const handlePasswordDelete = async () => {
+  const handlePasswordDelete = async (password) => {
+    console.log(password);
     if (!user) {
       setError("No user is logged in.");
       return;
     }
-
-    const credential = EmailAuthProvider.credential(user.email, password);
-
+    const email = user.email;
     try {
-      await reauthenticateWithCredential(user, credential);
-      // Delete the user from Firebase Authentication
-      await deleteUser(user);
-      toast.error("Account deleted successfully.");
+      // Step 1: Re-authenticate the user
+      dispatch(loginUser({ email, password })).unwrap();
 
-      // Delete the user's record from Firestore
-      const userDocRef = doc(db, "users", user.uid); // Assuming the user document ID is the user's UID
-      await deleteDoc(userDocRef);
+      // Step 2: Fetch the user's Firestore document
+      const userDocRef = doc(db, "users", user.uid);
+      const userDoc = await getDoc(userDocRef);
+
+      if (!userDoc.exists()) {
+        toast.error("User record not found.");
+        return;
+      }
+
+      const userData = userDoc.data();
+      const role = userData.role;
+
+      // Step 3: Check if the user is a vendor
+      if (role === "vendor") {
+        // Delete the vendor from Firebase Authentication
+        console.log("User re-authenticated successfully.");
+        await auth.currentUser.delete();
+
+        toast.success("Vendor account deleted successfully.");
+
+        // Delete the user's record from Firestore
+        await deleteDoc(userDocRef);
+
+        // Step 4: Delete all bags associated with the vendor
+        const bagQuery = query(
+          collection(db, "bags"),
+          where("resuid", "==", user.uid)
+        );
+        const bagSnapshot = await getDocs(bagQuery);
+
+        if (!bagSnapshot.empty) {
+          bagSnapshot.forEach(async (bagDoc) => {
+            await deleteDoc(bagDoc.ref); // Directly delete each bag document
+          });
+        }
+
+        toast.success("All associated bags deleted successfully.");
+      } else {
+        toast.error("Only vendors can delete their accounts.");
+      }
+
+      // Step 5: Sign out the user, close the drawer, dispatch logout, and navigate to the homepage.
       dispatch(setOpenDrawer(false));
       await auth.signOut();
       dispatch(logoutUser());
       router.push("/");
     } catch (error) {
-      toast.error("Incorrect password.");
+      console.error("Error deleting account:", error);
+      toast.error("Incorrect password or an error occurred.");
     }
   };
 

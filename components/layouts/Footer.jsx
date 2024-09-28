@@ -268,7 +268,7 @@ const Footer = () => {
         </div>
         <hr className="pb-6" />
         <p className="text-[#F0F0F0] text-[0.875em] text-[400]">
-          FoodieFinder @2024
+          FoodieFinder @2024 - Part of BuildLoop Sverige AB 559475-7170
         </p>
       </div>
     </div>

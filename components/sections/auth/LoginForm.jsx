@@ -28,6 +28,10 @@ const LoginForm = () => {
     dispatch(loginUser({ email, password }))
       .unwrap()
       .then((user) => {
+        if (user == null) {
+          setLoading(false); // Set loading to false after failed login
+          return;
+        }
         if (user.role === "vendor") {
           router.push("/business");
         } else if (user.role === "admin") {

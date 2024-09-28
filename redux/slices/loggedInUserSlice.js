@@ -32,10 +32,10 @@ export const getloginUserData = createAsyncThunk(
         } else if (userData.status === "pending") {
           toast.error("Your request is still pending");
         } else {
-          throw new Error("User status is invalid or not set.");
+          return ;
         }
       } else {
-        throw new Error("User does not exist in Firestore.");
+        throw new Error("User does not exist.");
       }
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
