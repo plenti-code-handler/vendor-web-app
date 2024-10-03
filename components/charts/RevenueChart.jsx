@@ -64,7 +64,7 @@ const RevenueChart = () => {
       yaxis: {
         tickAmount: 4,
         labels: {
-          formatter: (val) => (val === 0 ? "€ 0" : `€ ${val}`), // Fixed the dollar sign
+          formatter: (val) => (val === 0 ? "SEK 0" : `SEK ${val}`), // Fixed the dollar sign
           style: {
             fontSize: "12px",
             fontWeight: 600,
@@ -179,7 +179,7 @@ const RevenueChart = () => {
           Revenue
         </h1>
         <h1 className="text-[40px] leading-[28px] text-mainLight font-bold my-4">
-          <sup className="text-[24px] text-mainLight font-semibold">€</sup>
+          <sup className="text-[24px] text-mainLight font-semibold">SEK</sup>
           {chartData.series[0].data
             .reduce((acc, curr) => acc + curr, 0)
             .toLocaleString()}{" "}

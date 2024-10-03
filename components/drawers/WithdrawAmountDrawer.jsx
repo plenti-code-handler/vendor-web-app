@@ -230,12 +230,12 @@ const WithdrawAmountDrawer = ({ balance, setBalance, setWithdrawals }) => {
                     <div className="flex flex-col items-center">
                       <p className="text-white text-[14px]">Current Balance</p>
                       <p className="text-white text-[16px] font-bold">
-                        € {Number(balance).toFixed(2)}
+                        SEK {Number(balance).toFixed(2)}
                       </p>
                     </div>
 
                     <div className="flex gap-2 items-center justify-center w-[50%]">
-                      <p className="text-white text-[50px] font-bold">€</p>
+                      <p className="text-white text-[50px] font-bold">SEK</p>
                       <input
                         type="number"
                         value={amount}

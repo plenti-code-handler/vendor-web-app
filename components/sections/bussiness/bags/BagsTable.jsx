@@ -341,7 +341,7 @@ const BagsTable = () => {
                 </td>
                 <td className="truncate text-center px-2">
                   <p className="text-sm font-semibold text-grayThree">
-                    € {bag.price}
+                    SEK {bag.price}
                   </p>
                 </td>
                 <td className="truncate text-center px-2">

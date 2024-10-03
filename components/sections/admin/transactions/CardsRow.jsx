@@ -95,7 +95,7 @@ const CardsRow = () => {
   ) : (
     <div className="hidden gap-x-10 lg:flex gap-5 lg:w-[100%] flex-row">
       <TransactionCard
-        title={`€${tenPercent.toFixed(2)}`}
+        title={`SEK ${tenPercent.toFixed(2)}`}
         content={"Revenue Generated"}
         textColor={"text-secondary"}
       />

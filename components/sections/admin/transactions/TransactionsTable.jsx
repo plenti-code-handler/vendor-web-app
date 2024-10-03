@@ -366,7 +366,7 @@ const TransactionsTable = () => {
                     </td>
                     <td className="truncate text-center px-2">
                       <p className="text-sm font-semibold text-grayThree">
-                        € {withdrawal.amount}
+                        SEK {withdrawal.amount}
                       </p>
                     </td>
                     <td className="truncate text-center px-2">
@@ -529,12 +529,12 @@ const TransactionsTable = () => {
               </td>
               <td className="truncate text-center px-2 w-[18.00%]">
                 <p className="text-sm font-semibold text-grayThree">
-                  € {user.amountGenerated}
+                  SEK {user.amountGenerated}
                 </p>
               </td>
               <td className="truncate text-center px-2">
                 <p className="text-sm font-semibold text-grayThree">
-                  € {user.ourCommisionPercent}
+                  SEK {user.ourCommisionPercent}
                 </p>
               </td>
             </tr>

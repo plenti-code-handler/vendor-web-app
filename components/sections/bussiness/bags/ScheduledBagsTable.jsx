@@ -63,7 +63,7 @@ const ScheduledBagsTable = () => {
               </td>
               <td className="truncate text-center px-2">
                 <p className="text-sm font-semibold text-grayThree">
-                  € {bag.bagPrice}
+                  SEK {bag.bagPrice}
                 </p>
               </td>
               <td className="truncate text-center px-2">

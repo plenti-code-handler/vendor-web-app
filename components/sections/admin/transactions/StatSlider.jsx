@@ -75,7 +75,7 @@ const StatSlider = ({ vendorCount, tenPercent }) => {
     <Slider {...settings}>
       <div className="px-4">
         <TransactionCard
-          title={`€${tenPercent.toFixed(2)}`}
+          title={`SEK ${tenPercent.toFixed(2)}`}
           content={"Revenue Generated"}
           textColor={"text-secondary"}
           smallScreen={true}

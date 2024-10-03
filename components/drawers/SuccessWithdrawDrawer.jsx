@@ -65,7 +65,7 @@ const SuccessWithdrawDrawer = ({ amount, iban }) => {
                       </p>
 
                       <p className="text-white text-[50px] font-bold">
-                        € {amount}
+                        SEK {amount}
                       </p>
 
                       <p className="text-white text-[14px]">to account</p>

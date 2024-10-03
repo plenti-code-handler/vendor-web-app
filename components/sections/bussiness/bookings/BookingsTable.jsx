@@ -405,7 +405,7 @@ const BookingsTable = () => {
                     </td>
                     <td className="truncate text-center px-2">
                       <p className="text-sm font-semibold text-grayThree">
-                        € {booking.price}
+                        SEK {booking.price}
                       </p>
                     </td>
                     <td className="truncate text-center px-2">
