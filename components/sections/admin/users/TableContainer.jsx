@@ -58,7 +58,6 @@ const TableContainer = () => {
   }, []);
 
   useEffect(() => {
-    // Ensure the user and user.uid are available
     const fetchInitialCustomers = async () => {
       try {
         setLoader(true);
@@ -66,6 +65,8 @@ const TableContainer = () => {
         const q = query(colRef, where("role", "==", "customer"), limit(10));
 
         const allBookingsSnapshot = await getDocs(q);
+        const exchangeRates = await fetchExchangeRates(); // Fetch exchange rates
+
         const usersData = await Promise.all(
           allBookingsSnapshot.docs.map(async (entry) => {
             const users = entry.data();
@@ -83,13 +84,28 @@ const TableContainer = () => {
             bookingsSnapshot.forEach((bookingDoc) => {
               const bookingData = bookingDoc.data();
               const bookingTotal = bookingData.price;
-              totalAmount += bookingTotal;
+              const currencyCode = bookingData.curr; // Assuming `curr` field holds the currency code
+
+              // Convert bookingTotal to SEK if necessary
+              let totalInSEK = bookingTotal;
+              if (currencyCode && currencyCode !== "SEK") {
+                const exchangeRate = exchangeRates[currencyCode];
+                if (exchangeRate) {
+                  totalInSEK = bookingTotal * exchangeRate; // Convert to SEK
+                } else {
+                  console.warn(
+                    `No exchange rate found for currency: ${currencyCode}`
+                  );
+                }
+              }
+
+              totalAmount += totalInSEK; // Add converted total to totalAmount
             });
 
             // Return user data with the total amount
             return {
               ...users,
-              totalAmount, // Add total amount to user data
+              totalAmount: totalAmount.toFixed(2), // Add total amount to user data
             };
           })
         );
@@ -104,6 +120,19 @@ const TableContainer = () => {
         console.error("Error fetching bookings:", error);
       } finally {
         setLoader(false);
+      }
+    };
+
+    const fetchExchangeRates = async () => {
+      try {
+        const response = await fetch(
+          "https://v6.exchangerate-api.com/v6/ef079d10cafeb4aa50587661/latest/SEK"
+        ); // Replace with your exchange rate API
+        const data = await response.json();
+        return data.conversion_rates; // Return rates object with currency codes as keys
+      } catch (error) {
+        console.error("Error fetching exchange rates:", error);
+        return {};
       }
     };
 

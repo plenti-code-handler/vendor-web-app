@@ -154,7 +154,8 @@ const Transactions = () => {
           {topLeftWalletBackground}
         </div>
         <p className="text-[40px] font-bold text-white z-0">
-          SEK {Number(balance).toFixed(2)}
+          {JSON.parse(localStorage.getItem("countryCode"))}{" "}
+          {Number(balance).toFixed(2)}
         </p>
         <p className="text-[16px] font-medium text-white z-0">My Wallet</p>
 
@@ -228,7 +229,8 @@ const Transactions = () => {
                           : ""}
                       </div>
                       <div className="text-amount text-[20px] font-semibold">
-                        SEK{Number(withdrawal.amount).toFixed(2)}
+                        {JSON.parse(localStorage.getItem("countryCode"))}
+                        {Number(withdrawal.amount).toFixed(2)}
                       </div>
                     </div>
                   </div>

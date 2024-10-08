@@ -259,7 +259,7 @@ const RecentOrders = () => {
                   </td>
                   <td className="truncate text-center px-2">
                     <p className="text-sm font-semibold text-grayThree">
-                      SEK {booking.price}
+                      {booking.curr} {booking.price}
                     </p>
                   </td>
                   <td className="truncate text-center px-2">

@@ -25,6 +25,7 @@ const LoginForm = () => {
   const handleLogin = (data) => {
     setLoading(true); // Set loading to true when login starts
     const { email, password } = data;
+
     dispatch(loginUser({ email, password }))
       .unwrap()
       .then((user) => {
@@ -32,15 +33,71 @@ const LoginForm = () => {
           setLoading(false); // Set loading to false after failed login
           return;
         }
+
         if (user.role === "vendor") {
-          router.push("/business");
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+              (position) => {
+                console.log("Geolocation successful:", position);
+                localStorage.setItem("position", JSON.stringify(position));
+
+                const { latitude, longitude } = position.coords;
+
+                fetch(
+                  `https://api.opencagedata.com/geocode/v1/json?q=${String(
+                    latitude
+                  )}+${String(longitude)}&key=70109102439c46daae9f710983faf57d`
+                )
+                  .then((geocodeResponse) => {
+                    if (!geocodeResponse.ok) {
+                      throw new Error(
+                        `HTTP error! status: ${geocodeResponse.status}`
+                      );
+                    }
+                    return geocodeResponse.json();
+                  })
+                  .then((geocodeData) => {
+                    if (!geocodeData || geocodeData.results.length === 0) {
+                      throw new Error("No geocode data found.");
+                    }
+
+                    const countryCode =
+                      geocodeData.results[0].annotations.currency.iso_code;
+                    localStorage.setItem(
+                      "countryCode",
+                      JSON.stringify(countryCode)
+                    );
+                    console.log(`Country code: ${countryCode}`);
+
+                    // Redirect to the business route after successful geolocation and fetch
+                    router.push("/business");
+                    setLoading(false); // Set loading to false after successful geolocation and fetch
+                  })
+                  .catch((error) => {
+                    console.error("Error fetching geolocation data:", error);
+                    setLoading(false); // Set loading to false after failed geolocation fetch
+                  });
+              },
+              (error) => {
+                console.error("Geolocation error:", error);
+                toast.error(
+                  "Geolocation permission is required to access the business area."
+                );
+                setLoading(false); // Set loading to false if geolocation fails
+              }
+            );
+          } else {
+            console.log("Geolocation is not supported by this browser");
+            setLoading(false); // Set loading to false if geolocation is not supported
+          }
         } else if (user.role === "admin") {
           toast.success("Admin Logged In Successfully");
           router.push("/admin");
+          setLoading(false); // Set loading to false after successful admin login
         } else {
           console.error("Unknown role:", user.role);
+          setLoading(false); // Set loading to false for unknown role
         }
-        setLoading(false); // Set loading to false after successful login
       })
       .catch((err) => {
         toast.error("Login Failed");

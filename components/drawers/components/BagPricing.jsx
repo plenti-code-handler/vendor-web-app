@@ -16,7 +16,9 @@ const BagPricing = ({
           value={pricing}
           onChange={(e) => setPricing(e.target.value)}
         />
-        <span className="absolute right-3 text-black font-bold">SEK</span>
+        <span className="absolute right-3 text-black font-bold">
+          {JSON.parse(localStorage.getItem("countryCode"))}
+        </span>
       </div>
       <div className="relative flex items-center">
         <input
@@ -25,7 +27,9 @@ const BagPricing = ({
           value={originalPrice}
           onChange={(e) => setOriginalPrice(e.target.value)}
         />
-        <span className="absolute right-3 text-black font-bold">SEK</span>
+        <span className="absolute right-3 text-black font-bold">
+          {JSON.parse(localStorage.getItem("countryCode"))}
+        </span>
       </div>
     </>
   );

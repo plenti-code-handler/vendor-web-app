@@ -366,7 +366,7 @@ const TransactionsTable = () => {
                     </td>
                     <td className="truncate text-center px-2">
                       <p className="text-sm font-semibold text-grayThree">
-                        SEK {withdrawal.amount}
+                        {withdrawal.curr} {withdrawal.amount}
                       </p>
                     </td>
                     <td className="truncate text-center px-2">

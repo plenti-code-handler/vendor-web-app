@@ -66,7 +66,7 @@ const RevenueChart = () => {
       yaxis: {
         tickAmount: 4,
         labels: {
-          formatter: (val) => (val === 0 ? "SEK 0" : `SEK ${val}`), // Fixed the dollar sign
+          formatter: (val) => (val === 0 ? `SEK 0` : `SEK ${val}`), // Fixed the dollar sign
           style: {
             fontSize: "12px",
             fontWeight: 600,
@@ -88,7 +88,7 @@ const RevenueChart = () => {
 
   useEffect(() => {
     const fetchRevenueData = async () => {
-      var total = 0.0; // To hold total revenue
+      let total = 0.0; // To hold total revenue
       const today = new Date();
       const lastSevenDays = Array.from({ length: 7 }, (_, i) => {
         const date = new Date();
@@ -117,20 +117,13 @@ const RevenueChart = () => {
             )
           );
 
-          const revenueQuery = query(collection(db, "bookings"));
-          console.log("Booking query created for user:", user.uid); // Log the Firestore query
-
           const querySnapshot = await getDocs(bookingQuery);
-
-          const querySnapshotrevenue = await getDocs(revenueQuery);
-
-          querySnapshotrevenue.forEach((doc) => {
-            total += doc.data().price;
-          });
           console.log(
             "Query snapshot received, number of bookings:",
             querySnapshot.size
           ); // Log the number of bookings received
+
+          const exchangeRates = await fetchExchangeRates(); // Fetch exchange rates
 
           querySnapshot.forEach((doc) => {
             const data = doc.data();
@@ -144,7 +137,24 @@ const RevenueChart = () => {
 
             const index = lastSevenDays.indexOf(bookingDate);
             if (index !== -1) {
-              const percentage10 = data.price * 0.1;
+              const priceInOriginalCurrency = data.price;
+              const currencyCode = data.curr; // Assuming `curr` field holds the currency code
+
+              // Convert price to SEK if necessary
+              let priceInSEK = priceInOriginalCurrency;
+              if (currencyCode && currencyCode !== "SEK") {
+                const exchangeRate = exchangeRates[currencyCode];
+                if (exchangeRate) {
+                  priceInSEK = priceInOriginalCurrency * exchangeRate; // Convert to SEK
+                  console.log("Original Currency", priceInOriginalCurrency);
+                } else {
+                  console.warn(
+                    `No exchange rate found for currency: ${currencyCode}`
+                  );
+                }
+              }
+
+              const percentage10 = priceInSEK * 0.1;
               revenueData[index] += percentage10; // Calculate revenue
               console.log(
                 `Updated revenue for ${bookingDate}:`,
@@ -153,9 +163,10 @@ const RevenueChart = () => {
             }
           });
 
-          console.log("Total Revenue: ", total * 0.1);
+          total = revenueData.reduce((acc, val) => acc + val, 0);
+          console.log("Total Revenue: ", total);
 
-          setTotalRevenue(total * 0.1);
+          setTotalRevenue(total);
 
           // Update chart data with the new revenue data and dates
           console.log("Final revenue data for the last 7 days:", revenueData); // Log the final revenue data
@@ -180,6 +191,19 @@ const RevenueChart = () => {
 
       // Cleanup subscription on unmount
       return () => unsubscribe();
+    };
+
+    const fetchExchangeRates = async () => {
+      try {
+        const response = await fetch(
+          "https://v6.exchangerate-api.com/v6/ef079d10cafeb4aa50587661/latest/SEK"
+        ); // Replace with your exchange rate API
+        const data = await response.json();
+        return data.conversion_rates; // Return rates object with currency codes as keys
+      } catch (error) {
+        console.error("Error fetching exchange rates:", error);
+        return {};
+      }
     };
 
     fetchRevenueData();

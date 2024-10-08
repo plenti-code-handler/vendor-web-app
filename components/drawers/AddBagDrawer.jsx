@@ -60,6 +60,7 @@ const AddBagDrawer = () => {
   const [selectedDates, setSelectedDates] = useState([]);
   const [dealTitle, setDealTitle] = useState("");
   const [user, setUser] = useState({});
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const user = getUserLocal();
@@ -81,6 +82,7 @@ const AddBagDrawer = () => {
 
   const handleSubmitBag = async () => {
     try {
+      setLoading(true);
       const updatedDateArray = selectedDates.map((item) => {
         // Combine date with starttime and endtime
         const dateStr = `${item.date}T00:00:00`; // Date with no time for selectedDateTime
@@ -124,6 +126,7 @@ const AddBagDrawer = () => {
         // categories: selectedCategories,
         price: Number(pricing),
         originalprice: Number(originalPrice),
+        curr: JSON.parse(localStorage.getItem("countryCode")),
         // createdAt: new Date(), // Optionally add a timestamp
       };
 
@@ -153,6 +156,7 @@ const AddBagDrawer = () => {
       setFilteredBags(bagsData);
       setLastVisible(lastDoc);
       dispatch(setOpenDrawer(false));
+      setLoading(false);
     } catch (error) {
       console.error("Error adding document: ", error);
     }
@@ -222,7 +226,7 @@ const AddBagDrawer = () => {
                       onClick={handleSubmitBag}
                       className="flex justify-center bg-pinkBgDark text-white font-semibold py-2  rounded hover:bg-pinkBgDarkHover2 gap-2 lg:w-[100%]"
                     >
-                      Add Bag
+                      {loading ? "Adding..." : "Add Bag"}
                     </button>
                   </div>
                 </div>

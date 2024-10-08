@@ -65,7 +65,10 @@ const RevenueChart = () => {
       yaxis: {
         tickAmount: 4,
         labels: {
-          formatter: (val) => (val === 0 ? "SEK 0" : `SEK ${val}`), // Fixed the dollar sign
+          formatter: (val) =>
+            val === 0
+              ? `${JSON.parse(localStorage.getItem("countryCode"))} 0`
+              : `${JSON.parse(localStorage.getItem("countryCode"))} ${val}`, // Fixed the dollar sign
           style: {
             fontSize: "12px",
             fontWeight: 600,
@@ -195,7 +198,9 @@ const RevenueChart = () => {
           Total Revenue
         </h1>
         <h1 className="text-[40px] leading-[28px] text-mainLight font-bold my-4">
-          <sup className="text-[24px] text-mainLight font-semibold">SEK</sup>
+          <sup className="text-[24px] text-mainLight font-semibold">
+            {JSON.parse(localStorage.getItem("countryCode"))}
+          </sup>
           {totalRevenue.toLocaleString()} {/* Use the totalRevenue state */}
         </h1>
       </div>

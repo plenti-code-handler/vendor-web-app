@@ -50,13 +50,30 @@ const CardsRow = () => {
         // Fetch all documents from the "bookings" collection
         const querySnapshot = await getDocs(collection(db, "bookings"));
 
+        // Fetch exchange rates
+        const exchangeRates = await fetchExchangeRates();
+
         // Sum up the "price" field from all documents
         let sum = 0;
         querySnapshot.forEach((doc) => {
           const data = doc.data();
           if (data.price && data.quantity) {
-            const total = data.price;
-            sum += total;
+            const currencyCode = data.curr; // Assuming `curr` field holds the currency code
+            let priceInSEK = data.price;
+
+            // Convert price to SEK if necessary
+            if (currencyCode && currencyCode !== "SEK") {
+              const exchangeRate = exchangeRates[currencyCode];
+              if (exchangeRate) {
+                priceInSEK = data.price * exchangeRate; // Convert to SEK
+              } else {
+                console.warn(
+                  `No exchange rate found for currency: ${currencyCode}`
+                );
+              }
+            }
+
+            sum += priceInSEK; // Add converted price to sum
           }
         });
 
@@ -71,6 +88,19 @@ const CardsRow = () => {
         toast.error("An error occurred while calculating the total price.");
       } finally {
         setLoader(false);
+      }
+    };
+
+    const fetchExchangeRates = async () => {
+      try {
+        const response = await fetch(
+          "https://v6.exchangerate-api.com/v6/ef079d10cafeb4aa50587661/latest/SEK"
+        ); // Replace with your exchange rate API
+        const data = await response.json();
+        return data.conversion_rates; // Return rates object with currency codes as keys
+      } catch (error) {
+        console.error("Error fetching exchange rates:", error);
+        return {};
       }
     };
 

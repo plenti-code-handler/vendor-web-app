@@ -65,7 +65,8 @@ const SuccessWithdrawDrawer = ({ amount, iban }) => {
                       </p>
 
                       <p className="text-white text-[50px] font-bold">
-                        SEK {amount}
+                        {JSON.parse(localStorage.getItem("countryCode"))}{" "}
+                        {amount}
                       </p>
 
                       <p className="text-white text-[14px]">to account</p>

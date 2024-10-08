@@ -341,7 +341,8 @@ const BagsTable = () => {
                 </td>
                 <td className="truncate text-center px-2">
                   <p className="text-sm font-semibold text-grayThree">
-                    SEK {bag.price}
+                    {JSON.parse(localStorage.getItem("countryCode"))}{" "}
+                    {bag.price}
                   </p>
                 </td>
                 <td className="truncate text-center px-2">
