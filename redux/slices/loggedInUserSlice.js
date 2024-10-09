@@ -26,13 +26,12 @@ export const getloginUserData = createAsyncThunk(
           //   },
           // });
           return userData; // Return the user data if the status is approved
-        } else
-         if (userData.status === "rejected") {
+        } else if (userData.status === "rejected") {
           toast.error("Your request has been declined");
         } else if (userData.status === "pending") {
           toast.error("Your request is still pending");
         } else {
-          return ;
+          return;
         }
       } else {
         throw new Error("User does not exist.");
@@ -100,6 +99,7 @@ export const loggedInUserSlice = createSlice({
     logoutUser: (state) => {
       state.user = null;
       localStorage.removeItem("user");
+      localStorage.removeItem("countryCode");
     },
   },
   extraReducers: (builder) => {

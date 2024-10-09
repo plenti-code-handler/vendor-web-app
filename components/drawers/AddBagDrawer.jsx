@@ -61,6 +61,14 @@ const AddBagDrawer = () => {
   const [dealTitle, setDealTitle] = useState("");
   const [user, setUser] = useState({});
   const [loading, setLoading] = useState(false);
+  const [countryCode, setCountryCode] = useState(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedCountryCode = JSON.parse(localStorage.getItem("countryCode"));
+      setCountryCode(storedCountryCode);
+    }
+  }, []);
 
   useEffect(() => {
     const user = getUserLocal();
@@ -126,7 +134,7 @@ const AddBagDrawer = () => {
         // categories: selectedCategories,
         price: Number(pricing),
         originalprice: Number(originalPrice),
-        curr: JSON.parse(localStorage.getItem("countryCode")),
+        curr: countryCode ? countryCode : "SEK",
         // createdAt: new Date(), // Optionally add a timestamp
       };
 

@@ -8,11 +8,19 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { setOpenDrawer } from "../../redux/slices/withdrawSuccessSlice";
 import { crossIconWhiteSvg, payPalSvg, warningSvg } from "../../svgs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const SuccessWithdrawDrawer = ({ amount, iban }) => {
   const dispatch = useDispatch();
   const open = useSelector((state) => state.withdrawSuccess.drawerOpen);
+  const [countryCode, setCountryCode] = useState(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedCountryCode = JSON.parse(localStorage.getItem("countryCode"));
+      setCountryCode(storedCountryCode);
+    }
+  }, []);
 
   // const [amount, setAmount] = useState("");
   // const currentBalance = 3150.7;
@@ -56,7 +64,7 @@ const SuccessWithdrawDrawer = ({ amount, iban }) => {
                     <img
                       alt="Tick Icon"
                       src="/tick-mark.png"
-                      className="h-25 w-25 "
+                      className="h-25 w-25"
                     />
 
                     <div className="flex flex-col gap-2 items-center">
@@ -65,8 +73,7 @@ const SuccessWithdrawDrawer = ({ amount, iban }) => {
                       </p>
 
                       <p className="text-white text-[50px] font-bold">
-                        {JSON.parse(localStorage.getItem("countryCode"))}{" "}
-                        {amount}
+                        {countryCode ? countryCode : "SEK"} {amount}
                       </p>
 
                       <p className="text-white text-[14px]">to account</p>

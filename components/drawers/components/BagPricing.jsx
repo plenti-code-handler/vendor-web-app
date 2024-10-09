@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 const BagPricing = ({
   pricing,
@@ -6,6 +6,15 @@ const BagPricing = ({
   originalPrice,
   setOriginalPrice,
 }) => {
+  const [countryCode, setCountryCode] = useState(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedCountryCode = JSON.parse(localStorage.getItem("countryCode"));
+      setCountryCode(storedCountryCode);
+    }
+  }, []);
+
   return (
     <>
       <p className="text-black font-bold text-[20px]">Pricing</p>
@@ -17,7 +26,7 @@ const BagPricing = ({
           onChange={(e) => setPricing(e.target.value)}
         />
         <span className="absolute right-3 text-black font-bold">
-          {JSON.parse(localStorage.getItem("countryCode"))}
+          {countryCode ? countryCode : "SEK"}
         </span>
       </div>
       <div className="relative flex items-center">
@@ -28,7 +37,7 @@ const BagPricing = ({
           onChange={(e) => setOriginalPrice(e.target.value)}
         />
         <span className="absolute right-3 text-black font-bold">
-          {JSON.parse(localStorage.getItem("countryCode"))}
+          {countryCode ? countryCode : "SEK"}
         </span>
       </div>
     </>

@@ -28,6 +28,14 @@ const RecentOrders = () => {
   const [loading, setLoading] = useState(false);
   const [loader, setLoader] = useState(false);
   const [user, setUser] = useState({});
+  const [countryCode, setCountryCode] = useState(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedCountryCode = JSON.parse(localStorage.getItem("countryCode"));
+      setCountryCode(storedCountryCode);
+    }
+  }, []);
 
   useEffect(() => {
     const localUser = getUserLocal();
@@ -247,8 +255,7 @@ const RecentOrders = () => {
                   </td>
                   <td className="truncate text-center px-2">
                     <p className="text-sm font-semibold text-grayThree">
-                      {JSON.parse(localStorage.getItem("countryCode"))}{" "}
-                      {booking.price}
+                      {countryCode ? countryCode : "SEK"} {booking.price}
                     </p>
                   </td>
                   <td className="truncate text-center px-2">

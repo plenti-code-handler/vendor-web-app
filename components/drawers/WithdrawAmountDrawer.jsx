@@ -32,6 +32,7 @@ const WithdrawAmountDrawer = ({ balance, setBalance, setWithdrawals }) => {
   const [loading, setLoading] = useState(false);
   const [iban, setIban] = useState("");
   const [localUser, setLocalUser] = useState(null);
+  const [countryCode, setCountryCode] = useState(null);
 
   const [amount, setAmount] = useState("");
   // const currentBalance = 3150.7;
@@ -41,6 +42,13 @@ const WithdrawAmountDrawer = ({ balance, setBalance, setWithdrawals }) => {
   const handleClose = () => {
     dispatch(setOpenDrawer(false));
   };
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedCountryCode = JSON.parse(localStorage.getItem("countryCode"));
+      setCountryCode(storedCountryCode);
+    }
+  }, []);
 
   useEffect(() => {
     const user = getUserLocal();
@@ -87,7 +95,7 @@ const WithdrawAmountDrawer = ({ balance, setBalance, setWithdrawals }) => {
               accountHolder: holderName,
               withdrawalno: withdrawalNo,
               status: "pending",
-              curr: JSON.parse(localStorage.getItem("countryCode")),
+              curr: countryCode ? countryCode : "SEK",
             });
 
             console.log("Withdrawal document successfully created!");
@@ -231,14 +239,14 @@ const WithdrawAmountDrawer = ({ balance, setBalance, setWithdrawals }) => {
                     <div className="flex flex-col items-center">
                       <p className="text-white text-[14px]">Current Balance</p>
                       <p className="text-white text-[16px] font-bold">
-                        {JSON.parse(localStorage.getItem("countryCode"))}{" "}
+                        {countryCode ? countryCode : "SEK"}{" "}
                         {Number(balance).toFixed(2)}
                       </p>
                     </div>
 
                     <div className="flex gap-2 items-center justify-center w-[50%]">
                       <p className="text-white text-[50px] font-bold">
-                        {JSON.parse(localStorage.getItem("countryCode"))}
+                        {countryCode ? countryCode : "SEK"}
                       </p>
                       <input
                         type="number"

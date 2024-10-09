@@ -1,6 +1,4 @@
-"use client";
-
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import {
   collection,
@@ -13,9 +11,18 @@ import { auth, db } from "../../../../app/firebase/config";
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
+
 const RevenueChart = () => {
   const [colorsLables] = useState(Array(12).fill("#7E8299"));
   const [totalRevenue, setTotalRevenue] = useState(0); // State for total revenue
+  const [countryCode, setCountryCode] = useState(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedCountryCode = JSON.parse(localStorage.getItem("countryCode"));
+      setCountryCode(storedCountryCode);
+    }
+  }, []);
 
   const [chartData, setChartData] = useState({
     series: [
@@ -67,8 +74,8 @@ const RevenueChart = () => {
         labels: {
           formatter: (val) =>
             val === 0
-              ? `${JSON.parse(localStorage.getItem("countryCode"))} 0`
-              : `${JSON.parse(localStorage.getItem("countryCode"))} ${val}`, // Fixed the dollar sign
+              ? `${countryCode ? countryCode : "SEK"} 0`
+              : `${countryCode ? countryCode : "SEK"} ${val}`, // Fixed the dollar sign
           style: {
             fontSize: "12px",
             fontWeight: 600,
@@ -89,107 +96,96 @@ const RevenueChart = () => {
   });
 
   useEffect(() => {
-    var total = 0.0; // To hold total revenue
-    const fetchRevenueData = async () => {
-      const today = new Date();
-      const lastSevenDays = Array.from({ length: 7 }, (_, i) => {
-        const date = new Date();
-        date.setDate(today.getDate() - i);
-        return date.toISOString().split("T")[0]; // Get date in 'YYYY-MM-DD' format
-      });
+    // Fetch revenue data only after countryCode is set
+    if (countryCode) {
+      fetchRevenueData();
+    }
+  }, [countryCode]);
 
-      const revenueData = Array(7).fill(0); // To hold revenue for each of the last 7 days
-      console.log("Initialized revenue data:", revenueData); // Log initialized revenue data
+  const fetchRevenueData = async () => {
+    let total = 0.0; // To hold total revenue
+    const today = new Date();
+    const lastSevenDays = Array.from({ length: 7 }, (_, i) => {
+      const date = new Date();
+      date.setDate(today.getDate() - i);
+      return date.toISOString().split("T")[0]; // Get date in 'YYYY-MM-DD' format
+    });
 
-      const unsubscribe = auth.onAuthStateChanged(async (user) => {
-        if (!user) {
-          console.error("User not authenticated");
-          return;
-        }
+    const revenueData = Array(7).fill(0); // To hold revenue for each of the last 7 days
 
-        console.log("Authenticated user:", user.uid);
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+      if (!user) {
+        console.error("User not authenticated");
+        return;
+      }
 
-        try {
-          const bookingQuery = query(
-            collection(db, "bookings"),
-            where("vendorid", "==", user.uid), // Match vendorid with the authenticated user's uid
-            where(
-              "bookingdate",
-              ">=",
-              Timestamp.fromDate(new Date(lastSevenDays[6])) // Convert date to Firebase Timestamp
-            )
-          );
+      try {
+        const bookingQuery = query(
+          collection(db, "bookings"),
+          where("vendorid", "==", user.uid), // Match vendorid with the authenticated user's uid
+          where(
+            "bookingdate",
+            ">=",
+            Timestamp.fromDate(new Date(lastSevenDays[6])) // Convert date to Firebase Timestamp
+          )
+        );
 
-          const revenueQuery = query(
-            collection(db, "bookings"),
-            where("vendorid", "==", user.uid)
-          );
-          console.log("Booking query created for user:", user.uid); // Log the Firestore query
+        const revenueQuery = query(
+          collection(db, "bookings"),
+          where("vendorid", "==", user.uid)
+        );
 
-          const querySnapshot = await getDocs(bookingQuery);
+        const querySnapshot = await getDocs(bookingQuery);
+        const querySnapshotRevenue = await getDocs(revenueQuery);
 
-          const querySnapshotrevenue = await getDocs(revenueQuery);
+        querySnapshotRevenue.forEach((doc) => {
+          total += doc.data().price;
+        });
 
-          querySnapshotrevenue.forEach((doc) => {
-            total += doc.data().price;
-          });
-          console.log(
-            "Query snapshot received, number of bookings:",
-            querySnapshot.size
-          ); // Log the number of bookings received
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          const bookingDate = data.bookingdate
+            .toDate()
+            .toISOString()
+            .split("T")[0];
+          const index = lastSevenDays.indexOf(bookingDate);
+          if (index !== -1) {
+            const percentage90 = data.price * 0.9;
+            revenueData[index] += percentage90; // Calculate revenue
+          }
+        });
 
-          querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            console.log("Booking data:", data); // Log each booking's data
+        setTotalRevenue(total * 0.9);
 
-            const bookingDate = data.bookingdate
-              .toDate()
-              .toISOString()
-              .split("T")[0]; // Convert Firebase Timestamp to 'YYYY-MM-DD'
-            console.log("Converted booking date:", bookingDate); // Log the converted booking date
-
-            const index = lastSevenDays.indexOf(bookingDate);
-            if (index !== -1) {
-              const percentage90 = data.price * 0.9;
-              revenueData[index] += percentage90; // Calculate revenue
-              console.log(
-                `Updated revenue for ${bookingDate}:`,
-                revenueData[index]
-              ); // Log updated revenue for the specific day
-            }
-          });
-
-          console.log("Total Revenue: ", total * 0.9);
-
-          setTotalRevenue(total * 0.9);
-
-          // Update chart data with the new revenue data and dates
-          console.log("Final revenue data for the last 7 days:", revenueData); // Log the final revenue data
-          setChartData((prevData) => ({
-            ...prevData,
-            series: [{ ...prevData.series[0], data: revenueData }],
-            options: {
-              ...prevData.options,
-              xaxis: {
-                ...prevData.options.xaxis,
-                categories: lastSevenDays.map((date) =>
-                  new Date(date).toISOString()
-                ), // Convert dates to ISO format
+        // Update chart data with the new revenue data and dates
+        setChartData((prevData) => ({
+          ...prevData,
+          series: [{ ...prevData.series[0], data: revenueData }],
+          options: {
+            ...prevData.options,
+            xaxis: {
+              ...prevData.options.xaxis,
+              categories: lastSevenDays.map((date) =>
+                new Date(date).toISOString()
+              ),
+            },
+            yaxis: {
+              ...prevData.options.yaxis,
+              labels: {
+                formatter: (val) =>
+                  val === 0 ? `${countryCode} 0` : `${countryCode} ${val}`, // Update currency dynamically
               },
             },
-          }));
-          console.log("Chart data updated successfully."); // Log success message after updating chart
-        } catch (error) {
-          console.error("Error fetching bookings:", error); // Log errors, if any
-        }
-      });
+          },
+        }));
+      } catch (error) {
+        console.error("Error fetching bookings:", error); // Log errors, if any
+      }
+    });
 
-      // Cleanup subscription on unmount
-      return () => unsubscribe();
-    };
-
-    fetchRevenueData();
-  }, []);
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
+  };
 
   return (
     <div className="flex h-full flex-col justify-between py-2.5 border border-gray-300 rounded-2xl lg:w-full">
@@ -199,9 +195,9 @@ const RevenueChart = () => {
         </h1>
         <h1 className="text-[40px] leading-[28px] text-mainLight font-bold my-4">
           <sup className="text-[24px] text-mainLight font-semibold">
-            {JSON.parse(localStorage.getItem("countryCode"))}
+            {countryCode ? countryCode : "SEK"}
           </sup>
-          {totalRevenue.toLocaleString()} {/* Use the totalRevenue state */}
+          {totalRevenue.toLocaleString()}
         </h1>
       </div>
       <div id="chart" className="w-full">

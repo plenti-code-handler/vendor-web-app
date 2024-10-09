@@ -92,6 +92,14 @@ const BookingsTable = () => {
   const [loader, setLoader] = useState(false);
   const [onStatusChange, setOnStatusChange] = useState("both");
   const [bookingFilter, setOnBookingFilter] = useState("active");
+  const [countryCode, setCountryCode] = useState(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedCountryCode = JSON.parse(localStorage.getItem("countryCode"));
+      setCountryCode(storedCountryCode);
+    }
+  }, []);
 
   useEffect(() => {
     const localUser = getUserLocal();
@@ -405,7 +413,7 @@ const BookingsTable = () => {
                     </td>
                     <td className="truncate text-center px-2">
                       <p className="text-sm font-semibold text-grayThree">
-                        {JSON.parse(localStorage.getItem("countryCode"))}{" "}
+                        {countryCode ? countryCode : "SEK"}
                         {booking.price}
                       </p>
                     </td>

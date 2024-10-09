@@ -32,6 +32,15 @@ const Transactions = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   // const [withdrawals, setWithdrawals] = useState([]);
   const [loader, setLoader] = useState(false);
+  const [countryCode, setCountryCode] = useState(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedCountryCode = JSON.parse(localStorage.getItem("countryCode"));
+      setCountryCode(storedCountryCode);
+    }
+  }, []);
+
   const auth = getAuth();
   const dispatch = useDispatch();
   const handleWithdraw = () => {
@@ -154,8 +163,7 @@ const Transactions = () => {
           {topLeftWalletBackground}
         </div>
         <p className="text-[40px] font-bold text-white z-0">
-          {JSON.parse(localStorage.getItem("countryCode"))}{" "}
-          {Number(balance).toFixed(2)}
+          {countryCode ? countryCode : "SEK"} {Number(balance).toFixed(2)}
         </p>
         <p className="text-[16px] font-medium text-white z-0">My Wallet</p>
 
@@ -229,7 +237,7 @@ const Transactions = () => {
                           : ""}
                       </div>
                       <div className="text-amount text-[20px] font-semibold">
-                        {JSON.parse(localStorage.getItem("countryCode"))}
+                        {countryCode ? countryCode : "SEK"}{" "}
                         {Number(withdrawal.amount).toFixed(2)}
                       </div>
                     </div>

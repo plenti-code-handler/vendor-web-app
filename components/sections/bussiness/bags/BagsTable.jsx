@@ -50,6 +50,14 @@ const BagsTable = () => {
   const [user, setUser] = useState({});
   const [onStatusChange, setOnStatusChange] = useState("");
   const [loader, setLoader] = useState(false);
+  const [countryCode, setCountryCode] = useState(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedCountryCode = JSON.parse(localStorage.getItem("countryCode"));
+      setCountryCode(storedCountryCode);
+    }
+  }, []);
 
   useEffect(() => {
     const localUser = getUserLocal();
@@ -341,8 +349,7 @@ const BagsTable = () => {
                 </td>
                 <td className="truncate text-center px-2">
                   <p className="text-sm font-semibold text-grayThree">
-                    {JSON.parse(localStorage.getItem("countryCode"))}{" "}
-                    {bag.price}
+                    {countryCode ? countryCode : "SEK"} {bag.price}
                   </p>
                 </td>
                 <td className="truncate text-center px-2">

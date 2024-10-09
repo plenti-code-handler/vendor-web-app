@@ -75,9 +75,11 @@ const StatSlider = ({ vendorCount, tenPercent }) => {
     <Slider {...settings}>
       <div className="px-4">
         <TransactionCard
-          title={`${JSON.parse(
-            localStorage.getItem("countryCode")
-          )} ${tenPercent.toFixed(2)}`}
+          title={`${
+            typeof window !== "undefined"
+              ? JSON.parse(localStorage.getItem("countryCode"))
+              : null
+          } ${tenPercent.toFixed(2)}`}
           content={"Revenue Generated"}
           textColor={"text-secondary"}
           smallScreen={true}
