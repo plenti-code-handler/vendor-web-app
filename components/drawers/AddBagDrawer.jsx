@@ -24,6 +24,7 @@ import {
   query,
   where,
   Timestamp,
+  GeoPoint,
 } from "firebase/firestore";
 import { getUserLocal } from "../../redux/slices/loggedInUserSlice";
 import { BagsContext } from "../../contexts/BagsContext";
@@ -62,6 +63,8 @@ const AddBagDrawer = () => {
   const [user, setUser] = useState({});
   const [loading, setLoading] = useState(false);
   const [countryCode, setCountryCode] = useState(null);
+  const [lat, setLat] = useState(null);
+  const [lng, setLng] = useState(null);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -74,6 +77,13 @@ const AddBagDrawer = () => {
     const user = getUserLocal();
     setUser(user);
   }, []);
+
+  useEffect(() => {
+    if (user.point) {
+      setLat(user.point.latitude || null);
+      setLng(user.point.longitude || null);
+    }
+  }, [user]);
 
   const resetForm = () => {
     setSelectedBag({});
@@ -135,6 +145,7 @@ const AddBagDrawer = () => {
         price: Number(pricing),
         originalprice: Number(originalPrice),
         curr: countryCode ? countryCode : "SEK",
+        points: lat !== null && lng !== null ? new GeoPoint(lat, lng) : null,
         // createdAt: new Date(), // Optionally add a timestamp
       };
 
