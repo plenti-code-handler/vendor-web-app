@@ -36,7 +36,7 @@ export const registerUser = createAsyncThunk(
           rating: 0,
           status: "pending",
           point,
-          reviews:[],
+          reviews: [],
           categories: [],
           joinedat: handleDate(new Date()),
           token: null,
@@ -65,7 +65,7 @@ export const registerUser = createAsyncThunk(
         pass: password, // Caution: Storing passwords in Firestore is not recommended
         bags: 0,
         rating: 0,
-        reviews:[],
+        reviews: [],
         status: "pending",
         categories: [],
         joinedat: handleDate(new Date()),
@@ -122,8 +122,10 @@ export const registerUser = createAsyncThunk(
 
 const initialState = {
   email: "",
+  phone: "",
   password: "",
   otp: "",
+  confirmationResult: {},
   profile: {
     img: "",
     name: "",
@@ -139,11 +141,17 @@ export const registerUserSlice = createSlice({
     setRegisterEmail: (state, action) => {
       state.email = action.payload;
     },
+    setRegisterPhone: (state, action) => {
+      state.phone = action.payload;
+    },
     setRegisterPassword: (state, action) => {
       state.password = action.payload;
     },
     setOtpCode: (state, action) => {
       state.otp = action.payload;
+    },
+    setConfirmationResult: (state, action) => {
+      state.confirmationResult = action.payload;
     },
     setProfile: {
       reducer: (state, action) => {
@@ -166,6 +174,12 @@ export const registerUserSlice = createSlice({
   },
 });
 
-export const { setRegisterEmail, setOtpCode, setRegisterPassword, setProfile } =
-  registerUserSlice.actions;
+export const {
+  setRegisterEmail,
+  setRegisterPhone,
+  setOtpCode,
+  setRegisterPassword,
+  setProfile,
+  setConfirmationResult,
+} = registerUserSlice.actions;
 export default registerUserSlice.reducer;

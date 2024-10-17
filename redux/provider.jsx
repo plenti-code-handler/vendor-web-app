@@ -21,7 +21,8 @@ const Providers = ({ children }) => {
     pathname === "/setup_password" ||
     pathname === "/setup_profile" ||
     pathname === "/awaiting" ||
-    pathname === "/reset_password"
+    pathname === "/reset_password" ||
+    pathname === "/verify_phone"
   ) {
     return (
       <Provider store={store}>

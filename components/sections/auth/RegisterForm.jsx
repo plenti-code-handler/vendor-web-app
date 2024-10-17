@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import {
   setOtpCode,
   setRegisterEmail,
+  setRegisterPhone,
 } from "../../../redux/slices/registerUserSlice";
 import emailjs from "@emailjs/browser";
 import { useForm } from "react-hook-form";
@@ -19,7 +20,7 @@ const RegisterForm = () => {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false); // Added loading state
   const [generatedOtp, setGeneratedOtp] = useState(
-    Array.from({ length: 4 }, () => Math.floor(Math.random() * 10).toString())
+    Array.from({ length: 6 }, () => Math.floor(Math.random() * 10).toString())
   );
 
   const dispatch = useDispatch();
@@ -31,9 +32,9 @@ const RegisterForm = () => {
   } = useForm();
 
   const handleContinue = async (data) => {
-    const { email } = data;
+    const { email, phone } = data;
 
-    if (email) {
+    if (email && phone) {
       setLoading(true); // Start loading when form is submitted
       try {
         // Query the users collection to check if the email already exists
@@ -49,6 +50,7 @@ const RegisterForm = () => {
 
         // If email does not exist, proceed with OTP generation and email sending
         dispatch(setRegisterEmail(email));
+        dispatch(setRegisterPhone(phone));
         dispatch(setOtpCode(generatedOtp));
 
         await emailjs.send(
@@ -87,7 +89,7 @@ const RegisterForm = () => {
           Register Your Business
         </p>
         <p className="text-[#A1A5B7] text-[14px]">
-          Enter your email to register
+          Enter your email and phone number to register
         </p>
       </div>
       <input
@@ -103,6 +105,16 @@ const RegisterForm = () => {
       />
       {errors.email && (
         <p className="text-red-500 text-sm">{errors.email.message}</p>
+      )}
+      <input
+        className="placeholder:font-bold rounded-md border border-gray-200 py-3 px-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
+        placeholder="Phone"
+        {...register("phone", {
+          required: "Phone is required",
+        })}
+      />
+      {errors.phone && (
+        <p className="text-red-500 text-sm">{errors.phone.message}</p>
       )}
       <button
         type="submit"
