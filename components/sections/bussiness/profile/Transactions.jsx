@@ -25,6 +25,7 @@ import {
 import { db } from "../../../../app/firebase/config";
 import Loader from "../../../loader/loader";
 import { RevenueContext } from "../../../../contexts/RevenueContext";
+import { toast } from "sonner";
 
 const Transactions = () => {
   const { balance, setBalance, withdrawals, setWithdrawals } =
@@ -33,6 +34,7 @@ const Transactions = () => {
   // const [withdrawals, setWithdrawals] = useState([]);
   const [loader, setLoader] = useState(false);
   const [countryCode, setCountryCode] = useState(null);
+  const [authUser, setAuthUser] = useState(null);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -44,6 +46,21 @@ const Transactions = () => {
   const auth = getAuth();
   const dispatch = useDispatch();
   const handleWithdraw = () => {
+    if (authUser && authUser.metadata.createdAt) {
+      const createdAt = parseInt(authUser.metadata.createdAt, 10);
+      const oneMonthInMilliseconds = 30 * 24 * 60 * 60 * 1000; // One month in milliseconds
+      const currentTime = Date.now();
+
+      // Check if a month has passed
+      if (currentTime - createdAt < oneMonthInMilliseconds) {
+        toast.error(
+          "You must wait at least one month after signup before withdrawing."
+        );
+        return;
+      }
+    }
+
+    // If a month has passed, open the drawer
     dispatch(setOpenDrawer(true));
   };
   // const [revenue, setRevenue] = useState(null);
@@ -56,6 +73,7 @@ const Transactions = () => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setIsAuthenticated(true);
+        setAuthUser(user);
       } else {
         setIsAuthenticated(false);
       }
@@ -168,7 +186,7 @@ const Transactions = () => {
         <p className="text-[16px] font-medium text-white z-0">My Wallet</p>
 
         <button
-          onClick={() => handleWithdraw()}
+          onClick={handleWithdraw}
           className="flex justify-center items-center bg-black/5 text-white font-medium rounded hover:bg-main p-2 mt-4 z-0"
         >
           {withdrawAmountSvg}

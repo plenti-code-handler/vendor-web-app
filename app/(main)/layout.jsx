@@ -18,7 +18,7 @@ export default function RootLayout({ children }) {
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
       <body className={inter.className}>
-        <Toaster position="top-center" />
+        <Toaster richColors position="top-center" />
         {/* Google Translate Element for background translation */}
         <div id="google_translate_element" style={{ display: "none" }}></div>
 

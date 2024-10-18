@@ -173,6 +173,13 @@ const Account = () => {
           {tickSvg}
         </div>
       </div>
+      <div className="flex justify-between w-full placeholder:font-bold rounded-lg border border-gray-300 bg-[#F4F4F4] py-3 px-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black">
+        <p className="font-semibold text-black">{user.phone}</p>
+        <div className="flex gap-1 items-center">
+          <p className="text-main font-semibold">Verified</p>
+          {tickSvg}
+        </div>
+      </div>
       <input
         value={input.completeAddress || input.streetAddress || ""}
         className="block w-full placeholder:font-bold rounded-lg border border-gray-300 py-3 px-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
