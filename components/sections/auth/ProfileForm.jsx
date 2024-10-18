@@ -32,6 +32,7 @@ const ProfileForm = () => {
 
   const email = useSelector((state) => state.registerUser.email);
   const password = useSelector((state) => state.registerUser.password);
+  const phone = useSelector((state) => state.registerUser.phone);
 
   useEffect(() => {
     if (!email && !password) router.push("/register");
@@ -59,6 +60,7 @@ const ProfileForm = () => {
           desc: description,
           img: profileImage,
           point: new GeoPoint(input.latitude, input.longitude),
+          phone,
         })
       )
         .unwrap()

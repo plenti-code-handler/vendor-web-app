@@ -8,7 +8,7 @@ import { handleDate } from "../../utility/date";
 
 export const registerUser = createAsyncThunk(
   "auth/registerUser",
-  async ({ email, password, name, loc, desc, img, point }, thunkAPI) => {
+  async ({ email, password, name, loc, desc, img, point, phone }, thunkAPI) => {
     try {
       // Create user with email and password
       const userCredential = await createUserWithEmailAndPassword(
@@ -26,6 +26,7 @@ export const registerUser = createAsyncThunk(
       if (img === placeholderImage) {
         userData = {
           email,
+          phone,
           imageUrl: img,
           name,
           loc,
@@ -58,6 +59,7 @@ export const registerUser = createAsyncThunk(
 
       userData = {
         email,
+        phone,
         name,
         loc,
         desc,

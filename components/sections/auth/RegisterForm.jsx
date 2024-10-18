@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import BackButton from "./BackButton";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
+import { PhoneInput } from "react-international-phone";
+import "react-international-phone/style.css";
 import {
   setOtpCode,
   setRegisterEmail,
@@ -22,6 +24,7 @@ const RegisterForm = () => {
   const [generatedOtp, setGeneratedOtp] = useState(
     Array.from({ length: 6 }, () => Math.floor(Math.random() * 10).toString())
   );
+  const [phone, setPhone] = useState("");
 
   const dispatch = useDispatch();
 
@@ -32,7 +35,7 @@ const RegisterForm = () => {
   } = useForm();
 
   const handleContinue = async (data) => {
-    const { email, phone } = data;
+    const { email } = data;
 
     if (email && phone) {
       setLoading(true); // Start loading when form is submitted
@@ -106,16 +109,13 @@ const RegisterForm = () => {
       {errors.email && (
         <p className="text-red-500 text-sm">{errors.email.message}</p>
       )}
-      <input
-        className="placeholder:font-bold rounded-md border border-gray-200 py-3 px-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
-        placeholder="Phone"
-        {...register("phone", {
-          required: "Phone is required",
-        })}
+      <PhoneInput
+        defaultCountry="ua"
+        value={phone}
+        onChange={(phone) => setPhone(phone)}
+        className="w-full"
       />
-      {errors.phone && (
-        <p className="text-red-500 text-sm">{errors.phone.message}</p>
-      )}
+
       <button
         type="submit"
         disabled={loading} // Disable button while loading
