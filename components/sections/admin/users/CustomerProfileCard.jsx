@@ -1,7 +1,7 @@
 "use client";
 
 import { useDispatch, useSelector } from "react-redux";
-import { filesEmailSvg } from "../../../../svgs";
+import { filesEmailSvg, phoneSvg } from "../../../../svgs";
 import React, { useEffect, useState } from "react";
 import { setActivePage } from "../../../../redux/slices/headerSlice";
 import { useRouter } from "next/navigation";
@@ -16,6 +16,7 @@ const CustomerProfileCard = () => {
   const [name, setName] = useState("");
   const [image, setImage] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
 
   const router = useRouter();
 
@@ -30,6 +31,7 @@ const CustomerProfileCard = () => {
     setName(business.username);
     setImage(business.imageUrl);
     setEmail(business.email);
+    setPhone(business.phone);
   }, [business, router]);
 
   return (
@@ -37,7 +39,7 @@ const CustomerProfileCard = () => {
       <div className="flex space-x-4">
         <img
           alt="User"
-          src={image  }
+          src={image}
           className="rounded-full h-24 w-24 sm:h-25 sm:w-25 object-cover"
         />
         <div className="flex mt-2 lg:mt-0">
@@ -46,6 +48,10 @@ const CustomerProfileCard = () => {
             <div className="flex items-center text-gray-600 space-x-2">
               {filesEmailSvg}
               <p className="text-sm">{email}</p>
+            </div>
+            <div className="flex items-center text-gray-600 space-x-2">
+              {phoneSvg}
+              <p className="text-sm">{phone}</p>
             </div>
           </div>
         </div>

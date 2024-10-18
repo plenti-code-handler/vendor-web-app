@@ -325,6 +325,8 @@ const TransactionsTable = () => {
             <thead>
               <tr className="border-b-[1px] border-grayOne border-dashed border-opacity-20 text-sm font-semibold text-grayOne">
                 <th className="pb-[8px] pl-2 pt-[18px] text-left ">Business</th>
+                <th className="pb-[8px] px-2 pt-[18px] text-center ">Email</th>
+                <th className="pb-[8px] px-2 pt-[18px] text-center ">Phone</th>
                 <th className="pb-[8px] pt-[18px] text-center">
                   Amount Requested
                 </th>
@@ -363,6 +365,16 @@ const TransactionsTable = () => {
                           </div>
                         </div>
                       </div>
+                    </td>
+                    <td className="truncate text-center px-2">
+                      <p className="text-sm font-semibold text-grayThree">
+                        {withdrawal.user.email}
+                      </p>
+                    </td>
+                    <td className="truncate text-center px-2">
+                      <p className="text-sm font-semibold text-grayThree">
+                        {withdrawal.user.phone}
+                      </p>
                     </td>
                     <td className="truncate text-center px-2">
                       <p className="text-sm font-semibold text-grayThree">
