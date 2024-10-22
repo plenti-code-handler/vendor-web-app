@@ -28,6 +28,7 @@ import {
 } from "firebase/firestore";
 import { getUserLocal } from "../../redux/slices/loggedInUserSlice";
 import { BagsContext } from "../../contexts/BagsContext";
+import { toast } from "sonner";
 
 const bagTypes = [
   {
@@ -155,6 +156,20 @@ const AddBagDrawer = () => {
       console.log("Document written with ID: ", docRef.id);
 
       // Optionally, reset the form state after successful submission
+      const response = await fetch("/api/send-notification", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          token:
+            "ePdVfo-fmULgqHqPXA6EDT:APA91bEejNUv5ZmiXa3CrcAFx6LmSTcSD6P2RoWmnD2kNUHEypJQBozFfe_h_jGaemJY97wgKZXkPSnM5nvMEVVaDanX1O31Jj04wmwYP-dKRtGEXD98ahyp6APXuPcu6D6h_gzUi3SV",
+        }),
+      });
+      const data = await response.json();
+
+      toast.success("Bag Created Successfully!");
+
       resetForm();
       const colRef = collection(db, "bags");
       const q = query(
@@ -170,13 +185,13 @@ const AddBagDrawer = () => {
         ...doc.data(),
       }));
       const lastDoc = allBagsSnapshot.docs[allBagsSnapshot.docs.length - 1];
-
       setBags(bagsData);
       setFilteredBags(bagsData);
       setLastVisible(lastDoc);
       dispatch(setOpenDrawer(false));
       setLoading(false);
     } catch (error) {
+      toast.error("Failed to create a bag");
       console.error("Error adding document: ", error);
     }
   };

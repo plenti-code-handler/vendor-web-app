@@ -44,6 +44,7 @@ export const registerUser = createAsyncThunk(
           uid: user.uid,
           revenue: "0",
           bankDetails: {},
+          listuids: [],
         };
 
         const myCollection = collection(db, "users");
@@ -75,6 +76,7 @@ export const registerUser = createAsyncThunk(
         point,
         revenue: "0",
         bankDetails: {},
+        listuids: [],
       };
 
       // Prepare user data to be stored in Firestore
