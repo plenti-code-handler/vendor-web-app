@@ -25,6 +25,8 @@ import {
   where,
   Timestamp,
   GeoPoint,
+  getDoc,
+  doc,
 } from "firebase/firestore";
 import { getUserLocal } from "../../redux/slices/loggedInUserSlice";
 import { BagsContext } from "../../contexts/BagsContext";
@@ -150,23 +152,33 @@ const AddBagDrawer = () => {
         // createdAt: new Date(), // Optionally add a timestamp
       };
 
-      // // Add the document to Firestore
+      // Add the document to Firestore
       const docRef = await addDoc(bagsCollectionRef, newBag);
 
-      console.log("Document written with ID: ", docRef.id);
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+      const listuids = userDoc.exists() ? userDoc.data().listuids || [] : [];
+      const businessName = userDoc.exists() ? userDoc.data().name || "" : "";
+
+      // Retrieve tokens for each uid
+      const tokenPromises = listuids.map(async (uid) => {
+        const userTokenDoc = await getDoc(doc(db, "users", uid));
+        return userTokenDoc.exists() ? userTokenDoc.data().token : null;
+      });
+
+      const tokens = await Promise.all(tokenPromises);
+      const validTokens = tokens.filter((token) => token !== null);
 
       // Optionally, reset the form state after successful submission
-      const response = await fetch("/api/send-notification", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          token:
-            "ePdVfo-fmULgqHqPXA6EDT:APA91bEejNUv5ZmiXa3CrcAFx6LmSTcSD6P2RoWmnD2kNUHEypJQBozFfe_h_jGaemJY97wgKZXkPSnM5nvMEVVaDanX1O31Jj04wmwYP-dKRtGEXD98ahyp6APXuPcu6D6h_gzUi3SV",
-        }),
-      });
-      const data = await response.json();
+      // Send notification to each valid token
+      for (const token of validTokens) {
+        await fetch("/api/send-notification", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ token, businessName }),
+        });
+      }
 
       toast.success("Bag Created Successfully!");
 

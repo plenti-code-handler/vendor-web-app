@@ -23,7 +23,7 @@ async function getAccessToken() {
 }
 
 export async function POST(request) {
-  const { token } = await request.json();
+  const { token, businessName } = await request.json();
 
   // Extract token and projectId from userData or environment variables
 
@@ -35,11 +35,8 @@ export async function POST(request) {
     message: {
       token: token,
       notification: {
-        title: "Hello!",
-        body: "This is a test push notification.",
-      },
-      data: {
-        extraData: "Some data",
+        title: "New Bag Alert!",
+        body: `${businessName} just added a new bag! Tap to discover what's inside! 😋`,
       },
     },
   };
