@@ -25,7 +25,7 @@ const Page = () => {
       <Image_text
         heading={"Register now!"}
         paragraph={
-          "Download the FoodieFinder app and become part of the solution to foodwaste, whether you are a consumer or a business! For consumers, theapp means access to fantastic offers on food that would otherwise bethrown away - simple, sustainable and good for the wallet. Browserestaurants and stores near you, reserve what you want, and pick upyour finds. <br><br> For companies, FoodieFinder is an opportunity to sellsurplus food, reach new customers and at the same time contribute to amore sustainable world. Reduce your waste costs and make a differenceby connecting to our platform. Together we create positive changes forboth people and the planet. Download the FoodieFinder app today andstart saving food!"
+          "Download the FoodieFinder app and become part of the solution to foodwaste, whether you are a consumer or a business! For consumers, the app means access to fantastic offers on food that would otherwise be thrown away - simple, sustainable and good for the wallet. Browse restaurants and stores near you, reserve what you want, and pick up your finds. <br><br> For companies, FoodieFinder is an opportunity to sell surplus food, reach new customers and at the same time contribute to a more sustainable world. Reduce your waste costs and make a difference by connecting to our platform. Together we create positive changes for both people and the planet. Download the FoodieFinder app today and start saving food!"
         }
         image={"/home-forth-section.webp "}
         classname={"md:flex-row p-[5%]"}
