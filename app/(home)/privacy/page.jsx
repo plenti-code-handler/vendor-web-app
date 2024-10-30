@@ -125,7 +125,7 @@ const Page = () => {
                 you.
               </li>
               <li>Correct incorrect or incomplete information.</li>
-              <li>Request deletion of your data in certain cases.</li>
+              <li>Request deletion of your data in certain pouches.</li>
               <li>
                 Withdraw your consent for specific treatments if the treatment
                 is based on consent.

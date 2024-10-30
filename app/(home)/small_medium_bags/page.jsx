@@ -55,7 +55,7 @@ const faqData = [
   {
     question: "How do known content pouches work for businesses?",
     answer:
-      "Businesses can sell unsold items by creating cases with known contents in the FoodieFinder app. You specify exactly what is in each case, giving customers the opportunity to know what they are getting before they reserve and collect from you.",
+      "Businesses can sell unsold items by creating pouches with known contents in the FoodieFinder app. You specify exactly what is in each pouch, giving customers the opportunity to know what they are getting before they reserve and collect from you.",
   },
   {
     question: "What can I put in a Pouch with known contents?",
@@ -81,7 +81,7 @@ const faqData = [
   {
     question: "How do I set up pouches with known content in the app?",
     answer:
-      "Log in to your business account in the FoodieFinder app, create a new case by specifying the items included, the number of cases and pick-up times. Publish the checkout to make it visible for customers to reserve.",
+      "Log in to your business account in the FoodieFinder app, create a new pouch by specifying the items included, the number of pouches and pick-up times. Publish the checkout to make it visible for customers to reserve.",
   },
   {
     question: "How do I handle the collection of bags with known contents?",
@@ -134,14 +134,14 @@ const steps = [
       "Once you've set up the pouches, publish them to the FoodieFinder app so they're visible to customers. Customers will be able to see the description of the content and the price, making it easy for them to make a decision.",
   },
   {
-    title: "Customers reserve cases",
+    title: "Customers reserve pouches",
     description:
-      "Customers browse the app, see your cases with known content and reserve them directly in the app. They pay directly in the app, making the process smooth and easy for both you and the customer.",
+      "Customers browse the app, see your pouches with known content and reserve them directly in the app. They pay directly in the app, making the process smooth and easy for both you and the customer.",
   },
   {
     title: "Prepare crates for pickup",
     description:
-      "Prepare the crates according to the description you entered in the app. Ensure that each case contains the specific items promised to maintain trust and ensure a positive customer experience.",
+      "Prepare the crates according to the description you entered in the app. Ensure that each pouch contains the specific items promised to maintain trust and ensure a positive customer experience.",
   },
   {
     title: "Pick-up management",

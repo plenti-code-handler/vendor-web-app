@@ -180,19 +180,19 @@ const BusinessProfileCard = () => {
       </div>
       <div>
         <p className="text-left text-graySeven  text-[16px]">
-          <span className="font-medium">Email: </span>
+          <span className="font-bold">Email: </span>
           {email}
         </p>
         <p className="text-left text-graySeven  text-[16px]">
-          <span className="font-medium">Phone Number: </span>
+          <span className="font-bold">Phone Number: </span>
           {phone}
         </p>
         <p className="text-left text-graySeven  text-[16px]">
-          <span className="font-medium">IBAN: </span>
+          <span className="font-bold">IBAN: </span>
           {bankDetails.iban}
         </p>
         <p className="text-left text-graySeven text-[16px]">
-          <span className="font-medium">Account Holder Name: </span>
+          <span className="font-bold">Account Holder Name: </span>
           {bankDetails.accountHolder}
         </p>
       </div>

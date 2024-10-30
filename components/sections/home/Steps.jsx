@@ -22,7 +22,7 @@ const steps = [
   {
     title: "Reserve your meals:",
     description:
-      "When you find something you like, reserve your case directly in the app. Choose between surprise bags for an exciting experience or bags where the contents are already specified if you want to know exactly what you're getting. Pay easily and conveniently directly via the app to secure your finds.",
+      "When you find something you like, reserve your pouch directly in the app. Choose between surprise bags for an exciting experience or bags where the contents are already specified if you want to know exactly what you're getting. Pay easily and conveniently directly via the app to secure your finds.",
   },
   {
     title: "Pick up your food:",
