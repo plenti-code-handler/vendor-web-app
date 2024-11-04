@@ -35,7 +35,7 @@ const Page = () => {
         <div className="relative">
           <div className="policies flex flex-col gap-6   ">
             <div>
-              <div>Last updated: 15 Septemeber 2024</div>
+              <div>Last updated: 05 November 2024</div>
             </div>
             <p>
               <strong>1. Delivery and collection</strong>

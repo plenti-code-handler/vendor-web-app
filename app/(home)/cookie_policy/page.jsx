@@ -34,7 +34,7 @@ const Page = () => {
         </div>
         <div className="relative">
           <div className="policies flex flex-col gap-6   ">
-            <p>Last updated: 15 Septemeber 2024</p>
+            <p>Last updated: 05 November 2024</p>
             <p>
               <strong>1. What are cookies?</strong>
             </p>

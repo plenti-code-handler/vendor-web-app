@@ -27,7 +27,7 @@ const steps = [
   {
     title: "Pick up your food:",
     description:
-      "Visit the specified restaurant, cafe or shop within the designated pick-up times. Show your confirmation in the app and collect your box. You help save food from being thrown away and at the same time get to enjoy a good meal at a good price!",
+      "Visit the specified restaurant, cafe or shop within the designated pick-up times. Show your confirmation in the app and collect your pouch. You help save food from being thrown away and at the same time get to enjoy a good meal at a good price!",
   },
   {
     title: "Enjoy and make a difference:",

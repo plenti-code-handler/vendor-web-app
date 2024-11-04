@@ -33,7 +33,7 @@ const Faqs = () => {
           </DisclosureButton>
           <DisclosurePanel className="mt-2 pb-2 text-sm text-blackThree/50">
             <div className="policies flex flex-col gap-6  lg:w-[60%]">
-              <p>Last updated: 15 Septemeber 2024</p>
+              <p>Last updated: 05 November 2024</p>
               <p>
                 <strong>1. About FoodieFinder.se</strong>
               </p>
@@ -145,7 +145,7 @@ const Faqs = () => {
           </DisclosureButton>
           <DisclosurePanel className="mt-2 pb-2 text-sm text-blackThree/50">
             <div className="policies flex flex-col gap-6  lg:w-[60%]">
-              <p>Last updated: 15 Septemeber 2024</p>
+              <p>Last updated: 05 November 2024</p>
 
               <p>
                 <strong>1. What information we collect</strong>

@@ -35,7 +35,7 @@ const Page = () => {
         <div className="relative">
           <img src="/terms.png" className="absolute top-0 right-0" />
           <div className="policies flex flex-col gap-6  lg:w-[60%]">
-            <p>Last updated: 15 Septemeber 2024</p>
+            <p>Last updated: 05 November 2024</p>
             <p>
               <strong>1. About FoodieFinder.se</strong>
             </p>

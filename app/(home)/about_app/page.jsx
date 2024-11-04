@@ -16,8 +16,7 @@ const Page = () => {
       <div className="flex flex-col items-center gap-10 p-[5%] lg:px-[2%] lg:pt-[3%] lg:pb-[5%]">
         <div className="flex flex-col gap-4 items-center">
           <h1 className="text-center font-extrabold text-[2em] md:text-[2.75em] uppercase">
-            THE FOODIEFINDER PLATFORM <br></br>A COMPLETE SOLUTION FOR SURPLUS
-            FOOD
+            FOODIEFINDER <br></br> A COMPLETE SOLUTION FOR FOOD WASTE
           </h1>
           <p className="font-semibold text-[1em] text-center w-[100%] md:w-[80%]">
             The FoodieFinder platform helps stores optimize their revenue by
@@ -180,7 +179,7 @@ const Page = () => {
                   DISTRIBUTE
                 </h2>
                 <p className="text-[1.2em] text-center font-extrabold ">
-                  <strong>SURPRISE BAGS IN THE MARKETPLACE</strong>
+                  <strong>SURPRISE BAGS ON THE MARKET</strong>
                 </p>
               </div>
               <p className="text-center">

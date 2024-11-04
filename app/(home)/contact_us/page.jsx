@@ -80,7 +80,7 @@ const Page = () => {
           <div className="flex h-full flex-col py-5 w-[896px]">
             <div className="text-[75%] md:text-[100%]">
               <div className="mx-10 flex flex-col gap-8">
-                <div className="flex md:flex-row flex-col font-[400] text-[1.5em] items-center justify-between">
+                {/* <div className="flex md:flex-row flex-col font-[400] text-[1.5em] items-center justify-between">
                   <p>drop us a line</p>
                   <p>
                     <a
@@ -90,7 +90,7 @@ const Page = () => {
                       kontakt@foodiefinder.se
                     </a>
                   </p>
-                </div>
+                </div> */}
                 <form onSubmit={handleSubmit} className="flex flex-col gap-5">
                   <div className="flex md:flex-row flex-col md:items-center gap-5 justify-between">
                     <div className="flex flex-col gap-3 basis-full">
