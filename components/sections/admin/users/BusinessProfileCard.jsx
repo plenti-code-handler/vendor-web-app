@@ -105,7 +105,7 @@ const BusinessProfileCard = () => {
           }, 0);
 
           // Calculate 90% of total revenue
-          const ninetyPercentRevenue = totalRevenue * 0.9;
+          const ninetyPercentRevenue = totalRevenue * 0.85;
 
           // Store the calculated value
           setTotalRevenue(ninetyPercentRevenue);

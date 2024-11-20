@@ -154,7 +154,7 @@ const RevenueChart = () => {
                 }
               }
 
-              const percentage10 = priceInSEK * 0.1;
+              const percentage10 = priceInSEK * 0.15;
               revenueData[index] += percentage10; // Calculate revenue
               console.log(
                 `Updated revenue for ${bookingDate}:`,

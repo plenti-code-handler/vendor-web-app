@@ -135,7 +135,7 @@ const RevenueChart = () => {
             const index = lastSevenDays.indexOf(bookingDate);
             if (index !== -1) {
               console.log(data.price);
-              const percentage90 = data.price * 0.9;
+              const percentage90 = data.price * 0.85;
               revenueData[index] += percentage90; // Calculate revenue
               console.log(
                 `Updated revenue for ${bookingDate}:`,

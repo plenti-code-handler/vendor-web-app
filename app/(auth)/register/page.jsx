@@ -13,7 +13,7 @@ const page = () => {
         <div className="flex w-[390px] h-[50px] bg-[#FEC258]/20 items-center justify-center border border-[#FEC258] rounded-[8px]">
           <p className="text-[14px] text-black/60 items-center text-center">
             <span className="font-bold text-black">Note:</span> App will take
-            10% of each bag purchased.
+            15% of each bag purchased.
           </p>
         </div>
       </div>

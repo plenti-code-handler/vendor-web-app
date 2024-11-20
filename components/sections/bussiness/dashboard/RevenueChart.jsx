@@ -150,12 +150,12 @@ const RevenueChart = () => {
             .split("T")[0];
           const index = lastSevenDays.indexOf(bookingDate);
           if (index !== -1) {
-            const percentage90 = data.price * 0.9;
+            const percentage90 = data.price * 0.85;
             revenueData[index] += percentage90; // Calculate revenue
           }
         });
 
-        setTotalRevenue(total * 0.9);
+        setTotalRevenue(total * 0.85);
 
         // Update chart data with the new revenue data and dates
         setChartData((prevData) => ({

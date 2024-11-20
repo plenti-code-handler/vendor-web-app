@@ -287,8 +287,8 @@ const horizontalChecklistIcon = (
   >
     <g clip-path="url(#clip0_3693_503)">
       <path
-        fill-rule="evenodd"
-        clip-rule="evenodd"
+        fillRule="evenodd"
+        clipRule="evenodd"
         d="M0 11L10 5.5L0 0C1.53199 3.53801 1.53199 7.47807 0 11Z"
         fill="white"
       />

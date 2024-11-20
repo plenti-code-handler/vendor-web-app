@@ -81,7 +81,7 @@ const CardsRow = () => {
         setTotalPrice(sum);
 
         // Calculate 10% of the total price and set it in state
-        const percentage = sum * 0.1;
+        const percentage = sum * 0.15;
         setTenPercent(percentage);
       } catch (error) {
         console.error("Error calculating total price:", error);
