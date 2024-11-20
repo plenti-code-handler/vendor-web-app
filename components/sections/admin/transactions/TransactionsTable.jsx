@@ -336,6 +336,9 @@ const TransactionsTable = () => {
                 <th className="pb-[8px] px-2 pt-[18px] text-center ">
                   Account Number
                 </th>
+                <th className="pb-[8px] px-2 pt-[18px] text-center ">
+                  VAT Number
+                </th>
                 <th className="pb-[8px] px-2 pt-[18px] text-center">
                   Requested At
                 </th>
@@ -389,6 +392,11 @@ const TransactionsTable = () => {
                     <td className="truncate text-center px-2">
                       <p className="text-sm font-semibold text-grayThree">
                         {withdrawal.iban}
+                      </p>
+                    </td>
+                    <td className="truncate text-center px-2">
+                      <p className="text-sm font-semibold text-grayThree">
+                        {withdrawal.vat}
                       </p>
                     </td>
                     <td className="truncate text-center px-2">

@@ -62,7 +62,7 @@ const WithdrawAmountDrawer = ({ balance, setBalance, setWithdrawals }) => {
   }, [open]);
 
   const handleContinue = async () => {
-    if (!isInsufficient && amount !== 0) {
+    if (isInsufficient && amount !== 0) {
       if (localUser) {
         try {
           // Generate a random 6-digit number
@@ -80,6 +80,7 @@ const WithdrawAmountDrawer = ({ balance, setBalance, setWithdrawals }) => {
 
             const iban = userData.bankDetails?.iban;
             const holderName = userData.bankDetails?.accountHolder;
+            const vat = userData.bankDetails?.vat;
 
             if (!iban || !holderName) {
               toast.error("Add your bank details to withdraw money");
@@ -95,6 +96,7 @@ const WithdrawAmountDrawer = ({ balance, setBalance, setWithdrawals }) => {
               accountHolder: holderName,
               withdrawalno: withdrawalNo,
               status: "pending",
+              vat,
               curr: countryCode ? countryCode : "SEK",
             });
 

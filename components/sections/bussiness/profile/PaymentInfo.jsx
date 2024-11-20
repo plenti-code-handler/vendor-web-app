@@ -9,6 +9,7 @@ const PaymentInfo = () => {
   const [view, setView] = useState("initial");
   const [accountHolder, setAccountHolder] = useState("");
   const [iban, setIban] = useState("");
+  const [vat, setVat] = useState("");
   const [loading, setLoading] = useState(false);
   const [loader, setLoader] = useState(false);
   const [error, setError] = useState("");
@@ -18,13 +19,23 @@ const PaymentInfo = () => {
     try {
       const user = auth.currentUser;
       console.log(iban);
-      if (!validateName(accountHolder) || !validateName(iban)) {
+      if (
+        !validateName(accountHolder) ||
+        !validateName(iban) ||
+        !validateName(vat)
+      ) {
         toast.error("Fields are empty or invalid"); // Show toast error
         return;
       }
       if (!validateIban(iban)) {
         setError("Invalid IBAN format");
         toast.error("Invalid IBAN format"); // Show toast error
+        return;
+      }
+
+      if (!validateVat(vat)) {
+        setError("Invalid VAT format");
+        toast.error("Invalid VAT format"); // Show toast error
         return;
       }
 
@@ -38,6 +49,7 @@ const PaymentInfo = () => {
         const bankDetails = {
           accountHolder: accountHolder,
           iban: iban,
+          vat,
         };
 
         // Update the bankDetails field in the user's document
@@ -74,6 +86,7 @@ const PaymentInfo = () => {
         setView("initial");
         setIban("");
         setAccountHolder("");
+        setVat("");
 
         toast.success("Data removed successfully!");
       } else {
@@ -101,6 +114,7 @@ const PaymentInfo = () => {
             if (userData.bankDetails.iban) {
               setIban(userData.bankDetails?.iban);
               setView("linkedBank");
+              setVat(userData.bankDetails.vat);
             } else {
               setView("initial");
             }
@@ -128,6 +142,11 @@ const PaymentInfo = () => {
     return ibanRegex.test(value);
   };
 
+  const validateVat = (value) => {
+    const vatRegex = /^[A-Z]{2}\d{8,12}$/;
+    return vatRegex.test(value);
+  };
+
   const validateName = (value) => {
     if (value == "") {
       return false;
@@ -148,6 +167,11 @@ const PaymentInfo = () => {
     const value = e.target.value.toUpperCase(); // Convert to uppercase
     const formattedValue = formatIban(value); // Format with spaces
     setIban(formattedValue);
+  };
+
+  const handleVatChange = (e) => {
+    const value = e.target.value.toUpperCase(); // Convert to uppercase
+    setVat(value);
   };
 
   return (
@@ -183,6 +207,12 @@ const PaymentInfo = () => {
               placeholder="IBAN Number"
               value={iban}
               onChange={handleIbanChange} // Update state with formatted value
+            />
+
+            <TextField
+              placeholder="VAT Number"
+              value={vat}
+              onChange={handleVatChange} // Update state with formatted value
             />
           </div>
           <div className="flex gap-10 pt-2">

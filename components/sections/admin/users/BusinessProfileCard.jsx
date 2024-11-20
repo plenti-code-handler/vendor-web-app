@@ -195,6 +195,10 @@ const BusinessProfileCard = () => {
           <span className="font-bold">Account Holder Name: </span>
           {bankDetails.accountHolder}
         </p>
+        <p className="text-left text-graySeven text-[16px]">
+          <span className="font-bold">VAT Number: </span>
+          {bankDetails.vat}
+        </p>
       </div>
       <p className="text-left leading-5 text-graySeven font-medium text-[16px]">
         {description}
