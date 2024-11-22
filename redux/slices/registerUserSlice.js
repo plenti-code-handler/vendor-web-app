@@ -5,6 +5,7 @@ import { collection, addDoc, updateDoc, setDoc, doc } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from "../../app/firebase/config";
 import { handleDate } from "../../utility/date";
+import emailjs from "@emailjs/browser";
 
 export const registerUser = createAsyncThunk(
   "auth/registerUser",
@@ -79,6 +80,20 @@ export const registerUser = createAsyncThunk(
         listuids: [],
       };
 
+      // NOTIFY ADMIN THAT A BUSINESS HAS REGISTERED
+      await emailjs.send(
+        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_KEY,
+        process.env.NEXT_PUBLIC_EMAILJS_REGISTER_REQUEST_TEMPLATE_KEY,
+        {
+          message: "Kindly review this application",
+          Name: name,
+          Emailadd: email,
+          Phone: phone,
+          Address: loc,
+          message2: "",
+        },
+        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
+      );
       // Prepare user data to be stored in Firestore
 
       const storageRef = ref(storage, `profile_images/${img.name}`);
