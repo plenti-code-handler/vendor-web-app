@@ -285,19 +285,21 @@ const ApprovalsTable = () => {
         <table className="w-full table-auto truncate overflow-hidden rounded-2xl bg-white">
           <thead>
             <tr className="border-b-[1px] border-grayOne border-dashed border-opacity-20 text-sm font-semibold text-grayOne">
-              <th className="pb-[8px] pl-2 pt-[18px] text-left w-[18.00%]">
+              <th className="pb-[8px] pt-[18px] px-5 md:px-2 text-left ">
                 Business Name
               </th>
-              <th className="pb-[8px] px-12 pt-[18px] text-left w-[20.00%]">
+              <th className="pb-[8px] pt-[18px] px-5 md:px-0 text-left ">
                 Address
               </th>
-              <th className="pb-[8px] px-2 pt-[18px] text-left w-[30.00%]">
+              <th className="pb-[8px] pt-[18px] px-5 md:px-0 text-left ">
                 Description
               </th>
-              <th className="pb-[8px] px-2 pt-[18px] text-center">
+              <th className="pb-[8px] pt-[18px] px-5 md:px-0 text-left">
                 Submitted at
               </th>
-              <th className="pb-[8px] px-2 pt-[18px] text-center">Actions</th>
+              <th className="pb-[8px] pt-[18px] px-5 md:px-0 text-center">
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -305,9 +307,9 @@ const ApprovalsTable = () => {
               filteredUsers.map((user, index) => (
                 <tr
                   key={index}
-                  className="cursor-pointer border-b-[1px] border-[#E4E4E4] hover:bg-[#f8f7f7] transition-colors duration-500 border-dashed"
+                  className="cursor-pointer border-b-[1px] px-5 border-[#E4E4E4] hover:bg-[#f8f7f7] transition-colors duration-500 border-dashed"
                 >
-                  <td className="truncate pl-2 pr-2 w-[18.00%]">
+                  <td className="truncate text-left px-5 md:px-2">
                     <div className="py-3">
                       <div className="flex flex-row items-center gap-x-4">
                         <div className="flex h-[40px] w-[40px] items-center justify-center overflow-hidden rounded-full">
@@ -326,14 +328,13 @@ const ApprovalsTable = () => {
                       </div>
                     </div>
                   </td>
-                  <td className="truncate text-center px-2 w-[18.00%]">
+                  <td className="truncate text-left px-5 md:px-0">
                     <Tooltip
                       key="1"
                       content={user.loc}
                       color="primary"
-                      className="bg-white w-[80%] m-auto text-black rounded-2xl shadow-md p-4 text-[12px]"
-                      placement="bottom"
-                      width="10px"
+                      className="bg-white m-auto text-black rounded-2xl shadow-md p-4 text-[12px]"
+                      placement="bottom-start"
                     >
                       <p className="text-sm font-semibold text-grayThree truncate overflow-hidden whitespace-nowrap  ">
                         {user.loc.length > 20
@@ -342,14 +343,13 @@ const ApprovalsTable = () => {
                       </p>
                     </Tooltip>
                   </td>
-                  <td className="relative text-left px-2 w-[15.00%]">
+                  <td className="truncate text-left px-5 md:px-0">
                     <Tooltip
                       key="2"
                       content={user.desc}
                       color="primary"
-                      className="bg-white w-[50%] m-auto text-black rounded-2xl shadow-md p-4 text-[12px]"
-                      placement="Bottom"
-                      width="10px"
+                      className="bg-white m-auto text-black rounded-2xl shadow-md p-4 text-[12px]"
+                      placement="bottom-start"
                     >
                       <p className="text-sm font-semibold text-grayThree truncate overflow-hidden whitespace-nowrap  ">
                         {user.desc.length > 40
@@ -358,13 +358,13 @@ const ApprovalsTable = () => {
                       </p>
                     </Tooltip>
                   </td>
-                  <td className="truncate text-center px-2">
+                  <td className="truncate text-left px-5 md:px-0">
                     <p className="text-sm font-semibold text-grayThree">
                       {convertTimestampToDDMMYYYY(user.joinedat)}
                     </p>
                   </td>
 
-                  <td className="truncate text-center ">
+                  <td className="truncate text-left px-5 md:px-0">
                     <div className="flex flex-row justify-center gap-2">
                       <button
                         onClick={() => handleReject(user)}
