@@ -62,7 +62,7 @@ const WithdrawAmountDrawer = ({ balance, setBalance, setWithdrawals }) => {
   }, [open]);
 
   const handleContinue = async () => {
-    if (isInsufficient && amount !== 0) {
+    if (!isInsufficient && amount !== 0) {
       if (localUser) {
         try {
           // Generate a random 6-digit number
