@@ -14,7 +14,7 @@ const TableUpper = ({ activeTable, setActiveTable, setSearchTerm }) => {
 
   return (
     <div className="flex flex-col lg:flex-row md:flex-row md:justify-between md:items-center mb-4 px-2 sm:px-2 gap-4 lg:gap-0 md:gap-0 w-full">
-      <p className="text-[20px] font-semibold text-blackTwo lg:w-auto text-center lg:text-left">
+      <p className="text-xl font-semibold text-blackTwo lg:w-auto text-center lg:text-left">
         {activeTable === "business" ? "Businesses" : "Customers"}
       </p>
       <div className="flex flex-col-reverse lg:flex-row md:flex-row gap-4 lg:gap-3">

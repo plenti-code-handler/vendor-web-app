@@ -91,7 +91,7 @@ const TableContainer = () => {
               if (currencyCode && currencyCode !== "SEK") {
                 const exchangeRate = exchangeRates[currencyCode];
                 if (exchangeRate) {
-                  totalInSEK = bookingTotal * exchangeRate; // Convert to SEK
+                  totalInSEK = bookingTotal / exchangeRate; // Convert to SEK
                 } else {
                   console.warn(
                     `No exchange rate found for currency: ${currencyCode}`

@@ -39,8 +39,8 @@ const StatSlider = () => {
         settings: {
           slidesToShow: 2,
           slidesToScroll: 1,
-          infinite: true,
-          dots: true,
+          infinite: false,
+          dots: false,
         },
       },
       {

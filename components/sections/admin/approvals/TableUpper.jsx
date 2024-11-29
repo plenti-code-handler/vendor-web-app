@@ -14,7 +14,7 @@ const TableUpper = ({ setSearchTerm, userFilter, onUserFilterChange }) => {
 
   return (
     <div className="flex flex-col sm:flex-row sm:justify-between items-center mb-4 w-full">
-      <p className="text-[20px] font-bold text-blackTwo w-full sm:w-auto text-center sm:text-left hidden sm:block">
+      <p className="text-xl font-bold text-blackTwo w-full sm:w-auto text-center sm:text-left hidden sm:block">
         Total Approvals
       </p>
       <div className="flex flex-col sm:flex-row w-full gap-2 sm:gap-4 sm:w-auto">

@@ -115,7 +115,7 @@ const BussinessHeader = () => {
                 <Link
                   key={name}
                   href={href}
-                  className={`lg:text-[12px] xl:text-[16px] font-semibold leading-6 transition-all rounded-md flex items-center justify-start lg:justify-center px-[3%] py-[1%] m-2 lg:m-0 ${
+                  className={`lg:text-[12px] xl:text-base font-semibold leading-6 transition-all rounded-md flex items-center justify-start lg:justify-center px-[3%] py-[1%] m-2 lg:m-0 ${
                     isSmallDevice ? "w-[100%]" : ""
                   }  ${
                     activePage === name

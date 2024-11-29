@@ -5,7 +5,7 @@ import { formatDistanceToNow } from "date-fns";
 
 const getTimeDifference = (timestamp) => {
   // Check if timestamp exists and has the toDate() method
-  if (timestamp && typeof timestamp.toDate === 'function') {
+  if (timestamp && typeof timestamp.toDate === "function") {
     const date = timestamp.toDate();
     return formatDistanceToNow(date, { addSuffix: true });
   } else {
@@ -17,10 +17,10 @@ const getTimeDifference = (timestamp) => {
 const CustomerReviews = ({ reviews }) => {
   return (
     <div className="flex flex-col mt-5">
-      <p className="text-black font-semibold text-[16px] mb-3">
+      <p className="text-black font-semibold text-base mb-3">
         Customer's Reviews
       </p>
-      
+
       {reviews.length === 0 ? (
         <p className="text-gray-500">There is no review</p>
       ) : (
@@ -36,10 +36,12 @@ const CustomerReviews = ({ reviews }) => {
                   src={review.imageUrl || "/User.png"}
                   className="rounded-full h-10 w-10 object-cover"
                 />
-                <p className="font-semibold text-[14px] text-black">
+                <p className="font-semibold text-sm text-black">
                   {review.username}
                 </p>
-                <p className="font-medium text-2xl text-dividerComment mb-3">.</p>
+                <p className="font-medium text-2xl text-dividerComment mb-3">
+                  .
+                </p>
                 <p className="font-medium text-[12px] text-dividerComment">
                   {getTimeDifference(review.time)}
                 </p>
@@ -47,7 +49,9 @@ const CustomerReviews = ({ reviews }) => {
               <div className="flex gap-0.5">
                 <div className="flex gap-0.5">
                   {[...Array(5)].map((_, i) =>
-                    i < Math.round(review.rating) ? ratingStarSvg : placeholderRatingStarSvg
+                    i < Math.round(review.rating)
+                      ? ratingStarSvg
+                      : placeholderRatingStarSvg
                   )}
                 </div>
               </div>

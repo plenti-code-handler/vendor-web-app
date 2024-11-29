@@ -198,7 +198,7 @@ const RestaurentBox = () => {
   return (
     <div className="flex flex-col w-[100%] lg:w-[50%] gap-y-3">
       <div className="flex flex-col gap-5 lg:flex-row lg:gap-4 items-center w-[100%] justify-start lg:justify-between">
-        <p className="text-blackTwo font-semibold text-[18px] lg:text-[16px] xl:text-[18px] xl:ml-10 whitespace-nowrap">
+        <p className="text-blackTwo font-semibold text-lg lg:text-base xl:text-lg xl:ml-10 whitespace-nowrap">
           Restaurant Categories
         </p>
         <div className="flex gap-5 lg:flex-grow w-full justify-between lg:justify-end items-center">
@@ -250,7 +250,7 @@ const RestaurentBox = () => {
               showInput ? "opacity-30 pointer-events-none" : ""
             }`}
           >
-            <p className="font-semibold text-[14px] text-blackTwo">
+            <p className="font-semibold text-sm text-blackTwo">
               {category.name}
             </p>
             <div className="flex items-center gap-2">

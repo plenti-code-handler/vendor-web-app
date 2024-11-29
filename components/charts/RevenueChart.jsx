@@ -175,11 +175,11 @@ const RevenueChart = () => {
   return (
     <div className="flex h-full flex-col justify-between py-2.5 border border-gray-300 rounded-2xl lg:w-full">
       <div className="flex flex-col mt-4 ml-8">
-        <h1 className="text-[18px] font-semibold leading-[28px] text-black">
+        <h1 className="text-lg font-semibold leading-[28px] text-black">
           Revenue
         </h1>
         <h1 className="text-[40px] leading-[28px] text-mainLight font-bold my-4">
-          <sup className="text-[24px] text-mainLight font-semibold">SEK</sup>
+          <sup className="text-2xl text-mainLight font-semibold">SEK</sup>
           {chartData.series[0].data
             .reduce((acc, curr) => acc + curr, 0)
             .toLocaleString()}{" "}

@@ -15,10 +15,10 @@ const Page = () => {
     <div className="text-[75%] md:text[90%] lg:text-[100%] bg-[#F5F5F5]">
       <div className="flex flex-col items-center gap-10 p-[5%] lg:px-[2%] lg:pt-[3%] lg:pb-[5%]">
         <div className="flex flex-col gap-4 items-center">
-          <h1 className="text-center font-extrabold text-[2em] md:text-[2.75em] uppercase">
+          <h1 className="text-center font-extrabold text-xl md:text-[2.75em] uppercase">
             FOODIEFINDER <br></br> A COMPLETE SOLUTION FOR FOOD WASTE
           </h1>
-          <p className="font-semibold text-[1em] text-center w-[100%] md:w-[80%]">
+          <p className="font-semibold text-base text-center w-[100%] md:w-[80%]">
             The FoodieFinder platform helps stores optimize their revenue by
             managing goods with a short shelf life. Our platform tracks and
             redistributes food approaching its best-before date, making it
@@ -74,7 +74,7 @@ const Page = () => {
                 />
               </svg>
               <div className="flex flex-col items-center">
-                <h2 className="text-[1em] font-bold  text-center text-black">
+                <h2 className="text-base font-bold  text-center text-black">
                   TRACK
                 </h2>
                 <p className="text-[1.2em] text-center font-extrabold ">
@@ -103,7 +103,7 @@ const Page = () => {
               </svg>
 
               <div className="flex flex-col items-center">
-                <h2 className="text-[1em] font-bold  text-center text-black">
+                <h2 className="text-base font-bold  text-center text-black">
                   OPTIMIZE
                 </h2>
                 <p className="text-[1.2em] text-center font-extrabold ">
@@ -135,7 +135,7 @@ const Page = () => {
               </svg>
 
               <div className="flex flex-col items-center">
-                <h2 className="text-[1em] font-bold  text-center text-black">
+                <h2 className="text-base font-bold  text-center text-black">
                   DISTRIBUTE
                 </h2>
                 <p className="text-[1.2em] text-center font-extrabold ">
@@ -175,7 +175,7 @@ const Page = () => {
               </svg>
 
               <div className="flex flex-col items-center">
-                <h2 className="text-[1em] font-bold  text-center text-black">
+                <h2 className="text-base font-bold  text-center text-black">
                   DISTRIBUTE
                 </h2>
                 <p className="text-[1.2em] text-center font-extrabold ">
@@ -216,7 +216,7 @@ const Page = () => {
               </svg>
 
               <div className="flex flex-col items-center">
-                <h2 className="text-[1em] font-bold  text-center text-black">
+                <h2 className="text-base font-bold  text-center text-black">
                   DISTRIBUTE
                 </h2>
                 <p className="text-[1.2em] text-center font-extrabold ">
@@ -246,7 +246,7 @@ const Page = () => {
               </svg>
 
               <div className="flex flex-col items-center">
-                <h2 className="text-[1em] font-bold  text-center text-black">
+                <h2 className="text-base font-bold  text-center text-black">
                   REPORTING
                 </h2>
                 <p className="text-[1.2em] text-center font-extrabold ">

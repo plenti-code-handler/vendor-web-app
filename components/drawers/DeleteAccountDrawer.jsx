@@ -125,7 +125,7 @@ const DeleteAccountDrawer = () => {
             >
               <div className="flex h-full flex-col overflow-y-scroll bg-white py-5 shadow-xl">
                 <DialogTitle className="flex px-4 sm:px-6 justify-between ">
-                  <p className="text-blackFour font-semibold text-[18px]">
+                  <p className="text-blackFour font-semibold text-lg">
                     Delete Account
                   </p>
                   <button
@@ -142,10 +142,10 @@ const DeleteAccountDrawer = () => {
                     <p className="text-blackFour font-semibold text-[22px]">
                       Delete Account
                     </p>
-                    <p className="font-md text-[14px] text-gray-800 text-center">
+                    <p className="font-md text-sm text-gray-800 text-center">
                       Are you sure you want to delete your account?
                     </p>
-                    <p className="font-md text-[14px] text-redOne text-center">
+                    <p className="font-md text-sm text-redOne text-center">
                       Your account will be deleted permanently.
                     </p>
                   </div>

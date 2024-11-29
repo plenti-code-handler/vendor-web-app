@@ -49,7 +49,7 @@ const SuccessWithdrawDrawer = ({ amount, iban }) => {
               >
                 <div className="flex h-full flex-col overflow-y-scroll py-5 shadow-xl bg-gradient-custom">
                   <DialogTitle className="flex px-4 sm:px-6 justify-between">
-                    <p className="text-white font-semibold text-[18px]">
+                    <p className="text-white font-semibold text-lg">
                       Successfull
                     </p>
                     <button
@@ -68,7 +68,7 @@ const SuccessWithdrawDrawer = ({ amount, iban }) => {
                     />
 
                     <div className="flex flex-col gap-2 items-center">
-                      <p className="text-white text-[14px]">
+                      <p className="text-white text-sm">
                         Your request has been received
                       </p>
 
@@ -76,12 +76,12 @@ const SuccessWithdrawDrawer = ({ amount, iban }) => {
                         {countryCode ? countryCode : "SEK"} {amount}
                       </p>
 
-                      <p className="text-white text-[14px]">to account</p>
+                      <p className="text-white text-sm">to account</p>
                     </div>
 
                     <div className="flex justify-between items-center bg-[#8adbbf] shadow-lg transform translate-y-[-5px] p-2 rounded-lg mt-2 lg:w-[80%]">
                       <div className="flex gap-2 items-center">
-                        <p className="text-white text-[16px] font-medium">
+                        <p className="text-white text-base font-medium">
                           {iban}
                         </p>
                       </div>

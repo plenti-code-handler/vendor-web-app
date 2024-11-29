@@ -13,7 +13,7 @@ const StatusFilter = ({ selectedFilter, onFilterChange }) => {
           <option value="both" className="text-base">
             Both Status
           </option>
-          <option value="cancel" className="text-base">
+          <option value="cancelled" className="text-base">
             Cancel
           </option>
         </select>

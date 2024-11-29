@@ -112,7 +112,7 @@ const Rating = () => {
             <p className="text-black text-[40px] font-bold">{averageRating}</p>
             {starSvg}
           </div>
-          <p className="text-[#9796A1] text-[14px] font-medium mt-1">
+          <p className="text-[#9796A1] text-sm font-medium mt-1">
             {totalReviews} Reviews
           </p>
         </div>

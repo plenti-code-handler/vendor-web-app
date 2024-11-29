@@ -7,7 +7,7 @@ export const WhyFoodiefinder = () => {
         <h2 className="  text-[2.5em] font-extrabold text-center text-black">
           Why Choose FoodieFinder?
         </h2>
-        <p className="w-[80%] text-center">
+        <p className="w-[80%] text-center text-base">
           Choose FoodieFinder to take control of your food choices, support
           sustainability, and join a movement that makes a difference – for you,
           for businesses and for the planet.
@@ -17,7 +17,7 @@ export const WhyFoodiefinder = () => {
         <div className="flex flex-col justify-center gap-6 md:gap-10 w-3/4 md:w-1/3">
           <div className="flex items-center md:items-end flex-col gap-3 ">
             {icon1}
-            <p className="text-center md:text-end">
+            <p className="text-center md:text-end text-base">
               <strong>Reduce food waste and make a difference:</strong> With
               FoodieFinder, you contribute directly to reducing food waste,
               which is crucial for a sustainable future.
@@ -25,7 +25,7 @@ export const WhyFoodiefinder = () => {
           </div>
           <div className="flex items-center md:items-end flex-col gap-3">
             {icon2}
-            <p className="text-center md:text-end">
+            <p className="text-base text-center md:text-end">
               <strong>Sustainable choices for everyone: </strong>
               FoodieFinder makes it easy for both consumers and businesses to
               make sustainable decisions.
@@ -33,7 +33,7 @@ export const WhyFoodiefinder = () => {
           </div>
           <div className="flex items-center md:items-end flex-col gap-3 ">
             {icon3}
-            <p className="text-center md:text-end">
+            <p className="text-base text-center md:text-end">
               <strong>Save money on good food: </strong> Discover great deals on
               quality food at discounted prices, making it possible to enjoy
               good food while saving money.
@@ -46,7 +46,7 @@ export const WhyFoodiefinder = () => {
         <div className="flex flex-col justify-center gap-6 md:gap-10   w-3/4 md:w-1/3">
           <div className="flex items-center md:items-start flex-col gap-3 ">
             {icon4}
-            <p className="text-center md:text-start">
+            <p className=" text-base text-center md:text-start">
               <strong>Support local businesses: </strong> Through FoodieFinder
               you support local restaurants, cafes and shops that also work to
               reduce food waste.
@@ -54,7 +54,7 @@ export const WhyFoodiefinder = () => {
           </div>
           <div className="flex items-center md:items-start flex-col gap-3">
             {icon5}
-            <p className="text-center md:text-start">
+            <p className=" text-base text-center md:text-start">
               <strong>Customize to your needs:</strong>
               FoodieFinder is the first to offer the ability to customize your
               searches to your specific needs and preferences.
@@ -62,7 +62,7 @@ export const WhyFoodiefinder = () => {
           </div>
           <div className="flex items-center md:items-start flex-col gap-3">
             {icon6}
-            <p className="text-center md:text-start">
+            <p className=" text-base text-center md:text-start">
               <strong> Part of a larger movement: </strong> By using
               FoodieFinder, you become part of a global movement that actively
               works against food waste.

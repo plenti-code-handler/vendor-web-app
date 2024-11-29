@@ -112,7 +112,7 @@ const LandingHeader = () => {
                 <Link
                   key={name}
                   href={href}
-                  className={`xl:text-[16px] font-semibold leading-6 transition-all rounded-md flex items-center justify-start lg:justify-center px-[3%] py-[1%]  ${
+                  className={`xl:text-base font-semibold leading-6 transition-all rounded-md flex items-center justify-start lg:justify-center px-[3%] py-[1%]  ${
                     isSmallDevice ? "w-[100%]" : ""
                   }  ${
                     activePage === name
@@ -126,7 +126,7 @@ const LandingHeader = () => {
               ))} */}
               <Link
                 href="/"
-                className={`lg:text-[14px] font-semibold leading-6 transition-all rounded-md flex items-center justify-start lg:justify-center w-full lg:w-auto  lg:px-[2%]  py-[1%]  ${
+                className={`lg:text-sm font-semibold leading-6 transition-all rounded-md flex items-center justify-start lg:justify-center w-full lg:w-auto  lg:px-[2%]  py-[1%]  ${
                   activePage === "Home"
                     ? "text-mainLight"
                     : "text-graySix lg:text-graySix hover:bg-pink hover:text-mainLight"
@@ -143,7 +143,7 @@ const LandingHeader = () => {
               <div className="relative inline-block group lg:px-[2%]  w-full lg:w-auto py-[1%]">
                 <button
                   onClick={handleMenuClick}
-                  className="truncate lg:text-[14px] w-full lg:w-fit font-semibold leading-6 transition-all rounded-md flex items-center justify-between lg:justify-center   data-[focus]:outline-1 data-[focus]:outline-white"
+                  className="truncate lg:text-sm w-full lg:w-fit font-semibold leading-6 transition-all rounded-md flex items-center justify-between lg:justify-center   data-[focus]:outline-1 data-[focus]:outline-white"
                 >
                   Business Solutions
                   {isOpen ? (
@@ -217,7 +217,7 @@ const LandingHeader = () => {
 
               <Link
                 href="/faqs"
-                className={`lg:text-[14px] font-semibold leading-6 transition-all rounded-md flex items-center justify-start lg:justify-center w-full lg:w-auto  lg:px-[2%]   py-[1%]  ${
+                className={`lg:text-sm font-semibold leading-6 transition-all rounded-md flex items-center justify-start lg:justify-center w-full lg:w-auto  lg:px-[2%]   py-[1%]  ${
                   activePage === "FAQs"
                     ? "text-mainLight"
                     : "text-graySix lg:text-graySix hover:bg-pink hover:text-mainLight"
@@ -234,7 +234,7 @@ const LandingHeader = () => {
 
               <Link
                 href="/about_app"
-                className={`lg:text-[14px] font-semibold leading-6 transition-all rounded-md flex items-center justify-start lg:justify-center w-full lg:w-auto  lg:px-[2%]   py-[1%]  ${
+                className={`lg:text-sm font-semibold leading-6 transition-all rounded-md flex items-center justify-start lg:justify-center w-full lg:w-auto  lg:px-[2%]   py-[1%]  ${
                   activePage === "About Us"
                     ? "text-mainLight"
                     : "text-graySix lg:text-graySix hover:bg-pink hover:text-mainLight"
@@ -251,7 +251,7 @@ const LandingHeader = () => {
 
               <Link
                 href="/contact_us"
-                className={`lg:text-[14px] font-semibold leading-6 transition-all rounded-md flex items-center justify-start lg:justify-center w-full lg:w-auto  lg:px-[2%]  py-[1%]  ${
+                className={`lg:text-sm font-semibold leading-6 transition-all rounded-md flex items-center justify-start lg:justify-center w-full lg:w-auto  lg:px-[2%]  py-[1%]  ${
                   activePage === "Contact Us"
                     ? "text-mainLight"
                     : "text-graySix lg:text-graySix hover:bg-pink hover:text-mainLight"

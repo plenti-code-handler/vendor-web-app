@@ -193,7 +193,7 @@ const ProfileForm = () => {
         <p className="text-black font-semibold text-[28px]">
           Setup Business Profile
         </p>
-        <p className="text-[#A1A5B7] text-[14px] font-medium">
+        <p className="text-[#A1A5B7] text-sm font-medium">
           You can update it later on
         </p>
       </div>
@@ -221,7 +221,7 @@ const ProfileForm = () => {
             <span className="text-white">{pencilSvgProfile}</span>
           </label>
         </div>
-        <p className="text-[#242424] text-[16px] font-medium mt-2">{email}</p>
+        <p className="text-[#242424] text-base font-medium mt-2">{email}</p>
       </div>
 
       <input
@@ -268,7 +268,7 @@ const ProfileForm = () => {
       )}
       <button
         onClick={handleSubmit}
-        className="flex justify-center bg-pinkBgDark text-white font-semibold py-2 text-[16px] rounded hover:bg-pinkBgDarkHover2 gap-2 lg:w-[100%]"
+        className="flex justify-center bg-pinkBgDark text-white font-semibold py-2 text-base rounded hover:bg-pinkBgDarkHover2 gap-2 lg:w-[100%]"
       >
         Submit Request
       </button>

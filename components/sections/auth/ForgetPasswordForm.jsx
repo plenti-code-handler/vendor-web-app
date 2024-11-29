@@ -68,10 +68,10 @@ const ForgetPasswordForm = () => {
       <BackButton />
       <div className="flex flex-col space-y-3">
         <p className="text-black font-semibold text-[28px]">Forget Password</p>
-        <p className="text-[#A1A5B7] text-[14px]">
+        <p className="text-[#A1A5B7] text-sm">
           Enter your email associated with your account.
         </p>
-        <p className="text-[#A1A5B7] text-[14px]">
+        <p className="text-[#A1A5B7] text-sm">
           A code will be sent to your account for verification.
         </p>
       </div>

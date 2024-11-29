@@ -2,6 +2,43 @@
 @tailwind components;
 @tailwind utilities;
 
+@media (max-width: 640px) {
+
+  /* sm: min-width 640px */
+  html {
+    font-size: 80%;
+    /* 80% for small screens */
+  }
+}
+
+@media (min-width: 640px) {
+
+  /* sm: min-width 640px */
+  html {
+    font-size: 85%;
+    /* 80% for small screens */
+  }
+}
+
+@media (min-width: 768px) {
+
+  /* md: min-width 768px */
+  html {
+    font-size: 90%;
+    /* 90% for medium screens */
+  }
+}
+
+@media (min-width: 1024px) {
+
+  /* lg: min-width 1024px */
+  html {
+    font-size: 100%;
+    /* 100% for large screens and up */
+  }
+}
+
+
 /* Hide the Google Translate widget */
 .goog-te-gadget {
   display: none !important;
@@ -52,7 +89,7 @@ tr:first-child td {
 }
 
 @media (max-width: 767px) {
-  .download-btn > svg {
+  .download-btn>svg {
     width: 100px;
     height: 30px;
   }
@@ -78,28 +115,28 @@ tr:first-child td {
 }
 
 @media (min-width: 1200px) and (max-width: 1391px) {
-  .download-btn > svg {
+  .download-btn>svg {
     width: 160px;
     height: 59px;
   }
 }
 
 @media (min-width: 1009px) and (max-width: 1200px) {
-  .download-btn > svg {
+  .download-btn>svg {
     width: 137px;
     height: 39px;
   }
 }
 
 @media (min-width: 920px) and (max-width: 1009px) {
-  .download-btn > svg {
+  .download-btn>svg {
     width: 130px;
     height: 41px;
   }
 }
 
 @media (min-width: 768px) and (max-width: 920px) {
-  .download-btn > svg {
+  .download-btn>svg {
     width: 100px;
     height: 31px;
   }
@@ -114,7 +151,7 @@ tr:first-child td {
     font-size: 30px;
   }
 
-  .custom_text_box > div > .download-btn:last-child {
+  .custom_text_box>div>.download-btn:last-child {
     margin-top: 10px;
   }
 }
@@ -136,7 +173,7 @@ tr:first-child td {
     font-size: 14px;
   }
 
-  .custom_text_box > div > .download-btn:last-child {
+  .custom_text_box>div>.download-btn:last-child {
     margin-top: 10px;
   }
 }
@@ -150,7 +187,7 @@ tr:first-child td {
     font-size: 35px;
   }
 
-  .custom_text_box > div > .download-btn:last-child {
+  .custom_text_box>div>.download-btn:last-child {
     margin-top: 10px;
   }
 }
@@ -164,7 +201,7 @@ tr:first-child td {
     font-size: 25px;
   }
 
-  .custom_text_box > div > .download-btn:last-child {
+  .custom_text_box>div>.download-btn:last-child {
     margin-top: 10px;
   }
 }
@@ -212,6 +249,6 @@ tr:first-child td {
   text-decoration: underline;
 }
 
-.react-international-phone-input-container > input {
+.react-international-phone-input-container>input {
   width: 100%;
 }

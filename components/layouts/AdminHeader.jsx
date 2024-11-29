@@ -189,7 +189,7 @@ const AdminHeader = () => {
                 />
               </Link>
               {/* <div className="flex flex-col">
-                <p className="text-[14px] font-semibold text-black">
+                <p className="text-sm font-semibold text-black">
                   {user.name}
                 </p>
                 <p className="text-[12px] font-semibold text-gray-400">Admin</p>

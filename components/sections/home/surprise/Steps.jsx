@@ -53,7 +53,7 @@ export default function FoodieFinderCarousel({ heading, image, steps }) {
   return (
     <div className="flex bg-[#191919] flex-col md:flex-row items-center w-full gap-12 md:gap-16 pl-[5%] pr-[5%] py-[10%] md:pt-[4%] md:pb-[4%]">
       <div className="w-full md:w-1/2 flex flex-col justify-center gap-4 md:gap-6">
-        <h2 className="text-main text-[2em] font-bold">{heading}</h2>
+        <h2 className="text-main text-xl font-bold">{heading}</h2>
 
         <div className="w-full md:w-4/5">
           <Slider ref={sliderRef} {...settings}>
@@ -66,7 +66,7 @@ export default function FoodieFinderCarousel({ heading, image, steps }) {
                   <h3 className="text-white text-[1.5em] font-bold">
                     {step.title}
                   </h3>
-                  <p className="text-white  ">{step.description}</p>
+                  <p className="text-white text-base ">{step.description}</p>
                 </div>
               </div>
             ))}

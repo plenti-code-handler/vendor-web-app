@@ -183,7 +183,7 @@ const Transactions = () => {
         <p className="text-[40px] font-bold text-white z-0">
           {countryCode ? countryCode : "SEK"} {Number(balance).toFixed(2)}
         </p>
-        <p className="text-[16px] font-medium text-white z-0">My Wallet</p>
+        <p className="text-base font-medium text-white z-0">My Wallet</p>
 
         <button
           onClick={handleWithdraw}
@@ -197,7 +197,7 @@ const Transactions = () => {
         <Loader />
       ) : (
         <div className="flex flex-col mt-4 p-3">
-          <p className="font-semibold text-[24px] text-blackTwo mb-2">
+          <p className="font-semibold text-2xl text-blackTwo mb-2">
             Transaction History
           </p>
           {withdrawals.length > 0 ? (
@@ -223,10 +223,10 @@ const Transactions = () => {
                     <div className="flex gap-2">
                       {/* <span className="mt-2">{payPalSvg}</span> */}
                       <div className="flex flex-col">
-                        <p className="text-cardNumber text-[16px] font-semibold">
+                        <p className="text-cardNumber text-base font-semibold">
                           #{withdrawal.withdrawalno}
                         </p>
-                        <p className="text-date text-[14px] font-medium">
+                        <p className="text-date text-sm font-medium">
                           {new Intl.DateTimeFormat("en-GB", {
                             day: "numeric",
                             month: "short",
@@ -254,7 +254,7 @@ const Transactions = () => {
                           ? "Pending"
                           : ""}
                       </div>
-                      <div className="text-amount text-[20px] font-semibold">
+                      <div className="text-amount text-xl font-semibold">
                         {countryCode ? countryCode : "SEK"}{" "}
                         {Number(withdrawal.amount).toFixed(2)}
                       </div>

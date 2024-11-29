@@ -17,7 +17,7 @@ const Page = () => {
           <h1 className="text-center font-extrabold text-[3em] md:text-[3.75em] uppercase">
             SMALL & LARGE pouch
           </h1>
-          <p className="font-semibold text-[1em] text-center w-[100%] md:w-[80%]">
+          <p className="font-semibold text-base text-center w-[100%] md:w-[80%]">
             At FoodieFinder, we offer both small and large bags with known
             contents, which gives you as a customer the opportunity to know
             exactly what you are buying and choose the size that suits your

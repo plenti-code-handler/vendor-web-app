@@ -90,7 +90,7 @@ const BagDetails = ({
   return (
     <>
       <div className="flex flex-col pb-5 mt-5">
-        <p className="text-black font-bold text-[20px]">Bag Details</p>
+        <p className="text-black font-bold text-xl">Bag Details</p>
       </div>
       <Textarea
         className="block w-full placeholder:font-bold resize-none rounded-lg border border-gray-300 py-3 px-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"

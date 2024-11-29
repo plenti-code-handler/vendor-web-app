@@ -17,7 +17,7 @@ const Page = () => {
           <h1 className="text-center font-extrabold text-[3em] md:text-[3.75em] uppercase">
             Surprise pouch
           </h1>
-          <p className="font-semibold text-[1em] text-center w-[100%] md:w-[80%]">
+          <p className="font-semibold text-base text-center w-[100%] md:w-[80%]">
             With FoodieFinder's surprise bag, you get the chance to discover
             good food at a good price while helping to reduce food waste. Our
             surprise bags consist of unsold, but still excellent, food items

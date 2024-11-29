@@ -22,7 +22,7 @@ const Footer = () => {
             <h1 className="text-[2.188em] text-center uppercase lg:text-left text-white font-extrabold">
               Download FoodieFinder Today!
             </h1>
-            <p className="text-[#fff] text-center text-[1em] font-medium md:w-[547px]">
+            <p className="text-[#fff] text-center text-base font-medium md:w-[547px]">
               FoodeFinder is free to download and free to use! Are you ready to
               discover the best taste around you? Find best deals around you
               today!
@@ -31,19 +31,15 @@ const Footer = () => {
               <button className="flex items-center gap-3 w-[205px] px-4 py-2 bg-blackBtn hover:bg-slate-800 rounded-[12px] text-white">
                 <div>{appleLogoSvg}</div>
                 <div className="text-center">
-                  <div className="text-[#A8A29E] text-[14px]">
-                    Download on the
-                  </div>
-                  <div className="text-[18px] font-[500]">App Store</div>
+                  <div className="text-[#A8A29E] text-sm">Download on the</div>
+                  <div className="text-lg font-[500]">App Store</div>
                 </div>
               </button>
               <button className="flex items-center gap-3 w-[205px] px-4 py-2 bg-blackBtn hover:bg-slate-800 rounded-[12px] text-white">
                 <div>{googleLogoSvg}</div>
                 <div className="text-center">
-                  <div className="text-[#A8A29E] text-[14px]">
-                    Download on the
-                  </div>
-                  <div className="text-[18px] font-[500]">Google Play</div>
+                  <div className="text-[#A8A29E] text-sm">Download on the</div>
+                  <div className="text-lg font-[500]">Google Play</div>
                 </div>
               </button>
             </div>
@@ -58,7 +54,7 @@ const Footer = () => {
               <img src="/logo-white.png" />
             </div>
             <div className="flex flex-col lg:flex-row gap-3 lg:justify-between">
-              <ul className=" text-white flex flex-col gap-5 text-[400] text-[1em] w-full   lg:w-1/3">
+              <ul className=" text-white flex flex-col gap-5 text-[400] text-base w-full   lg:w-1/3">
                 <li>
                   <Link
                     href="/"
@@ -114,7 +110,7 @@ const Footer = () => {
                   </Link>
                 </li>
               </ul>
-              <ul className=" text-white flex flex-col gap-5 text-[400] text-[1em] w-full  lg:w-1/3">
+              <ul className=" text-white flex flex-col gap-5 text-[400] text-base w-full  lg:w-1/3">
                 <li>
                   <Link
                     href="/privacy"
@@ -170,7 +166,7 @@ const Footer = () => {
                   </Link>
                 </li>
               </ul>
-              <ul className=" text-white flex flex-col gap-5 text-[400] text-[1em] w-full   lg:w-1/3">
+              <ul className=" text-white flex flex-col gap-5 text-[400] text-base w-full   lg:w-1/3">
                 <li>
                   <Link
                     href="/security_policy"
@@ -244,7 +240,7 @@ const Footer = () => {
             <hr className="my-4" />
             <div className="flex flex-col gap-4">
               <h2 className="text-[1.25em] text-[400]">drop us a line</h2>
-              <p className={`underline text-[1em]`}>
+              <p className={`underline text-base`}>
                 <a
                   href="mailto:kontakt@foodiefinder.se"
                   className="underline hover:text-secondary"
@@ -285,7 +281,7 @@ const horizontalChecklistIcon = (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <g clip-path="url(#clip0_3693_503)">
+    <g clipPath="url(#clip0_3693_503)">
       <path
         fillRule="evenodd"
         clipRule="evenodd"

@@ -73,7 +73,7 @@ const CustomersTable = ({
     <div className="no-scrollbar w-full overflow-y-hidden lg:pl-10 lg:pr-10">
       <table className="w-full table-auto truncate overflow-hidden rounded-2xl bg-white">
         <thead>
-          <tr className="border-b-[1px]  border-grayOne border-dashed border-opacity-45 text-[16px] font-semibold text-grayOne">
+          <tr className="border-b-[1px]  border-grayOne border-dashed border-opacity-45 text-base font-semibold text-grayOne">
             <th className="pb-[8px] pl-2 pt-[18px] text-left w-[18.00%]">
               Customer
             </th>

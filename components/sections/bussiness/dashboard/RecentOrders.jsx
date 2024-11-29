@@ -218,7 +218,7 @@ const RecentOrders = () => {
                       <div className="flex flex-row items-center gap-x-2">
                         <div className="flex h-[40px] w-[40px] items-center justify-center overflow-hidden rounded-full">
                           <Image
-                            src={booking.img || "/User.png"}
+                            src={`/Round-${booking.size}.png`}
                             alt="User"
                             className="h-full w-full object-cover"
                             width={40}
@@ -268,12 +268,16 @@ const RecentOrders = () => {
                       className={`mx-auto ${
                         booking.status.toLowerCase() == "picked"
                           ? "bg-pickedBg text-pickedText "
+                          : booking.status.toLowerCase() == "cancelled"
+                          ? "bg-notPickedBg text-notPickedText"
                           : "bg-notPickedBg text-notPickedText"
                       } font-semibold rounded-[4px] text-[12px] w-[77px] h-[26px] p-1 `}
                     >
                       <p>
                         {booking.status.toLowerCase() === "picked"
                           ? "Picked"
+                          : booking.status.toLowerCase() === "cancelled"
+                          ? "Cancelled"
                           : "Not Picked"}
                       </p>
                     </div>

@@ -114,7 +114,7 @@ const LoginForm = () => {
         <p className="text-black font-semibold text-[28px]">
           Login to your account
         </p>
-        <p className="text-[#404146] text-[14px] font-medium">
+        <p className="text-[#404146] text-sm font-medium">
           Want to register your business?{" "}
           <span className="font-bold underline hover:text-black cursor-pointer">
             <Link href={"/register"}>Register</Link>
@@ -155,7 +155,7 @@ const LoginForm = () => {
 
       <Link
         href={"/forget_password"}
-        className="text-[#A1A5B7] text-[14px] font-medium text-center transition-colors hover:text-gray-500 hover:underline underline-offset-4 cursor-pointer"
+        className="text-[#A1A5B7] text-sm font-medium text-center transition-colors hover:text-gray-500 hover:underline underline-offset-4 cursor-pointer"
       >
         Forget Password
       </Link>

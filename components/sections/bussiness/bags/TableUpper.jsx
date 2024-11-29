@@ -14,7 +14,7 @@ const TableUpper = ({ selectedFilter, onFilterChange, setSearchTerm }) => {
 
   return (
     <div className="flex flex-col sm:flex-row sm:justify-between items-center mb-4 px-2 sm:px-4">
-      <p className="text-[20px] font-bold text-blackTwo hidden sm:block">
+      <p className="text-xl font-bold text-blackTwo hidden sm:block">
         My Pouches
       </p>
       <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">

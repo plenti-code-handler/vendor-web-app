@@ -217,7 +217,7 @@ const WithdrawAmountDrawer = ({ balance, setBalance, setWithdrawals }) => {
               >
                 <div className="flex h-full flex-col overflow-y-scroll py-5 shadow-xl bg-gradient-custom">
                   <DialogTitle className="flex px-4 sm:px-6 justify-between">
-                    <p className="text-white font-semibold text-[18px]">
+                    <p className="text-white font-semibold text-lg">
                       Withdraw Amount
                     </p>
                     <button
@@ -232,15 +232,15 @@ const WithdrawAmountDrawer = ({ balance, setBalance, setWithdrawals }) => {
                     <div className="flex justify-between items-center bg-[#8adbbf] shadow-lg transform translate-y-[-5px] p-3 rounded-lg mt-2 lg:w-[80%]">
                       <div className="flex gap-2 items-center">
                         {/* <span className="mt-1">{payPalSvg}</span> */}
-                        <p className="text-white text-[16px] font-medium">
+                        <p className="text-white text-base font-medium">
                           {iban ? formatIban(iban) : "Account Not Registered"}
                         </p>
                       </div>
                     </div>
 
                     <div className="flex flex-col items-center">
-                      <p className="text-white text-[14px]">Current Balance</p>
-                      <p className="text-white text-[16px] font-bold">
+                      <p className="text-white text-sm">Current Balance</p>
+                      <p className="text-white text-base font-bold">
                         {countryCode ? countryCode : "SEK"}{" "}
                         {Number(balance).toFixed(2)}
                       </p>
@@ -277,7 +277,7 @@ const WithdrawAmountDrawer = ({ balance, setBalance, setWithdrawals }) => {
                     {isInsufficient && (
                       <div className="flex gap-2 items-center">
                         {warningSvg}
-                        <p className="text-amountStatus text-[14px] font-medium">
+                        <p className="text-amountStatus text-sm font-medium">
                           Balance is insufficient
                         </p>
                       </div>

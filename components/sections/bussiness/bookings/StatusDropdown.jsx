@@ -61,10 +61,10 @@ const StatusDropdown = ({
     return (
       <select
         disabled
-        value="cancel"
+        value="cancelled"
         className="bg-[#FFCFD6] text-[#A0172D] font-semibold p-1 rounded-md text-sm cursor-not-allowed text-center"
       >
-        <option value="cancel">Cancelled</option>
+        <option value="cancelled">Cancelled</option>
       </select>
     );
   } else if (status === "scheduled") {

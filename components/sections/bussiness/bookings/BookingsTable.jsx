@@ -109,7 +109,7 @@ const BookingsTable = () => {
   const onBookingFilterChange = (status) => {
     setOnBookingFilter(status);
 
-    if (status === "cancel") {
+    if (status === "cancelled") {
       const filtered = bookings.filter((booking) => booking.iscancelled);
       setFilteredBookings(filtered);
       return;
@@ -125,6 +125,9 @@ const BookingsTable = () => {
       const startDateTime = dateArray.toDate(); // Convert Firebase timestamp to JavaScript Date
       const endDateTime = endtime.toDate(); // Convert Firebase timestamp to JavaScript Date
 
+      if (initialStatus === "cancelled") {
+        return;
+      }
       if (now >= startDateTime && now <= endDateTime) {
         activeCount++;
       } else if (now < startDateTime) {
@@ -379,8 +382,8 @@ const BookingsTable = () => {
                         <div className="flex flex-row items-center gap-x-2">
                           <div className="flex h-[40px] w-[40px] items-center justify-center overflow-hidden rounded-full">
                             <Image
-                              src={booking.img || "/User.png"}
-                              className="h-full w-full object-cover"
+                              src={`/Round-${booking.size}.png`}
+                              className="h-full w-full object-fill"
                               width={40}
                               height={40}
                               priority

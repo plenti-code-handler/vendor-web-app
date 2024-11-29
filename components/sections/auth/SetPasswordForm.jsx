@@ -43,7 +43,7 @@ const SetPasswordForm = () => {
     >
       <div className="flex flex-col space-y-3">
         <p className="text-black font-semibold text-[28px]">Set Password</p>
-        <p className="text-[#A1A5B7] text-[14px] font-medium">
+        <p className="text-[#A1A5B7] text-sm font-medium">
           For your account{" "}
           <span className="font-bold text-blackTwo">{email}</span>
         </p>

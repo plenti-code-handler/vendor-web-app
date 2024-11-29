@@ -107,7 +107,7 @@ const UpdatePasswordDrawer = () => {
             >
               <div className="flex h-full flex-col overflow-y-scroll bg-white py-5 shadow-xl">
                 <DialogTitle className="flex px-4 sm:px-6 justify-between ">
-                  <p className="text-blackFour font-semibold text-[18px]">
+                  <p className="text-blackFour font-semibold text-lg">
                     Update Password
                   </p>
                   <button
@@ -121,7 +121,7 @@ const UpdatePasswordDrawer = () => {
                 <div className="relative mt-3 pb-3 flex-1 px-4 sm:px-6 space-y-4">
                   {!showFields ? (
                     <>
-                      <p className="font-md text-[14px] text-gray-800 text-center">
+                      <p className="font-md text-sm text-gray-800 text-center">
                         Please enter your old password for verification.
                       </p>
                       <div className="flex flex-col pb-5 gap-3">

@@ -11,7 +11,7 @@ export const Image_text = ({ heading, paragraph, image, classname }) => {
       <div className="  sm:w-full m:w-1/2 l:w-1/2 xl:w-1/2 flex flex-col gap-3">
         <h2 className="text-pinkTextOne text-[2.5em] font-bold">{heading}</h2>
         <p
-          className="text-[1em] text-[#222] font-[500]"
+          className="text-base text-[#222] font-[500]"
           dangerouslySetInnerHTML={{ __html: paragraph }}
         ></p>
       </div>

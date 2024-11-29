@@ -121,7 +121,10 @@ const CardsRow = () => {
   if (loader) return <Loader />;
 
   return isSmallDevice ? (
-    <StatSlider tenPercent={tenPercent} vendorCount={vendorCount} />
+    <StatSlider
+      tenPercent={`SEK ${tenPercent.toFixed(2)}`}
+      vendorCount={vendorCount}
+    />
   ) : (
     <div className="hidden gap-x-10 lg:flex gap-5 lg:w-[100%] flex-row">
       <TransactionCard

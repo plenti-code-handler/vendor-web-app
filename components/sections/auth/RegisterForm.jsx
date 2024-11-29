@@ -91,7 +91,7 @@ const RegisterForm = () => {
         <p className="text-black font-semibold text-[28px]">
           Register Your Business
         </p>
-        <p className="text-[#A1A5B7] text-[14px]">
+        <p className="text-[#A1A5B7] text-sm">
           Enter your email and phone number to register
         </p>
       </div>

@@ -10,7 +10,7 @@ const StatSlider = ({ vendorCount, tenPercent }) => {
 
   var settings = {
     dots: true,
-    infinite: true,
+    infinite: false,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
@@ -27,13 +27,14 @@ const StatSlider = ({ vendorCount, tenPercent }) => {
         settings: {
           slidesToShow: 2,
           slidesToScroll: 1,
-          infinite: true,
-          dots: true,
+          infinite: false,
+          dots: false,
         },
       },
       {
         breakpoint: 807,
         settings: {
+          infinite: false,
           slidesToShow: 2,
           slidesToScroll: 1,
           initialSlide: 1,
@@ -42,6 +43,7 @@ const StatSlider = ({ vendorCount, tenPercent }) => {
       {
         breakpoint: 765,
         settings: {
+          infinite: false,
           slidesToShow: 1,
           slidesToScroll: 1,
         },
@@ -75,11 +77,7 @@ const StatSlider = ({ vendorCount, tenPercent }) => {
     <Slider {...settings}>
       <div className="px-4">
         <TransactionCard
-          title={`${
-            typeof window !== "undefined"
-              ? JSON.parse(localStorage.getItem("countryCode"))
-              : null
-          } ${tenPercent.toFixed(2)}`}
+          title={tenPercent}
           content={"Revenue Generated"}
           textColor={"text-secondary"}
           smallScreen={true}

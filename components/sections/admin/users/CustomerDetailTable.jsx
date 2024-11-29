@@ -18,6 +18,7 @@ import { useSelector } from "react-redux";
 import { convertTimestampToDDMMYYYY } from "../../../../utility/date";
 import StatusDropdown from "../../bussiness/bookings/StatusDropdown";
 import Loader from "../../../loader/loader";
+import Image from "next/image";
 
 const CustomerDetailTable = () => {
   const [bookings, setBookings] = useState([]);
@@ -86,7 +87,7 @@ const CustomerDetailTable = () => {
   const onBookingFilterChange = (status) => {
     setOnBookingFilter(status);
 
-    if (status === "cancel") {
+    if (status === "cancelled") {
       const filtered = bookings.filter((booking) => booking.iscancelled);
       setFilteredBookings(filtered);
       return;
@@ -101,6 +102,10 @@ const CustomerDetailTable = () => {
 
       const startDateTime = dateArray.toDate(); // Convert Firebase timestamp to JavaScript Date
       const endDateTime = endtime.toDate(); // Convert Firebase timestamp to JavaScript Date
+
+      if (initialStatus === "cancelled") {
+        return;
+      }
 
       if (now >= startDateTime && now <= endDateTime) {
         activeCount++;
@@ -273,6 +278,7 @@ const CustomerDetailTable = () => {
   return (
     <div className="mt-4 w-full border border-gray-200 rounded-xl p-6 sm:px-4">
       <DetailsTableUpper
+        Heading={"Pouches Ordered"}
         setSearchTerm={setSearchTerm}
         // selectedFilter={onStatusChange}
         // onFilterChange={onFilterChange}
@@ -303,9 +309,20 @@ const CustomerDetailTable = () => {
                   className="cursor-pointer border-b-[1px] border-[#E4E4E4] border-dashed hover:bg-[#f8f7f7] h-[60px] w-[50px]"
                 >
                   <td className="truncate text-left px-[3%]">
-                    <p className="text-sm font-semibold text-grayThree">
-                      {booking.name}
-                    </p>
+                    <div className="flex flex-row items-center gap-x-2">
+                      <div className="flex h-[40px] w-[40px] items-center justify-center overflow-hidden rounded-full">
+                        <Image
+                          src={`/Round-${booking.size}.png`}
+                          className="h-full w-full object-cover"
+                          width={40}
+                          height={40}
+                          priority
+                        />
+                      </div>
+                      <div className="flex flex-col gap-y-1">
+                        <p className="text-sm font-medium">{booking.name}</p>
+                      </div>
+                    </div>
                   </td>
                   <td className="truncate text-center px-2">
                     <p className="text-sm font-semibold text-grayThree">

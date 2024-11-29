@@ -19,7 +19,7 @@ const DateSelection = ({ selectedDates, setSelectedDates }) => {
   return (
     <>
       <div className="flex flex-col pb-5 mt-4 gap-1">
-        <p className="text-black font-bold text-[20px]">Date & Time</p>
+        <p className="text-black font-bold text-xl">Date & Time</p>
         <form onSubmit={(e) => e.preventDefault()}>
           <input
             type="date"
@@ -47,7 +47,7 @@ const DateSelection = ({ selectedDates, setSelectedDates }) => {
         {selectedDates.length !== 0 && (
           <>
             <div className="flex items-center justify-between pb-3 mt-4 gap-2">
-              <p className="text-black font-bold text-[20px]">Selected Dates</p>
+              <p className="text-black font-bold text-xl">Selected Dates</p>
             </div>
             {selectedDates.map((date, index) => (
               <div key={index} className="flex items-center gap-1">

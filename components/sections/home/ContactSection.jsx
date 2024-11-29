@@ -19,7 +19,7 @@ const ContactSection = () => {
         <h2 className="text-white text-[2.188em] font-extrabold text-center">
           Join the FoodieFinder Community!
         </h2>
-        <p className="text-[1em] text-white text-center   md:w-[80%]">
+        <p className="text-base text-white text-center   md:w-[80%]">
           FoodieFinder is a committed platform that works to reduce food waste
           and make sustainable choices easier, in line with the global goals. We
           particularly focus on Goal 12, "Sustainable consumption and

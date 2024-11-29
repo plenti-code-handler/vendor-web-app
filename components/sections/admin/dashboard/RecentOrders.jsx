@@ -272,12 +272,16 @@ const RecentOrders = () => {
                       className={`mx-auto ${
                         booking.status.toLowerCase() == "picked"
                           ? "bg-pickedBg text-pickedText "
+                          : booking.status.toLowerCase() == "cancelled"
+                          ? "bg-notPickedBg text-notPickedText"
                           : "bg-notPickedBg text-notPickedText"
                       } font-semibold rounded-[4px] text-[12px] w-[77px] h-[26px] p-1 `}
                     >
                       <p>
                         {booking.status.toLowerCase() === "picked"
                           ? "Picked"
+                          : booking.status.toLowerCase() === "cancelled"
+                          ? "Cancelled"
                           : "Not Picked"}
                       </p>
                     </div>

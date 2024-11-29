@@ -11,7 +11,7 @@ const page = () => {
       </div>
       <div className="flex justify-center items-center p-6">
         <div className="flex w-[390px] h-[50px] bg-[#FEC258]/20 items-center justify-center border border-[#FEC258] rounded-[8px]">
-          <p className="text-[14px] text-black/60 items-center text-center">
+          <p className="text-sm text-black/60 items-center text-center">
             <span className="font-bold text-black">Note:</span> App will take
             15% of each bag purchased.
           </p>

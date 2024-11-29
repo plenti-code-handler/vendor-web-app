@@ -12,7 +12,7 @@ const TransactionCard = (props) => {
       >
         {props.title}
       </h1>
-      <h1 className="text-[14px] font-semibold leading-[28px] text-[#A1A5B7] py-4">
+      <h1 className="text-sm font-semibold leading-[28px] text-[#A1A5B7] py-4">
         {props.content}
       </h1>
     </div>

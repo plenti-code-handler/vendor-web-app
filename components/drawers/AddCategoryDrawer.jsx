@@ -126,7 +126,7 @@ const AddCategoryDrawer = ({ items, setCategories: updateCategories }) => {
               className="pointer-events-auto relative lg:w-screen max-w-md transform transition duration-500 ease-in-out data-[closed]:translate-x-full sm:duration-700"
             >
               <div className="flex h-full flex-col overflow-y-scroll bg-white py-5 shadow-xl">
-                <DialogTitle className="flex px-4 sm:px-6 justify-between text-[24px] font-[500]">
+                <DialogTitle className="flex px-4 sm:px-6 justify-between text-2xl font-[500]">
                   Add Category
                 </DialogTitle>
                 <hr className="my-3 w-[90%] border-gray-300 ml-8" />
@@ -137,7 +137,7 @@ const AddCategoryDrawer = ({ items, setCategories: updateCategories }) => {
                         <p
                           key={item.id}
                           onClick={() => handleToggle(item)}
-                          className={`border text-[14px] border-gray px-[8px] rounded-[50px] py-[3px] hover:cursor-pointer transform active:translate-y-[2px] ${
+                          className={`border text-sm border-gray px-[8px] rounded-[50px] py-[3px] hover:cursor-pointer transform active:translate-y-[2px] ${
                             item.selected
                               ? "text-secondary border-secondary"
                               : ""

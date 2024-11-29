@@ -178,7 +178,7 @@ const PaymentInfo = () => {
     <div className="flex flex-col justify-center pt-[30px] pb-[30px]">
       {view === "initial" && (
         <div className="flex flex-col items-center gap-3">
-          <p className="font-md text-[14px] text-gray-800 text-center">
+          <p className="font-md text-sm text-gray-800 text-center">
             Add a bank using our secure payment system.
           </p>
           <button

@@ -24,7 +24,7 @@ const Faqs = () => {
       <div className="mx-auto w-full max-w-4xl divide-y divide-gray-200 rounded-xl bg-white/5">
         <Disclosure as="div">
           <DisclosureButton className="group flex w-full items-center justify-between py-4">
-            <span className="text-[20px] font-medium text-blackThree group-hover:text-blackThree/80">
+            <span className="text-xl font-medium text-blackThree group-hover:text-blackThree/80">
               Terms and Conditions
             </span>
             <div className="flex items-center">
@@ -136,7 +136,7 @@ const Faqs = () => {
 
         <Disclosure as="div">
           <DisclosureButton className="group flex w-full items-center justify-between py-4">
-            <span className="text-[20px] font-medium text-blackThree group-hover:text-blackThree/80">
+            <span className="text-xl font-medium text-blackThree group-hover:text-blackThree/80">
               Privacy Policy
             </span>
             <div className="flex items-center">
@@ -276,7 +276,7 @@ const Faqs = () => {
 
         <Disclosure as="div">
           <DisclosureButton className="group flex w-full items-center justify-between py-4">
-            <span className="text-[20px] font-medium text-blackThree group-hover:text-blackThree/80">
+            <span className="text-xl font-medium text-blackThree group-hover:text-blackThree/80">
               Contact Support
             </span>
             <div className="flex items-center">

@@ -16,7 +16,7 @@ const AuthLeftContent = () => {
           laboriosam */}
           Stop waste, save food!
         </p>
-        <p className="text-[14px] font-medium text-[#7E8299] leading-6 pl-[8%] pr-[8%]">
+        <p className="text-sm font-medium text-[#7E8299] leading-6 pl-[8%] pr-[8%]">
           Choose from curated meal bags small, large, or surprise prepared by
           your favorite restaurants. Fast, easy, and always delicious. Download
           the app and grab your meal today!

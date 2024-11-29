@@ -156,22 +156,20 @@ const BusinessProfileCard = () => {
             </div>
           </div>
           <div className="flex flex-col items-center lg:mt-5 lg:gap-y-2 lg:ml-12 md:gap-y-2 md:ml-12">
-            <p className="text-black font-semibold text-[14px]">Rating</p>
+            <p className="text-black font-semibold text-sm">Rating</p>
             <div className="flex gap-2 items-center">
               {businessStarSvg}
-              <p className="text-starItem font-bold text-[18px]">
+              <p className="text-starItem font-bold text-lg">
                 {averageRating.toFixed(1)}
               </p>{" "}
               {/* Display the average rating */}
             </div>
           </div>
           <div className="flex flex-col items-center lg:mt-5 lg:gap-y-2 lg:ml-12 md:gap-y-2 md:ml-12">
-            <p className="text-black font-semibold text-[14px]">
-              Total Revenue
-            </p>
+            <p className="text-black font-semibold text-sm">Total Revenue</p>
             <div className="flex gap-2 items-center text-starItem font-bold">
               SEK
-              <p className="text-starItem font-bold text-[18px]">
+              <p className="text-starItem font-bold text-lg">
                 {Number(totalRevenue).toFixed(2)}
               </p>{" "}
             </div>
@@ -179,28 +177,28 @@ const BusinessProfileCard = () => {
         </div>
       </div>
       <div>
-        <p className="text-left text-graySeven  text-[16px]">
+        <p className="text-left text-graySeven  text-base">
           <span className="font-bold">Email: </span>
           {email}
         </p>
-        <p className="text-left text-graySeven  text-[16px]">
+        <p className="text-left text-graySeven  text-base">
           <span className="font-bold">Phone Number: </span>
           {phone}
         </p>
-        <p className="text-left text-graySeven  text-[16px]">
+        <p className="text-left text-graySeven  text-base">
           <span className="font-bold">IBAN: </span>
           {bankDetails.iban}
         </p>
-        <p className="text-left text-graySeven text-[16px]">
+        <p className="text-left text-graySeven text-base">
           <span className="font-bold">Account Holder Name: </span>
           {bankDetails.accountHolder}
         </p>
-        <p className="text-left text-graySeven text-[16px]">
+        <p className="text-left text-graySeven text-base">
           <span className="font-bold">VAT Number: </span>
           {bankDetails.vat}
         </p>
       </div>
-      <p className="text-left leading-5 text-graySeven font-medium text-[16px]">
+      <p className="text-left leading-5 text-graySeven font-medium text-base">
         {description}
       </p>
     </>
