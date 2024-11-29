@@ -65,7 +65,7 @@ const CardsRow = () => {
             if (currencyCode && currencyCode !== "SEK") {
               const exchangeRate = exchangeRates[currencyCode];
               if (exchangeRate) {
-                priceInSEK = data.price * exchangeRate; // Convert to SEK
+                priceInSEK = (data.price * 0.15) / exchangeRate; // Convert to SEK
               } else {
                 console.warn(
                   `No exchange rate found for currency: ${currencyCode}`
@@ -81,7 +81,7 @@ const CardsRow = () => {
         setTotalPrice(sum);
 
         // Calculate 10% of the total price and set it in state
-        const percentage = sum * 0.15;
+        const percentage = sum;
         setTenPercent(percentage);
       } catch (error) {
         console.error("Error calculating total price:", error);

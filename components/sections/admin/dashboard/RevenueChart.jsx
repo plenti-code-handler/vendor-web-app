@@ -144,8 +144,10 @@ const RevenueChart = () => {
               let priceInSEK = priceInOriginalCurrency;
               if (currencyCode && currencyCode !== "SEK") {
                 const exchangeRate = exchangeRates[currencyCode];
+                console.log("Exchange Rate", exchangeRate);
                 if (exchangeRate) {
-                  priceInSEK = priceInOriginalCurrency * exchangeRate; // Convert to SEK
+                  priceInSEK = (priceInOriginalCurrency * 0.15) / exchangeRate; // Convert to SEK
+                  console.log("Price in SEK", priceInSEK);
                   console.log("Original Currency", priceInOriginalCurrency);
                 } else {
                   console.warn(
@@ -154,7 +156,7 @@ const RevenueChart = () => {
                 }
               }
 
-              const percentage10 = priceInSEK * 0.15;
+              const percentage10 = priceInSEK;
               revenueData[index] += percentage10; // Calculate revenue
               console.log(
                 `Updated revenue for ${bookingDate}:`,
