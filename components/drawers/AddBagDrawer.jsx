@@ -104,6 +104,68 @@ const AddBagDrawer = () => {
   const handleSubmitBag = async () => {
     try {
       setLoading(true);
+
+      console.log("Slected tags");
+      console.log(selectedTags);
+
+      const requiredFields = [
+        {
+          field: dealTitle,
+          name: "dealTitle",
+          message: "Please provide a deal title.",
+        },
+        {
+          field: selectedBag.type,
+          name: "selectedBag.type",
+          message: "Please select a bag type.",
+        },
+        {
+          field: description,
+          name: "description",
+          message: "Please fill the description.",
+        },
+        {
+          field: numberOfBags,
+          name: "numberOfBags",
+          message: "Please fill the number of bags.",
+        },
+        {
+          field: selectedBag.img,
+          name: "selectedBag.img",
+          message: "Please upload an image for the bag.",
+        },
+        {
+          field: stock,
+          name: "stock",
+          message: "Please specify the stock quantity.",
+        },
+        {
+          field: pricing,
+          name: "pricing",
+          message: "Please provide the pricing information.",
+        },
+        {
+          field: originalPrice,
+          name: "originalPrice",
+          message: "Please provide the original price.",
+        },
+      ];
+
+      for (const { field, name, message } of requiredFields) {
+        if (!field) {
+          console.log(`Field '${name}' is missing or empty.`);
+          toast.error(message);
+          setLoading(false);
+          return;
+        }
+      }
+
+      if (!selectedDates || selectedDates.length === 0) {
+        toast.error("Please select date and time.");
+        setLoading(false);
+        return;
+      }
+
       const updatedDateArray = selectedDates.map((item) => {
         // Combine date with starttime and endtime
         const dateStr = `${item.date}T00:00:00`; // Date with no time for selectedDateTime
@@ -115,6 +177,13 @@ const AddBagDrawer = () => {
         const startDateTime = new Date(startDateTimeStr); // Date with start time
         const endDateTime = new Date(endDateTimeStr); // Date with end time
 
+        if (endDateTime < startDateTime) {
+          console.log("End time should be after start time");
+          toast.error("End time should be after start time");
+          setLoading(false);
+          return;
+        }
+
         // Convert to Firebase timestamps
         return {
           date: Timestamp.fromDate(selectedDateTime),
@@ -123,7 +192,14 @@ const AddBagDrawer = () => {
         };
       });
 
+      console.log("updated array");
       console.log(updatedDateArray);
+
+      if (!updatedDateArray || updatedDateArray.includes(undefined)) {
+        setLoading(false);
+        return;
+      }
+
       // Reference to the 'bags' collection
       const bagsCollectionRef = collection(db, "bags");
 
@@ -207,6 +283,7 @@ const AddBagDrawer = () => {
       console.error("Error adding document: ", error);
     }
   };
+
   const dispatch = useDispatch();
   const open = useSelector((state) => state.addBag.drawerOpen);
 
