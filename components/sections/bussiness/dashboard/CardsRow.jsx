@@ -9,6 +9,16 @@ const CardsRow = () => {
   const [user, setUser] = useState({});
   const [bagToday, setBagToday] = useState("");
   const [totalBags, setTotalBags] = useState("");
+  const [currLang, setCurrLang] = useState("en");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedLang = localStorage.getItem("lang");
+      if (storedLang) {
+        setCurrLang(storedLang);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     const localUser = getUserLocal();
@@ -73,11 +83,13 @@ const CardsRow = () => {
         title={
           totalBags.length === 0 ? 0 : totalBags.length.toLocaleString("en-US")
         }
-        content={"Total Pouches Made"}
+        content={`Total ${currLang === "en" ? " Bags" : "Pouches "} Made`}
       />
       <Card
         title={Number(bagToday).toLocaleString("en-US")}
-        content={"Today's Pouch"}
+        content={`Today's 
+          ${currLang === "en" ? " Bag" : "Pouch"}
+          `}
       />
     </div>
   );

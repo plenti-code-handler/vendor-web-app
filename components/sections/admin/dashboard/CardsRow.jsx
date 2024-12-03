@@ -1,8 +1,20 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Card from "./Card";
 
 const CardsRow = ({ totalBags, bagToday, vendorCount, customerCount }) => {
+  const [currLang, setCurrLang] = useState("en");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedLang = localStorage.getItem("lang");
+      setCurrLang(storedLang);
+      if (storedLang) {
+        setCurrLang(storedLang);
+      }
+    }
+  }, []);
+  
   return (
     <div className="hidden lg:flex flex-col lg:flex-row lg:w-[100%]">
       <div className="flex flex-col gap-5 lg:w-[100%]">
@@ -13,14 +25,14 @@ const CardsRow = ({ totalBags, bagToday, vendorCount, customerCount }) => {
               ? 0
               : totalBags.length.toLocaleString("en-US")
           }
-          content={"Total Pouches Made"}
+          content={`Total ${currLang === "en" ? "Bag" : "Pouches"} Made`}
         />
       </div>
       <div className="flex flex-col gap-5 lg:w-[100%]">
         <Card title={customerCount} content={"Total Customers"} />
         <Card
           title={Number(bagToday).toLocaleString("en-US")}
-          content={"Today's Total pouches"}
+          content={`Today's Total ${currLang === "en" ? "Bags" : "Pouches"}`}
         />
       </div>
     </div>

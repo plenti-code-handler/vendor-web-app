@@ -1,6 +1,18 @@
+import { useEffect, useState } from "react";
 import { arrowDownGray } from "../../svgs";
 
 const BagsFilter = ({ selectedFilter, onFilterChange }) => {
+  const [currLang, setCurrLang] = useState("en");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedLang = localStorage.getItem("lang");
+      if (storedLang) {
+        setCurrLang(storedLang);
+      }
+    }
+  }, []);
+
   return (
     <form className="max-w-lg w-full lg:w-60">
       <div className="relative">
@@ -11,16 +23,16 @@ const BagsFilter = ({ selectedFilter, onFilterChange }) => {
           onChange={(e) => onFilterChange(e.target.value)}
         >
           <option value="" className="text-base">
-            All Pouches
+            {`All ${currLang === "en" ? "Bags" : "Pouches"}`}
           </option>
           <option value="scheduled" className="text-base">
-            Scheduled Pouches
+            {`Scheduled ${currLang === "en" ? "Bags" : "Pouches"}`}
           </option>
           <option value="active" className="text-base">
-            Active Pouches
+            {`Active ${currLang === "en" ? "Bags" : "Pouches"}`}
           </option>
           <option value="past" className="text-base">
-            Past Pouches
+            {`Past ${currLang === "en" ? "Bags" : "Pouches"}`}
           </option>
         </select>
 

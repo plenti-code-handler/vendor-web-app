@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -7,6 +7,18 @@ import Card from "./Card";
 
 const StatSlider = ({ bagToday, totalBags, vendorCount, customerCount }) => {
   const [current, setCurrent] = useState(0);
+
+  const [currLang, setCurrLang] = useState("en");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedLang = localStorage.getItem("lang");
+      setCurrLang(storedLang);
+      if (storedLang) {
+        setCurrLang(storedLang);
+      }
+    }
+  }, []);
 
   var settings = {
     dots: true,
@@ -83,7 +95,7 @@ const StatSlider = ({ bagToday, totalBags, vendorCount, customerCount }) => {
               ? 0
               : totalBags.length.toLocaleString("en-US")
           }
-          content={"Total Pouch Made"}
+          content={`Total ${currLang === "en" ? "Bag" : "Pouch"} Made`}
         />
       </div>
       <div className="px-4">
@@ -92,7 +104,9 @@ const StatSlider = ({ bagToday, totalBags, vendorCount, customerCount }) => {
       <div className="px-4">
         <Card
           title={Number(bagToday).toLocaleString("en-US")}
-          content={"Today's Total pouches"}
+          content={`Today's Total 
+            ${currLang === "en" ? "Bags" : "Pouches"}
+            `}
         />{" "}
       </div>
     </Slider>

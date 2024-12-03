@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { arrowDown1, arrowDown2 } from "../../svgs";
 
 const LanguageDropdown = ({ background, textColor, borderColor, width }) => {
-  const [selectedLanguage, setSelectedLanguage] = useState("sv"); // Default to Swedish
+  const [selectedLanguage, setSelectedLanguage] = useState("en"); // Default to Swedish
 
   useEffect(() => {
     // Check if Google Translate cookie exists
@@ -14,6 +14,7 @@ const LanguageDropdown = ({ background, textColor, borderColor, width }) => {
     // Set initial language from the cookie if available
     if (cookieValue) {
       setSelectedLanguage(cookieValue.split("/")[2]);
+      localStorage.setItem("lang", cookieValue.split("/")[2]);
     } else {
       // If no cookie, set default language to Swedish
       changeLanguage("sv");

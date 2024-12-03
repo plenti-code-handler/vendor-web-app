@@ -18,6 +18,8 @@ const BussinessHeader = () => {
   const activePage = useSelector((state) => state.header.activePage);
   const dispatch = useDispatch();
   const [isSmallDevice, setIsSmallDevice] = useState(false);
+  const [currLang, setCurrLang] = useState("en");
+  const [modifiedMenuItems, setModifiedMenuItems] = useState(menuItemsData);
 
   const router = useRouter();
 
@@ -36,6 +38,29 @@ const BussinessHeader = () => {
 
     return () => window.removeEventListener("resize", checkIsMobile);
   }, []);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedLang = localStorage.getItem("lang");
+      if (storedLang) {
+        setCurrLang(storedLang);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    const updatedMenuItems = menuItemsData.map((item) => {
+      if (currLang === "en" && item.name === "Manage Pouches") {
+        return { ...item, name: "Manage Bags" };
+      }
+      if (currLang === "sv" && item.name === "Manage Bags") {
+        return { ...item, name: "Manage Pouches" };
+      }
+      return item;
+    });
+
+    setModifiedMenuItems(updatedMenuItems);
+  }, [currLang]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -77,7 +102,7 @@ const BussinessHeader = () => {
 
   return (
     <>
-      <header className="bg-main xl:px-[6%] justify-around">
+      <header className="bg-main xl:px-[6%] justify-around ">
         <div className="mx-auto flex p-2 items-center justify-between py-5">
           <a href="/">
             <img
@@ -111,7 +136,7 @@ const BussinessHeader = () => {
             style={{ zIndex: isSmallDevice ? 1000 : 0 }}
           >
             <div className="flex flex-col items-start lg:flex-row p-6 lg:p-0 gap-[2.2%]">
-              {menuItemsData.map(({ name, href }) => (
+              {modifiedMenuItems.map(({ name, href }) => (
                 <Link
                   key={name}
                   href={href}

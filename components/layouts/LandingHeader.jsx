@@ -28,6 +28,17 @@ const LandingHeader = () => {
   const activePage = useSelector((state) => state.header.activePage);
 
   const [isMobile, setIsMobile] = useState(false);
+  const [currLang, setCurrLang] = useState("en");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedLang = localStorage.getItem("lang");
+      setCurrLang(storedLang);
+      if (storedLang) {
+        setCurrLang(storedLang);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     const checkIsMobile = () => {
@@ -167,7 +178,7 @@ const LandingHeader = () => {
                           }
                         }}
                       >
-                        Surprise Pouch
+                        {`Surprise ${currLang === "en" ? "Bag" : "Pouch"} `}
                       </Link>
                     </div>
                     <div>
@@ -180,7 +191,9 @@ const LandingHeader = () => {
                           }
                         }}
                       >
-                        Small & Large Pouch
+                        {`Small & Large  ${
+                          currLang === "en" ? "Bag" : "Pouch"
+                        } `}
                       </Link>
                     </div>
                   </div>
@@ -197,7 +210,7 @@ const LandingHeader = () => {
                           : "text-graySix lg:text-graySix hover:bg-pink hover:text-mainLight"
                       }`}
                     >
-                      Surprise Pouch
+                      {`Surprise ${currLang === "en" ? "Bag" : "Pouch"} `}
                     </Link>
                   </div>
                   <div>
@@ -209,7 +222,7 @@ const LandingHeader = () => {
                           : "text-graySix lg:text-graySix hover:bg-pink hover:text-mainLight"
                       }`}
                     >
-                      Small & Large Pouch
+                      {`Small & Large  ${currLang === "en" ? "Bag" : "Pouch"} `}
                     </Link>
                   </div>
                 </div>

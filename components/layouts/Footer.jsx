@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { appLogoUrl } from "../../lib/constant_data";
 import { appleLogoSvg, googleLogoSvg, rightArrowIcon } from "../../svgs";
 import { setOpenDrawer } from "../../redux/slices/contactUserSlice";
@@ -9,6 +9,17 @@ import Link from "next/link";
 
 const Footer = () => {
   const dispatch = useDispatch();
+  const [currLang, setCurrLang] = useState("en");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedLang = localStorage.getItem("lang");
+      setCurrLang(storedLang);
+      if (storedLang) {
+        setCurrLang(storedLang);
+      }
+    }
+  }, []);
 
   const openContactForm = () => {
     dispatch(setOpenDrawer(true));
@@ -70,7 +81,9 @@ const Footer = () => {
                     className="flex items-center gap-5 hover:text-main transition-colors duration-300 w-fit"
                   >
                     {horizontalChecklistIcon}
-                    <span>Surprise Pouch</span>
+                    <span>
+                      {`Surprise ${currLang === "en" ? "Bag" : "Pouch"} `}
+                    </span>
                   </Link>
                 </li>
                 <li>
@@ -79,7 +92,9 @@ const Footer = () => {
                     className="flex items-center gap-5 hover:text-main transition-colors duration-300 w-fit"
                   >
                     {horizontalChecklistIcon}
-                    <span>Small & Medium Pouch</span>
+                    <span>
+                      {`Small & Medium ${currLang === "en" ? "Bag" : "Pouch"} `}
+                    </span>
                   </Link>
                 </li>
                 <li>

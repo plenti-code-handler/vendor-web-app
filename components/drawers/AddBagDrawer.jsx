@@ -51,7 +51,8 @@ const bagTypes = [
 ];
 
 const AddBagDrawer = () => {
-  const { setBags, setFilteredBags, setLastVisible } = useContext(BagsContext);
+  const { setBags, setFilteredBags, setLastVisible } =
+    useContext(BagsContext);
 
   const [selectedBag, setSelectedBag] = useState({});
   const [selectedTags, setSelectedTags] = useState([]);
@@ -80,6 +81,8 @@ const AddBagDrawer = () => {
     const user = getUserLocal();
     setUser(user);
   }, []);
+
+
 
   useEffect(() => {
     if (user.point) {

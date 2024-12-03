@@ -14,6 +14,16 @@ const StatSlider = () => {
   const [user, setUser] = useState({});
   const [bagToday, setBagToday] = useState("");
   const [totalBags, setTotalBags] = useState("");
+  const [currLang, setCurrLang] = useState("en");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedLang = localStorage.getItem("lang");
+      if (storedLang) {
+        setCurrLang(storedLang);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     const localUser = getUserLocal();
@@ -144,13 +154,13 @@ const StatSlider = () => {
               ? 0
               : totalBags.length.toLocaleString("en-US")
           }
-          content={"Total Pouches Made"}
+          content={`Total ${currLang === "en" ? "Bag" : "Pouches"} Made`}
         />
       </div>
       <div className="px-4">
         <Card
           title={Number(bagToday).toLocaleString("en-US")}
-          content={"Today's Pouch"}
+          content={`Today's ${currLang === "en" ? "Bag" : "Pouch"}`}
         />
       </div>
     </Slider>

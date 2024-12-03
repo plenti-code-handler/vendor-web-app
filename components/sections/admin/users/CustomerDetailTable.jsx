@@ -28,6 +28,17 @@ const CustomerDetailTable = () => {
   const [loading, setLoading] = useState(false);
   const [bookingFilter, setOnBookingFilter] = useState("active");
   const [loader, setLoader] = useState(false);
+  const [currLang, setCurrLang] = useState("en");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedLang = localStorage.getItem("lang");
+      setCurrLang(storedLang);
+      if (storedLang) {
+        setCurrLang(storedLang);
+      }
+    }
+  }, []);
 
   const customer = useSelector(
     (state) => state.selectBusiness.selectedBusiness
@@ -278,7 +289,7 @@ const CustomerDetailTable = () => {
   return (
     <div className="mt-4 w-full border border-gray-200 rounded-xl p-6 sm:px-4">
       <DetailsTableUpper
-        Heading={"Pouches Ordered"}
+        Heading={`${currLang === "en" ? "Bags" : "Pouches"} Ordered`}
         setSearchTerm={setSearchTerm}
         // selectedFilter={onStatusChange}
         // onFilterChange={onFilterChange}

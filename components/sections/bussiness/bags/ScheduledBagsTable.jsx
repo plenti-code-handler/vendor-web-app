@@ -6,18 +6,31 @@ import { deleteSvg, editSvg } from "../../../../svgs";
 import LoadMoreButton from "../../../buttons/LoadMoreButton";
 
 const ScheduledBagsTable = () => {
+  const [currLang, setCurrLang] = useState("en");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedLang = localStorage.getItem("lang");
+      if (storedLang) {
+        setCurrLang(storedLang);
+      }
+    }
+  }, []);
+
   return (
     <div className="no-scrollbar w-full  overflow-y-hidden">
       <table className="w-full table-auto truncate overflow-hidden bg-white">
         <thead>
           <tr className="border-b-[1px] border-grayOne border-opacity-45 border-dashed text-sm font-semibold text-grayOne">
             <th className="pb-[8px] pl-2 pt-[18px] text-left w-[14.28%]">
-              Bag Deal Title
+              {`${currLang === "en" ? "Bag" : "Pouch"} Deal Title`}
             </th>
             <th className="pb-[8px] px-2 pt-[18px] text-center">Size</th>
             <th className="pb-[8px] px-2 pt-[18px] text-center">Daily Serve</th>
             <th className="pb-[8px] px-2 pt-[18px] text-center">In Stock</th>
-            <th className="pb-[8px] px-2 pt-[18px] text-center">Pouch Price</th>
+            <th className="pb-[8px] px-2 pt-[18px] text-center">
+              {`${currLang === "en" ? "Bag" : "Pouch"} Price`}
+            </th>
             <th className="pb-[8px] px-2 pt-[18px] text-center">Date</th>
             <th className="pb-[8px] px-2 pt-[18px] text-center">Actions</th>
           </tr>

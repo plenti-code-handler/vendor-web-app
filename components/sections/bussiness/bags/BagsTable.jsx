@@ -51,6 +51,25 @@ const BagsTable = () => {
   const [onStatusChange, setOnStatusChange] = useState("");
   const [loader, setLoader] = useState(false);
   const [countryCode, setCountryCode] = useState(null);
+  const [currLang, setCurrLang] = useState("en");
+
+  useEffect(() => {
+    const updateLanguage = () => {
+      const storedLang = localStorage.getItem("lang");
+
+      if (storedLang) {
+        setCurrLang(storedLang);
+      }
+    };
+
+    updateLanguage();
+
+    window.addEventListener("storage", updateLanguage);
+
+    return () => {
+      window.removeEventListener("storage", updateLanguage);
+    };
+  }, []);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -275,12 +294,16 @@ const BagsTable = () => {
         <thead>
           <tr className="border-b-[1px] border-grayOne border-dashed border-opacity-45 text-sm font-semibold text-grayOne">
             <th className="pb-[8px] pl-[5%] pt-[18px] text-left w-[25.00%]">
-              Bag Deal Title
+              {`${
+                currLang === "en" ? " Bag Deal Title" : "Pouches Deal Title"
+              }`}
             </th>
             <th className="pb-[8px] px-2 pt-[18px] text-center">Size</th>
             <th className="pb-[8px] px-2 pt-[18px] text-center">Daily Serve</th>
             <th className="pb-[8px] px-2 pt-[18px] text-center">In Stock</th>
-            <th className="pb-[8px] px-2 pt-[18px] text-center">Pouch Price</th>
+            <th className="pb-[8px] px-2 pt-[18px] text-center">{`${
+              currLang === "en" ? "Bag Price" : "Pouches Price"
+            }`}</th>
             <th className="pb-[8px] px-2 pt-[18px] text-center">Status</th>
             <th className="pb-[8px] px-2 pt-[18px] text-center">Actions</th>
           </tr>
@@ -376,7 +399,7 @@ const BagsTable = () => {
           ) : (
             <tr>
               <td colSpan="10" className="text-center py-10 text-grayOne">
-                No Pouch found
+                {`No ${currLang === "en" ? "Bag" : "Pouch"} found`}
               </td>
             </tr>
           )}

@@ -10,10 +10,20 @@ import { faqData } from "../../../../lib/constant_data";
 import FaqForm from "./FaqForm";
 import { useDispatch } from "react-redux";
 import { setActivePage } from "../../../../redux/slices/headerSlice";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const Faqs = () => {
   const dispatch = useDispatch();
+  const [currLang, setCurrLang] = useState("en");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedLang = localStorage.getItem("lang");
+      if (storedLang) {
+        setCurrLang(storedLang);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     dispatch(setActivePage("More"));
@@ -236,7 +246,12 @@ const Faqs = () => {
                   you.
                 </li>
                 <li>Correct incorrect or incomplete information.</li>
-                <li>Request deletion of your data in certain pouches.</li>
+                <li>{`${
+                  currLang === "en"
+                    ? "Request deletion of your data in certain Bags."
+                    : "Request deletion of your data in certain pouches."
+                }`}</li>
+
                 <li>
                   Withdraw your consent for specific treatments if the treatment
                   is based on consent.

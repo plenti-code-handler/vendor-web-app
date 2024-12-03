@@ -51,6 +51,7 @@ const Breadcrumb = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const [pendingUsersCount, setPendingUsersCount] = useState(0);
+  const [currLang, setCurrLang] = useState("en");
 
   const handleOpenDrawer = useCallback(() => {
     dispatch(setOpenDrawer(true));
@@ -59,6 +60,15 @@ const Breadcrumb = () => {
   const handleBackClick = useCallback(() => {
     router.replace("/admin/users");
   }, [router]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedLang = localStorage.getItem("lang");
+      if (storedLang) {
+        setCurrLang(storedLang);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     const fetchPendingUsersCount = async () => {
@@ -85,6 +95,11 @@ const Breadcrumb = () => {
 
   const currentPath = useMemo(() => decidePath(pathname), [pathname]);
 
+  useEffect(() => {
+    console.log("Current path");
+    console.log(currentPath);
+  }, []);
+
   const MoreOptionsContent = () => (
     <div className="flex flex-col items-center">
       <img
@@ -103,6 +118,7 @@ const Breadcrumb = () => {
       <p className="m-4 text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-one">
         {currentPath}
       </p>
+
       {currentPath === "Manage Pouches" && (
         <button
           onClick={handleOpenDrawer}
