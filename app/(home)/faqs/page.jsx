@@ -9,7 +9,7 @@ import {
   ChevronRightIcon,
   ChevronUpIcon,
 } from "@heroicons/react/20/solid";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import { setActivePage } from "../../../redux/slices/headerSlice";
 import { useDispatch } from "react-redux";

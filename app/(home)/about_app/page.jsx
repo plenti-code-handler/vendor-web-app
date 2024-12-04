@@ -16,8 +16,10 @@ const Page = () => {
       <div className="flex flex-col items-center gap-10 p-[5%] lg:px-[2%] lg:pt-[3%] lg:pb-[5%]">
         <div className="flex flex-col gap-4 items-center">
           <h1 className="text-center font-extrabold text-xl md:text-[2.75em] uppercase">
-            FOODIEFINDER <br></br> A COMPLETE SOLUTION FOR FOOD WASTE
+            <span className="block">FOODIEFINDER</span>
+            <span className="block mt-5">A COMPLETE SOLUTION FOR FOOD WASTE</span>
           </h1>
+
           <p className="font-semibold text-base text-center w-[100%] md:w-[80%]">
             The FoodieFinder platform helps stores optimize their revenue by
             managing goods with a short shelf life. Our platform tracks and
