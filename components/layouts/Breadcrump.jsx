@@ -7,7 +7,7 @@ import { setOpenDrawer } from "../../redux/slices/addBagSlice";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../app/firebase/config";
 
-const decidePath = (pathname) => {
+const decidePath = (pathname, currLang) => {
   // Check for specific patterns
   console.log(pathname);
   if (pathname.match(/\/admin\/users\/business\/[a-zA-Z0-9]+/)) {
@@ -24,7 +24,7 @@ const decidePath = (pathname) => {
     case "business":
       return "My Dashboard";
     case "manage-bags":
-      return "Manage Pouches";
+      return `Manage ${currLang === "en" ? "Bags" : "Pouches"}  `;
     case "bookings":
       return "Bookings";
     case "more":
@@ -93,7 +93,7 @@ const Breadcrumb = () => {
     fetchPendingUsersCount();
   }, []); // Empty dependency array to run this effect only once on mount
 
-  const currentPath = useMemo(() => decidePath(pathname), [pathname]);
+  const currentPath = useMemo(() => decidePath(pathname, currLang), [pathname]);
 
   useEffect(() => {
     console.log("Current path");

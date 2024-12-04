@@ -1,6 +1,19 @@
+"use client";
+import { useEffect, useState } from "react";
 import { arrowDownGray } from "../../svgs";
 
 const BookingsFilter = ({ selectedFilter, onFilterChange }) => {
+  const [currLang, setCurrLang] = useState("en");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedLang = localStorage.getItem("lang");
+      if (storedLang) {
+        setCurrLang(storedLang);
+      }
+    }
+  }, []);
+
   return (
     <form className="w-full sm:w-[125px] lg:min-w-[200px]">
       <div className="relative">
@@ -11,13 +24,13 @@ const BookingsFilter = ({ selectedFilter, onFilterChange }) => {
           onChange={(e) => onFilterChange(e.target.value)}
         >
           <option value="active" className="text-base truncate">
-            Active Pouches
+            {`Active ${currLang === "en" ? "Bags" : "Pouches"}  `}
           </option>
           <option value="past" className="text-base truncate">
-            Past Pouches
+            {`Past ${currLang === "en" ? "Bags" : "Pouches"}  `}
           </option>
           <option value="scheduled" className="text-base truncate">
-            Scheduled Pouches
+            {`Scheduled ${currLang === "en" ? "Bags" : "Pouches"}  `}
           </option>
           <option value="cancelled" className="text-base truncate">
             Cancel
