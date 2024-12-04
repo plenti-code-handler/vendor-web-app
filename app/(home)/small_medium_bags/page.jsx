@@ -12,11 +12,35 @@ const Page = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setActivePage("Small & Large Bag"));
-    const lang = localStorage.getItem("lang");
-    setCurrLang(lang);
-    currLang = lang;
     console.log("Language from localStorage:", lang);
   }, [dispatch]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const updateLangFromStorage = () => {
+        const storedLang = localStorage.getItem("lang");
+        if (storedLang) {
+          setCurrLang(storedLang);
+          lang = storedLang;
+        }
+      };
+
+      const timeoutId = setTimeout(() => {
+        updateLangFromStorage();
+        window.addEventListener("storage", updateLangFromStorage);
+      }, 2000);
+      return () => {
+        clearTimeout(timeoutId);
+        window.removeEventListener("storage", updateLangFromStorage);
+      };
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && document.body) {
+      document.body.setAttribute("lang", currLang);
+    }
+  }, [currLang]);
 
   return (
     <div className="text-[75%] md:text[90%] lg:text-[100%] bg-[#F5F5F5]">

@@ -24,14 +24,31 @@ const AdminHeader = () => {
   const [currLang, setCurrLang] = useState("en");
   const [modifiedMenuItems, setModifiedMenuItems] = useState(menuItemsData);
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const storedLang = localStorage.getItem("lang");
-      if (storedLang) {
-        setCurrLang(storedLang);
+    useEffect(() => {
+      if (typeof window !== "undefined") {
+        const updateLangFromStorage = () => {
+          const storedLang = localStorage.getItem("lang");
+          if (storedLang) {
+            setCurrLang(storedLang);
+          }
+        };
+
+        const timeoutId = setTimeout(() => {
+          updateLangFromStorage();
+          window.addEventListener("storage", updateLangFromStorage);
+        }, 2000);
+        return () => {
+          clearTimeout(timeoutId);
+          window.removeEventListener("storage", updateLangFromStorage);
+        };
       }
-    }
-  }, []);
+    }, []);
+
+    useEffect(() => {
+      if (typeof window !== "undefined" && document.body) {
+        document.body.setAttribute("lang", currLang);
+      }
+    }, [currLang]);
 
   useEffect(() => {
     const updatedMenuItems = menuItemsData.map((item) => {

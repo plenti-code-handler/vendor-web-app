@@ -11,15 +11,32 @@ const Page = () => {
   const dispatch = useDispatch();
   const [currLangg, setCurrLang] = useState("en");
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const storedLang = localStorage.getItem("lang");
-      currLang = storedLang;
-      if (storedLang) {
-        setCurrLang(storedLang);
+    useEffect(() => {
+      if (typeof window !== "undefined") {
+        const updateLangFromStorage = () => {
+          const storedLang = localStorage.getItem("lang");
+          if (storedLang) {
+            setCurrLang(storedLang);
+            currLang = storedLang
+          }
+        };
+
+        const timeoutId = setTimeout(() => {
+          updateLangFromStorage();
+          window.addEventListener("storage", updateLangFromStorage);
+        }, 2000);
+        return () => {
+          clearTimeout(timeoutId);
+          window.removeEventListener("storage", updateLangFromStorage);
+        };
       }
-    }
-  }, []);
+    }, []);
+
+    useEffect(() => {
+      if (typeof window !== "undefined" && document.body) {
+        document.body.setAttribute("lang", currLang);
+      }
+    }, [currLang]);
 
   useEffect(() => {
     dispatch(setActivePage("Surprise Bag"));

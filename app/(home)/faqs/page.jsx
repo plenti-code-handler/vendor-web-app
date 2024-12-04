@@ -27,6 +27,8 @@ const Page = () => {
   const dispatch = useDispatch();
   const [currLangg, setCurrLang] = useState("en");
 
+  
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const storedLang = localStorage.getItem("lang");

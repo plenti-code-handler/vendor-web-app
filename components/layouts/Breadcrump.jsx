@@ -24,7 +24,7 @@ const decidePath = (pathname, currLang) => {
     case "business":
       return "My Dashboard";
     case "manage-bags":
-      return `Manage ${currLang === "en" ? "Bags" : "Pouches"}  `;
+      return "Manage Pouches";
     case "bookings":
       return "Bookings";
     case "more":
@@ -61,14 +61,31 @@ const Breadcrumb = () => {
     router.replace("/admin/users");
   }, [router]);
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const storedLang = localStorage.getItem("lang");
-      if (storedLang) {
-        setCurrLang(storedLang);
+    useEffect(() => {
+      if (typeof window !== "undefined") {
+        const updateLangFromStorage = () => {
+          const storedLang = localStorage.getItem("lang");
+          if (storedLang) {
+            setCurrLang(storedLang);
+          }
+        };
+
+        const timeoutId = setTimeout(() => {
+          updateLangFromStorage();
+          window.addEventListener("storage", updateLangFromStorage);
+        }, 2000);
+        return () => {
+          clearTimeout(timeoutId);
+          window.removeEventListener("storage", updateLangFromStorage);
+        };
       }
-    }
-  }, []);
+    }, []);
+
+    useEffect(() => {
+      if (typeof window !== "undefined" && document.body) {
+        document.body.setAttribute("lang", currLang);
+      }
+    }, [currLang]);
 
   useEffect(() => {
     const fetchPendingUsersCount = async () => {
@@ -116,7 +133,11 @@ const Breadcrumb = () => {
   const DefaultContent = () => (
     <div className="flex justify-between items-center lg:mr-auto lg:mt-4 lg:mb-4 lg:py-2 lg:w-[99%]">
       <p className="m-4 text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-one">
-        {`Manage ${currLang === "en" ? "Bags" : "Pouches"}  `}
+        {currentPath === "Manage Pouches" ? (
+          <>{`Manage ${currLang === "en" ? "Bags" : "Pouches"}  `}</>
+        ) : (
+          <>{currentPath}</>
+        )}
       </p>
 
       {currentPath === "Manage Pouches" && (

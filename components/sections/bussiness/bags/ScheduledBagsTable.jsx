@@ -8,14 +8,31 @@ import LoadMoreButton from "../../../buttons/LoadMoreButton";
 const ScheduledBagsTable = () => {
   const [currLang, setCurrLang] = useState("en");
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const storedLang = localStorage.getItem("lang");
-      if (storedLang) {
-        setCurrLang(storedLang);
+    useEffect(() => {
+      if (typeof window !== "undefined") {
+        const updateLangFromStorage = () => {
+          const storedLang = localStorage.getItem("lang");
+          if (storedLang) {
+            setCurrLang(storedLang);
+          }
+        };
+
+        const timeoutId = setTimeout(() => {
+          updateLangFromStorage();
+          window.addEventListener("storage", updateLangFromStorage);
+        }, 2000);
+        return () => {
+          clearTimeout(timeoutId);
+          window.removeEventListener("storage", updateLangFromStorage);
+        };
       }
-    }
-  }, []);
+    }, []);
+
+    useEffect(() => {
+      if (typeof window !== "undefined" && document.body) {
+        document.body.setAttribute("lang", currLang);
+      }
+    }, [currLang]);
 
   return (
     <div className="no-scrollbar w-full  overflow-y-hidden">

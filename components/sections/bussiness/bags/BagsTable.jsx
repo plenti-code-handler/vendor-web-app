@@ -53,23 +53,31 @@ const BagsTable = () => {
   const [countryCode, setCountryCode] = useState(null);
   const [currLang, setCurrLang] = useState("en");
 
-  useEffect(() => {
-    const updateLanguage = () => {
-      const storedLang = localStorage.getItem("lang");
+    useEffect(() => {
+      if (typeof window !== "undefined") {
+        const updateLangFromStorage = () => {
+          const storedLang = localStorage.getItem("lang");
+          if (storedLang) {
+            setCurrLang(storedLang);
+          }
+        };
 
-      if (storedLang) {
-        setCurrLang(storedLang);
+        const timeoutId = setTimeout(() => {
+          updateLangFromStorage();
+          window.addEventListener("storage", updateLangFromStorage);
+        }, 2000);
+        return () => {
+          clearTimeout(timeoutId);
+          window.removeEventListener("storage", updateLangFromStorage);
+        };
       }
-    };
+    }, []);
 
-    updateLanguage();
-
-    window.addEventListener("storage", updateLanguage);
-
-    return () => {
-      window.removeEventListener("storage", updateLanguage);
-    };
-  }, []);
+    useEffect(() => {
+      if (typeof window !== "undefined" && document.body) {
+        document.body.setAttribute("lang", currLang);
+      }
+    }, [currLang]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
