@@ -39,44 +39,30 @@ const BussinessHeader = () => {
     return () => window.removeEventListener("resize", checkIsMobile);
   }, []);
 
-    useEffect(() => {
-      if (typeof window !== "undefined") {
-        const updateLangFromStorage = () => {
-          const storedLang = localStorage.getItem("lang");
-          if (storedLang) {
-            setCurrLang(storedLang);
-          }
-        };
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const updateLangFromStorage = () => {
+        const storedLang = localStorage.getItem("lang");
+        if (storedLang) {
+          setCurrLang(storedLang);
+        }
+      };
 
-        const timeoutId = setTimeout(() => {
-          updateLangFromStorage();
-          window.addEventListener("storage", updateLangFromStorage);
-        }, 2000);
-        return () => {
-          clearTimeout(timeoutId);
-          window.removeEventListener("storage", updateLangFromStorage);
-        };
-      }
-    }, []);
-
-    useEffect(() => {
-      if (typeof window !== "undefined" && document.body) {
-        document.body.setAttribute("lang", currLang);
-      }
-    }, [currLang]);
+      const timeoutId = setTimeout(() => {
+        updateLangFromStorage();
+        window.addEventListener("storage", updateLangFromStorage);
+      }, 2000);
+      return () => {
+        clearTimeout(timeoutId);
+        window.removeEventListener("storage", updateLangFromStorage);
+      };
+    }
+  }, []);
 
   useEffect(() => {
-    const updatedMenuItems = menuItemsData.map((item) => {
-      if (currLang === "en" && item.name === "Manage Pouches") {
-        return { ...item, name: "Manage Bags" };
-      }
-      if (currLang === "sv" && item.name === "Manage Bags") {
-        return { ...item, name: "Manage Pouches" };
-      }
-      return item;
-    });
-
-    setModifiedMenuItems(updatedMenuItems);
+    if (typeof window !== "undefined" && document.body) {
+      document.body.setAttribute("lang", currLang);
+    }
   }, [currLang]);
 
   useEffect(() => {
@@ -104,6 +90,23 @@ const BussinessHeader = () => {
     dispatch(logoutUser());
     router.push("/");
   };
+
+  useEffect(() => {
+    const updatedMenuItems = menuItemsData.map((item) => {
+      console.log("Cuurent item");
+      console.log(item);
+      if (currLang === "en" && item.name === "Manage Pouches") {
+        return { ...item, name: "Manage Bags" };
+      }
+      if (currLang === "sv" && item.name === "Manage Bags") {
+        return { ...item, name: "Manage Pouches" };
+      }
+      return item;
+    });
+    console.log("updated menu items");
+    console.log(updatedMenuItems);
+    setModifiedMenuItems(updatedMenuItems);
+  }, [currLang]);
 
   useEffect(() => {
     if (isMenuOpen) {

@@ -51,8 +51,7 @@ const bagTypes = [
 ];
 
 const AddBagDrawer = () => {
-  const { setBags, setFilteredBags, setLastVisible } =
-    useContext(BagsContext);
+  const { setBags, setFilteredBags, setLastVisible } = useContext(BagsContext);
 
   const [selectedBag, setSelectedBag] = useState({});
   const [selectedTags, setSelectedTags] = useState([]);
@@ -64,7 +63,7 @@ const AddBagDrawer = () => {
   const [originalPrice, setOriginalPrice] = useState("");
   const [selectedDates, setSelectedDates] = useState([]);
   const [dealTitle, setDealTitle] = useState("");
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const [countryCode, setCountryCode] = useState(null);
   const [lat, setLat] = useState(null);
@@ -78,16 +77,18 @@ const AddBagDrawer = () => {
   }, []);
 
   useEffect(() => {
-    const user = getUserLocal();
-    setUser(user);
+    const localUser = getUserLocal(); // Safely fetch the user.
+    setUser(localUser || null); // If null/undefined, set `null`.
   }, []);
 
-
-
   useEffect(() => {
-    if (user.point) {
+    if (user?.point) {
+      // Use optional chaining to safely access `user.point`.
       setLat(user.point.latitude || null);
       setLng(user.point.longitude || null);
+    } else {
+      setLat(null); // Reset coordinates if user or point is not available.
+      setLng(null);
     }
   }, [user]);
 

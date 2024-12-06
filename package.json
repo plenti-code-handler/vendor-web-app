@@ -24,6 +24,7 @@
     "date-fns": "^3.6.0",
     "firebase": "^10.12.5",
     "google-auth-library": "^9.14.2",
+    "gsap": "^3.12.5",
     "next": "14.2.5",
     "react": "^18",
     "react-apexcharts": "^1.4.1",

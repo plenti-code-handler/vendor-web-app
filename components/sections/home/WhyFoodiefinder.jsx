@@ -1,21 +1,157 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
+import gsap from "gsap";
 
 export const WhyFoodiefinder = () => {
+  const headingRef = useRef(null);
+  const paragraphRef = useRef(null);
+
+  const sectionRef = useRef(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  const sectionHeadingRef = useRef(null); // Reference to the section
+  const heading1Refs = useRef([]); // Reference array for individual headings
+  const [isHeadingVisible, setIsHeadingVisible] = useState(false);
+
+  const sectionHeadingRef1 = useRef(null); // Reference to the section
+  const heading1Refs1 = useRef([]); // Reference array for individual headings
+  const [isHeadingVisible1, setIsHeadingVisible1] = useState(false);
+
+  useEffect(() => {
+    const timeline = gsap.timeline();
+
+    gsap.set(headingRef.current, { opacity: 0, scale: 0.5 });
+    gsap.set(paragraphRef.current, { opacity: 0, scale: 0.5 });
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !isVisible) {
+          setIsVisible(true);
+
+          timeline
+            .to(headingRef.current, {
+              opacity: 1,
+              scale: 1,
+              duration: 0.8,
+              ease: "power3.out",
+            })
+            .to(
+              paragraphRef.current,
+              {
+                opacity: 1,
+                scale: 1,
+                duration: 0.8,
+                ease: "power3.out",
+              },
+              "-=0.3"
+            );
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.5 }
+    );
+
+    observer.observe(sectionRef.current);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [isVisible]);
+
+  useEffect(() => {
+    // GSAP set initial position for all headings (off-screen to the left)
+    heading1Refs.current.forEach((ref) => {
+      gsap.set(ref, { x: "-100%", opacity: 0 });
+    });
+
+    // Intersection Observer to trigger animation when section is in view
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !isHeadingVisible) {
+          setIsHeadingVisible(true); // Ensure animation triggers only once
+          // Animate all headings from left to right
+          heading1Refs.current.forEach((ref, index) => {
+            gsap.to(ref, {
+              x: 0, // Move to original position
+              opacity: 1, // Fade in
+              duration: 1, // Animation duration
+              ease: "power3.out", // Smooth easing
+              delay: index * 0.3, // Add delay for each heading
+            });
+          });
+          observer.disconnect(); // Disconnect observer after animation
+        }
+      },
+      { threshold: 0.5 } // Trigger when 50% of the section is visible
+    );
+
+    // Observe the section
+    observer.observe(sectionHeadingRef.current);
+
+    // Cleanup observer on component unmount
+    return () => {
+      observer.disconnect();
+    };
+  }, [isHeadingVisible]);
+
+  useEffect(() => {
+    heading1Refs1.current.forEach((ref) => {
+      gsap.set(ref, { x: "100%", opacity: 0 });
+    });
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !isHeadingVisible1) {
+          setIsHeadingVisible1(true);
+
+          heading1Refs1.current.forEach((ref, index) => {
+            gsap.to(ref, {
+              x: 0,
+              opacity: 1,
+              duration: 1,
+              ease: "power3.out",
+              delay: index * 0.3,
+            });
+          });
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.5 }
+    );
+
+    observer.observe(sectionHeadingRef1.current);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [isHeadingVisible1]);
+
   return (
-    <div className="flex  flex-col w-full gap-10 p-[5%]">
+    <div
+      ref={sectionRef}
+      className="flex  flex-col w-full gap-10 p-[5%] overflow-x-hidden"
+    >
       <div className="flex  flex-col gap-4 items-center">
-        <h2 className="  text-[2.5em] font-extrabold text-center text-black">
+        <h2
+          ref={headingRef}
+          className="  text-[2.5em] font-extrabold text-center text-black"
+        >
           Why Choose FoodieFinder?
         </h2>
-        <p className="w-[80%] text-center text-base">
+        <p ref={paragraphRef} className="w-[80%] text-center text-base">
           Choose FoodieFinder to take control of your food choices, support
           sustainability, and join a movement that makes a difference – for you,
           for businesses and for the planet.
         </p>
       </div>
       <div className="flex flex-col md:flex-row  items-center w-full gap-10 md:gap-16 ">
-        <div className="flex flex-col justify-center gap-6 md:gap-10 w-3/4 md:w-1/3">
-          <div className="flex items-center md:items-end flex-col gap-3 ">
+        <div
+          ref={sectionHeadingRef}
+          className="flex flex-col justify-center gap-6 md:gap-10 w-3/4 md:w-1/3"
+        >
+          <div
+            ref={(el) => (heading1Refs.current[0] = el)}
+            className="flex items-center md:items-end flex-col gap-3 "
+          >
             {icon1}
             <p className="text-center md:text-end text-base">
               <strong>Reduce food waste and make a difference:</strong> With
@@ -23,7 +159,10 @@ export const WhyFoodiefinder = () => {
               which is crucial for a sustainable future.
             </p>
           </div>
-          <div className="flex items-center md:items-end flex-col gap-3">
+          <div
+            ref={(el) => (heading1Refs.current[1] = el)}
+            className="flex items-center md:items-end flex-col gap-3"
+          >
             {icon2}
             <p className="text-base text-center md:text-end">
               <strong>Sustainable choices for everyone: </strong>
@@ -31,7 +170,10 @@ export const WhyFoodiefinder = () => {
               make sustainable decisions.
             </p>
           </div>
-          <div className="flex items-center md:items-end flex-col gap-3 ">
+          <div
+            ref={(el) => (heading1Refs.current[2] = el)}
+            className="flex items-center md:items-end flex-col gap-3 "
+          >
             {icon3}
             <p className="text-base text-center md:text-end">
               <strong>Save money on good food: </strong> Discover great deals on
@@ -43,8 +185,14 @@ export const WhyFoodiefinder = () => {
         <div className=" w-3/4 md:w-1/3">
           <img className="w-full h-auto" src="/Middle-section-image.webp" />
         </div>
-        <div className="flex flex-col justify-center gap-6 md:gap-10   w-3/4 md:w-1/3">
-          <div className="flex items-center md:items-start flex-col gap-3 ">
+        <div
+          ref={sectionHeadingRef1}
+          className="flex flex-col justify-center gap-6 md:gap-10   w-3/4 md:w-1/3"
+        >
+          <div
+            ref={(el) => (heading1Refs1.current[0] = el)}
+            className="flex items-center md:items-start flex-col gap-3 "
+          >
             {icon4}
             <p className=" text-base text-center md:text-start">
               <strong>Support local businesses: </strong> Through FoodieFinder
@@ -52,7 +200,10 @@ export const WhyFoodiefinder = () => {
               reduce food waste.
             </p>
           </div>
-          <div className="flex items-center md:items-start flex-col gap-3">
+          <div
+            ref={(el) => (heading1Refs1.current[1] = el)}
+            className="flex items-center md:items-start flex-col gap-3"
+          >
             {icon5}
             <p className=" text-base text-center md:text-start">
               <strong>Customize to your needs:</strong>
@@ -60,7 +211,10 @@ export const WhyFoodiefinder = () => {
               searches to your specific needs and preferences.
             </p>
           </div>
-          <div className="flex items-center md:items-start flex-col gap-3">
+          <div
+            ref={(el) => (heading1Refs1.current[2] = el)}
+            className="flex items-center md:items-start flex-col gap-3"
+          >
             {icon6}
             <p className=" text-base text-center md:text-start">
               <strong> Part of a larger movement: </strong> By using

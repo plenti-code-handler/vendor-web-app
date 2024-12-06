@@ -112,6 +112,9 @@ const Breadcrumb = () => {
 
   const currentPath = useMemo(() => decidePath(pathname, currLang), [pathname]);
 
+
+
+
   useEffect(() => {
     console.log("Current path");
     console.log(currentPath);

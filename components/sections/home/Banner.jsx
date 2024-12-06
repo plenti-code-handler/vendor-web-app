@@ -1,22 +1,53 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
+import gsap from "gsap";
 
 export const Banner = () => {
+  const headingRef = useRef(null);
+  const paragraphRef = useRef(null);
+  const button1Ref = useRef(null);
+  const button2Ref = useRef(null);
+
+  useEffect(() => {
+    const timeline = gsap.timeline();
+    timeline
+      .fromTo(
+        headingRef.current,
+        { opacity: 0, y: 50 },
+        { opacity: 1, y: 0, duration: 1, ease: "power3.out" }
+      )
+      .fromTo(
+        paragraphRef.current,
+        { opacity: 0, y: 50 },
+        { opacity: 1, y: 0, duration: 1, ease: "power3.out" },
+        "-=0.5"
+      )
+      .fromTo(
+        [button1Ref.current, button2Ref.current],
+        { opacity: 0 },
+        { opacity: 1, duration: 0.8, ease: "power2.out", stagger: 0.2 },
+        "+=0.3"
+      );
+  }, []);
+
   return (
     <div className="bg-bottom bg-cover bg-no-repeat p-[5%] md:p-0 md:mx-[2%] relative">
       <img src="/banner.webp" className="relative hidden md:block" />
       <img src="/mobile-banner.webp" className="relative md:hidden" />
       <div className="custom_top flex flex-col md:justify-center absolute top-[20px] md:top-[18%] lg:top-[15%] xl:top-[20%]">
         <div className="custom_text_box flex flex-col gap-5">
-          <h1 className=" sm:text-[3em] md:text-[3em] lg:text-[3.75em] text-[100%] font-extrabold uppercase md:w-[50%] lg:w-[680px] xlg:w-[680px]">
+          <h1
+            ref={headingRef}
+            className=" sm:text-[3em] md:text-[3em] lg:text-[3.75em] text-[100%] font-extrabold uppercase md:w-[50%] lg:w-[680px] xlg:w-[680px]"
+          >
             Stop waste, save food!
           </h1>
-          <p className="md:w-[397px] font-medium">
+          <p ref={paragraphRef} className="md:w-[397px] font-medium">
             Choose from curated meal bags small, large, or surprise prepared by
             your favorite restaurants. Fast, easy, and always delicious.
             Download the app and grab your meal today!
           </p>
           <div className="flex flex-col md:flex-row gap-[2%] space-y-5 md:space-y-0">
-            <button className="download-btn">
+            <button ref={button1Ref} className="download-btn">
               <svg
                 width="196"
                 height="57"
@@ -79,7 +110,7 @@ export const Banner = () => {
                 </defs>
               </svg>
             </button>
-            <button className="download-btn">
+            <button ref={button2Ref} className="download-btn">
               <svg
                 width="191"
                 height="57"
