@@ -21,10 +21,10 @@ const Page = () => {
             Privacy Policy
           </h1>
           <p className="text-[#474747] font-medium">
-            Your privacy is important to us at FoodieFinder.se, and we are
-            determined to protect the personal data you share with us. In this
-            privacy policy, we describe how we collect, use and protect your
-            data when you visit and use our service.
+            Welcome to FoodieFinder.se! Your privacy is important to us, and we
+            are committed to safeguarding your personal information. This
+            Privacy Policy explains what information we collect, how we use it,
+            and your rights regarding your data.
           </p>
           <div className="flex justify-center items-center mt-4 mb-6  md:mt-8 md:mb-10">
             <div className="w-[100%] h-[1px] bg-gradient-hr-alt" />
@@ -35,48 +35,46 @@ const Page = () => {
         <div className="relative">
           <img src="/privacy.png" className="absolute top-0 right-0" />
           <div className="policies flex flex-col gap-6  lg:w-[60%]">
-            <p>Last updated: 03 November 2024</p>
+            <p>Last updated: 11 December 2024</p>
 
             <p>
               <strong>1. Information We Collect</strong>
             </p>
             <p>
-              When you use FoodieFinder.se, we gather certain types of
-              information to improve our services and enhance your experience:
+              When you use FoodieFinder.se, we collect certain types of
+              information to enhance our services and improve your experience:
             </p>
             <ul>
               <li>
-                <strong>Personal Information</strong>: This includes details
-                like your name, email, and phone number, along with any other
-                information you voluntarily provide while creating an account,
-                reaching out to us, or completing your profile.
+                <strong>Personal Information</strong>: Your name, email address,
+                phone number, and other details you voluntarily provide when
+                creating an account, contacting us, or completing your profile.
               </li>
               <li>
-                <strong>Location Information</strong>: We collect data about
-                your location to provide recommendations and services that are
-                relevant to your area. This may involve real-time location data
-                or data collected while you use location-based features.
+                <strong>Location Information</strong>: Data about your location
+                is collected to provide recommendations and services relevant to
+                your area. This may include real-time location data or data
+                collected when using location-based features.
               </li>
               <li>
-                <strong>Profile Picture Access</strong>: To allow profile
-                customization, we request access to your photo gallery so you
-                can upload a profile picture for display within your account.
+                <strong>Profile Picture Access</strong>: To customize your
+                profile, we request access to your photo gallery so you can
+                upload a profile picture.
               </li>
               <li>
-                <strong>Usage Data</strong>: Information on how you interact
-                with our app and website, including pages visited, IP address,
-                device details, and browser type, helps us understand user
-                engagement and improve our offerings.
+                <strong>Usage Data</strong>: Information such as pages visited,
+                IP addresses, device details, and browser type to understand
+                user engagement and improve our offerings.
               </li>
               <li>
                 <strong>Vendor Information</strong>: If you&rsquo;re a vendor,
-                we&rsquo;ll request your IBAN number for processing revenue
-                transfers by the admin when withdrawals are requested.
+                we request your IBAN number to process revenue transfers by the
+                admin upon withdrawal requests.
               </li>
               <li>
                 <strong>Cookies and Related Technologies</strong>: We use
                 cookies to personalize your experience and analyze platform use.
-                For more information, please see our{" "}
+                For details, please see our{" "}
                 <a href="https://foodiefinder.se/cookie_policy">
                   Cookie Policy
                 </a>
@@ -86,7 +84,7 @@ const Page = () => {
             <p>
               <strong>2. How We Use Your Information</strong>
             </p>
-            <p>We use your information for a variety of purposes, including:</p>
+            <p>We use the collected information for the following purposes:</p>
             <ul>
               <li>
                 <strong>Service Enhancement</strong>: To ensure optimal
@@ -94,42 +92,40 @@ const Page = () => {
               </li>
               <li>
                 <strong>Communication</strong>: To keep you informed about your
-                account, respond to support requests, and handle other
-                inquiries.
+                account, respond to support requests, and handle inquiries.
               </li>
               <li>
-                <strong>Customization</strong>: To tailor content and offers to
-                your interests and location.
+                <strong>Customization</strong>: To tailor content and offers
+                based on your interests and location.
               </li>
               <li>
-                <strong>Usage Analysis</strong>: To analyze usage trends and
-                behavior to inform improvements to our services and products.
+                <strong>Usage Analysis</strong>: To analyze trends and behavior
+                for improving our services and products.
               </li>
             </ul>
             <p>
               <strong>3. Sharing of Your Information</strong>
             </p>
             <p>
-              We value your privacy and only share your information with third
-              parties under these specific circumstances:
+              We respect your privacy and only share your information under
+              specific circumstances:
             </p>
             <ul>
               <li>
-                <strong>Service Providers</strong>: We work with trusted
-                partners who assist us in delivering and improving our services.
-                These partners are required to adhere to data protection
-                agreements and use your information only as needed to provide
-                their services.
+                <strong>Service Providers</strong>: We collaborate with trusted
+                partners to deliver and improve our services. These partners
+                adhere to data protection agreements and use your information
+                solely to provide their services.
               </li>
               <li>
-                <strong>Legal Obligations</strong>: If necessary, we may
-                disclose your information to comply with legal requirements,
-                regulations, or government requests.
+                <strong>Legal Obligations</strong>: We may disclose your
+                information to comply with legal requirements, regulations, or
+                government requests.
               </li>
               <li>
                 <strong>Business Transitions</strong>: In the event of a merger,
                 acquisition, restructuring, or sale of FoodieFinder.se, your
-                information may be transferred to the new owner, with applicable
+                information may be transferred to the new owner with appropriate
                 confidentiality measures.
               </li>
             </ul>
@@ -137,16 +133,15 @@ const Page = () => {
               <strong>4. Security of Your Information</strong>
             </p>
             <p>
-              We implement reasonable security measures to help protect your
-              data from unauthorized access, alteration, or loss. While we work
-              to maintain a high standard of security, please remember that no
-              data transmission over the internet can be guaranteed as fully
-              secure.
+              We implement reasonable security measures to protect your data
+              from unauthorized access, alteration, or loss. However, please
+              note that no data transmission over the internet can be guaranteed
+              as fully secure.
             </p>
             <p>
               <strong>5. Your Rights and Choices</strong>
             </p>
-            <p>You have several rights concerning your personal data:</p>
+            <p>You have several rights regarding your personal data::</p>
             <ul>
               <li>
                 <strong>Access Your Data</strong>: You can request details of
@@ -154,19 +149,18 @@ const Page = () => {
               </li>
               <li>
                 <strong>Correct Your Data</strong>: If you find inaccuracies in
-                your information, you have the right to request corrections.
+                your information, you can request corrections.
               </li>
               <li>
-                <strong>Delete Your Data</strong>: In certain cases, you can
-                request deletion of your data. To delete all your data and
-                account, please use this link:
-                [https://forms.gle/2qbP8iqNDAqZEy1p8].
+                <strong>Delete Your Data</strong>: You can request the deletion
+                of your data. To delete your account and all associated data,
+                please use this link: [https://forms.gle/2qbP8iqNDAqZEy1p8].
               </li>
               <li>
-                <strong>Withdraw Consent</strong>: Where we rely on your consent
-                for data processing, you may withdraw your consent at any time.
-                This withdrawal does not affect the legality of processing
-                conducted prior to withdrawal.
+                <strong>Withdraw Consent</strong>: Where data processing relies
+                on your consent, you may withdraw it at any time. This
+                withdrawal does not affect the legality of processing conducted
+                prior to withdrawal.
               </li>
             </ul>
             <p>
@@ -174,24 +168,24 @@ const Page = () => {
             </p>
             <p>
               We use cookies and similar technologies to improve your experience
-              and gather data on platform usage. For more information on
-              managing cookies, please see our [Cookie Policy].
+              and gather data on platform usage. For more information about
+              managing cookies, please see our{" "}
+              <a href="https://foodiefinder.se/cookie_policy">Cookie Policy</a>.
             </p>
             <p>
               <strong>7. Updates to This Privacy Policy</strong>
             </p>
             <p>
-              We may periodically update this Privacy Policy to reflect changes
+              We may update this Privacy Policy periodically to reflect changes
               in our services or to comply with new legal requirements. We
-              recommend checking this page from time to time for the latest
-              updates.
+              recommend checking this page regularly for the latest updates.
             </p>
             <p>
               <strong>8. Contact Us</strong>
             </p>
             <p>
-              For any questions or concerns regarding this Privacy Policy or our
-              data practices, please contact us at:
+              For any questions or concerns about this Privacy Policy or our
+              data practices, please contact us:
             </p>
             <p>
               <strong>Email</strong>: <u>kontakt@foodiefinder.se</u>
