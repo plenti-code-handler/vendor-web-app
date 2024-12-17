@@ -2,8 +2,63 @@
 @tailwind components;
 @tailwind utilities;
 
-@media (max-width: 640px) {
+/* Target the nested input inside PhoneInput */
+.custom-phone-input input {
+  padding: 20px 20px 20px 7px !important;
+  margin: 0 !important;
+}
 
+/* Adjust the wrapper to remove unwanted padding/margin */
+.custom-phone-input {
+  @apply w-full;
+  display: flex;
+}
+
+.custom-phone-input .react-international-phone-country {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* Add padding to the actual flag dropdown button */
+.custom-phone-input .react-international-phone-country button {
+  padding: 20px 20px 20px 7px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Add padding to the dropdown list (when country flags are shown) */
+.custom-phone-input .react-international-phone-dropdown {
+  padding-bottom: 20px !important;
+  border-bottom: 1px solid #ccc !important;
+}
+
+.custom-phone-input
+  .react-international-phone-dropdown
+  .react-tel-input__country-list {
+  border-bottom: 1px solid #ccc;
+}
+
+.custom-phone-input .react-international-phone-country-selector-button {
+  padding: 15px 15px 25px 15px;
+}
+
+.custom-phone-input .react-international-phone-flag-emoji {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.custom-phone-input
+  .react-international-phone-country-selector-button__dropdown-arrow {
+  margin-top: 10px;
+}
+
+@media (max-width: 640px) {
   /* sm: min-width 640px */
   html {
     font-size: 80%;
@@ -12,7 +67,6 @@
 }
 
 @media (min-width: 640px) {
-
   /* sm: min-width 640px */
   html {
     font-size: 85%;
@@ -21,7 +75,6 @@
 }
 
 @media (min-width: 768px) {
-
   /* md: min-width 768px */
   html {
     font-size: 90%;
@@ -30,14 +83,12 @@
 }
 
 @media (min-width: 1024px) {
-
   /* lg: min-width 1024px */
   html {
     font-size: 100%;
     /* 100% for large screens and up */
   }
 }
-
 
 /* Hide the Google Translate widget */
 .goog-te-gadget {
@@ -89,7 +140,7 @@ tr:first-child td {
 }
 
 @media (max-width: 767px) {
-  .download-btn>svg {
+  .download-btn > svg {
     width: 100px;
     height: 30px;
   }
@@ -115,28 +166,28 @@ tr:first-child td {
 }
 
 @media (min-width: 1200px) and (max-width: 1391px) {
-  .download-btn>svg {
+  .download-btn > svg {
     width: 160px;
     height: 59px;
   }
 }
 
 @media (min-width: 1009px) and (max-width: 1200px) {
-  .download-btn>svg {
+  .download-btn > svg {
     width: 137px;
     height: 39px;
   }
 }
 
 @media (min-width: 920px) and (max-width: 1009px) {
-  .download-btn>svg {
+  .download-btn > svg {
     width: 130px;
     height: 41px;
   }
 }
 
 @media (min-width: 768px) and (max-width: 920px) {
-  .download-btn>svg {
+  .download-btn > svg {
     width: 100px;
     height: 31px;
   }
@@ -151,7 +202,7 @@ tr:first-child td {
     font-size: 30px;
   }
 
-  .custom_text_box>div>.download-btn:last-child {
+  .custom_text_box > div > .download-btn:last-child {
     margin-top: 10px;
   }
 }
@@ -173,7 +224,7 @@ tr:first-child td {
     font-size: 14px;
   }
 
-  .custom_text_box>div>.download-btn:last-child {
+  .custom_text_box > div > .download-btn:last-child {
     margin-top: 10px;
   }
 }
@@ -187,7 +238,7 @@ tr:first-child td {
     font-size: 35px;
   }
 
-  .custom_text_box>div>.download-btn:last-child {
+  .custom_text_box > div > .download-btn:last-child {
     margin-top: 10px;
   }
 }
@@ -201,7 +252,7 @@ tr:first-child td {
     font-size: 25px;
   }
 
-  .custom_text_box>div>.download-btn:last-child {
+  .custom_text_box > div > .download-btn:last-child {
     margin-top: 10px;
   }
 }
@@ -249,6 +300,6 @@ tr:first-child td {
   text-decoration: underline;
 }
 
-.react-international-phone-input-container>input {
+.react-international-phone-input-container > input {
   width: 100%;
 }

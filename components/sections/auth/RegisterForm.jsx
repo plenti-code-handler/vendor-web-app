@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
+import { whiteLoader } from "../../../svgs";
+
 import {
   setOtpCode,
   setRegisterEmail,
@@ -109,11 +111,12 @@ const RegisterForm = () => {
       {errors.email && (
         <p className="text-red-500 text-sm">{errors.email.message}</p>
       )}
+
       <PhoneInput
         defaultCountry="ua"
         value={phone}
         onChange={(phone) => setPhone(phone)}
-        className="w-full"
+        className="w-full custom-phone-input"
       />
 
       <button
@@ -123,6 +126,11 @@ const RegisterForm = () => {
           loading ? "opacity-50 cursor-not-allowed" : ""
         }`} // Add opacity and disabled cursor style when loading
       >
+        {loading && (
+          <div className="animate-spin flex items-center justify-center">
+            {whiteLoader}
+          </div>
+        )}
         {loading ? "Processing..." : "Continue"} {/* Show loading text */}
       </button>
     </form>

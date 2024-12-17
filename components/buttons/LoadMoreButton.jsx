@@ -1,4 +1,4 @@
-import { loadingCirclesSvg } from "../../svgs";
+import { loadingCirclesSvg, whiteLoader } from "../../svgs";
 import React from "react";
 
 const LoadMoreButton = ({ loadMore, isLoading }) => {
@@ -11,6 +11,11 @@ const LoadMoreButton = ({ loadMore, isLoading }) => {
           isLoading ? "opacity-50 cursor-not-allowed" : ""
         }`}
       >
+        {isLoading && (
+          <div className="animate-spin flex items-center justify-center">
+            {whiteLoader}
+          </div>
+        )}
         <p className="text-[12px] text-[#7E8299] font-semibold">
           {isLoading ? "Loading..." : "Load More"}
         </p>

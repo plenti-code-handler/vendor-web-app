@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { auth } from "../../../app/firebase/config";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
+import { whiteLoader } from "../../../svgs";
 
 const LoginForm = () => {
   const dispatch = useDispatch();
@@ -150,6 +151,11 @@ const LoginForm = () => {
           loading ? "opacity-50 cursor-not-allowed" : ""
         }`} // Add styling for disabled state
       >
+        {loading && (
+          <div className="animate-spin flex items-center justify-center">
+            {whiteLoader}
+          </div>
+        )}
         {loading ? "Logging in.." : "Login"} {/* Show loader text */}
       </button>
 

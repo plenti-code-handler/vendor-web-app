@@ -47,6 +47,26 @@ export const dashboardSvg = (
   </svg>
 );
 
+
+export const whiteLoader = (
+  <svg
+    className="   text-white"
+    width="26"
+    height="26"
+    viewBox="0 0 26 26"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M13 1C10.6266 1 8.30655 1.70379 6.33316 3.02236C4.35977 4.34094 2.8217 6.21508 1.91345 8.4078C1.0052 10.6005 0.767559 13.0133 1.23058 15.3411C1.6936 17.6689 2.83649 19.807 4.51472 21.4853C6.19295 23.1635 8.33115 24.3064 10.6589 24.7694C12.9867 25.2324 15.3995 24.9948 17.5922 24.0865C19.7849 23.1783 21.6591 21.6402 22.9776 19.6668C24.2962 17.6934 25 15.3734 25 13"
+      stroke="white"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </svg>
+);
+
 export const userSvg = (
   <svg
     width="22"

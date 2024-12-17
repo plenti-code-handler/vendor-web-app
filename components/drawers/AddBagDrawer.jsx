@@ -31,6 +31,7 @@ import {
 import { getUserLocal } from "../../redux/slices/loggedInUserSlice";
 import { BagsContext } from "../../contexts/BagsContext";
 import { toast } from "sonner";
+import { whiteLoader } from "../../svgs";
 
 const bagTypes = [
   {
@@ -353,6 +354,11 @@ const AddBagDrawer = () => {
                       onClick={handleSubmitBag}
                       className="flex justify-center bg-pinkBgDark text-white font-semibold py-2  rounded hover:bg-pinkBgDarkHover2 gap-2 lg:w-[100%]"
                     >
+                      {loading && (
+                        <div className="animate-spin flex items-center justify-center">
+                          {whiteLoader}
+                        </div>
+                      )}
                       {loading ? "Adding..." : "Add Bag"}
                     </button>
                   </div>
