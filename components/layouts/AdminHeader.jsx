@@ -149,8 +149,8 @@ const AdminHeader = () => {
         <div className="mx-auto flex items-center justify-between p-2">
           <a href="/">
             <img
-              alt="Foodie Finder Logo"
-              src={"/auth_logo.png"}
+              alt="Plenti Logo"
+              src={"/Logo.png"}
               className="max-w-[180px] md:max-w-[240px]"
             />
           </a>

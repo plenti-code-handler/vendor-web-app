@@ -20,7 +20,7 @@ const AwaitingContent = () => {
       </div>
       <button
         onClick={() => router.replace("/login")}
-        className="w-full bg-pinkBgDark text-base text-white font-semibold py-2 rounded hover:bg-pinkBgDarkHover2"
+        className="w-full bg-blueBgDark text-base text-white font-semibold py-2 rounded hover:bg-blueBgDarkHover2"
       >
         Okay Got It
       </button>

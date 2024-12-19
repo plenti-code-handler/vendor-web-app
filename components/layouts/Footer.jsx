@@ -11,31 +11,31 @@ const Footer = () => {
   const dispatch = useDispatch();
   const [currLang, setCurrLang] = useState("en");
 
-    useEffect(() => {
-      if (typeof window !== "undefined") {
-        const updateLangFromStorage = () => {
-          const storedLang = localStorage.getItem("lang");
-          if (storedLang) {
-            setCurrLang(storedLang);
-          }
-        };
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const updateLangFromStorage = () => {
+        const storedLang = localStorage.getItem("lang");
+        if (storedLang) {
+          setCurrLang(storedLang);
+        }
+      };
 
-        const timeoutId = setTimeout(() => {
-          updateLangFromStorage();
-          window.addEventListener("storage", updateLangFromStorage);
-        }, 2000);
-        return () => {
-          clearTimeout(timeoutId);
-          window.removeEventListener("storage", updateLangFromStorage);
-        };
-      }
-    }, []);
+      const timeoutId = setTimeout(() => {
+        updateLangFromStorage();
+        window.addEventListener("storage", updateLangFromStorage);
+      }, 2000);
+      return () => {
+        clearTimeout(timeoutId);
+        window.removeEventListener("storage", updateLangFromStorage);
+      };
+    }
+  }, []);
 
-    useEffect(() => {
-      if (typeof window !== "undefined" && document.body) {
-        document.body.setAttribute("lang", currLang);
-      }
-    }, [currLang]);
+  useEffect(() => {
+    if (typeof window !== "undefined" && document.body) {
+      document.body.setAttribute("lang", currLang);
+    }
+  }, [currLang]);
 
   const openContactForm = () => {
     dispatch(setOpenDrawer(true));
@@ -77,8 +77,8 @@ const Footer = () => {
         <div className="flex flex-col gap-5 justify-between flex-wrap sm:flex-row pb-14">
           <div className="flex-1">
             <div className="flex mb-8 gap-3">
-              <img src="/logo-without-text.png" />
-              <img src="/logo-white.png" />
+              {/* <img  src="/logo-without-text.png" /> */}
+              <img className="h-16 w-32" src="/logo.png" />
             </div>
             <div className="flex flex-col lg:flex-row gap-3 lg:justify-between">
               <ul className=" text-white flex flex-col gap-5 text-[400] text-base w-full   lg:w-1/3">

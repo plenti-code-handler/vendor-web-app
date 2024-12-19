@@ -183,7 +183,7 @@ const PaymentInfo = () => {
           </p>
           <button
             onClick={handleAddPaymentClick}
-            className="flex justify-center bg-pinkBgDark text-white font-md py-2 rounded hover:bg-pinkBgDarkHover2 gap-2 w-[60%]"
+            className="flex justify-center bg-blueBgDark text-white font-md py-2 rounded hover:bg-blueBgDarkHover2 gap-2 w-[60%]"
           >
             Add Bank Information +
           </button>
@@ -224,7 +224,7 @@ const PaymentInfo = () => {
             </button>
             <button
               onClick={handleAddBankClick}
-              className="flex justify-center bg-pinkBgDark text-white font-md py-2 rounded hover:bg-pinkBgDarkHover2 gap-2 w-[100%]"
+              className="flex justify-center bg-blueBgDark text-white font-md py-2 rounded hover:bg-blueBgDarkHover2 gap-2 w-[100%]"
             >
               Add
             </button>

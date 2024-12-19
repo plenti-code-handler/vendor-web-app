@@ -258,7 +258,7 @@ const Page = () => {
             </button>
             <button
               onClick={reauthenticateUsers}
-              className="rounded-[8px] p-3 flex-grow bg-pinkBgDark text-white"
+              className="rounded-[8px] p-3 flex-grow bg-blueBgDark text-white"
             >
               Save Changes
             </button>

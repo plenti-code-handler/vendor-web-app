@@ -152,7 +152,7 @@ const VerifyAccountForm = () => {
             className={`underline ${
               isResendDisabled
                 ? "text-gray-400"
-                : "text-pinkBgDark cursor-pointer underline-offset-2 hover:text-pinkBgDarkHover2"
+                : "text-blueBgDark cursor-pointer underline-offset-2 hover:text-blueBgDarkHover2"
             }`}
             onClick={handleResend}
           >
@@ -166,7 +166,7 @@ const VerifyAccountForm = () => {
       </div>
       <button
         onClick={handleVerify}
-        className="flex justify-center bg-pinkBgDark text-white font-semibold py-2 rounded hover:bg-pinkBgDarkHover2 gap-2 lg:w-[100%]"
+        className="flex justify-center bg-blueBgDark text-white font-semibold py-2 rounded hover:bg-blueBgDarkHover2 gap-2 lg:w-[100%]"
       >
         Verify
       </button>

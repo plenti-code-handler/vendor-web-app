@@ -12,7 +12,7 @@ const DrawerHeader = ({ dealTitle, setDealTitle, onAddClick }) => {
       />
       <button
         onClick={onAddClick}
-        className="flex text-center justify-between bg-pinkBgDark text-white font-semibold py-2 px-7 rounded hover:bg-pinkBgDarkHover gap-2 lg:w-[25%]"
+        className="flex text-center justify-between bg-blueBgDark text-white font-semibold py-2 px-7 rounded hover:bg-blueBgDarkHover gap-2 lg:w-[25%]"
       >
         Add
       </button>

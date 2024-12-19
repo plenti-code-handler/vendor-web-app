@@ -215,7 +215,7 @@ const Account = () => {
         </button>
         <button
           onClick={updateUser}
-          className="flex justify-center bg-pinkBgDark text-white font-md py-2  rounded hover:bg-pinkBgDarkHover2 gap-2 w-[100%]"
+          className="flex justify-center bg-blueBgDark text-white font-md py-2  rounded hover:bg-blueBgDarkHover2 gap-2 w-[100%]"
         >
           Update
         </button>

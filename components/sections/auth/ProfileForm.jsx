@@ -268,7 +268,7 @@ const ProfileForm = () => {
       )}
       <button
         onClick={handleSubmit}
-        className="flex justify-center bg-pinkBgDark text-white font-semibold py-2 text-base rounded hover:bg-pinkBgDarkHover2 gap-2 lg:w-[100%]"
+        className="flex justify-center bg-blueBgDark text-white font-semibold py-2 text-base rounded hover:bg-blueBgDarkHover2 gap-2 lg:w-[100%]"
       >
         Submit Request
       </button>

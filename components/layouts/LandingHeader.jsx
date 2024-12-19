@@ -30,31 +30,31 @@ const LandingHeader = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [currLang, setCurrLang] = useState("en");
 
-    useEffect(() => {
-      if (typeof window !== "undefined") {
-        const updateLangFromStorage = () => {
-          const storedLang = localStorage.getItem("lang");
-          if (storedLang) {
-            setCurrLang(storedLang);
-          }
-        };
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const updateLangFromStorage = () => {
+        const storedLang = localStorage.getItem("lang");
+        if (storedLang) {
+          setCurrLang(storedLang);
+        }
+      };
 
-        const timeoutId = setTimeout(() => {
-          updateLangFromStorage();
-          window.addEventListener("storage", updateLangFromStorage);
-        }, 2000);
-        return () => {
-          clearTimeout(timeoutId);
-          window.removeEventListener("storage", updateLangFromStorage);
-        };
-      }
-    }, []);
+      const timeoutId = setTimeout(() => {
+        updateLangFromStorage();
+        window.addEventListener("storage", updateLangFromStorage);
+      }, 2000);
+      return () => {
+        clearTimeout(timeoutId);
+        window.removeEventListener("storage", updateLangFromStorage);
+      };
+    }
+  }, []);
 
-    useEffect(() => {
-      if (typeof window !== "undefined" && document.body) {
-        document.body.setAttribute("lang", currLang);
-      }
-    }, [currLang]);
+  useEffect(() => {
+    if (typeof window !== "undefined" && document.body) {
+      document.body.setAttribute("lang", currLang);
+    }
+  }, [currLang]);
 
   useEffect(() => {
     const checkIsMobile = () => {
@@ -113,9 +113,9 @@ const LandingHeader = () => {
         <div className="mx-auto flex py-3 items-center justify-between">
           <a href="/">
             <img
-              alt="Foodie Finder Logo"
-              src={"/auth_logo.png"}
-              className="max-w-[180px] md:max-w-[240px]"
+              alt="Plenti Logo"
+              src={"/logo.png"}
+              className="max-w-[100px] md:max-w-[140px]"
             />
           </a>
           <div className="flex lg:hidden gap-3 items-center">
@@ -303,7 +303,7 @@ const LandingHeader = () => {
                 />
                 <Link
                   href={"/login"}
-                  className="mr-3 mt-2 lg:m-0 flex items-center w-full px-[10px] py-[10px] text-center justify-center bg-pinkBgDark text-white font-semibold rounded-[6px] hover:bg-mainLight"
+                  className="mr-3 mt-2 lg:m-0 flex items-center w-full px-[10px] py-[10px] text-center justify-center bg-blueBgDark text-white font-semibold rounded-[6px] hover:bg-mainLight"
                 >
                   <span className="mr-3 ml-2 font-semibold">Login</span>
                   <span>{rightArrowIcon}</span>
@@ -320,14 +320,14 @@ const LandingHeader = () => {
 
             <Link
               href={"/login"}
-              className="mr-3 mt-2 lg:m-0 flex items-center min-w-[87px] bg-pinkBgDark text-white px-[10px] py-[10px] text-center justify-center font-semibold rounded-[8px]"
+              className="mr-3 mt-2 lg:m-0 flex items-center min-w-[87px] bg-blueBgDark text-white px-[10px] py-[10px] text-center justify-center font-semibold rounded-[8px]"
             >
               <span className="mr-3 ml-2 font-semibold">Login</span>
               <span>{rightArrowIcon}</span>
             </Link>
             {/* <button
               onClick={handleContactBtnClick}
-              className="mr-3 mt-2 lg:m-0 flex items-center min-w-[150px] px-[12px] py-[16px] text-center justify-center bg-pinkBgDark text-white font-semibold rounded-[6px] hover:bg-pinkBgDarkHover2"
+              className="mr-3 mt-2 lg:m-0 flex items-center min-w-[150px] px-[12px] py-[16px] text-center justify-center bg-blueBgDark text-white font-semibold rounded-[6px] hover:bg-blueBgDarkHover2"
             >
               <span className="mr-3 ml-2 font-semibold">Contact us</span>
               <span>{rightArrowIcon}</span>

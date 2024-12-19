@@ -27,8 +27,6 @@ const Page = () => {
   const dispatch = useDispatch();
   const [currLangg, setCurrLang] = useState("en");
 
-  
-
   useEffect(() => {
     if (typeof window !== "undefined") {
       const storedLang = localStorage.getItem("lang");
@@ -48,7 +46,7 @@ const Page = () => {
       <div className="bg-[#F5F5F5] pl-[5%] pr-[5%] pb-[5%] pt-[3%]">
         <div className="flex flex-col  ">
           <div className="text-center   mx-auto pb-[30px] md:pb-[50px]">
-            <h1 className="text-[2.5em] text-[500] text-pinkBgDark font-semibold uppercase">
+            <h1 className="text-[2.5em] text-[500] text-blueBgDark font-semibold uppercase">
               Frequently Asked Questions
             </h1>
             <p className="text-[#474747] font-medium">Read all the FAQs</p>

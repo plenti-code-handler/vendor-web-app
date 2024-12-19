@@ -64,7 +64,7 @@ const Page = () => {
     <div className="bg-[#F5F5F5] py-10">
       <div className="mx-14">
         <div className="text-center lg:w-[60%] mx-auto">
-          <h1 className="text-[48px] text-[500] text-pinkBgDark">Contact Us</h1>
+          <h1 className="text-[48px] text-[500] text-blueBgDark">Contact Us</h1>
           <p className="text-[#474747]">
             Have questions or feedback? We're here to assist you! Reach out to
             our team, and we'll ensure you have all the information you need for
@@ -84,7 +84,7 @@ const Page = () => {
                   <p>drop us a line</p>
                   <p>
                     <a
-                      className="underline hover:text-pinkBgDark"
+                      className="underline hover:text-blueBgDark"
                       href="mailto:kontakt@foodiefinder.se"
                     >
                       kontakt@foodiefinder.se
@@ -155,7 +155,7 @@ const Page = () => {
                   </div>
                   <button
                     type="submit"
-                    className={`flex self-center justify-center bg-pinkBgDark text-white font-bold py-3 px-4 rounded hover:bg-pinkBgDarkHover2 w-full sm:w-auto sm:px-6 lg:w-[35%]  `}
+                    className={`flex self-center justify-center bg-blueBgDark text-white font-bold py-3 px-4 rounded hover:bg-blueBgDarkHover2 w-full sm:w-auto sm:px-6 lg:w-[35%]  `}
                   >
                     Contact us
                   </button>

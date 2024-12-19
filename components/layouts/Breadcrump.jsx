@@ -61,31 +61,31 @@ const Breadcrumb = () => {
     router.replace("/admin/users");
   }, [router]);
 
-    useEffect(() => {
-      if (typeof window !== "undefined") {
-        const updateLangFromStorage = () => {
-          const storedLang = localStorage.getItem("lang");
-          if (storedLang) {
-            setCurrLang(storedLang);
-          }
-        };
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const updateLangFromStorage = () => {
+        const storedLang = localStorage.getItem("lang");
+        if (storedLang) {
+          setCurrLang(storedLang);
+        }
+      };
 
-        const timeoutId = setTimeout(() => {
-          updateLangFromStorage();
-          window.addEventListener("storage", updateLangFromStorage);
-        }, 2000);
-        return () => {
-          clearTimeout(timeoutId);
-          window.removeEventListener("storage", updateLangFromStorage);
-        };
-      }
-    }, []);
+      const timeoutId = setTimeout(() => {
+        updateLangFromStorage();
+        window.addEventListener("storage", updateLangFromStorage);
+      }, 2000);
+      return () => {
+        clearTimeout(timeoutId);
+        window.removeEventListener("storage", updateLangFromStorage);
+      };
+    }
+  }, []);
 
-    useEffect(() => {
-      if (typeof window !== "undefined" && document.body) {
-        document.body.setAttribute("lang", currLang);
-      }
-    }, [currLang]);
+  useEffect(() => {
+    if (typeof window !== "undefined" && document.body) {
+      document.body.setAttribute("lang", currLang);
+    }
+  }, [currLang]);
 
   useEffect(() => {
     const fetchPendingUsersCount = async () => {
@@ -112,9 +112,6 @@ const Breadcrumb = () => {
 
   const currentPath = useMemo(() => decidePath(pathname, currLang), [pathname]);
 
-
-
-
   useEffect(() => {
     console.log("Current path");
     console.log(currentPath);
@@ -123,7 +120,7 @@ const Breadcrumb = () => {
   const MoreOptionsContent = () => (
     <div className="flex flex-col items-center">
       <img
-        alt="Foodie Finder Logo"
+        alt="Plenti Logo"
         src={"/logo_more.png"}
         className="w-[60%] h-[80%] p-5 lg:p-0 lg:h-[25%] lg:w-[25%]"
       />
@@ -146,7 +143,7 @@ const Breadcrumb = () => {
       {currentPath === "Manage Pouches" && (
         <button
           onClick={handleOpenDrawer}
-          className="mr-3 mt-2 lg:m-0 flex items-center text-center justify-center bg-pinkBgDark text-white font-semibold py-2 px-4 rounded-[6px] hover:bg-pinkBgDarkHover2"
+          className="mr-3 mt-2 lg:m-0 flex items-center text-center justify-center bg-blueBgDark text-white font-semibold py-2 px-4 rounded-[6px] hover:bg-blueBgDarkHover2"
         >
           <span className="mr-3 ml-2 font-semibold">{`${
             currLang === "en" ? "New Bag" : "New Pouch"

@@ -204,7 +204,7 @@ const RestaurentBox = () => {
         <div className="flex gap-5 lg:flex-grow w-full justify-between lg:justify-end items-center">
           <button
             onClick={handlePlusClick}
-            className="bg-pinkBgDark w-[50px] h-[38px] rounded-[6px] flex justify-center items-center flex-shrink-0"
+            className="bg-blueBgDark w-[50px] h-[38px] rounded-[6px] flex justify-center items-center flex-shrink-0"
           >
             {inputValue ? whiteTickSvg : plusIconSvg}
           </button>

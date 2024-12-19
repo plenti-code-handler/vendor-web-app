@@ -17,7 +17,7 @@ const Page = () => {
     <div className="text-[75%] md:text-[100%]">
       <div className="bg-[#F5F5F5] pl-[5%] pr-[5%] pb-[5%] pt-[3%]">
         <div className="text-center lg:w-[60%] mx-auto">
-          <h1 className="text-[2.5em] text-[500] text-pinkBgDark font-semibold uppercase">
+          <h1 className="text-[2.5em] text-[500] text-blueBgDark font-semibold uppercase">
             Security Policy
           </h1>
           <p className="text-[#474747] font-medium">

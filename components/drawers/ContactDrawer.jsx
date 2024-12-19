@@ -71,7 +71,7 @@ const ContactDrawer = () => {
                         className="p-4 w-full rounded-[6px] border-2 border-[#404146]"
                       />
                     </div>
-                    <button className="flex self-center justify-center bg-pinkBgDark text-white font-bold py-3 px-4 rounded hover:bg-pinkBgDarkHover2 w-full sm:w-auto sm:px-6 lg:w-[35%]">
+                    <button className="flex self-center justify-center bg-blueBgDark text-white font-bold py-3 px-4 rounded hover:bg-blueBgDarkHover2 w-full sm:w-auto sm:px-6 lg:w-[35%]">
                       Submit
                     </button>
                   </div>

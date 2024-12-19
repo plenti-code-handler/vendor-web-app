@@ -126,8 +126,8 @@ const BussinessHeader = () => {
         <div className="mx-auto flex p-2 items-center justify-between py-5">
           <a href="/">
             <img
-              alt="Foodie Finder Logo"
-              src={"/auth_logo.png"}
+              alt="Plenti Logo"
+              src={"/logo.png"}
               className="max-w-[180px] md:max-w-[240px]"
             />
           </a>

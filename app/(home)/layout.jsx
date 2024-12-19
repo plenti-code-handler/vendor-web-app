@@ -7,7 +7,7 @@ import Script from "next/script";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Foodie Finder",
+  title: "Plenti",
   description: "Fresh, Delicious Meals, Ready to Go",
 };
 

@@ -5,8 +5,8 @@ const AuthLeftContent = () => {
     <div className="flex flex-col lg:w-[45%] items-center text-center mb-[5%] lg:mb-[0%]">
       <a href="/">
         <img
-          alt="Foodie Finder Logo"
-          src={"/auth_logo.png"}
+          alt="Plenti Logo"
+          src={"/Logo.png"}
           className="max-w-[180px] md:max-w-[240px]"
         />
       </a>

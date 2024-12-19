@@ -28,9 +28,9 @@ const TableUpper = ({ activeTable, setActiveTable, setSearchTerm }) => {
             onClick={() => setActiveTable("business")}
             className={`flex justify-center ${
               activeTable === "business"
-                ? "bg-pinkBgDark text-white"
+                ? "bg-blueBgDark text-white"
                 : "bg-white text-gray-500"
-            } font-bold rounded-[6px] hover:bg-pinkBgDarkHover hover:text-pinkBgDark transition-colors duration-500 w-full lg:w-[90px] h-[38px] text-[13px] items-center`}
+            } font-bold rounded-[6px] hover:bg-blueBgDarkHover hover:text-blueBgDark transition-colors duration-500 w-full lg:w-[90px] h-[38px] text-[13px] items-center`}
           >
             Business
           </button>
@@ -38,9 +38,9 @@ const TableUpper = ({ activeTable, setActiveTable, setSearchTerm }) => {
             onClick={() => setActiveTable("customer")}
             className={`flex justify-center ${
               activeTable === "customer"
-                ? "bg-pinkBgDark text-white"
+                ? "bg-blueBgDark text-white"
                 : "bg-white text-gray-500"
-            } font-bold rounded-[6px] hover:bg-pinkBgDarkHover hover:text-pinkBgDark transition-colors duration-500 w-full lg:w-[90px] h-[38px] text-[13px] items-center`}
+            } font-bold rounded-[6px] hover:bg-blueBgDarkHover hover:text-blueBgDark transition-colors duration-500 w-full lg:w-[90px] h-[38px] text-[13px] items-center`}
           >
             Customer
           </button>

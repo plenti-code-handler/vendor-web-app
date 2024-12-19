@@ -239,7 +239,7 @@ const EditBagDrawer = () => {
                   <div className="flex gap-x-2">
                     <button
                       onClick={() => handleDelete(bagId)}
-                      className="py-2 px-2 rounded hover:bg-pinkBgDark"
+                      className="py-2 px-2 rounded hover:bg-blueBgDark"
                     >
                       {deleteSvg}
                     </button>
@@ -280,7 +280,7 @@ const EditBagDrawer = () => {
                     />
                     <button
                       onClick={handleUpdateBag}
-                      className="flex justify-center bg-pinkBgDark text-white font-semibold py-2 rounded hover:bg-pinkBgDarkHover2 gap-2 lg:w-[100%]"
+                      className="flex justify-center bg-blueBgDark text-white font-semibold py-2 rounded hover:bg-blueBgDarkHover2 gap-2 lg:w-[100%]"
                     >
                       Edit Bag
                     </button>
