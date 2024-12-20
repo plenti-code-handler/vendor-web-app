@@ -14,33 +14,7 @@ import { useEffect, useState } from "react";
 
 const Faqs = () => {
   const dispatch = useDispatch();
-  const [currLang, setCurrLang] = useState("en");
 
-    useEffect(() => {
-      if (typeof window !== "undefined") {
-        const updateLangFromStorage = () => {
-          const storedLang = localStorage.getItem("lang");
-          if (storedLang) {
-            setCurrLang(storedLang);
-          }
-        };
-
-        const timeoutId = setTimeout(() => {
-          updateLangFromStorage();
-          window.addEventListener("storage", updateLangFromStorage);
-        }, 2000);
-        return () => {
-          clearTimeout(timeoutId);
-          window.removeEventListener("storage", updateLangFromStorage);
-        };
-      }
-    }, []);
-
-    useEffect(() => {
-      if (typeof window !== "undefined" && document.body) {
-        document.body.setAttribute("lang", currLang);
-      }
-    }, [currLang]);
 
   useEffect(() => {
     dispatch(setActivePage("More"));
@@ -263,11 +237,7 @@ const Faqs = () => {
                   you.
                 </li>
                 <li>Correct incorrect or incomplete information.</li>
-                <li>{`${
-                  currLang === "en"
-                    ? "Request deletion of your data in certain Bags."
-                    : "Request deletion of your data in certain pouches."
-                }`}</li>
+                <li>Request deletion of your data in certain Bags.</li>
 
                 <li>
                   Withdraw your consent for specific treatments if the treatment

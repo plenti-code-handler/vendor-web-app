@@ -14,28 +14,11 @@ import React, { useEffect, useState } from "react";
 import { setActivePage } from "../../../redux/slices/headerSlice";
 import { useDispatch } from "react-redux";
 
-// if (typeof window !== "undefined") {
-//   // Access localStorage here
-//   localStorage.setItem("key", "value");
-//   const value = localStorage.getItem("key");
-// }
 
-// let currLang = localStorage.getItem("lang");
-let currLang = "en";
 
 const Page = () => {
   const dispatch = useDispatch();
-  const [currLangg, setCurrLang] = useState("en");
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const storedLang = localStorage.getItem("lang");
-      currLang = storedLang;
-      if (storedLang) {
-        setCurrLang(storedLang);
-      }
-    }
-  }, []);
 
   useEffect(() => {
     dispatch(setActivePage("FAQs"));
@@ -147,7 +130,7 @@ const faqData = [
   },
   {
     question: `What happens if I'm not happy with my ${
-      currLang === "en" ? "bag" : "pouch"
+      "bag" 
     }?`,
     answer:
       "If you are unhappy with the contents of your box, contact our support via the app and we will help you resolve the issue.",

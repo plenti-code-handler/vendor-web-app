@@ -18,8 +18,7 @@ const BussinessHeader = () => {
   const activePage = useSelector((state) => state.header.activePage);
   const dispatch = useDispatch();
   const [isSmallDevice, setIsSmallDevice] = useState(false);
-  const [currLang, setCurrLang] = useState("en");
-  const [modifiedMenuItems, setModifiedMenuItems] = useState(menuItemsData);
+
 
   const router = useRouter();
 
@@ -39,31 +38,7 @@ const BussinessHeader = () => {
     return () => window.removeEventListener("resize", checkIsMobile);
   }, []);
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const updateLangFromStorage = () => {
-        const storedLang = localStorage.getItem("lang");
-        if (storedLang) {
-          setCurrLang(storedLang);
-        }
-      };
 
-      const timeoutId = setTimeout(() => {
-        updateLangFromStorage();
-        window.addEventListener("storage", updateLangFromStorage);
-      }, 2000);
-      return () => {
-        clearTimeout(timeoutId);
-        window.removeEventListener("storage", updateLangFromStorage);
-      };
-    }
-  }, []);
-
-  useEffect(() => {
-    if (typeof window !== "undefined" && document.body) {
-      document.body.setAttribute("lang", currLang);
-    }
-  }, [currLang]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -91,22 +66,7 @@ const BussinessHeader = () => {
     router.push("/");
   };
 
-  useEffect(() => {
-    const updatedMenuItems = menuItemsData.map((item) => {
-      console.log("Cuurent item");
-      console.log(item);
-      if (currLang === "en" && item.name === "Manage Pouches") {
-        return { ...item, name: "Manage Bags" };
-      }
-      if (currLang === "sv" && item.name === "Manage Bags") {
-        return { ...item, name: "Manage Pouches" };
-      }
-      return item;
-    });
-    console.log("updated menu items");
-    console.log(updatedMenuItems);
-    setModifiedMenuItems(updatedMenuItems);
-  }, [currLang]);
+ 
 
   useEffect(() => {
     if (isMenuOpen) {
@@ -156,7 +116,7 @@ const BussinessHeader = () => {
             style={{ zIndex: isSmallDevice ? 1000 : 0 }}
           >
             <div className="flex flex-col items-start lg:flex-row p-6 lg:p-0 gap-[2.2%]">
-              {modifiedMenuItems.map(({ name, href }) => (
+              {menuItemsData.map(({ name, href }) => (
                 <Link
                   key={name}
                   href={href}
@@ -178,12 +138,12 @@ const BussinessHeader = () => {
                 </Link>
               ))}
               <div className="w-full lg:hidden">
-                <LanguageDropdown />
+                {/* <LanguageDropdown /> */}
               </div>
             </div>
           </nav>
           <div className="hidden lg:flex items-center gap-5">
-            <LanguageDropdown />
+            {/* <LanguageDropdown /> */}
             <ProfileDropdown />
             <button
               className="text-sm font-semibold leading-6 text-gray-900 p-3 transition-colors duration-200 ease-in-out hover:bg-mainLight hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-mainLight focus:ring-offset-2 rounded-lg"

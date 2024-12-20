@@ -28,33 +28,6 @@ const LandingHeader = () => {
   const activePage = useSelector((state) => state.header.activePage);
 
   const [isMobile, setIsMobile] = useState(false);
-  const [currLang, setCurrLang] = useState("en");
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const updateLangFromStorage = () => {
-        const storedLang = localStorage.getItem("lang");
-        if (storedLang) {
-          setCurrLang(storedLang);
-        }
-      };
-
-      const timeoutId = setTimeout(() => {
-        updateLangFromStorage();
-        window.addEventListener("storage", updateLangFromStorage);
-      }, 2000);
-      return () => {
-        clearTimeout(timeoutId);
-        window.removeEventListener("storage", updateLangFromStorage);
-      };
-    }
-  }, []);
-
-  useEffect(() => {
-    if (typeof window !== "undefined" && document.body) {
-      document.body.setAttribute("lang", currLang);
-    }
-  }, [currLang]);
 
   useEffect(() => {
     const checkIsMobile = () => {
@@ -194,7 +167,7 @@ const LandingHeader = () => {
                           }
                         }}
                       >
-                        {`Surprise ${currLang === "en" ? "Bag" : "Pouch"} `}
+                        {`Surprise Bag `}
                       </Link>
                     </div>
                     <div>
@@ -207,9 +180,7 @@ const LandingHeader = () => {
                           }
                         }}
                       >
-                        {`Small & Large  ${
-                          currLang === "en" ? "Bag" : "Pouch"
-                        } `}
+                        {`Small & Large Bag `}
                       </Link>
                     </div>
                   </div>
@@ -226,7 +197,7 @@ const LandingHeader = () => {
                           : "text-graySix lg:text-graySix hover:bg-pink hover:text-mainLight"
                       }`}
                     >
-                      {`Surprise ${currLang === "en" ? "Bag" : "Pouch"} `}
+                      {`Surprise Bag `}
                     </Link>
                   </div>
                   <div>
@@ -238,7 +209,7 @@ const LandingHeader = () => {
                           : "text-graySix lg:text-graySix hover:bg-pink hover:text-mainLight"
                       }`}
                     >
-                      {`Small & Large  ${currLang === "en" ? "Bag" : "Pouch"} `}
+                      {`Small & Large  Bags `}
                     </Link>
                   </div>
                 </div>
@@ -296,11 +267,12 @@ const LandingHeader = () => {
               </Link>
 
               <div className="w-full lg:hidden flex flex-col gap-2">
-                <LanguageDropdown
+                {/* <LanguageDropdown
                   background="white"
                   textColor="black"
                   borderColor="grayLight"
-                />
+                /> */}
+
                 <Link
                   href={"/login"}
                   className="mr-3 mt-2 lg:m-0 flex items-center w-full px-[10px] py-[10px] text-center justify-center bg-blueBgDark text-white font-semibold rounded-[6px] hover:bg-mainLight"
@@ -312,11 +284,11 @@ const LandingHeader = () => {
             </div>
           </nav>
           <div className="hidden lg:flex items-center gap-5">
-            <LanguageDropdown
+            {/* <LanguageDropdown
               background="white"
               textColor="black"
               borderColor="grayLight"
-            />
+            /> */}
 
             <Link
               href={"/login"}

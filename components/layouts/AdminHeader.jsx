@@ -21,51 +21,6 @@ const AdminHeader = () => {
   const activePage = useSelector((state) => state.header.activePage);
   const dispatch = useDispatch();
   const { imageUrl, setImageUrl } = useContext(AdminContext);
-  const [currLang, setCurrLang] = useState("en");
-  const [modifiedMenuItems, setModifiedMenuItems] = useState(menuItemsData);
-
-    useEffect(() => {
-      if (typeof window !== "undefined") {
-        const updateLangFromStorage = () => {
-          const storedLang = localStorage.getItem("lang");
-          if (storedLang) {
-            setCurrLang(storedLang);
-          }
-        };
-
-        const timeoutId = setTimeout(() => {
-          updateLangFromStorage();
-          window.addEventListener("storage", updateLangFromStorage);
-        }, 2000);
-        return () => {
-          clearTimeout(timeoutId);
-          window.removeEventListener("storage", updateLangFromStorage);
-        };
-      }
-    }, []);
-
-    useEffect(() => {
-      if (typeof window !== "undefined" && document.body) {
-        document.body.setAttribute("lang", currLang);
-      }
-    }, [currLang]);
-
-  useEffect(() => {
-    const updatedMenuItems = menuItemsData.map((item) => {
-      console.log("Cuurent item");
-      console.log(item);
-      if (currLang === "en" && item.name === "Manage Pouches") {
-        return { ...item, name: "Manage Bags" };
-      }
-      if (currLang === "sv" && item.name === "Manage Bags") {
-        return { ...item, name: "Manage Pouches" };
-      }
-      return item;
-    });
-    console.log("updated menu items");
-    console.log(updatedMenuItems);
-    setModifiedMenuItems(updatedMenuItems);
-  }, [currLang]);
 
   const [isMobile, setIsMobile] = useState(false);
 
@@ -151,7 +106,7 @@ const AdminHeader = () => {
             <img
               alt="Plenti Logo"
               src={"/Logo.png"}
-              className="max-w-[180px] md:max-w-[240px]"
+              className="max-w-[100px] md:max-w-[140px]"
             />
           </a>
           <div className="flex lg:hidden gap-3 items-center">
@@ -180,52 +135,50 @@ const AdminHeader = () => {
             style={{ zIndex: 1000 }}
           >
             <div className="flex flex-col lg:flex-row lg:justify-center lg:gap-x-4 p-6 lg:p-0 ">
-              {modifiedMenuItems.map(
-                ({ name, href, activeSvg, inactiveSvg }) => (
-                  <Link
-                    key={name}
-                    href={href}
-                    className={`lg:text-[15px] font-semibold flex flex-col gap-10 leading-6   transition-colors duration-500 rounded-md pt-3 pb-3 pl-3 pr-3 min-w-[90px]   lg:h-[80px] ${
-                      activePage === name
-                        ? "bg-secondary text-white"
-                        : "text-menuItem lg:text-menuItem hover:bg-secondary hover:text-white  decoration-mainLight"
-                    }`}
-                    onMouseEnter={() => setHoveredItem(name)}
-                    onMouseLeave={() => setHoveredItem(null)}
-                    onClick={() => {
-                      handleLinkClick(name);
-                      if (isMobile) {
-                        toggleMenu(); // Only trigger toggleMenu on mobile devices
-                      }
-                    }}
-                  >
-                    <div className="flex lg:flex-col items-center gap-3 text-[15px]">
-                      <div>
-                        {activePage === name || hoveredItem === name
-                          ? inactiveSvg
-                          : activeSvg}
-                      </div>
-                      <div>{name}</div>
+              {menuItemsData.map(({ name, href, activeSvg, inactiveSvg }) => (
+                <Link
+                  key={name}
+                  href={href}
+                  className={`lg:text-[15px] font-semibold flex flex-col gap-10 leading-6   transition-colors duration-500 rounded-md pt-3 pb-3 pl-3 pr-3 min-w-[90px]   lg:h-[80px] ${
+                    activePage === name
+                      ? "bg-secondary text-white"
+                      : "text-menuItem lg:text-menuItem hover:bg-secondary hover:text-white  decoration-mainLight"
+                  }`}
+                  onMouseEnter={() => setHoveredItem(name)}
+                  onMouseLeave={() => setHoveredItem(null)}
+                  onClick={() => {
+                    handleLinkClick(name);
+                    if (isMobile) {
+                      toggleMenu(); // Only trigger toggleMenu on mobile devices
+                    }
+                  }}
+                >
+                  <div className="flex lg:flex-col items-center gap-3 text-[15px]">
+                    <div>
+                      {activePage === name || hoveredItem === name
+                        ? inactiveSvg
+                        : activeSvg}
                     </div>
-                  </Link>
-                )
-              )}
+                    <div>{name}</div>
+                  </div>
+                </Link>
+              ))}
               <div className="w-full lg:hidden">
-                <LanguageDropdown
+                {/* <LanguageDropdown
                   background="white"
                   textColor="black"
                   borderColor="grayLight"
-                />
+                /> */}
               </div>
             </div>
           </nav>
           <div className="hidden lg:flex items-center gap-5">
-            <LanguageDropdown
+            {/* <LanguageDropdown
               background="white"
               textColor="black"
               borderColor="grayLight"
               width="small"
-            />
+            /> */}
             {/* User Profile Section */}
             <div className="hidden lg:flex items-center border-2 min-w-[110px] border-dotted rounded-xl justify-between p-2">
               <Link href="/admin/profile">

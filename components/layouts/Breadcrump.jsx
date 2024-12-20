@@ -7,7 +7,7 @@ import { setOpenDrawer } from "../../redux/slices/addBagSlice";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../app/firebase/config";
 
-const decidePath = (pathname, currLang) => {
+const decidePath = (pathname) => {
   // Check for specific patterns
   console.log(pathname);
   if (pathname.match(/\/admin\/users\/business\/[a-zA-Z0-9]+/)) {
@@ -51,7 +51,7 @@ const Breadcrumb = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const [pendingUsersCount, setPendingUsersCount] = useState(0);
-  const [currLang, setCurrLang] = useState("en");
+  
 
   const handleOpenDrawer = useCallback(() => {
     dispatch(setOpenDrawer(true));
@@ -61,31 +61,7 @@ const Breadcrumb = () => {
     router.replace("/admin/users");
   }, [router]);
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const updateLangFromStorage = () => {
-        const storedLang = localStorage.getItem("lang");
-        if (storedLang) {
-          setCurrLang(storedLang);
-        }
-      };
 
-      const timeoutId = setTimeout(() => {
-        updateLangFromStorage();
-        window.addEventListener("storage", updateLangFromStorage);
-      }, 2000);
-      return () => {
-        clearTimeout(timeoutId);
-        window.removeEventListener("storage", updateLangFromStorage);
-      };
-    }
-  }, []);
-
-  useEffect(() => {
-    if (typeof window !== "undefined" && document.body) {
-      document.body.setAttribute("lang", currLang);
-    }
-  }, [currLang]);
 
   useEffect(() => {
     const fetchPendingUsersCount = async () => {
@@ -110,12 +86,9 @@ const Breadcrumb = () => {
     fetchPendingUsersCount();
   }, []); // Empty dependency array to run this effect only once on mount
 
-  const currentPath = useMemo(() => decidePath(pathname, currLang), [pathname]);
+  const currentPath = useMemo(() => decidePath(pathname), [pathname]);
 
-  useEffect(() => {
-    console.log("Current path");
-    console.log(currentPath);
-  }, []);
+
 
   const MoreOptionsContent = () => (
     <div className="flex flex-col items-center">
@@ -134,7 +107,7 @@ const Breadcrumb = () => {
     <div className="flex justify-between items-center lg:mr-auto lg:mt-4 lg:mb-4 lg:py-2 lg:w-[99%]">
       <p className="m-4 text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-one">
         {currentPath === "Manage Pouches" ? (
-          <>{`Manage ${currLang === "en" ? "Bags" : "Pouches"}  `}</>
+          <>{`Manage Bags `}</>
         ) : (
           <>{currentPath}</>
         )}
@@ -145,9 +118,7 @@ const Breadcrumb = () => {
           onClick={handleOpenDrawer}
           className="mr-3 mt-2 lg:m-0 flex items-center text-center justify-center bg-blueBgDark text-white font-semibold py-2 px-4 rounded-[6px] hover:bg-blueBgDarkHover2"
         >
-          <span className="mr-3 ml-2 font-semibold">{`${
-            currLang === "en" ? "New Bag" : "New Pouch"
-          }`}</span>
+          <span className="mr-3 ml-2 font-semibold">{`New Bags`}</span>
           <span>{addUserSvg}</span>
         </button>
       )}

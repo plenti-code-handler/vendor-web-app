@@ -32,33 +32,7 @@ const BusinessDetailTable = () => {
   const [bookingFilter, setOnBookingFilter] = useState("active");
   const [loader, setLoader] = useState(false);
 
-  const [currLang, setCurrLang] = useState("en");
-
-    useEffect(() => {
-      if (typeof window !== "undefined") {
-        const updateLangFromStorage = () => {
-          const storedLang = localStorage.getItem("lang");
-          if (storedLang) {
-            setCurrLang(storedLang);
-          }
-        };
-
-        const timeoutId = setTimeout(() => {
-          updateLangFromStorage();
-          window.addEventListener("storage", updateLangFromStorage);
-        }, 2000);
-        return () => {
-          clearTimeout(timeoutId);
-          window.removeEventListener("storage", updateLangFromStorage);
-        };
-      }
-    }, []);
-
-    useEffect(() => {
-      if (typeof window !== "undefined" && document.body) {
-        document.body.setAttribute("lang", currLang);
-      }
-    }, [currLang]);
+ 
 
   const router = useRouter();
   const business = useSelector(
@@ -342,7 +316,7 @@ const BusinessDetailTable = () => {
   return (
     <div className="mt-4 w-full border border-gray-200 rounded-xl p-6 sm:px-4">
       <DetailsTableUpper
-        Heading={`${currLang === "en" ? "Bags" : "Pouches"} Sold`}
+        Heading={`Bags Sold`}
         bookingFilter={bookingFilter}
         onBookingFilterChange={onBookingFilterChange}
         setSearchTerm={setSearchTerm}

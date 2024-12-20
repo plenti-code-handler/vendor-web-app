@@ -3,33 +3,7 @@ import { useEffect, useState } from "react";
 import { arrowDownGray } from "../../svgs";
 
 const BookingsFilter = ({ selectedFilter, onFilterChange }) => {
-  const [currLang, setCurrLang] = useState("en");
-
-    useEffect(() => {
-      if (typeof window !== "undefined") {
-        const updateLangFromStorage = () => {
-          const storedLang = localStorage.getItem("lang");
-          if (storedLang) {
-            setCurrLang(storedLang);
-          }
-        };
-
-        const timeoutId = setTimeout(() => {
-          updateLangFromStorage();
-          window.addEventListener("storage", updateLangFromStorage);
-        }, 2000);
-        return () => {
-          clearTimeout(timeoutId);
-          window.removeEventListener("storage", updateLangFromStorage);
-        };
-      }
-    }, []);
-
-    useEffect(() => {
-      if (typeof window !== "undefined" && document.body) {
-        document.body.setAttribute("lang", currLang);
-      }
-    }, [currLang]);
+  
 
   return (
     <form className="w-full sm:w-[125px] lg:min-w-[200px]">
@@ -41,13 +15,13 @@ const BookingsFilter = ({ selectedFilter, onFilterChange }) => {
           onChange={(e) => onFilterChange(e.target.value)}
         >
           <option value="active" className="text-base truncate">
-            {`Active ${currLang === "en" ? "Bags" : "Pouches"}  `}
+            {`Active Bags`}
           </option>
           <option value="past" className="text-base truncate">
-            {`Past ${currLang === "en" ? "Bags" : "Pouches"}  `}
+            {`Past Bags`}
           </option>
           <option value="scheduled" className="text-base truncate">
-            {`Scheduled ${currLang === "en" ? "Bags" : "Pouches"}  `}
+            {`Scheduled Bags`}
           </option>
           <option value="cancelled" className="text-base truncate">
             Cancel

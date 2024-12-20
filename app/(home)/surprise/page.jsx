@@ -5,38 +5,8 @@ import Faqs from "../../../components/sections/home/surprise/FAQs";
 import { setActivePage } from "../../../redux/slices/headerSlice";
 import { useDispatch } from "react-redux";
 
-let currLang = "en";
-
 const Page = () => {
   const dispatch = useDispatch();
-  const [currLangg, setCurrLang] = useState("en");
-
-    useEffect(() => {
-      if (typeof window !== "undefined") {
-        const updateLangFromStorage = () => {
-          const storedLang = localStorage.getItem("lang");
-          if (storedLang) {
-            setCurrLang(storedLang);
-            currLang = storedLang
-          }
-        };
-
-        const timeoutId = setTimeout(() => {
-          updateLangFromStorage();
-          window.addEventListener("storage", updateLangFromStorage);
-        }, 2000);
-        return () => {
-          clearTimeout(timeoutId);
-          window.removeEventListener("storage", updateLangFromStorage);
-        };
-      }
-    }, []);
-
-    useEffect(() => {
-      if (typeof window !== "undefined" && document.body) {
-        document.body.setAttribute("lang", currLang);
-      }
-    }, [currLang]);
 
   useEffect(() => {
     dispatch(setActivePage("Surprise Bag"));
@@ -47,7 +17,7 @@ const Page = () => {
       <div className="flex flex-col items-center gap-10 p-[5%] lg:px-[2%] lg:pt-[3%] lg:pb-[5%]">
         <div className="flex flex-col gap-4 items-center">
           <h1 className="text-center font-extrabold text-[3em] md:text-[3.75em] uppercase">
-            {`Surprise ${currLang === "en" ? "bag" : "pouch"} `}
+            {`Surprise bag `}
           </h1>
           <p className="font-semibold text-base text-center w-[100%] md:w-[80%]">
             {`
@@ -55,12 +25,8 @@ const Page = () => {
             good food at a good price while helping to reduce food waste. Our
             surprise bags consist of unsold, but still excellent, food items
             from local restaurants, bakeries and shops. You don't know exactly
-            what's in the ${
-              currLang === "en" ? "Bag" : "Pouch"
-            } until you pick it up, which makes the experience
-            both exciting and sustainable. Each ${
-              currLang === "en" ? "Bag" : "Pouch"
-            } is filled with a mixture
+            what's in the bag until you pick it up, which makes the experience
+            both exciting and sustainable. Each bag is filled with a mixture
             of fresh and tasty goods that would otherwise be thrown away, so you
             make both a good bargain and a contribution to the environment!
             
@@ -79,9 +45,7 @@ const Page = () => {
       </div>
       <Steps
         steps={steps}
-        heading={`Here's how surprise ${
-          currLang === "en" ? "bag" : "pouches"
-        } works - step by step:`}
+        heading={`Here's how surprise bags works - step by step:`}
         image={"/Sqaures-image-1.webp"}
       />
       <Faqs
@@ -100,52 +64,36 @@ const steps = [
   },
   {
     title: "Identify leftover food:",
-    description: `After closing or during quieter periods, identify the items that have not been sold but are still completely fresh and of high quality. Add these to the app as a surprise ${
-      currLang === "en" ? "bag" : "pouch"
-    }.`,
+    description: `After closing or during quieter periods, identify the items that have not been sold but are still completely fresh and of high quality. Add these to the app as a surprise bags.`,
   },
   {
     title: "Enter details and availability: ",
-    description: `Determine how many surprise bags are available and specify a time for collection. Be transparent with the type of food but keep the content a surprise to provide an exciting experience for customers. As a business, you have the freedom to set the price of your ${
-      currLang === "en" ? "bags" : "pouches"
-    } yourself, which gives you full control over your offers. However, we recommend pricing the pouches at around 1/3 of the regular price, which makes them attractive to customers and contributes to faster sales. Also enter the times when customers can pick up their ${
-      currLang === "en" ? "Bags" : "Pouches"
-    }.`,
+    description: `Determine how many surprise bags are available and specify a time for collection. Be transparent with the type of food but keep the content a surprise to provide an exciting experience for customers. As a business, you have the freedom to set the price of your bags yourself, which gives you full control over your offers. However, we recommend pricing the pouches at around 1/3 of the regular price, which makes them attractive to customers and contributes to faster sales. Also enter the times when customers can pick up their bags.`,
   },
   {
-    title: `Customers reserve ${currLang === "en" ? "bags" : "pouches"}:`,
+    title: `Customers reserve bags:`,
     description:
       "Customers browse offers on the Plenti app, see your available surprise bags and reserve them directly in the app.",
   },
   {
-    title: `Prepare the ${currLang === "en" ? "bag" : "pouch"} for pickup:`,
-    description: `Prepare the bags with the leftover products specified in the app. The ${
-      currLang === "en" ? "Bags" : "Pouches"
-    } must be ready for collection at the time specified for the customers.`,
+    title: `Prepare the bags for pickup:`,
+    description: `Prepare the bags with the leftover products specified in the app. The bags must be ready for collection at the time specified for the customers.`,
   },
   {
-    title: `Customers collect their ${currLang === "en" ? "Bags" : "Pouches"}:`,
+    title: `Customers collect their bags:`,
     description:
       "Customers come to your store or restaurant during the pickup time, show their confirmation from the app, and collect their surprise bags. This often creates a chance for customers to discover your business and possibly buy more items.",
   },
   {
     title: "Contribute to sustainability and increase sales:",
-    description: `By selling surprise bags, you reduce food waste, attract new customers and increase your revenue from products that would otherwise have been lost. Each ${
-      currLang === "en" ? "Bag" : "Pouch"
-    } sold also contributes to reducing CO2 emissions, making a positive impact on the environment.`,
+    description: `By selling surprise bags, you reduce food waste, attract new customers and increase your revenue from products that would otherwise have been lost. Each bags sold also contributes to reducing CO2 emissions, making a positive impact on the environment.`,
   },
 ];
 
 const faqData = [
   {
-    question: `How does the surprise ${
-      currLang === "en" ? "Bags" : "Pouches"
-    } for companies work?`,
-    answer: `Businesses can sell their leftover, but still fully edible items by creating surprise bags in the Plenti app. You post available ${
-      currLang === "en" ? "Bags" : "Pouches"
-    }, set collection times, and customers reserve and collect their ${
-      currLang === "en" ? "Bags" : "Pouches"
-    } from you.`,
+    question: `How does the surprise bags for companies work?`,
+    answer: `Businesses can sell their leftover, but still fully edible items by creating surprise bags in the Plenti app. You post available bags, set collection times, and customers reserve and collect their bags from you.`,
   },
   {
     question: "What can I put in a surprise bag?",
@@ -163,9 +111,7 @@ const faqData = [
       "By selling surprise bags, you reduce food waste, generate revenue from items that would otherwise have been lost, and potentially attract new customers to your store or restaurant. Many customers also buy more items when they pick up their checkout.",
   },
   {
-    question: `What does my company gain from using the surprise ${
-      currLang === "en" ? "Bag" : "Pouch"
-    }?`,
+    question: `What does my company gain from using the surprise bags?`,
     answer:
       "You get paid for items that would otherwise be thrown away, helping to reduce your losses. In addition, new customers can discover your business through the app, which can increase your customer base and future sales.",
   },
@@ -176,22 +122,14 @@ const faqData = [
   },
   {
     question: "How do I manage the collection of surprise bags?",
-    answer: `Prepare the ${
-      currLang === "en" ? "Bags" : "Pouches"
-    } according to the information you have entered in the app. When customers come to pick up their crates, they show their confirmation from the app, and you give them the crates.`,
+    answer: `Prepare the bags according to the information you have entered in the app. When customers come to pick up their crates, they show their confirmation from the app, and you give them the crates.`,
   },
   {
-    question: `What happens if no customers reserve my ${
-      currLang === "en" ? "Bags" : "Pouches"
-    }?`,
-    answer: `If cash registers are not reserved, your business is not negatively affected; you still tried to reduce food waste. We recommend that you adjust the number of ${
-      currLang === "en" ? "Bags" : "Pouches"
-    } or the price to better match demand.`,
+    question: `What happens if no customers reserve my bags?`,
+    answer: `If cash registers are not reserved, your business is not negatively affected; you still tried to reduce food waste. We recommend that you adjust the number of bags or the price to better match demand.`,
   },
   {
-    question: `Can customers see what is in the surprise ${
-      currLang === "en" ? "Bag" : "Pouch"
-    }?`,
+    question: `Can customers see what is in the surprise bag?`,
     answer:
       "No, the concept is based on surprise! Customers know what type of food to expect (eg baked goods, vegetables), but exact contents are only revealed at pick-up. This creates an exciting experience for customers.",
   },

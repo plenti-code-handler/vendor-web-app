@@ -5,48 +5,20 @@ import Faqs from "../../../components/sections/home/surprise/FAQs";
 import { setActivePage } from "../../../redux/slices/headerSlice";
 import { useDispatch } from "react-redux";
 
-let currLang = "en";
-
 const Page = () => {
-  const [currLangg, setCurrLang] = useState("");
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setActivePage("Small & Large Bag"));
   }, [dispatch]);
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const updateLangFromStorage = () => {
-        const storedLang = localStorage.getItem("lang");
-        if (storedLang) {
-          setCurrLang(storedLang);
-         
-        }
-      };
 
-      const timeoutId = setTimeout(() => {
-        updateLangFromStorage();
-        window.addEventListener("storage", updateLangFromStorage);
-      }, 2000);
-      return () => {
-        clearTimeout(timeoutId);
-        window.removeEventListener("storage", updateLangFromStorage);
-      };
-    }
-  }, []);
-
-  useEffect(() => {
-    if (typeof window !== "undefined" && document.body) {
-      document.body.setAttribute("lang", currLang);
-    }
-  }, [currLang]);
 
   return (
     <div className="text-[75%] md:text[90%] lg:text-[100%] bg-[#F5F5F5]">
       <div className="flex flex-col items-center gap-10 p-[5%] lg:px-[2%] lg:pt-[3%] lg:pb-[5%]">
         <div className="flex flex-col gap-4 items-center">
           <h1 className="text-center font-extrabold text-[3em] md:text-[3.75em] uppercase">
-            {`SMALL & LARGE ${currLang === "en" ? "bag" : "pouch"}`}
+            {`SMALL & LARGE bag`}
           </h1>
           <p className="font-semibold text-base text-center w-[100%] md:w-[80%]">
             At Plenti, we offer both small and large bags with known contents,
@@ -72,15 +44,11 @@ const Page = () => {
       </div>
       <Steps
         steps={steps}
-        heading={`Here's how Small & Large ${
-          currLang === "en" ? "bag" : "pouch"
-        }  works - step by step:`}
+        heading={`Here's how Small & Large ${"bag"}  works - step by step:`}
         image={"/Sqaures-image-2.webp"}
       />
       <Faqs
-        heading={`Questions and Answers about Small & Large ${
-          currLang === "en" ? "bag" : "pouch"
-        } for Business`}
+        heading={`Questions and Answers about Small & Large ${"bag"} for Business`}
         faqData={faqData}
       />
     </div>
@@ -89,19 +57,11 @@ const Page = () => {
 
 const faqData = [
   {
-    question: `How do known content ${
-      currLang === "en" ? "bags" : "pouches"
-    }  work for businesses?`,
-    answer: `Businesses can sell unsold items by creating ${
-      currLang === "en" ? "bags" : "pouches"
-    }  with known contents in the Plenti app. You specify exactly what is in each ${
-      currLang === "en" ? "bag" : "pouch"
-    }, giving customers the opportunity to know what they are getting before they reserve and collect from you.`,
+    question: `How do known content bags work for businesses?`,
+    answer: `Businesses can sell unsold items by creating bags  with known contents in the Plenti app. You specify exactly what is in each bags, giving customers the opportunity to know what they are getting before they reserve and collect from you.`,
   },
   {
-    question: `What can I put in a ${
-      currLang === "en" ? "bag" : "pouch"
-    } with known contents?`,
+    question: `What can I put in a bags with known contents?`,
     answer:
       "You can put in specific items that are left over but still of high quality, such as ready meals, single products or combinations of items that would otherwise be thrown away.",
   },
@@ -112,54 +72,34 @@ const faqData = [
   },
   {
     question: "How do bags with known content help my business?",
-    answer: `By selling ${
-      currLang === "en" ? "bags" : "pouches"
-    } with known contents, you can reduce food waste, get revenue for goods that would otherwise be lost and give customers an attractive offer. It also provides a chance to showcase your range and attract repeat customers.`,
+    answer: `By selling bags with known contents, you can reduce food waste, get revenue for goods that would otherwise be lost and give customers an attractive offer. It also provides a chance to showcase your range and attract repeat customers.`,
   },
   {
-    question: `What does my company gain from using ${
-      currLang === "en" ? "bags" : "pouches"
-    } with known content?`,
+    question: `What does my company gain from using bags with known content?`,
     answer:
       "You get revenue for products that would otherwise have gone to waste, and you can attract new customers to your business by offering transparency and great deals. Customers appreciate knowing what they are buying, which can build trust and lead to repeat purchases.",
   },
   {
-    question: `How do I set up ${
-      currLang === "en" ? "bags" : "pouches"
-    } with known content in the app?`,
-    answer: `Log in to your business account in the Plenti app, create a new ${
-      currLang === "en" ? "bag" : "pouch"
-    } by specifying the items included, the number of ${
-      currLang === "en" ? "bags" : "pouches"
-    } and pick-up times. Publish the checkout to make it visible for customers to reserve.`,
+    question: `How do I set up bags with known content in the app?`,
+    answer: `Log in to your business account in the Plenti app, create a new bags by specifying the items included, the number of bags and pick-up times. Publish the checkout to make it visible for customers to reserve.`,
   },
   {
     question: "How do I handle the collection of bags with known contents?",
-    answer: `Prepare the ${
-      currLang === "en" ? "bags" : "pouches"
-    } with the specific items you entered in the app. When customers come to pick up their crates, they show their confirmation from the app, and you hand out the prepared crates.`,
+    answer: `Prepare the bags with the specific items you entered in the app. When customers come to pick up their crates, they show their confirmation from the app, and you hand out the prepared crates.`,
   },
   {
-    question: `What happens if no customers reserve my ${
-      currLang === "en" ? "bags" : "pouches"
-    }?`,
+    question: `What happens if no customers reserve my bags?`,
     answer:
       "If cash registers are not reserved, your business is not negatively affected; you still tried to reduce food waste. You can adjust the number of crates or their contents to better match demand in the future.",
   },
   {
-    question: `How do I communicate the contents of the ${
-      currLang === "en" ? "Bag" : "Pouch"
-    } to the customers?`,
+    question: `How do I communicate the contents of the bags to the customers?`,
     answer:
       "When you create the checkout in the app, you clearly list what's included, so customers know exactly what they're buying. This creates trust and makes it easy for customers to choose the pouch that suits them best.",
   },
   {
-    question: `How do we ensure that the food in the ${
-      currLang === "en" ? "bags" : "pouches"
-    } with known contents is of high quality?`,
-    answer: `Only items that are still fully edible and of good quality should be included in the ${
-      currLang === "en" ? "bags" : "pouches"
-    }. It is important that your company continues to maintain its standard of quality and that all food is handled in accordance with current hygiene and safety regulations.`,
+    question: `How do we ensure that the food in the bags with known contents is of high quality?`,
+    answer: `Only items that are still fully edible and of good quality should be included in the bags. It is important that your company continues to maintain its standard of quality and that all food is handled in accordance with current hygiene and safety regulations.`,
   },
 ];
 
@@ -176,47 +116,31 @@ const steps = [
   },
   {
     title: "Create bags with known contents",
-    description: `Choose whether you want to create small or large bags depending on the amount of surplus goods. Describe exactly which products are included in each ${
-      currLang === "en" ? "Bag" : "Pouch"
-    } so that customers clearly know what they are getting. Be careful to include details such as type of food, number of servings, or specific products.`,
+    description: `Choose whether you want to create small or large bags depending on the amount of surplus goods. Describe exactly which products are included in each bags so that customers clearly know what they are getting. Be careful to include details such as type of food, number of servings, or specific products.`,
   },
   {
     title: "Set price and collection times",
-    description: `As a business, you have the freedom to set the price of your ${
-      currLang === "en" ? "bags" : "pouches"
-    } yourself, giving you full control over your offers. However, we recommend pricing the pouches at around 1/3 of the regular price, which makes them attractive to customers and contributes to faster sales. Also enter the times when customers can pick up their ${
-      currLang === "en" ? "bags" : "pouches"
-    }.`,
+    description: `As a business, you have the freedom to set the price of your bags yourself, giving you full control over your offers. However, we recommend pricing the pouches at around 1/3 of the regular price, which makes them attractive to customers and contributes to faster sales. Also enter the times when customers can pick up their bags.`,
   },
   {
-    title: `Publish ${currLang === "en" ? "bags" : "pouches"} to the app`,
-    description: `Once you've set up the ${
-      currLang === "en" ? "bags" : "pouches"
-    }, publish them to the Plenti app so they're visible to customers. Customers will be able to see the description of the content and the price, making it easy for them to make a decision.`,
+    title: `Publish bags to the app`,
+    description: `Once you've set up the bags, publish them to the Plenti app so they're visible to customers. Customers will be able to see the description of the content and the price, making it easy for them to make a decision.`,
   },
   {
-    title: `Customers reserve ${currLang === "en" ? "bags" : "pouches"}`,
-    description: `Customers browse the app, see your ${
-      currLang === "en" ? "bags" : "pouches"
-    } with known content and reserve them directly in the app. They pay directly in the app, making the process smooth and easy for both you and the customer.`,
+    title: `Customers reserve bags`,
+    description: `Customers browse the app, see your bags with known content and reserve them directly in the app. They pay directly in the app, making the process smooth and easy for both you and the customer.`,
   },
   {
     title: "Prepare crates for pickup",
-    description: `Prepare the crates according to the description you entered in the app. Ensure that each ${
-      currLang === "en" ? "bag" : "pouch"
-    } contains the specific items promised to maintain trust and ensure a positive customer experience.`,
+    description: `Prepare the crates according to the description you entered in the app. Ensure that each bag contains the specific items promised to maintain trust and ensure a positive customer experience.`,
   },
   {
     title: "Pick-up management",
-    description: `Customers come to your store or restaurant during the specified pick-up times. They show their confirmation from the app, and you hand out the prepared ${
-      currLang === "en" ? "bags" : "pouches"
-    } with known contents.`,
+    description: `Customers come to your store or restaurant during the specified pick-up times. They show their confirmation from the app, and you hand out the prepared bag with known contents.`,
   },
   {
     title: "Follow up and optimize",
-    description: `After each round of sales, analyze what sold best and adjust your ${
-      currLang === "en" ? "bags" : "pouches"
-    } and prices accordingly. Be responsive to customer feedback and use it to improve your offerings and increase sales.`,
+    description: `After each round of sales, analyze what sold best and adjust your bags and prices accordingly. Be responsive to customer feedback and use it to improve your offerings and increase sales.`,
   },
 ];
 

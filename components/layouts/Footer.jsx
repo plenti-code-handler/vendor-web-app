@@ -9,33 +9,7 @@ import Link from "next/link";
 
 const Footer = () => {
   const dispatch = useDispatch();
-  const [currLang, setCurrLang] = useState("en");
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const updateLangFromStorage = () => {
-        const storedLang = localStorage.getItem("lang");
-        if (storedLang) {
-          setCurrLang(storedLang);
-        }
-      };
-
-      const timeoutId = setTimeout(() => {
-        updateLangFromStorage();
-        window.addEventListener("storage", updateLangFromStorage);
-      }, 2000);
-      return () => {
-        clearTimeout(timeoutId);
-        window.removeEventListener("storage", updateLangFromStorage);
-      };
-    }
-  }, []);
-
-  useEffect(() => {
-    if (typeof window !== "undefined" && document.body) {
-      document.body.setAttribute("lang", currLang);
-    }
-  }, [currLang]);
 
   const openContactForm = () => {
     dispatch(setOpenDrawer(true));
@@ -98,7 +72,7 @@ const Footer = () => {
                   >
                     {horizontalChecklistIcon}
                     <span>
-                      {`Surprise ${currLang === "en" ? "Bag" : "Pouch"} `}
+                      {`Surprise Bag `}
                     </span>
                   </Link>
                 </li>
@@ -109,7 +83,7 @@ const Footer = () => {
                   >
                     {horizontalChecklistIcon}
                     <span>
-                      {`Small & Medium ${currLang === "en" ? "Bag" : "Pouch"} `}
+                      {`Small & Medium Bag `}
                     </span>
                   </Link>
                 </li>

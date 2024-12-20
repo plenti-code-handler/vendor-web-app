@@ -6,33 +6,7 @@ import { deleteSvg, editSvg } from "../../../../svgs";
 import LoadMoreButton from "../../../buttons/LoadMoreButton";
 
 const ScheduledBagsTable = () => {
-  const [currLang, setCurrLang] = useState("en");
-
-    useEffect(() => {
-      if (typeof window !== "undefined") {
-        const updateLangFromStorage = () => {
-          const storedLang = localStorage.getItem("lang");
-          if (storedLang) {
-            setCurrLang(storedLang);
-          }
-        };
-
-        const timeoutId = setTimeout(() => {
-          updateLangFromStorage();
-          window.addEventListener("storage", updateLangFromStorage);
-        }, 2000);
-        return () => {
-          clearTimeout(timeoutId);
-          window.removeEventListener("storage", updateLangFromStorage);
-        };
-      }
-    }, []);
-
-    useEffect(() => {
-      if (typeof window !== "undefined" && document.body) {
-        document.body.setAttribute("lang", currLang);
-      }
-    }, [currLang]);
+ 
 
   return (
     <div className="no-scrollbar w-full  overflow-y-hidden">
@@ -40,13 +14,13 @@ const ScheduledBagsTable = () => {
         <thead>
           <tr className="border-b-[1px] border-grayOne border-opacity-45 border-dashed text-sm font-semibold text-grayOne">
             <th className="pb-[8px] pl-2 pt-[18px] text-left w-[14.28%]">
-              {`${currLang === "en" ? "Bag" : "Pouch"} Deal Title`}
+              {`Bag Deal Title`}
             </th>
             <th className="pb-[8px] px-2 pt-[18px] text-center">Size</th>
             <th className="pb-[8px] px-2 pt-[18px] text-center">Daily Serve</th>
             <th className="pb-[8px] px-2 pt-[18px] text-center">In Stock</th>
             <th className="pb-[8px] px-2 pt-[18px] text-center">
-              {`${currLang === "en" ? "Bag" : "Pouch"} Price`}
+              {`Bag Price`}
             </th>
             <th className="pb-[8px] px-2 pt-[18px] text-center">Date</th>
             <th className="pb-[8px] px-2 pt-[18px] text-center">Actions</th>

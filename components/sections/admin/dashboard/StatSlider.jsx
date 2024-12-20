@@ -8,33 +8,7 @@ import Card from "./Card";
 const StatSlider = ({ bagToday, totalBags, vendorCount, customerCount }) => {
   const [current, setCurrent] = useState(0);
 
-  const [currLang, setCurrLang] = useState("en");
-
-    useEffect(() => {
-      if (typeof window !== "undefined") {
-        const updateLangFromStorage = () => {
-          const storedLang = localStorage.getItem("lang");
-          if (storedLang) {
-            setCurrLang(storedLang);
-          }
-        };
-
-        const timeoutId = setTimeout(() => {
-          updateLangFromStorage();
-          window.addEventListener("storage", updateLangFromStorage);
-        }, 2000);
-        return () => {
-          clearTimeout(timeoutId);
-          window.removeEventListener("storage", updateLangFromStorage);
-        };
-      }
-    }, []);
-
-    useEffect(() => {
-      if (typeof window !== "undefined" && document.body) {
-        document.body.setAttribute("lang", currLang);
-      }
-    }, [currLang]);
+ 
 
   var settings = {
     dots: true,
@@ -111,7 +85,7 @@ const StatSlider = ({ bagToday, totalBags, vendorCount, customerCount }) => {
               ? 0
               : totalBags.length.toLocaleString("en-US")
           }
-          content={`Total ${currLang === "en" ? "Bag" : "Pouch"} Made`}
+          content={`Total Bag Made`}
         />
       </div>
       <div className="px-4">
@@ -121,7 +95,7 @@ const StatSlider = ({ bagToday, totalBags, vendorCount, customerCount }) => {
         <Card
           title={Number(bagToday).toLocaleString("en-US")}
           content={`Today's Total 
-            ${currLang === "en" ? "Bags" : "Pouches"}
+            Bags
             `}
         />{" "}
       </div>

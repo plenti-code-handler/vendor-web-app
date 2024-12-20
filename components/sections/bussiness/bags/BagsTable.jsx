@@ -51,33 +51,7 @@ const BagsTable = () => {
   const [onStatusChange, setOnStatusChange] = useState("");
   const [loader, setLoader] = useState(false);
   const [countryCode, setCountryCode] = useState(null);
-  const [currLang, setCurrLang] = useState("en");
 
-    useEffect(() => {
-      if (typeof window !== "undefined") {
-        const updateLangFromStorage = () => {
-          const storedLang = localStorage.getItem("lang");
-          if (storedLang) {
-            setCurrLang(storedLang);
-          }
-        };
-
-        const timeoutId = setTimeout(() => {
-          updateLangFromStorage();
-          window.addEventListener("storage", updateLangFromStorage);
-        }, 2000);
-        return () => {
-          clearTimeout(timeoutId);
-          window.removeEventListener("storage", updateLangFromStorage);
-        };
-      }
-    }, []);
-
-    useEffect(() => {
-      if (typeof window !== "undefined" && document.body) {
-        document.body.setAttribute("lang", currLang);
-      }
-    }, [currLang]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -302,16 +276,12 @@ const BagsTable = () => {
         <thead>
           <tr className="border-b-[1px] border-grayOne border-dashed border-opacity-45 text-sm font-semibold text-grayOne">
             <th className="pb-[8px] pl-[5%] pt-[18px] text-left w-[25.00%]">
-              {`${
-                currLang === "en" ? " Bag Deal Title" : "Pouches Deal Title"
-              }`}
+              {`Bag Deal Title`}
             </th>
             <th className="pb-[8px] px-2 pt-[18px] text-center">Size</th>
             <th className="pb-[8px] px-2 pt-[18px] text-center">Daily Serve</th>
             <th className="pb-[8px] px-2 pt-[18px] text-center">In Stock</th>
-            <th className="pb-[8px] px-2 pt-[18px] text-center">{`${
-              currLang === "en" ? "Bag Price" : "Pouches Price"
-            }`}</th>
+            <th className="pb-[8px] px-2 pt-[18px] text-center">{`Bag Price`}</th>
             <th className="pb-[8px] px-2 pt-[18px] text-center">Status</th>
             <th className="pb-[8px] px-2 pt-[18px] text-center">Actions</th>
           </tr>
@@ -407,7 +377,7 @@ const BagsTable = () => {
           ) : (
             <tr>
               <td colSpan="10" className="text-center py-10 text-grayOne">
-                {`No ${currLang === "en" ? "Bag" : "Pouch"} found`}
+                {`No Bag found`}
               </td>
             </tr>
           )}
