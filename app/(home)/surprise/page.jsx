@@ -51,7 +51,7 @@ const Page = () => {
           </h1>
           <p className="font-semibold text-base text-center w-[100%] md:w-[80%]">
             {`
-            With FoodieFinder's surprise bag, you get the chance to discover
+            With Plenti's surprise bag, you get the chance to discover
             good food at a good price while helping to reduce food waste. Our
             surprise bags consist of unsold, but still excellent, food items
             from local restaurants, bakeries and shops. You don't know exactly
@@ -96,7 +96,7 @@ const steps = [
   {
     title: "Connect your business:",
     description:
-      "Start by registering your business on the FoodieFinder platform. It's easy to get started, and our support is available to help you through the entire process.",
+      "Start by registering your business on the Plenti platform. It's easy to get started, and our support is available to help you through the entire process.",
   },
   {
     title: "Identify leftover food:",
@@ -115,7 +115,7 @@ const steps = [
   {
     title: `Customers reserve ${currLang === "en" ? "bags" : "pouches"}:`,
     description:
-      "Customers browse offers on the FoodieFinder app, see your available surprise bags and reserve them directly in the app.",
+      "Customers browse offers on the Plenti app, see your available surprise bags and reserve them directly in the app.",
   },
   {
     title: `Prepare the ${currLang === "en" ? "bag" : "pouch"} for pickup:`,
@@ -141,7 +141,7 @@ const faqData = [
     question: `How does the surprise ${
       currLang === "en" ? "Bags" : "Pouches"
     } for companies work?`,
-    answer: `Businesses can sell their leftover, but still fully edible items by creating surprise bags in the FoodieFinder app. You post available ${
+    answer: `Businesses can sell their leftover, but still fully edible items by creating surprise bags in the Plenti app. You post available ${
       currLang === "en" ? "Bags" : "Pouches"
     }, set collection times, and customers reserve and collect their ${
       currLang === "en" ? "Bags" : "Pouches"
@@ -172,7 +172,7 @@ const faqData = [
   {
     question: "How do I set up surprise bags in the app?",
     answer:
-      "It's simple! Log in to your business account in the FoodieFinder app, create a new surprise bag by entering the quantity, description, and pickup times. When you publish the checkout, it becomes visible for customers to reserve.",
+      "It's simple! Log in to your business account in the Plenti app, create a new surprise bag by entering the quantity, description, and pickup times. When you publish the checkout, it becomes visible for customers to reserve.",
   },
   {
     question: "How do I manage the collection of surprise bags?",

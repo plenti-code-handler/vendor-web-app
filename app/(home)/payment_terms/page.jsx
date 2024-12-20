@@ -22,8 +22,8 @@ const Page = () => {
           </h1>
           <p className="text-[#474747] font-medium">
             These payment terms describe the rules and guidelines that apply
-            when you place an order via FoodieFinder.se. By using our service
-            and placing an order, you agree to these payment terms.
+            when you place an order via Plenti.se. By using our service and
+            placing an order, you agree to these payment terms.
           </p>
           <div className="flex justify-center items-center mt-4 mb-6  md:mt-8 md:mb-10">
             <div className="w-[100%] h-[1px] bg-gradient-hr-alt" />
@@ -40,9 +40,9 @@ const Page = () => {
               <strong>1. Payment methods</strong>
             </p>
             <p>
-              FoodieFinder.se offers several payment options to make your
-              shopping experience as easy as possible. The payment methods
-              currently accepted are:
+              Plenti.se offers several payment options to make your shopping
+              experience as easy as possible. The payment methods currently
+              accepted are:
             </p>
             <ul>
               <li>
@@ -71,8 +71,8 @@ const Page = () => {
               <strong>3. Price and fees</strong>
             </p>
             <p>
-              All prices displayed on FoodieFinder.se are inclusive of VAT and
-              any applicable fees. The price of each meal is determined by the
+              All prices displayed on Plenti.se are inclusive of VAT and any
+              applicable fees. The price of each meal is determined by the
               restaurant and is clearly displayed before you complete your
               reservation. There are no hidden fees.
             </p>

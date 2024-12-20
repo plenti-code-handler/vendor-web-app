@@ -17,10 +17,10 @@ const ContactSection = () => {
     <div className="bg-homeSectionThreeMobile lg:bg-homeSectionThree pt-[15%] pb-[15%] px-[5%] md:p-[5%] rounded-[20px] mx-[2%] bg-center bg-cover w-auto flex flex-col justify-center">
       <div className="mx-auto flex flex-col gap-3 items-center">
         <h2 className="text-white text-[2.188em] font-extrabold text-center">
-          Join the FoodieFinder Community!
+          Join the Plenti Community!
         </h2>
         <p className="text-base text-white text-center   md:w-[80%]">
-          FoodieFinder is a committed platform that works to reduce food waste
+          Plenti is a committed platform that works to reduce food waste
           and make sustainable choices easier, in line with the global goals. We
           particularly focus on Goal 12, "Sustainable consumption and
           production", where we contribute to the sub-goal of halving global

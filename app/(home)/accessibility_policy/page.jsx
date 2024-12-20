@@ -21,7 +21,7 @@ const Page = () => {
             Accessibility Policy
           </h1>
           <p className="text-[#474747] font-medium">
-            At FoodieFinder.se, we strive to make our platform accessible to all
+            At Plenti.se, we strive to make our platform accessible to all
             users, regardless of ability or technical skills. Our goal is to
             ensure that all users have an equal experience when using our
             website and services.
@@ -42,17 +42,16 @@ const Page = () => {
             </p>
             <p>
               We are committed to continuously improving accessibility on
-              FoodieFinder.se and follow recognized guidelines for web
-              accessibility, such as Web Content Accessibility Guidelines (WCAG)
-              2.1 at least level AA. We are working to make our website
-              user-friendly and accessible to everyone, including people with
-              disabilities.
+              Plenti.se and follow recognized guidelines for web accessibility,
+              such as Web Content Accessibility Guidelines (WCAG) 2.1 at least
+              level AA. We are working to make our website user-friendly and
+              accessible to everyone, including people with disabilities.
             </p>
             <p>
               <strong>2. Accessibility features</strong>
             </p>
             <p>
-              FoodieFinder.se contains several functions designed to improve
+              Plenti.se contains several functions designed to improve
               accessibility:
             </p>
             <ul>
@@ -87,10 +86,10 @@ const Page = () => {
               <strong>4. How you can help us improve</strong>
             </p>
             <p>
-              If you encounter any accessibility problems when using
-              FoodieFinder.se, or if you have suggestions on how we can improve
-              accessibility, please contact us. We appreciate your feedback and
-              are constantly working to improve our platform for all users.
+              If you encounter any accessibility problems when using Plenti.se,
+              or if you have suggestions on how we can improve accessibility,
+              please contact us. We appreciate your feedback and are constantly
+              working to improve our platform for all users.
             </p>
             <p>
               <strong>Contact information:</strong>

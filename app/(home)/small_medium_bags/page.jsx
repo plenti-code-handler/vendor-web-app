@@ -12,7 +12,6 @@ const Page = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setActivePage("Small & Large Bag"));
-    console.log("Language from localStorage:", lang);
   }, [dispatch]);
 
   useEffect(() => {
@@ -21,7 +20,7 @@ const Page = () => {
         const storedLang = localStorage.getItem("lang");
         if (storedLang) {
           setCurrLang(storedLang);
-          lang = storedLang;
+         
         }
       };
 
@@ -50,12 +49,12 @@ const Page = () => {
             {`SMALL & LARGE ${currLang === "en" ? "bag" : "pouch"}`}
           </h1>
           <p className="font-semibold text-base text-center w-[100%] md:w-[80%]">
-            At FoodieFinder, we offer both small and large bags with known
-            contents, which gives you as a customer the opportunity to know
-            exactly what you are buying and choose the size that suits your
-            needs. These crates are filled with unsold, but still excellent food
-            from local restaurants, bakeries and shops.<br></br>Small bags
-            contain a smaller number of items, perfect for one person or a small
+            At Plenti, we offer both small and large bags with known contents,
+            which gives you as a customer the opportunity to know exactly what
+            you are buying and choose the size that suits your needs. These
+            crates are filled with unsold, but still excellent food from local
+            restaurants, bakeries and shops.<br></br>Small bags contain a
+            smaller number of items, perfect for one person or a small
             household.<br></br>Large bags are filled with more products and are
             suitable for larger households, families or for those who want to
             make a substantial saving.
@@ -95,7 +94,7 @@ const faqData = [
     }  work for businesses?`,
     answer: `Businesses can sell unsold items by creating ${
       currLang === "en" ? "bags" : "pouches"
-    }  with known contents in the FoodieFinder app. You specify exactly what is in each ${
+    }  with known contents in the Plenti app. You specify exactly what is in each ${
       currLang === "en" ? "bag" : "pouch"
     }, giving customers the opportunity to know what they are getting before they reserve and collect from you.`,
   },
@@ -128,7 +127,7 @@ const faqData = [
     question: `How do I set up ${
       currLang === "en" ? "bags" : "pouches"
     } with known content in the app?`,
-    answer: `Log in to your business account in the FoodieFinder app, create a new ${
+    answer: `Log in to your business account in the Plenti app, create a new ${
       currLang === "en" ? "bag" : "pouch"
     } by specifying the items included, the number of ${
       currLang === "en" ? "bags" : "pouches"
@@ -166,9 +165,9 @@ const faqData = [
 
 const steps = [
   {
-    title: "Connect your business to FoodieFinder",
+    title: "Connect your business to Plenti",
     description:
-      "Start by registering your business on the FoodieFinder platform. Our team is on hand to help you through the entire registration process and set up your account.",
+      "Start by registering your business on the Plenti platform. Our team is on hand to help you through the entire registration process and set up your account.",
   },
   {
     title: "Identify Leftovers",
@@ -193,7 +192,7 @@ const steps = [
     title: `Publish ${currLang === "en" ? "bags" : "pouches"} to the app`,
     description: `Once you've set up the ${
       currLang === "en" ? "bags" : "pouches"
-    }, publish them to the FoodieFinder app so they're visible to customers. Customers will be able to see the description of the content and the price, making it easy for them to make a decision.`,
+    }, publish them to the Plenti app so they're visible to customers. Customers will be able to see the description of the content and the price, making it easy for them to make a decision.`,
   },
   {
     title: `Customers reserve ${currLang === "en" ? "bags" : "pouches"}`,

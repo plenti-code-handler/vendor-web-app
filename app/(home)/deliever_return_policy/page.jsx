@@ -21,10 +21,9 @@ const Page = () => {
             Deliever and Return Policy
           </h1>
           <p className="text-[#474747] font-medium">
-            Welcome to FoodieFinder.se! Below we describe our guidelines for
-            delivery and returns, as well as how cancellations and refunds are
-            handled when you use our service to book meals from restaurants and
-            cafes.
+            Welcome to Plenti.se! Below we describe our guidelines for delivery
+            and returns, as well as how cancellations and refunds are handled
+            when you use our service to book meals from restaurants and cafes.
           </p>
           <div className="flex justify-center items-center mt-4 mb-6  md:mt-8 md:mb-10">
             <div className="w-[100%] h-[1px] bg-gradient-hr-alt" />
@@ -41,21 +40,21 @@ const Page = () => {
               <strong>1. Delivery and collection</strong>
             </p>
             <p>
-              FoodieFinder.se offers a platform where you can book meals that
-              would otherwise go to waste from local restaurants and cafes.
-              Delivery and collection are handled as follows:
+              Plenti.se offers a platform where you can book meals that would
+              otherwise go to waste from local restaurants and cafes. Delivery
+              and collection are handled as follows:
             </p>
             <ul>
               <li>
-                <strong>Collection:</strong> All meals booked via
-                FoodieFinder.se must be collected by you personally at the place
-                and time specified by the restaurant in the booking
-                confirmation. It is your responsibility to ensure that you can
-                collect the meal within the specified time period.
+                <strong>Collection:</strong> All meals booked via Plenti.se must
+                be collected by you personally at the place and time specified
+                by the restaurant in the booking confirmation. It is your
+                responsibility to ensure that you can collect the meal within
+                the specified time period.
               </li>
               <li>
-                <strong>Delivery:</strong> FoodieFinder.se does not currently
-                offer home delivery. All meals must be picked up on site.
+                <strong>Delivery:</strong> Plenti.se does not currently offer
+                home delivery. All meals must be picked up on site.
               </li>
             </ul>
             <p>
@@ -63,16 +62,15 @@ const Page = () => {
             </p>
             <p>
               We understand that plans can change, but since the meals booked
-              via FoodieFinder.se are often fresh products that would otherwise
-              have gone to waste, special cancellation conditions apply:
+              via Plenti.se are often fresh products that would otherwise have
+              gone to waste, special cancellation conditions apply:
             </p>
             <ul>
               <li>
                 <strong>Canceling an order:</strong> You can cancel your order
                 up to two hours before the specified pick-up time directly via
-                your account at FoodieFinder.se. Cancellations made after this
-                time will not be refunded, as the food has already been
-                prepared.
+                your account at Plenti.se. Cancellations made after this time
+                will not be refunded, as the food has already been prepared.
               </li>
               <li>
                 <strong>Changes to order:</strong> Unfortunately, we cannot
@@ -94,7 +92,7 @@ const Page = () => {
               <li>
                 <strong>Incorrect orders:</strong> If there are problems with
                 your order, such as incorrect goods or serious quality problems,
-                please contact both the restaurant and FoodieFinder.se customer
+                please contact both the restaurant and Plenti.se customer
                 service immediately. We will work to resolve the issue and, if
                 possible, offer a refund or compensation.
               </li>
@@ -109,12 +107,12 @@ const Page = () => {
               <strong>4. Quality and content</strong>
             </p>
             <p>
-              Since the meals provided via FoodieFinder.se are surplus food that
-              would otherwise be thrown away, we cannot guarantee the specific
-              content of each meal. Quality and content may vary, and food is
-              supplied "as is". We encourage you to always check ingredients and
-              quality when picking up, especially if you have allergies or
-              specific food preferences.
+              Since the meals provided via Plenti.se are surplus food that would
+              otherwise be thrown away, we cannot guarantee the specific content
+              of each meal. Quality and content may vary, and food is supplied
+              "as is". We encourage you to always check ingredients and quality
+              when picking up, especially if you have allergies or specific food
+              preferences.
             </p>
             <p>
               <strong>5. Contact for questions or problems</strong>
@@ -125,13 +123,11 @@ const Page = () => {
               to contact us:
             </p>
             <p>
-              Email:{" "}
-              <a href="kontakt@foodiefinder.se">kontakt@foodiefinder.se</a>
+              Email: <a href="kontakt@foodiefiner.se">kontakt@foodiefiner.se</a>
             </p>
             <p>
-              We always strive to give you a positive experience at
-              FoodieFinder.se and are here to help you with any questions or
-              problems.
+              We always strive to give you a positive experience at Plenti.se
+              and are here to help you with any questions or problems.
             </p>
           </div>
         </div>

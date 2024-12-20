@@ -21,11 +21,11 @@ const Page = () => {
             Security Policy
           </h1>
           <p className="text-[#474747] font-medium">
-            At FoodieFinder.se, we take your security and privacy very
-            seriously. We are committed to protecting your personal information
-            and ensuring that your user experience is secure. This security
-            policy describes the measures we take to protect information and how
-            we handle security issues on our platform.
+            At Plenti.se, we take your security and privacy very seriously. We
+            are committed to protecting your personal information and ensuring
+            that your user experience is secure. This security policy describes
+            the measures we take to protect information and how we handle
+            security issues on our platform.
           </p>
           <div className="flex justify-center items-center mt-4 mb-6  md:mt-8 md:mb-10">
             <div className="w-[100%] h-[1px] bg-gradient-hr-alt" />
@@ -42,7 +42,7 @@ const Page = () => {
               <strong>1. Purpose and scope</strong>
             </p>
             <p>
-              This security policy applies to all users of FoodieFinder.se and
+              This security policy applies to all users of Plenti.se and
               describes the security measures we have implemented to protect
               personal data, payment information and other sensitive data
               collected through our platform.
@@ -79,10 +79,10 @@ const Page = () => {
             </p>
             <p>
               For payments, we use trusted third-party providers certified to
-              industry standards (eg PCI DSS) for payment security.
-              FoodieFinder.se does not store your payment information; all
-              payment processing is handled directly by our payment partners,
-              which further ensures that your payment details are protected.
+              industry standards (eg PCI DSS) for payment security. Plenti.se
+              does not store your payment information; all payment processing is
+              handled directly by our payment partners, which further ensures
+              that your payment details are protected.
             </p>
             <p>
               <strong>4. User Responsibilities</strong>
@@ -158,9 +158,9 @@ const Page = () => {
               </a>
             </p>
             <p>
-              We at FoodieFinder.se are here to ensure that your user experience
-              is as secure as possible and that your personal data is protected
-              in the best possible way.
+              We at Plenti.se are here to ensure that your user experience is as
+              secure as possible and that your personal data is protected in the
+              best possible way.
             </p>
           </div>
         </div>

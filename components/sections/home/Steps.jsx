@@ -7,17 +7,17 @@ const steps = [
   {
     title: "Download and Register:",
     description:
-      "Start by downloading the FoodieFinder app from the App Store or Google Play. Create an account by registering with your email address or via social media.",
+      "Start by downloading the Plenti app from the App Store or Google Play. Create an account by registering with your email address or via social media.",
   },
   {
     title: " Customize your preferences:",
     description:
-      "Enter your preferences and needs, such as dietary restrictions (eg vegetarian, vegan, gluten-free) and your favorite types of food. You can also set a desired price range and the areas you want to search in. FoodieFinder is the first to offer this possibility, so you can easily find offers that suit you.",
+      "Enter your preferences and needs, such as dietary restrictions (eg vegetarian, vegan, gluten-free) and your favorite types of food. You can also set a desired price range and the areas you want to search in. Plenti is the first to offer this possibility, so you can easily find offers that suit you.",
   },
   {
     title: " Explore offers near you:",
     description:
-      "Browse restaurants, cafes and shops connected to FoodieFinder. Here you can find both surprise bags and bags in different sizes with known contents. FoodieFinder is the first to offer this unique variety of bags, giving you the freedom to choose between exciting surprises and specific meals. You can therefore adapt your experience exactly as you want it, depending on what suits you best at the moment.",
+      "Browse restaurants, cafes and shops connected to Plenti. Here you can find both surprise bags and bags in different sizes with known contents. Plenti is the first to offer this unique variety of bags, giving you the freedom to choose between exciting surprises and specific meals. You can therefore adapt your experience exactly as you want it, depending on what suits you best at the moment.",
   },
   {
     title: "Reserve your meals:",
@@ -87,7 +87,7 @@ export default function FoodieFinderCarousel() {
     <div className="flex bg-[#191919] flex-col md:flex-row items-center w-full gap-12 md:gap-16 pl-[5%] pr-[5%] py-[10%] md:pt-[4%] md:pb-[4%]">
       <div className="w-full md:w-1/2 flex flex-col justify-center gap-4 md:gap-6">
         <h2 className="text-main text-xl font-bold">
-          Here's how FoodieFinder works - step by step:
+          Here's how Plenti works - step by step:
         </h2>
 
         <div className="w-full md:w-4/5">

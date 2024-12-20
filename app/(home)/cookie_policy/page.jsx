@@ -21,7 +21,7 @@ const Page = () => {
             Cookie Policy
           </h1>
           <p className="text-[#474747] font-medium">
-            At FoodieFinder.se we use cookies and similar technologies to
+            At Plenti.se we use cookies and similar technologies to
             improve your experience on our website. This policy explains what
             cookies are, how we use them, and what choices you have regarding
             cookies on our website.
@@ -49,7 +49,7 @@ const Page = () => {
               <strong>2. How we use cookies</strong>
             </p>
             <p>
-              We use cookies on FoodieFinder.se for various purposes, including:
+              We use cookies on Plenti.se for various purposes, including:
             </p>
             <ul>
               <li>
@@ -80,7 +80,7 @@ const Page = () => {
             <p>
               We may also allow third-party services such as social media or
               advertising networks to place cookies on your device when you
-              visit FoodieFinder.se. These cookies are controlled by the
+              visit Plenti.se. These cookies are controlled by the
               respective third-party providers and are often used to track your
               activities across different websites.
             </p>

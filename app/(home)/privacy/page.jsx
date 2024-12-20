@@ -21,10 +21,10 @@ const Page = () => {
             Privacy Policy
           </h1>
           <p className="text-[#474747] font-medium">
-            Welcome to FoodieFinder.se! Your privacy is important to us, and we
-            are committed to safeguarding your personal information. This
-            Privacy Policy explains what information we collect, how we use it,
-            and your rights regarding your data.
+            Welcome to Plenti.se! Your privacy is important to us, and we are
+            committed to safeguarding your personal information. This Privacy
+            Policy explains what information we collect, how we use it, and your
+            rights regarding your data.
           </p>
           <div className="flex justify-center items-center mt-4 mb-6  md:mt-8 md:mb-10">
             <div className="w-[100%] h-[1px] bg-gradient-hr-alt" />
@@ -41,8 +41,8 @@ const Page = () => {
               <strong>1. Information We Collect</strong>
             </p>
             <p>
-              When you use FoodieFinder.se, we collect certain types of
-              information to enhance our services and improve your experience:
+              When you use Plenti.se, we collect certain types of information to
+              enhance our services and improve your experience:
             </p>
             <ul>
               <li>
@@ -124,7 +124,7 @@ const Page = () => {
               </li>
               <li>
                 <strong>Business Transitions</strong>: In the event of a merger,
-                acquisition, restructuring, or sale of FoodieFinder.se, your
+                acquisition, restructuring, or sale of Plenti.se, your
                 information may be transferred to the new owner with appropriate
                 confidentiality measures.
               </li>

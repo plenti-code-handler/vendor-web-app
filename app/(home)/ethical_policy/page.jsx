@@ -21,8 +21,8 @@ const Page = () => {
             Ethical Policy
           </h1>
           <p className="text-[#474747] font-medium">
-            At FoodieFinder.se, we are committed to conducting our business in
-            an ethical, responsible and sustainable manner. Our ethics policy
+            At Plenti.se, we are committed to conducting our business in an
+            ethical, responsible and sustainable manner. Our ethics policy
             describes our commitments and principles that guide our work,
             including how we interact with users, partners and society at large.
           </p>
@@ -41,9 +41,9 @@ const Page = () => {
               <strong>1. Our commitment to sustainability</strong>
             </p>
             <p>
-              Our main goal at FoodieFinder.se is to reduce food waste by
-              connecting users with restaurants that offer surplus food. We
-              strive to make a positive impact on the environment by:
+              Our main goal at Plenti.se is to reduce food waste by connecting
+              users with restaurants that offer surplus food. We strive to make
+              a positive impact on the environment by:
             </p>
             <ul>
               <li>
@@ -94,7 +94,7 @@ const Page = () => {
             <p>
               <strong>4. Social responsibility</strong>
             </p>
-            <p>FoodieFinder.se strives to contribute to society by:</p>
+            <p>Plenti.se strives to contribute to society by:</p>
             <ul>
               <li>
                 <strong>Supporting the local community:</strong> We work with

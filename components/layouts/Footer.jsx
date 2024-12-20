@@ -47,7 +47,7 @@ const Footer = () => {
         <div className="mx-auto flex flex-col gap-3">
           <div className="flex flex-col gap-5 items-center">
             <h1 className="text-[2.188em] text-center uppercase lg:text-left text-white font-extrabold">
-              Download FoodieFinder Today!
+              Download Plenti Today!
             </h1>
             <p className="text-[#fff] text-center text-base font-medium md:w-[547px]">
               FoodeFinder is free to download and free to use! Are you ready to
@@ -295,7 +295,7 @@ const Footer = () => {
         </div>
         <hr className="pb-6" />
         <p className="text-[#F0F0F0] text-[0.875em] text-[400]">
-          FoodieFinder @2024 - Part of BuildLoop Sverige AB 559475-7170
+          Plenti @2024 - Part of BuildLoop Sverige AB 559475-7170
         </p>
       </div>
     </div>

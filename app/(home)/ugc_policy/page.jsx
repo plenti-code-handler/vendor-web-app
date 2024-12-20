@@ -21,10 +21,10 @@ const Page = () => {
             User Generated Content Policy
           </h1>
           <p className="text-[#474747] font-medium">
-            FoodieFinder.se strives to create a community where users can share
-            their experiences and give feedback on meals and restaurants. This
-            User Generated Content Policy describes the rules and guidelines
-            that apply to all content that you as a user share on our platform,
+            Plenti.se strives to create a community where users can share their
+            experiences and give feedback on meals and restaurants. This User
+            Generated Content Policy describes the rules and guidelines that
+            apply to all content that you as a user share on our platform,
             including reviews, comments, images and other contributions.
           </p>
           <div className="flex justify-center items-center mt-4 mb-6  md:mt-8 md:mb-10">
@@ -43,23 +43,22 @@ const Page = () => {
             </p>
             <p>
               User-generated content is all material created and shared by users
-              on FoodieFinder.se. This may include meal reviews, comments,
-              ratings, photos, videos or other feedback related to restaurants
-              and experiences via our platform.
+              on Plenti.se. This may include meal reviews, comments, ratings,
+              photos, videos or other feedback related to restaurants and
+              experiences via our platform.
             </p>
             <p>
               <strong>2. User Generated Content Guidelines</strong>
             </p>
             <p>
               To ensure a positive and respectful community, we ask that you
-              follow these guidelines when contributing content to
-              FoodieFinder.se:
+              follow these guidelines when contributing content to Plenti.se:
             </p>
             <ul>
               <li>
                 <strong>Relevant and factual information:</strong> Only share
-                content that is relevant to your experiences with
-                FoodieFinder.se and that can be helpful to other users.
+                content that is relevant to your experiences with Plenti.se and
+                that can be helpful to other users.
               </li>
               <li>
                 <strong>Respectful and friendly conduct:</strong> Use respectful
@@ -85,28 +84,28 @@ const Page = () => {
               <strong>3. Rights and Licenses</strong>
             </p>
             <p>
-              By sharing content on FoodieFinder.se, you grant us a
-              non-exclusive, worldwide, royalty-free and transferable license to
-              use, copy, modify, publish and distribute your content on our
-              platform and in marketing materials. This means that we can use
-              your content to promote our service, but you still retain the
-              copyright to your content.
+              By sharing content on Plenti.se, you grant us a non-exclusive,
+              worldwide, royalty-free and transferable license to use, copy,
+              modify, publish and distribute your content on our platform and in
+              marketing materials. This means that we can use your content to
+              promote our service, but you still retain the copyright to your
+              content.
             </p>
             <p>
               <strong>4. Responsibility for content</strong>
             </p>
             <p>
               As a user, you are fully responsible for all content that you
-              share on FoodieFinder.se. This means that you must ensure that you
-              have the necessary rights or permission to publish the content and
-              that it does not infringe anyone else's rights, including
-              copyright, trademark or privacy rights.
+              share on Plenti.se. This means that you must ensure that you have
+              the necessary rights or permission to publish the content and that
+              it does not infringe anyone else's rights, including copyright,
+              trademark or privacy rights.
             </p>
             <p>
               <strong>5. Review and Removal of Content</strong>
             </p>
             <p>
-              FoodieFinder.se reserves the right to review, moderate and remove
+              Plenti.se reserves the right to review, moderate and remove
               user-generated content that we believe violates this policy or is
               inappropriate for our platform. This may be done without notice,
               and we are not required to provide reasons why content is removed.
@@ -143,8 +142,8 @@ const Page = () => {
               </a>
             </p>
             <p>
-              We appreciate your contribution to FoodieFinder.se and look
-              forward to creating a positive experience for all users!
+              We appreciate your contribution to Plenti.se and look forward to
+              creating a positive experience for all users!
             </p>
           </div>
         </div>

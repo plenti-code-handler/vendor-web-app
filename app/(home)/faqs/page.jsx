@@ -95,12 +95,12 @@ export default Page;
 
 const faqData = [
   {
-    question: `What is FoodieFinder?`,
+    question: `What is Plenti?`,
     answer:
-      "FoodieFinder is a platform that helps you save food from being thrown away. Through our app, you can buy unsold goods from local shops, restaurants, bakeries and hotels at discounted prices, while helping to reduce food waste.",
+      "Plenti is a platform that helps you save food from being thrown away. Through our app, you can buy unsold goods from local shops, restaurants, bakeries and hotels at discounted prices, while helping to reduce food waste.",
   },
   {
-    question: "How does FoodieFinder work?",
+    question: "How does Plenti work?",
     answer:
       "Download the app, create an account and start exploring available groceries near you. You reserve cash registers directly in the app and pick them up at a specified time from the store, restaurant or hotel in question.",
   },
@@ -118,12 +118,12 @@ const faqData = [
   {
     question: "What sizes are available on bags with known contents?",
     answer:
-      "FoodieFinder offers both Small and Large bags with known contents: \n- Small Kasse: Perfect for smaller households or individual meals, contains a smaller number of items with a short date, but at a significantly reduced price. \n- Large Kasse: Ideal for larger households or more meals, contains a larger selection of goods, giving more food for the money.",
+      "Plenti offers both Small and Large bags with known contents: \n- Small Kasse: Perfect for smaller households or individual meals, contains a smaller number of items with a short date, but at a significantly reduced price. \n- Large Kasse: Ideal for larger households or more meals, contains a larger selection of goods, giving more food for the money.",
   },
   {
-    question: "What types of businesses are included in FoodieFinder?",
+    question: "What types of businesses are included in Plenti?",
     answer:
-      "In addition to local shops and restaurants, hotels, cafes and other eateries are also part of the FoodieFinder network. The range varies depending on where you are, but the platform is open to all eateries that want to reduce their food waste.",
+      "In addition to local shops and restaurants, hotels, cafes and other eateries are also part of the Plenti network. The range varies depending on where you are, but the platform is open to all eateries that want to reduce their food waste.",
   },
   {
     question: "How do I know when and where to pick up my box?",
@@ -153,28 +153,28 @@ const faqData = [
       "If you are unhappy with the contents of your box, contact our support via the app and we will help you resolve the issue.",
   },
   {
-    question: "How can I as a business join FoodieFinder?",
+    question: "How can I as a business join Plenti?",
     answer:
-      "Businesses, including hotels, retail stores, and restaurants, can easily connect to FoodieFinder to reduce food waste and increase their revenue from unsold goods. Contact us via our website and we will help you get started.",
+      "Businesses, including hotels, retail stores, and restaurants, can easily connect to Plenti to reduce food waste and increase their revenue from unsold goods. Contact us via our website and we will help you get started.",
   },
   {
-    question: "Why should I use FoodieFinder?",
+    question: "Why should I use Plenti?",
     answer:
-      "FoodieFinder helps you save food and save money, while helping to reduce food waste and thus reduce your climate footprint.",
+      "Plenti helps you save food and save money, while helping to reduce food waste and thus reduce your climate footprint.",
   },
   {
-    question: "Is it safe to buy food via FoodieFinder?",
+    question: "Is it safe to buy food via Plenti?",
     answer:
       "All our partners follow strict rules for food safety. The food is still fully edible, even if it is approaching its best before date.",
   },
   {
-    question: "How does FoodieFinder affect the environment?",
+    question: "How does Plenti affect the environment?",
     answer:
       "By reducing food waste, we save resources that would otherwise be wasted. Every time you save a box of food, you help reduce carbon dioxide emissions and save energy that would otherwise be used for production and waste management.",
   },
   {
     question: "Where can I download the app?",
     answer:
-      "The FoodieFinder app is available to download for both iOS and Android via the App Store and Google Play.",
+      "The Plenti app is available to download for both iOS and Android via the App Store and Google Play.",
   },
 ];

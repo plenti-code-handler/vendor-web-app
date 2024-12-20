@@ -16,15 +16,17 @@ const Page = () => {
       <div className="flex flex-col items-center gap-10 p-[5%] lg:px-[2%] lg:pt-[3%] lg:pb-[5%]">
         <div className="flex flex-col gap-4 items-center">
           <h1 className="text-center font-extrabold text-xl md:text-[2.75em] uppercase">
-            <span className="block">FOODIEFINDER</span>
-            <span className="block mt-5">A COMPLETE SOLUTION FOR FOOD WASTE</span>
+            <span className="block">Plenti</span>
+            <span className="block mt-5">
+              A COMPLETE SOLUTION FOR FOOD WASTE
+            </span>
           </h1>
 
           <p className="font-semibold text-base text-center w-[100%] md:w-[80%]">
-            The FoodieFinder platform helps stores optimize their revenue by
-            managing goods with a short shelf life. Our platform tracks and
-            redistributes food approaching its best-before date, making it
-            possible to sell surplus food instead of throwing it away.
+            The Plenti platform helps stores optimize their revenue by managing
+            goods with a short shelf life. Our platform tracks and redistributes
+            food approaching its best-before date, making it possible to sell
+            surplus food instead of throwing it away.
           </p>
           <div className="flex items-center gap-5">
             <Link
@@ -84,10 +86,10 @@ const Page = () => {
                 </p>
               </div>
               <p className="text-center">
-                With the FoodieFinder platform, date checks of goods in the
-                store become easier and more efficient. Only 3-7% of goods need
-                to be checked daily, and the system provides clear reports to
-                help you stay on track.
+                With the Plenti platform, date checks of goods in the store
+                become easier and more efficient. Only 3-7% of goods need to be
+                checked daily, and the system provides clear reports to help you
+                stay on track.
               </p>
             </div>
             <div className="w-full md:w-1/3 flex flex-col items-center  border-2 rounded-2xl p-6 gap-4">
@@ -113,7 +115,7 @@ const Page = () => {
                 </p>
               </div>
               <p className="text-center">
-                The FoodieFinder platform provides store employees with concrete
+                The Plenti platform provides store employees with concrete
                 recommendations on how best to handle items with short
                 expiration dates. This could mean printing a discount label with
                 an optimized discount, creating a bag with known contents or a
@@ -186,9 +188,8 @@ const Page = () => {
               </div>
               <p className="text-center">
                 Right from their PDA, store associates can easily create
-                surprise bags of surplus food and upload them to the
-                FoodieFinder marketplace, where local users can reserve and pick
-                them up.
+                surprise bags of surplus food and upload them to the Plenti
+                marketplace, where local users can reserve and pick them up.
               </p>
             </div>
             <div className="w-full md:w-1/3 flex flex-col items-center  border-2 rounded-2xl p-6 gap-4">
@@ -226,9 +227,9 @@ const Page = () => {
                 </p>
               </div>
               <p className="text-center">
-                With the FoodieFinder platform, store managers can download
-                ready-made CSV files with lists of donated products or integrate
-                via API with third-party donation systems or ERP.
+                With the Plenti platform, store managers can download ready-made
+                CSV files with lists of donated products or integrate via API
+                with third-party donation systems or ERP.
               </p>
             </div>
             <div className="w-full md:w-1/3 flex flex-col items-center  border-2 rounded-2xl p-6 gap-4">

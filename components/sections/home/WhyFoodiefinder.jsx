@@ -135,10 +135,10 @@ export const WhyFoodiefinder = () => {
           ref={headingRef}
           className="  text-[2.5em] font-extrabold text-center text-black"
         >
-          Why Choose FoodieFinder?
+          Why Choose Plenti?
         </h2>
         <p ref={paragraphRef} className="w-[80%] text-center text-base">
-          Choose FoodieFinder to take control of your food choices, support
+          Choose Plenti to take control of your food choices, support
           sustainability, and join a movement that makes a difference – for you,
           for businesses and for the planet.
         </p>
@@ -155,7 +155,7 @@ export const WhyFoodiefinder = () => {
             {icon1}
             <p className="text-center md:text-end text-base">
               <strong>Reduce food waste and make a difference:</strong> With
-              FoodieFinder, you contribute directly to reducing food waste,
+              Plenti, you contribute directly to reducing food waste,
               which is crucial for a sustainable future.
             </p>
           </div>
@@ -166,7 +166,7 @@ export const WhyFoodiefinder = () => {
             {icon2}
             <p className="text-base text-center md:text-end">
               <strong>Sustainable choices for everyone: </strong>
-              FoodieFinder makes it easy for both consumers and businesses to
+              Plenti makes it easy for both consumers and businesses to
               make sustainable decisions.
             </p>
           </div>
@@ -195,7 +195,7 @@ export const WhyFoodiefinder = () => {
           >
             {icon4}
             <p className=" text-base text-center md:text-start">
-              <strong>Support local businesses: </strong> Through FoodieFinder
+              <strong>Support local businesses: </strong> Through Plenti
               you support local restaurants, cafes and shops that also work to
               reduce food waste.
             </p>
@@ -207,7 +207,7 @@ export const WhyFoodiefinder = () => {
             {icon5}
             <p className=" text-base text-center md:text-start">
               <strong>Customize to your needs:</strong>
-              FoodieFinder is the first to offer the ability to customize your
+              Plenti is the first to offer the ability to customize your
               searches to your specific needs and preferences.
             </p>
           </div>
@@ -218,7 +218,7 @@ export const WhyFoodiefinder = () => {
             {icon6}
             <p className=" text-base text-center md:text-start">
               <strong> Part of a larger movement: </strong> By using
-              FoodieFinder, you become part of a global movement that actively
+              Plenti, you become part of a global movement that actively
               works against food waste.
             </p>
           </div>
