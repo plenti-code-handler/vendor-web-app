@@ -34,6 +34,8 @@ const Header = () => {
     "/accessibility_policy",
     "/ethical_policy",
   ];
+
+  
   const authRoutes = [
     "/awaiting",
     "/forget_password",

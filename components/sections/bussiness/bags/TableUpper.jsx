@@ -7,13 +7,10 @@ import { setActivePage } from "../../../../redux/slices/headerSlice";
 
 const TableUpper = ({ selectedFilter, onFilterChange, setSearchTerm }) => {
   const dispatch = useDispatch();
-  
 
-  
   useEffect(() => {
-    dispatch(setActivePage("Manage Pouches"));
+    dispatch(setActivePage("Manage Bags"));
   }, [dispatch]);
-
 
   return (
     <div className="flex flex-col sm:flex-row sm:justify-between items-center mb-4 px-2 sm:px-4">
@@ -25,10 +22,7 @@ const TableUpper = ({ selectedFilter, onFilterChange, setSearchTerm }) => {
           selectedFilter={selectedFilter}
           onFilterChange={onFilterChange}
         />
-        <SearchField
-          setSearchTerm={setSearchTerm}
-          placeholder={`Search Bag`}
-        />
+        <SearchField setSearchTerm={setSearchTerm} placeholder={`Search Bag`} />
       </div>
     </div>
   );

@@ -24,7 +24,7 @@ const decidePath = (pathname) => {
     case "business":
       return "My Dashboard";
     case "manage-bags":
-      return "Manage Pouches";
+      return "Manage Bags";
     case "bookings":
       return "Bookings";
     case "more":
@@ -51,7 +51,6 @@ const Breadcrumb = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const [pendingUsersCount, setPendingUsersCount] = useState(0);
-  
 
   const handleOpenDrawer = useCallback(() => {
     dispatch(setOpenDrawer(true));
@@ -60,8 +59,6 @@ const Breadcrumb = () => {
   const handleBackClick = useCallback(() => {
     router.replace("/admin/users");
   }, [router]);
-
-
 
   useEffect(() => {
     const fetchPendingUsersCount = async () => {
@@ -88,14 +85,17 @@ const Breadcrumb = () => {
 
   const currentPath = useMemo(() => decidePath(pathname), [pathname]);
 
-
+  useEffect(() => {
+    console.log("Cuurent pat now");
+    console.log(currentPath);
+  }, [currentPath]);
 
   const MoreOptionsContent = () => (
     <div className="flex flex-col items-center">
       <img
         alt="Plenti Logo"
-        src={"/logo_more.png"}
-        className="w-[60%] h-[80%] p-5 lg:p-0 lg:h-[25%] lg:w-[25%]"
+        src={"/logo.png"}
+        className="w-[20%] h-[30%] p-5 lg:p-0 lg:h-[25%] lg:w-[25%]"
       />
       <p className="text-lg sm:text-sm md:text-2xl lg:text-xl font-semibold text-graySix">
         {currentPath}
@@ -106,14 +106,14 @@ const Breadcrumb = () => {
   const DefaultContent = () => (
     <div className="flex justify-between items-center lg:mr-auto lg:mt-4 lg:mb-4 lg:py-2 lg:w-[99%]">
       <p className="m-4 text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-one">
-        {currentPath === "Manage Pouches" ? (
+        {currentPath === "Manage Bags" ? (
           <>{`Manage Bags `}</>
         ) : (
           <>{currentPath}</>
         )}
       </p>
 
-      {currentPath === "Manage Pouches" && (
+      {currentPath === "Manage Bags" && (
         <button
           onClick={handleOpenDrawer}
           className="mr-3 mt-2 lg:m-0 flex items-center text-center justify-center bg-blueBgDark text-white font-semibold py-2 px-4 rounded-[6px] hover:bg-blueBgDarkHover2"

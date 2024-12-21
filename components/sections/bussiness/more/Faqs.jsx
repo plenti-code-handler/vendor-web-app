@@ -36,10 +36,10 @@ const Faqs = () => {
             <div className="policies flex flex-col gap-6  lg:w-[60%]">
               <p>Last updated: 05 November 2024</p>
               <p>
-                <strong>1. About FoodieFinder.se</strong>
+                <strong>1. About Plenti.se</strong>
               </p>
               <p>
-                FoodieFinder.se offers a platform where users can find and book
+                Plenti.se offers a platform where users can find and book
                 meals from restaurants and cafes that want to reduce food waste.
                 Our service acts as an intermediary between users and
                 restaurants and aims to facilitate the discovery of food options
@@ -49,7 +49,7 @@ const Faqs = () => {
                 <strong>2. User Account</strong>
               </p>
               <p>
-                To use certain functions on FoodieFinder.se, you may need to
+                To use certain functions on Plenti.se, you may need to
                 create a user account. You are responsible for keeping your
                 login details secure and for all activity that occurs under your
                 account. Please notify us immediately if you suspect that your
@@ -58,7 +58,7 @@ const Faqs = () => {
               <p>
                 <strong>3. Your Commitments</strong>
               </p>
-              <p>When you use FoodieFinder.se, you undertake to:</p>
+              <p>When you use Plenti.se, you undertake to:</p>
               <ul>
                 <li>
                   Enter correct and complete details when registering or making
@@ -77,7 +77,7 @@ const Faqs = () => {
                 <strong>4. Availability of the services</strong>
               </p>
               <p>
-                We strive to keep FoodieFinder.se available and functioning, but
+                We strive to keep Plenti.se available and functioning, but
                 we cannot guarantee that the service will always be free of
                 interruptions or errors. We reserve the right to change, limit
                 or terminate access to all or part of the Service at any time.
@@ -86,7 +86,7 @@ const Faqs = () => {
                 <strong>5. Bookings and payments</strong>
               </p>
               <p>
-                When you make a reservation via FoodieFinder.se, you enter into
+                When you make a reservation via Plenti.se, you enter into
                 an agreement directly with the selected restaurant. We only act
                 as an intermediary and are not responsible for the restaurant's
                 fulfillment of the reservation. All payments are made directly
@@ -97,7 +97,7 @@ const Faqs = () => {
                 <strong>6. Right of withdrawal and cancellations</strong>
               </p>
               <p>
-                As FoodieFinder.se mediates bookings of fresh products, no right
+                As Plenti.se mediates bookings of fresh products, no right
                 of withdrawal applies according to the Distance Contracts Act.
                 Cancellations must be made according to the specific conditions
                 set by the restaurant. We recommend that you check these terms
@@ -107,7 +107,7 @@ const Faqs = () => {
                 <strong>7. Limitation of Liability</strong>
               </p>
               <p>
-                FoodieFinder.se is not responsible for damages or losses that
+                Plenti.se is not responsible for damages or losses that
                 may occur in connection with the use of our service, unless
                 these are due to our willful negligence or criminality. This
                 includes, but is not limited to, any quality deficiencies in
@@ -117,9 +117,9 @@ const Faqs = () => {
                 <strong>8. Intellectual Property Rights</strong>
               </p>
               <p>
-                All content on FoodieFinder.se, including texts, graphics, logos
+                All content on Plenti.se, including texts, graphics, logos
                 and other design, is protected by copyright and belongs to
-                FoodieFinder.se or our licensors. You may not copy, distribute
+                Plenti.se or our licensors. You may not copy, distribute
                 or otherwise use our content without our express permission.
               </p>
               <p>
@@ -152,7 +152,7 @@ const Faqs = () => {
                 <strong>1. What information we collect</strong>
               </p>
               <p>
-                When you use FoodieFinder.se, we can collect the following types
+                When you use Plenti.se, we can collect the following types
                 of information:
               </p>
               <ul>
@@ -268,8 +268,8 @@ const Faqs = () => {
               </p>
               <p>
                 Email:{" "}
-                <a href="mailto:kontakt@foodiefinder.se">
-                  kontakt@foodiefinder.se
+                <a href="mailto:kontakt@Plenti.se">
+                  kontakt@Plenti.se
                 </a>
               </p>
             </div>
