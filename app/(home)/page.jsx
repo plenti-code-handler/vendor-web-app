@@ -1,61 +1,22 @@
 "use client";
+import React from "react";
+import LoginForm from "../../components/sections/auth/LoginForm";
+import HeaderStyle from "../../components/sections/auth/HeaderStyle";
+import AuthLeftContent from "../../components/layouts/AuthLeftContent";
 
-import React, { useEffect } from "react";
-import ContactSection from "../../components/sections/home/ContactSection";
-
-import { setActivePage } from "../../redux/slices/headerSlice";
-import { useDispatch } from "react-redux";
-import WhyFoodiefinder from "../../components/sections/home/WhyFoodiefinder";
-import Steps from "../../components/sections/home/Steps";
-
-import Image_text from "../../components/sections/home/Image_text";
-import Banner from "../../components/sections/home/Banner";
-
-const Page = () => {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(setActivePage("Home"));
-  }, [dispatch]);
-
+const page = () => {
   return (
-    <div className="text-[75%] md:text[90%] lg:text-[100%] bg-[#F5F5F5]">
-      <Banner />
+    <div className="flex flex-col lg:flex-row pt-5 pb-5 justify-between px-10">
+      <AuthLeftContent />
 
-      <Image_text
-        heading={"Register now!"}
-        paragraph={
-          "Download the Plenti app and become part of the solution to foodwaste, whether you are a consumer or a business! For consumers, the app means access to fantastic offers on food that would otherwise be thrown away - simple, sustainable and good for the wallet. Browse restaurants and stores near you, reserve what you want, and pick up your finds. <br><br> For companies, Plenti is an opportunity to sell surplus food, reach new customers and at the same time contribute to a more sustainable world. Reduce your waste costs and make a difference by connecting to our platform. Together we create positive changes for both people and the planet. Download the Plenti app today and start saving food!"
-        }
-        image={"/home-forth-section.webp "}
-        classname={"md:flex-row p-[5%]"}
-      />
-
-      <Steps />
-
-      <WhyFoodiefinder />
-
-      <ContactSection />
-
-      <Image_text
-        heading={"Our Business Solutions"}
-        paragraph={
-          "We offer a wide range of solutions that help the world's leading food distributors reduce food waste and ensure that good food does not go to waste."
-        }
-        image={"/home-fifth-section-2.webp"}
-        classname={"md:flex-row pt-[5%] pr-[5%] pl-[5%]"}
-      />
-
-      <Image_text
-        heading={"Restaurant Panel"}
-        paragraph={
-          "Easily manage your meal offerings, track orders, and connect with customers. Our intuitive admin panel streamlines operations and helps your restaurant thrive."
-        }
-        image={"/home-fifth-section-4.webp "}
-        classname={"md:flex-row-reverse p-[5%]"}
-      />
+      <div className="flex flex-col w-full  lg:w-[40%] bg-white lg:h-[95vh] max-h-[800px] rounded-[24px] items-center justify-center lg:justify-between shadow-lg overflow-hidden">
+        <HeaderStyle />
+        <div className="flex justify-center w-full items-center flex-1 px-6 pb-16  md:pb-28 lg:p-6">
+          <LoginForm />
+        </div>
+      </div>
     </div>
   );
 };
 
-export default Page;
+export default page;

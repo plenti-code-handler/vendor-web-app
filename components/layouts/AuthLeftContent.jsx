@@ -2,7 +2,7 @@ import React from "react";
 
 const AuthLeftContent = () => {
   return (
-    <div className="flex flex-col lg:w-[45%] items-center text-center mb-[5%] lg:mb-[0%]">
+    <div className="flex flex-col lg:w-[45%] items-center text-center mb-[5%] lg:mb-[0%] justify-center w-full lg:h-screen">
       <a href="/">
         <img
           alt="Plenti Logo"

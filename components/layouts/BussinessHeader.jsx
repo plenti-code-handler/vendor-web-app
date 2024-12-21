@@ -84,13 +84,13 @@ const BussinessHeader = () => {
     <>
       <header className="bg-main xl:px-[6%] justify-around ">
         <div className="mx-auto flex p-2 items-center justify-between py-5">
-          <a href="/">
+          <div>
             <img
               alt="Plenti Logo"
               src={"/logo.png"}
-              className="max-w-[180px] md:max-w-[240px]"
+              className="max-w-[10px] max-w-[140px]"
             />
-          </a>
+          </div>
           <div className="flex lg:hidden gap-3 items-center">
             {/* <ProfileDropdown /> */}
             <button

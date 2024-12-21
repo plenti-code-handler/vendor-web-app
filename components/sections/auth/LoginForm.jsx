@@ -91,10 +91,6 @@ const LoginForm = () => {
             console.log("Geolocation is not supported by this browser");
             setLoading(false); // Set loading to false if geolocation is not supported
           }
-        } else if (user.role === "admin") {
-          toast.success("Admin Logged In Successfully");
-          router.push("/admin");
-          setLoading(false); // Set loading to false after successful admin login
         } else {
           console.error("Unknown role:", user.role);
           setLoading(false); // Set loading to false for unknown role
@@ -109,7 +105,7 @@ const LoginForm = () => {
   return (
     <form
       onSubmit={handleSubmit(handleLogin)}
-      className="flex flex-col w-[390px] space-y-5"
+      className="flex flex-col w-full space-y-5"
     >
       <div className="flex flex-col space-y-3">
         <p className="text-black font-semibold text-[28px]">

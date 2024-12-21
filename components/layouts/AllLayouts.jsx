@@ -40,9 +40,9 @@ export const LandingLayout = ({ children }) => {
   return (
     <>
       {/* {true && <ContactDrawer />} */}
-      <Header />
+      {/* <Header /> */}
       <div>{children}</div>
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 };
