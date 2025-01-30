@@ -1,6 +1,6 @@
 import { Inter } from "next/font/google";
 import "../globals.css";
-import Providers from "../../redux/provider";
+
 import { Toaster } from "sonner";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -16,7 +16,7 @@ export default function AuthLayout({ children }) {
       <body className={inter.className}>
         <Toaster richColors position="top-center" />
 
-        <Providers>{children}</Providers>
+        <>{children}</>
       </body>
     </html>
   );

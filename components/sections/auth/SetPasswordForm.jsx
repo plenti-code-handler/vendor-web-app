@@ -1,17 +1,13 @@
 import React, { useEffect, useState } from "react";
 import AuthPasswordField from "../../fields/AuthPasswordField";
-import { useDispatch, useSelector } from "react-redux";
+// import { useDispatch, useSelector } from "react-redux";
 import { setRegisterPassword } from "../../../redux/slices/registerUserSlice";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 const SetPasswordForm = () => {
-  const email = useSelector((state) => state.registerUser.email);
-
-  useEffect(() => {
-    if (!email) router.push("/register");
-  }, []);
+  // const email = useSelector((state) => state.registerUser.email);
 
   // const [password, setPassword] = useState("");
   // const [confirmPassword, setConfirmPassword] = useState("");
@@ -24,16 +20,10 @@ const SetPasswordForm = () => {
 
   const router = useRouter();
 
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   const handlePassword = (data) => {
-    const { password, confirmPassword } = data;
-    if (password === confirmPassword) {
-      dispatch(setRegisterPassword(password));
-      router.push("/setup_profile");
-    } else {
-      toast.error("Passwords do not match");
-    }
+    router.push("/setup_profile");
   };
 
   return (
@@ -45,7 +35,7 @@ const SetPasswordForm = () => {
         <p className="text-black font-semibold text-[28px]">Set Password</p>
         <p className="text-[#A1A5B7] text-sm font-medium">
           For your account{" "}
-          <span className="font-bold text-blackTwo">{email}</span>
+          <span className="font-bold text-blackTwo">example@gmail.com</span>
         </p>
       </div>
 

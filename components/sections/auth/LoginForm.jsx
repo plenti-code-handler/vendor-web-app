@@ -23,8 +23,17 @@ const LoginForm = () => {
     formState: { errors },
   } = useForm();
 
-  const handleLogin = (data) => {
-    router.push("/business");
+  const handleLogin = async (data, event) => {
+    event?.preventDefault();
+    setLoading(true);
+
+    try {
+      router.push("/business");
+    } catch (error) {
+      toast.error("Login failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -36,12 +45,12 @@ const LoginForm = () => {
         <p className="text-black font-semibold text-[28px]">
           Login to your account
         </p>
-        <p className="text-[#404146] text-sm font-medium">
+        {/* <p className="text-[#404146] text-sm font-medium">
           Want to register your business?{" "}
           <span className="font-bold underline hover:text-black cursor-pointer">
             <Link href={"/register"}>Register</Link>
           </span>
-        </p>
+        </p> */}
       </div>
       <input
         className="placeholder:font-bold rounded-md border border-gray-200 py-3 px-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
@@ -81,7 +90,7 @@ const LoginForm = () => {
       </button>
 
       <Link
-        href={"/forget_password"}
+        href={"/forgetPassword"}
         className="text-[#A1A5B7] text-sm font-medium text-center transition-colors hover:text-gray-500 hover:underline underline-offset-4 cursor-pointer"
       >
         Forget Password

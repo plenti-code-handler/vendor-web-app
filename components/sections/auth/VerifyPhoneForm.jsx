@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import BackButton from "./BackButton";
-import { useDispatch, useSelector } from "react-redux";
+// import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { setConfirmationResult } from "../../../redux/slices/registerUserSlice";
@@ -16,17 +16,13 @@ const VerifyPhoneForm = () => {
   const inputRefs = useRef([]);
   const recaptchaVerifierRef = useRef(null);
 
-  const dispatch = useDispatch();
-  const email = useSelector((state) => state.registerUser.email);
-  const phone = useSelector((state) => state.registerUser.phone);
-  const confirmationResult = useSelector(
-    (state) => state.registerUser.confirmationResult
-  );
+  // const dispatch = useDispatch();
+  // const email = useSelector((state) => state.registerUser.email);
+  // const phone = useSelector((state) => state.registerUser.phone);
+  // const confirmationResult = useSelector(
+  //   (state) => state.registerUser.confirmationResult
+  // );
   const router = useRouter();
-
-  useEffect(() => {
-    if (!email || !confirmationResult) router.push("/register");
-  }, [email, confirmationResult]);
 
   useEffect(() => {
     recaptchaVerifierRef.current = new RecaptchaVerifier(
@@ -68,32 +64,10 @@ const VerifyPhoneForm = () => {
     }
   };
 
-  const handleResend = () => {
-    signInWithPhoneNumber(auth, phone, recaptchaVerifierRef.current)
-      .then((confirmationResult) => {
-        dispatch(setConfirmationResult(confirmationResult));
-        toast.success("OTP sent to your phone!");
-      })
-      .catch((error) => {
-        toast.error("Error sending OTP: " + error.message);
-        console.error("Error during phone number sign-in:", error);
-      });
-  };
+  const handleResend = () => {};
 
   const handleVerify = () => {
-    const otpCode = otp.join("");
-
-    confirmationResult
-      .confirm(otpCode)
-      .then((result) => {
-        // User signed in successfully
-        toast.success("OTP verified successfully");
-        router.push("/setup_password"); // Navigate to setup password
-      })
-      .catch((error) => {
-        toast.error("Invalid OTP");
-        console.error("OTP verification error:", error);
-      });
+    router.push("/setup_password"); // Navigate to setup password
   };
 
   return (
@@ -103,7 +77,7 @@ const VerifyPhoneForm = () => {
         <p className="text-black font-semibold text-[28px]">Verify Phone</p>
         <p className="text-base">
           Code has been sent to{" "}
-          <span className="font-bold text-blackTwo">{phone}</span>
+          <span className="font-bold text-blackTwo">03723828392</span>
           <br />
           Enter the code to verify your account
         </p>

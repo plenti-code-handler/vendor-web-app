@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import BackButton from "./BackButton";
 import { useRouter } from "next/navigation";
-import { useDispatch } from "react-redux";
+// import { useDispatch } from "react-redux";
 import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
 import { whiteLoader } from "../../../svgs";
@@ -28,7 +28,7 @@ const RegisterForm = () => {
   );
   const [phone, setPhone] = useState("");
 
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   const {
     register,
@@ -54,9 +54,9 @@ const RegisterForm = () => {
         }
 
         // If email does not exist, proceed with OTP generation and email sending
-        dispatch(setRegisterEmail(email));
-        dispatch(setRegisterPhone(phone));
-        dispatch(setOtpCode(generatedOtp));
+        // dispatch(setRegisterEmail(email));
+        // dispatch(setRegisterPhone(phone));
+        // dispatch(setOtpCode(generatedOtp));
 
         await emailjs.send(
           process.env.NEXT_PUBLIC_EMAILJS_SERVICE_KEY,
