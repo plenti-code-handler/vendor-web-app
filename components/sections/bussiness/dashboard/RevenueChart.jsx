@@ -8,6 +8,7 @@ import {
   Timestamp,
 } from "firebase/firestore";
 import { auth, db } from "../../../../app/firebase/config";
+import Tabs from "../../../../components/Tabs/Tabs";
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
@@ -189,12 +190,28 @@ const RevenueChart = () => {
     return () => unsubscribe();
   };
 
+  const handleTabChange = (tab) => {
+    console.log("Inside handle tab change");
+    console.log(tab);
+  };
+
+  const tabs = [
+    { name: "Daily", component: null },
+    { name: "Weekly", component: null },
+    { name: "Monthly", component: null },
+    { name: "All", component: null },
+  ];
+
   return (
     <div className="flex h-full flex-col justify-between py-2.5 border border-gray-300 rounded-2xl lg:w-full">
       <div className="flex flex-col mt-4 ml-8">
         <h1 className="text-lg font-semibold leading-[28px] text-black">
           Total Revenue
         </h1>
+        <div className="w-full  flex justify-end px-5">
+          <Tabs tabs={tabs} onChange={handleTabChange} />
+        </div>
+
         <h1 className="text-[40px] leading-[28px] text-mainLight font-bold my-4">
           <sup className="text-2xl text-mainLight font-semibold">
             {countryCode ? countryCode : "SEK"}

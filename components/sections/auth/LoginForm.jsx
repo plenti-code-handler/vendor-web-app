@@ -15,7 +15,7 @@ const LoginForm = () => {
   const router = useRouter();
   const { isLoading, error } = useSelector((state) => state.loggedInUser);
 
-  const [loading, setLoading] = useState(false); // Initialize loading state to false
+  const [loading, setLoading] = useState(false);
 
   const {
     register,
@@ -24,82 +24,7 @@ const LoginForm = () => {
   } = useForm();
 
   const handleLogin = (data) => {
-    setLoading(true); // Set loading to true when login starts
-    const { email, password } = data;
-
-    dispatch(loginUser({ email, password }))
-      .unwrap()
-      .then((user) => {
-        if (user == null) {
-          setLoading(false); // Set loading to false after failed login
-          return;
-        }
-
-        if (user.role === "vendor") {
-          if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-              (position) => {
-                console.log("Geolocation successful:", position);
-                localStorage.setItem("position", JSON.stringify(position));
-
-                const { latitude, longitude } = position.coords;
-
-                fetch(
-                  `https://api.opencagedata.com/geocode/v1/json?q=${String(
-                    latitude
-                  )}+${String(longitude)}&key=70109102439c46daae9f710983faf57d`
-                )
-                  .then((geocodeResponse) => {
-                    if (!geocodeResponse.ok) {
-                      throw new Error(
-                        `HTTP error! status: ${geocodeResponse.status}`
-                      );
-                    }
-                    return geocodeResponse.json();
-                  })
-                  .then((geocodeData) => {
-                    if (!geocodeData || geocodeData.results.length === 0) {
-                      throw new Error("No geocode data found.");
-                    }
-
-                    const countryCode =
-                      geocodeData.results[0].annotations.currency.iso_code;
-                    localStorage.setItem(
-                      "countryCode",
-                      JSON.stringify(countryCode)
-                    );
-                    console.log(`Country code: ${countryCode}`);
-
-                    // Redirect to the business route after successful geolocation and fetch
-                    router.push("/business");
-                    setLoading(false); // Set loading to false after successful geolocation and fetch
-                  })
-                  .catch((error) => {
-                    console.error("Error fetching geolocation data:", error);
-                    setLoading(false); // Set loading to false after failed geolocation fetch
-                  });
-              },
-              (error) => {
-                console.error("Geolocation error:", error);
-                toast.error(
-                  "Geolocation permission is required to access the business area."
-                );
-                setLoading(false); // Set loading to false if geolocation fails
-              }
-            );
-          } else {
-            console.log("Geolocation is not supported by this browser");
-            setLoading(false); // Set loading to false if geolocation is not supported
-          }
-        } else {
-          console.error("Unknown role:", user.role);
-          setLoading(false); // Set loading to false for unknown role
-        }
-      })
-      .catch((err) => {
-        toast.error("Login Failed");
-        setLoading(false); // Set loading to false after failed login
-      });
+    router.push("/business");
   };
 
   return (
@@ -142,17 +67,17 @@ const LoginForm = () => {
       )}
       <button
         type="submit"
-        disabled={loading} // Disable button when loading
+        disabled={loading}
         className={`flex justify-center bg-blueBgDark text-white font-semibold py-2 rounded hover:bg-blueBgDarkHover2 gap-2 lg:w-[100%] ${
           loading ? "opacity-50 cursor-not-allowed" : ""
-        }`} // Add styling for disabled state
+        }`}
       >
         {loading && (
           <div className="animate-spin flex items-center justify-center">
             {whiteLoader}
           </div>
         )}
-        {loading ? "Logging in.." : "Login"} {/* Show loader text */}
+        {loading ? "Logging in.." : "Login"}
       </button>
 
       <Link
