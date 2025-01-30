@@ -53,7 +53,7 @@ const ProfileDropdown = () => {
         <MenuButton className="flex items-center h-9 w-9 sm:h-10 sm:w-10 lg:h-10 lg:w-10 rounded-md focus:outline-none focus:ring-2 focus:ring-white hover:ring-2 hover:ring-white">
           <img
             alt="User"
-            src={user.imageUrl || "/User.png"}
+            src={"/User.png"}
             className="rounded-[6px] object-cover w-full h-full hover:cursor-pointer focus:outline-none"
           />
         </MenuButton>

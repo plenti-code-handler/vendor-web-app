@@ -1,100 +1,54 @@
 "use client";
 
-import React, { Suspense, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import TableUpper from "./TableUpper";
-import { db } from "../../../../app/firebase/config";
-import {
-  collection,
-  getDocs,
-  query,
-  orderBy,
-  limit,
-  startAfter,
-  where,
-  getDoc,
-  doc,
-} from "firebase/firestore";
-import LoadMoreButton from "../../../buttons/LoadMoreButton";
-import { getUserLocal } from "../../../../redux/slices/loggedInUserSlice";
-import { convertTimestampToDDMMYYYY } from "../../../../utility/date";
 import Loader from "../../../loader/loader";
 
 const RecentOrders = () => {
   const [bookings, setBookings] = useState([]);
   const [filteredBookings, setFilteredBookings] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [lastVisible, setLastVisible] = useState(null);
-  const [loading, setLoading] = useState(false);
   const [loader, setLoader] = useState(false);
-  const [user, setUser] = useState({});
-  const [countryCode, setCountryCode] = useState(null);
+  const [countryCode, setCountryCode] = useState("SEK");
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const storedCountryCode = JSON.parse(localStorage.getItem("countryCode"));
-      setCountryCode(storedCountryCode);
-    }
+    setLoader(true);
+    // Dummy recent orders data
+    const dummyBookings = [
+      {
+        username: "John Doe",
+        name: "Deluxe Package",
+        size: "Large",
+        quantity: 2,
+        price: 150,
+        bookingdate: "2024-01-10",
+        status: "Picked",
+      },
+      {
+        username: "Jane Smith",
+        name: "Standard Package",
+        size: "Medium",
+        quantity: 1,
+        price: 80,
+        bookingdate: "2024-01-12",
+        status: "Cancelled",
+      },
+      {
+        username: "Alex Johnson",
+        name: "Economy Package",
+        size: "Small",
+        quantity: 3,
+        price: 50,
+        bookingdate: "2024-01-15",
+        status: "Pending",
+      },
+    ];
+
+    setBookings(dummyBookings);
+    setFilteredBookings(dummyBookings);
+    setLoader(false);
   }, []);
-
-  useEffect(() => {
-    const localUser = getUserLocal();
-    setUser(localUser);
-  }, []);
-
-  useEffect(() => {
-    if (user && user.uid) {
-      // Ensure the user and user.uid are available
-      const fetchInitialBookings = async () => {
-        try {
-          setLoader(true);
-          const colRef = collection(db, "bookings");
-          const q = query(
-            colRef,
-            where("vendorid", "==", user.uid),
-            // orderBy("time"),
-            limit(5)
-          );
-
-          const allBookingsSnapshot = await getDocs(q);
-          const bookingsData = await Promise.all(
-            allBookingsSnapshot.docs.map(async (entry) => {
-              const booking = entry.data();
-
-              // Fetch user data based on the user ID in the booking
-              const userDocRef = doc(db, "users", booking.uid); // Assuming booking.uid is the field for user ID
-              const userDocSnap = await getDoc(userDocRef);
-
-              if (userDocSnap.exists()) {
-                const userData = userDocSnap.data();
-                return {
-                  ...booking,
-                  user: userData, // Merge user data with booking
-                };
-              } else {
-                console.log("User data not found for UID:", booking.uid);
-                return booking; // Return booking without user data if not found
-              }
-            })
-          );
-          const lastDoc =
-            allBookingsSnapshot.docs[allBookingsSnapshot.docs.length - 1];
-
-          setBookings(bookingsData);
-          setFilteredBookings(bookingsData);
-          setLastVisible(lastDoc);
-        } catch (error) {
-          console.error("Error fetching bookings:", error);
-        } finally {
-          setLoader(false);
-        }
-      };
-
-      fetchInitialBookings();
-    } else {
-      console.log("user or user.uid is undefined:", user);
-    }
-  }, [user]);
 
   useEffect(() => {
     if (searchTerm === "") {
@@ -113,188 +67,59 @@ const RecentOrders = () => {
     return <Loader />;
   }
 
-  const fetchMoreBookings = async () => {
-    // Prevent the function from running if it’s already loading
-    if (loading) return;
-
-    try {
-      setLoading(true);
-      const colRef = collection(db, "bookings");
-
-      let q;
-      if (lastVisible) {
-        // If lastVisible exists, start after it and apply the where clause
-        q = query(
-          colRef,
-          where("vendorid", "==", user.uid),
-          // orderBy("time"),
-          startAfter(lastVisible),
-          limit(5)
-        );
-      } else {
-        // If lastVisible is null, apply the where clause, order, and limit
-        q = query(
-          colRef,
-          where("vendorid", "==", user.uid),
-          // orderBy("time"),
-          limit(5)
-        );
-      }
-
-      const allBookingsSnapshot = await getDocs(q);
-
-      // Handle empty snapshots (end of collection)
-      if (allBookingsSnapshot.empty) {
-        console.log("No more bookings to fetch");
-        setLoading(false);
-        return;
-      }
-
-      const bookingsData = await Promise.all(
-        allBookingsSnapshot.docs.map(async (entry) => {
-          const booking = entry.data();
-
-          // Fetch user data based on the user ID in the booking
-          const userDocRef = doc(db, "users", booking.uid);
-          const userDocSnap = await getDoc(userDocRef);
-
-          if (userDocSnap.exists()) {
-            const userData = userDocSnap.data();
-            return {
-              ...booking,
-              user: userData, // Merge user data with booking
-            };
-          } else {
-            console.log("User data not found for UID:", booking.uid);
-            return booking; // Return booking without user data if not found
-          }
-        })
-      );
-
-      // Determine the last document for pagination
-      const lastDoc =
-        allBookingsSnapshot.docs[allBookingsSnapshot.docs.length - 1];
-
-      // Update state with new data
-      setBookings((prevBookings) => [...prevBookings, ...bookingsData]);
-      setFilteredBookings((prevBookings) => [...prevBookings, ...bookingsData]);
-      setLastVisible(lastDoc); // Set the last visible document for pagination
-    } catch (error) {
-      console.error("Error fetching more bookings:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <div className="mt-4 w-full border border-gray-200 rounded-xl p-6 sm:px-4">
       <TableUpper setSearchTerm={setSearchTerm} />
       <div className="no-scrollbar w-full overflow-y-hidden">
-        <table className="w-full table-auto truncate overflow-hidden bg-white">
+        <table className="w-full table-auto bg-white">
           <thead>
-            <tr className="border-b-[1px] border-grayOne border-dashed border-opacity-45 text-sm font-semibold text-grayOne">
-              <th className="pb-[8px] pl-[5%] pt-[18px] text-left w-[18.00%]">
-                CUSTOMER
-              </th>
-              <th className="pb-[8px] px-2 pt-[18px] text-center">Deal Name</th>
-              <th className="pb-[8px] px-2 pt-[18px] text-center">Size</th>
-              <th className="pb-[8px] px-2 pt-[18px] text-center">Quantity</th>
-              <th className="pb-[8px] px-2 pt-[18px] text-center">Amount</th>
-              <th className="pb-[8px] px-2 pt-[18px] text-center">
-                Order Date
-              </th>
-              <th className="pb-[8px] px-2 pt-[18px] text-center">Status</th>
+            <tr className="border-b text-sm font-semibold text-gray-500">
+              <th className="pb-2 pl-5 pt-4 text-left">CUSTOMER</th>
+              <th className="pb-2 px-2 pt-4 text-center">Deal Name</th>
+              <th className="pb-2 px-2 pt-4 text-center">Size</th>
+              <th className="pb-2 px-2 pt-4 text-center">Quantity</th>
+              <th className="pb-2 px-2 pt-4 text-center">Amount</th>
+              <th className="pb-2 px-2 pt-4 text-center">Order Date</th>
+              <th className="pb-2 px-2 pt-4 text-center">Status</th>
             </tr>
           </thead>
           <tbody>
             {filteredBookings.length > 0 ? (
               filteredBookings.map((booking, index) => (
-                <tr
-                  key={index}
-                  className="cursor-pointer border-b-[1px] border-[#E4E4E4] border-dashed hover:bg-[#f8f7f7]"
-                >
-                  <td className="truncate pl-2 lg:pl-[5%] pr-6   md:pr-2 w-[14.28%]">
-                    <div className="py-3">
-                      <div className="flex flex-row items-center gap-x-2">
-                        <div className="flex h-[40px] w-[40px] items-center justify-center overflow-hidden rounded-full">
-                          <Image
-                            src={`/Round-${booking.size}.png`}
-                            alt="User"
-                            className="h-full w-full object-cover"
-                            width={40}
-                            height={40}
-                            priority
-                          />
-                        </div>
-                        <div className="flex flex-col gap-y-1">
-                          <p className="text-sm font-medium truncate overflow-hidden whitespace-nowrap  ">
-                            {booking.username.length > 15
-                              ? `${booking.username.slice(0, 15)}...`
-                              : booking.username}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
+                <tr key={index} className="border-b hover:bg-gray-100">
+                  <td className="pl-5 py-3">{booking.username}</td>
+                  <td className="text-center px-2">{booking.name}</td>
+                  <td className="text-center px-2">{booking.size}</td>
+                  <td className="text-center px-2">{booking.quantity}</td>
+                  <td className="text-center px-2">
+                    {countryCode} {booking.price}
                   </td>
-                  <td className="truncate text-center px-2">
-                    <p className="text-sm font-semibold text-grayThree truncate overflow-hidden whitespace-nowrap  ">
-                      {booking.name.length > 15
-                        ? `${booking.name.slice(0, 15)}...`
-                        : booking.name}
-                    </p>
-                  </td>
-                  <td className="truncate text-center px-2">
-                    <p className="text-sm font-semibold text-grayThree">
-                      {booking.size}
-                    </p>
-                  </td>
-                  <td className="truncate text-center px-2">
-                    <p className="text-sm font-semibold text-grayThree">
-                      {booking.quantity}
-                    </p>
-                  </td>
-                  <td className="truncate text-center px-2">
-                    <p className="text-sm font-semibold text-grayThree">
-                      {countryCode ? countryCode : "SEK"} {booking.price}
-                    </p>
-                  </td>
-                  <td className="truncate text-center px-2">
-                    <p className="text-sm font-semibold text-grayThree">
-                      {convertTimestampToDDMMYYYY(booking.bookingdate)}
-                    </p>
-                  </td>
-                  <td className="truncate text-center px-2">
-                    <div
-                      className={`mx-auto ${
-                        booking.status.toLowerCase() == "picked"
-                          ? "bg-pickedBg text-pickedText "
-                          : booking.status.toLowerCase() == "cancelled"
-                          ? "bg-notPickedBg text-notPickedText"
-                          : "bg-notPickedBg text-notPickedText"
-                      } font-semibold rounded-[4px] text-[12px] w-[77px] h-[26px] p-1 `}
-                    >
-                      <p>
-                        {booking.status.toLowerCase() === "picked"
-                          ? "Picked"
+                  <td className="text-center px-2">{booking.bookingdate}</td>
+                  <td className="text-center px-2">
+                    <span
+                      className={`px-2 py-1 rounded text-white text-xs font-semibold ${
+                        booking.status.toLowerCase() === "picked"
+                          ? "bg-green-500"
                           : booking.status.toLowerCase() === "cancelled"
-                          ? "Cancelled"
-                          : "Not Picked"}
-                      </p>
-                    </div>
+                          ? "bg-red-500"
+                          : "bg-yellow-500"
+                      }`}
+                    >
+                      {booking.status}
+                    </span>
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="10" className="text-center py-10 text-grayOne">
-                  No Orders found
+                <td colSpan="7" className="text-center py-4 text-gray-500">
+                  No recent orders found.
                 </td>
               </tr>
             )}
           </tbody>
         </table>
       </div>
-      <LoadMoreButton loadMore={fetchMoreBookings} isLoading={loading} />
     </div>
   );
 };

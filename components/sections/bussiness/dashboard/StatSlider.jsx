@@ -15,7 +15,6 @@ const StatSlider = () => {
   const [bagToday, setBagToday] = useState("");
   const [totalBags, setTotalBags] = useState("");
 
-
   useEffect(() => {
     const localUser = getUserLocal();
     setUser(localUser);

@@ -19,7 +19,6 @@ const BussinessHeader = () => {
   const dispatch = useDispatch();
   const [isSmallDevice, setIsSmallDevice] = useState(false);
 
-
   const router = useRouter();
 
   const [isMobile, setIsMobile] = useState(false);
@@ -37,8 +36,6 @@ const BussinessHeader = () => {
 
     return () => window.removeEventListener("resize", checkIsMobile);
   }, []);
-
-
 
   useEffect(() => {
     const handleResize = () => {
@@ -66,8 +63,6 @@ const BussinessHeader = () => {
     router.push("/");
   };
 
- 
-
   useEffect(() => {
     if (isMenuOpen) {
       document.body.style.overflow = "hidden";
@@ -88,7 +83,7 @@ const BussinessHeader = () => {
             <img
               alt="Plenti Logo"
               src={"/logo.png"}
-              className="max-w-[10px] max-w-[140px]"
+              className="max-w-[10px] max-w-[80px]"
             />
           </div>
           <div className="flex lg:hidden gap-3 items-center">

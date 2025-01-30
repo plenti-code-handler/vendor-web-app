@@ -4,7 +4,8 @@ const Card = (props) => {
   return (
     <div className="flex flex-col border border-gray-200 rounded-xl pt-6 pl-6 pb-14 pr-8 w-full lg:w-[90%]">
       <h1 className="text-2xl lg:text-[34px] font-semibold leading-[28px] text-black">
-        {props.title}
+        {/* {props.title} */}
+        200
       </h1>
       <h1 className="text-sm font-semibold leading-[28px] text-gray-500 py-4">
         {props.content}
