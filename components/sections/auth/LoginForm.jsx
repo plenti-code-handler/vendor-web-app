@@ -45,12 +45,12 @@ const LoginForm = () => {
         <p className="text-black font-semibold text-[28px]">
           Login to your account
         </p>
-        {/* <p className="text-[#404146] text-sm font-medium">
+        <p className="text-[#404146] text-sm font-medium">
           Want to register your business?{" "}
           <span className="font-bold underline hover:text-black cursor-pointer">
-            <Link href={"/register"}>Register</Link>
+            <Link href={"/verify_email"}>Register</Link>
           </span>
-        </p> */}
+        </p>
       </div>
       <input
         className="placeholder:font-bold rounded-md border border-gray-200 py-3 px-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"

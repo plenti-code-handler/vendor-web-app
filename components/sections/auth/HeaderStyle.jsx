@@ -7,7 +7,7 @@ import {
 
 const HeaderStyle = () => {
   return (
-    <div className="relative w-full h-[100px] rounded-[24px]">
+    <div className="relative w-full min-h-[100px] rounded-[24px]">
       <div
         className="absolute rounded-2xl"
         style={{
