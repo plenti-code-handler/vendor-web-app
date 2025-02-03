@@ -77,43 +77,43 @@ function Page() {
     try {
       setLoading(true);
 
-      // Get the logo file
-      const logoFile = data.logo[0];
-      console.log(logoFile);
+      // // Get the logo file
+      // const logoFile = data.logo[0];
+      // console.log(logoFile);
 
-      // Create a new FormData instance
-      const formData = new FormData();
+      // // Create a new FormData instance
+      // const formData = new FormData();
 
-      // Append the file with the necessary fields (id, key, and uri)
-      formData.append("file", {
-        id: new Date().getTime() + "_logo", // Unique ID for the logo file
-        key: logoFile.type, // The MIME type of the file (e.g., 'image/png')
-        uri: URL.createObjectURL(logoFile), // The URL for the file (can be a blob URL)
-      });
+      // // Append the file with the necessary fields (id, key, and uri)
+      // formData.append("file", {
+      //   id: new Date().getTime() + "_logo", // Unique ID for the logo file
+      //   key: logoFile.type, // The MIME type of the file (e.g., 'image/png')
+      //   uri: URL.createObjectURL(logoFile), // The URL for the file (can be a blob URL)
+      // });
 
-      // Append the image_type field as required by the API
-      formData.append("image_type", "logo");
+      // // Append the image_type field as required by the API
+      // formData.append("image_type", "logo");
 
-      // Get the token from localStorage
-      const token = localStorage.getItem("token");
+      // // Get the token from localStorage
+      // const token = localStorage.getItem("token");
 
-      // Configure the headers for the request
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-          "Content-Type": "multipart/form-data",
-        },
-      };
+      // // Configure the headers for the request
+      // const config = {
+      //   headers: {
+      //     Authorization: `Bearer ${token}`,
+      //     Accept: "application/json",
+      //     "Content-Type": "multipart/form-data",
+      //   },
+      // };
 
-      // Send the request to upload the logo
-      const uploadLogoResponse = await axiosClient.post(
-        "/v1/vendor/me/images/upload?image_type=logo",
-        formData,
-        config
-      );
+      // // Send the request to upload the logo
+      // const uploadLogoResponse = await axiosClient.post(
+      //   "/v1/vendor/me/images/upload?image_type=logo",
+      //   formData,
+      //   config
+      // );
 
-      console.log("Logo uploaded successfully:", uploadLogoResponse.data);
+      // console.log("Logo uploaded successfully:", uploadLogoResponse.data);
 
       const vendorData = {
         vendor_name: data.storeName,
