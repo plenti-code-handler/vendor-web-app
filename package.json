@@ -19,7 +19,7 @@
     "@stripe/react-stripe-js": "^2.8.0",
     "@stripe/stripe-js": "^4.4.0",
     "apexcharts": "^3.51.0",
-    "axios": "^1.7.1",
+    "axios": "^1.7.9",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
     "firebase": "^10.12.5",

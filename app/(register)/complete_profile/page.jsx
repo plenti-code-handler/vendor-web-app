@@ -5,6 +5,7 @@ import HeaderStyle from "../../../components/sections/auth/HeaderStyle";
 import { useRouter } from "next/navigation";
 import BackButton from "../../../components/sections/auth/BackButton";
 import { useForm } from "react-hook-form";
+import axiosClient from "../../../AxiosClient";
 
 const GOOGLE_MAPS_API_KEY = "AIzaSyDOVLieRAacqoM0mB-49sRQnIfN3aCWC38";
 
@@ -72,22 +73,95 @@ function Page() {
     }
   }, [coordinates]);
 
-  const onSubmit = (data) => {
-    setLoading(true);
-    const formData = {
-      ...data,
-      latitude: coordinates.lat,
-      longitude: coordinates.lng,
-    };
+  const onSubmit = async (data) => {
+    try {
+      setLoading(true);
 
-    setTimeout(() => {
+      // Get the logo file
+      const logoFile = data.logo[0];
+      console.log(logoFile);
+
+      // Create a new FormData instance
+      const formData = new FormData();
+
+      // Append the file with the necessary fields (id, key, and uri)
+      formData.append("file", {
+        id: new Date().getTime() + "_logo", // Unique ID for the logo file
+        key: logoFile.type, // The MIME type of the file (e.g., 'image/png')
+        uri: URL.createObjectURL(logoFile), // The URL for the file (can be a blob URL)
+      });
+
+      // Append the image_type field as required by the API
+      formData.append("image_type", "logo");
+
+      // Get the token from localStorage
+      const token = localStorage.getItem("token");
+
+      // Configure the headers for the request
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+          "Content-Type": "multipart/form-data",
+        },
+      };
+
+      // Send the request to upload the logo
+      const uploadLogoResponse = await axiosClient.post(
+        "/v1/vendor/me/images/upload?image_type=logo",
+        formData,
+        config
+      );
+
+      console.log("Logo uploaded successfully:", uploadLogoResponse.data);
+
+      const vendorData = {
+        vendor_name: data.storeName,
+        store_manager_name: data.storeManagerName,
+        vendor_type: data.vendorType,
+        gst_number: data.gstnumber,
+        description: data.description,
+        latitude: coordinates.lat,
+        longitude: coordinates.lng,
+        address_url: data.adressurl,
+        pincode: data.pincode,
+      };
+
+      const uploadVendorDataResponse = await axios.put(
+        "/v1/vendor/me/update",
+        vendorData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log(
+        "Vendor data uploaded successfully:",
+        uploadVendorDataResponse.data
+      );
+      router.push("/login");
+    } catch (error) {
+      console.error("Error occurred during form submission:", error);
+    } finally {
       setLoading(false);
-      alert("Form submitted with data: " + JSON.stringify(formData, null, 2));
-    }, 2000);
+    }
+  };
+
+  const fileToBinary = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        resolve(reader.result);
+      };
+      reader.onerror = reject;
+      reader.readAsArrayBuffer(file);
+    });
   };
 
   return (
-    <div className="flex lg:flex-row justify-between mt-10 min-h-screen px-6 lg:px-20">
+    <div className="flex flex-col md:flex-row justify-between mt-10 min-h-screen px-6 lg:px-20">
       <div className="flex justify-center flex-col lg:w-1/2 text-center lg:text-left mb-8 lg:mb-0">
         <a href="/">
           <img
@@ -170,9 +244,9 @@ function Page() {
                 className="rounded-md border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
                 placeholder="Enter store Manager name"
               />
-              {errors.storeName && (
+              {errors.storeManagerName && (
                 <p className="text-red-500 text-sm">
-                  {errors.storeName.message}
+                  {errors.storeManagerName.message}
                 </p>
               )}
             </div>
@@ -211,9 +285,9 @@ function Page() {
                 className="rounded-md border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
                 placeholder="Enter Gst Number"
               />
-              {errors.storeName && (
+              {errors.gstnumber && (
                 <p className="text-red-500 text-sm">
-                  {errors.storeName.message}
+                  {errors.gstnumber.message}
                 </p>
               )}
             </div>
@@ -230,9 +304,34 @@ function Page() {
                 className="rounded-md border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
                 placeholder="Enter Pin Code"
               />
-              {errors.storeName && (
+              {errors.pincode && (
+                <p className="text-red-500 text-sm">{errors.pincode.message}</p>
+              )}
+            </div>
+
+            <div className="flex flex-col space-y-1">
+              <label className="text-sm font-medium text-gray-600">
+                Description
+              </label>
+              <textarea
+                {...register("description", {
+                  required: "Description is required",
+                  minLength: {
+                    value: 10,
+                    message: "Description must be at least 10 characters",
+                  },
+                  maxLength: {
+                    value: 250,
+                    message: "Description cannot be more than 250 characters",
+                  },
+                })}
+                rows={4}
+                className="rounded-md border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black resize-none"
+                placeholder="Enter your description (50 words max)"
+              />
+              {errors.description && (
                 <p className="text-red-500 text-sm">
-                  {errors.storeName.message}
+                  {errors.description.message}
                 </p>
               )}
             </div>
@@ -242,6 +341,7 @@ function Page() {
                 Address
               </label>
               <input
+                {...register("adressurl", {})}
                 type="text"
                 ref={autoCompleteRef}
                 className="rounded-md border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
@@ -249,6 +349,11 @@ function Page() {
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
               />
+              {errors.adressurl && (
+                <p className="text-red-500 text-sm">
+                  {errors.adressurl.message}
+                </p>
+              )}
             </div>
 
             <div
@@ -274,145 +379,3 @@ function Page() {
 }
 
 export default Page;
-
-// "use client";
-
-// import React, { useState, useEffect, useRef } from "react";
-// import HeaderStyle from "../../../components/sections/auth/HeaderStyle";
-// import { useRouter } from "next/navigation";
-// import BackButton from "../../../components/sections/auth/BackButton";
-// import { useForm } from "react-hook-form";
-
-// const GOOGLE_MAPS_API_KEY = "AIzaSyDOVLieRAacqoM0mB-49sRQnIfN3aCWC38";
-
-// function Page() {
-//   const {
-//     register,
-//     handleSubmit,
-//     setValue,
-//     formState: { errors },
-//   } = useForm();
-//   const [loading, setLoading] = useState(false);
-//   const [address, setAddress] = useState("");
-//   const [coordinates, setCoordinates] = useState({ lat: null, lng: null });
-//   const mapRef = useRef(null);
-
-//   const router = useRouter();
-//   const autoCompleteRef = useRef(null);
-
-//   useEffect(() => {
-//     const loadGoogleMapsScript = () => {
-//       if (!window.google) {
-//         const script = document.createElement("script");
-//         script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places`;
-//         script.async = true;
-//         script.onload = initializeAutocomplete;
-//         document.body.appendChild(script);
-//       } else {
-//         initializeAutocomplete();
-//       }
-//     };
-
-//     const initializeAutocomplete = () => {
-//       if (!autoCompleteRef.current) return;
-//       const autocomplete = new window.google.maps.places.Autocomplete(
-//         autoCompleteRef.current,
-//         { types: ["geocode"] }
-//       );
-
-//       autocomplete.addListener("place_changed", () => {
-//         const place = autocomplete.getPlace();
-//         if (place.geometry) {
-//           const formattedAddress = place.formatted_address;
-//           const latitude = place.geometry.location.lat();
-//           const longitude = place.geometry.location.lng();
-//           setAddress(formattedAddress);
-//           setCoordinates({ lat: latitude, lng: longitude });
-//           setValue("addressUrl", formattedAddress);
-//         }
-//       });
-//     };
-
-//     loadGoogleMapsScript();
-//   }, [setValue]);
-
-//   useEffect(() => {
-//     if (coordinates.lat && coordinates.lng && window.google) {
-//       const map = new window.google.maps.Map(mapRef.current, {
-//         center: { lat: coordinates.lat, lng: coordinates.lng },
-//         zoom: 14,
-//       });
-//       new window.google.maps.Marker({
-//         position: { lat: coordinates.lat, lng: coordinates.lng },
-//         map: map,
-//       });
-//     }
-//   }, [coordinates]);
-
-//   const onSubmit = (data) => {
-//     setLoading(true);
-//     const formData = {
-//       ...data,
-//       latitude: coordinates.lat,
-//       longitude: coordinates.lng,
-//     };
-
-//     setTimeout(() => {
-//       setLoading(false);
-//       alert("Form submitted with data: " + JSON.stringify(formData, null, 2));
-//     }, 2000);
-//   };
-
-//   return (
-//     <div className="flex lg:flex-row justify-between mt-10 lg:h-screen px-6 lg:px-20">
-//       {/* Right Side Form */}
-//       <div className="flex flex-col w-full md:w-[80%] lg:w-[40%] bg-white h-screen rounded-[24px] justify-between shadow-lg overflow-hidden">
-//         <HeaderStyle />
-//         <div className="ml-5 mt-28">
-//           <BackButton />
-//         </div>
-//         <div className="flex justify-center items-center flex-1 px-6 pb-16 md:pb-28 lg:p-6 mb-10 overflow-auto">
-//           <form
-//             onSubmit={handleSubmit(onSubmit)}
-//             className="flex flex-col w-full max-w-md space-y-5 h-full"
-//           >
-//             {/* Address Input */}
-//             <div className="flex flex-col space-y-1">
-//               <label className="text-sm font-medium text-gray-600">
-//                 Address
-//               </label>
-//               <input
-//                 type="text"
-//                 ref={autoCompleteRef}
-//                 className="rounded-md border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
-//                 placeholder="Search your business address"
-//                 value={address}
-//                 onChange={(e) => setAddress(e.target.value)}
-//               />
-//             </div>
-
-//             {/* Map Display */}
-//             <div
-//               ref={mapRef}
-//               className="w-full h-64 rounded-md border mt-4"
-//             ></div>
-
-//             {/* Submit Button */}
-//             <div className="mt-6">
-//               <button
-//                 type="submit"
-//                 className={`flex justify-center bg-[#5F22D9] text-white font-semibold py-2 rounded hover:bg-[#8349f6] gap-2 w-full ${
-//                   loading ? "opacity-50 cursor-not-allowed" : ""
-//                 }`}
-//               >
-//                 {loading ? "Processing..." : "Create Account"}
-//               </button>
-//             </div>
-//           </form>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
-// export default Page;

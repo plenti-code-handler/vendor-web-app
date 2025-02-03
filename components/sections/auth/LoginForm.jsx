@@ -9,6 +9,7 @@ import { auth } from "../../../app/firebase/config";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { whiteLoader } from "../../../svgs";
+import axiosClient from "../../../AxiosClient";
 
 const LoginForm = () => {
   const dispatch = useDispatch();
@@ -27,10 +28,24 @@ const LoginForm = () => {
     event?.preventDefault();
     setLoading(true);
 
+    const loginData = {
+      email: data.email,
+      password: data.password,
+    };
+
     try {
-      router.push("/business");
+      const response = await axiosClient.post("/v1/vendor/me/login", loginData);
+
+      if (response.status === 200) {
+        router.push("/business");
+        toast.success("Login successful!");
+      } else {
+        toast.error("Login failed. Please try again.");
+      }
     } catch (error) {
-      toast.error("Login failed. Please try again.");
+      toast.error(
+        error.response?.data?.message || "An error occurred. Please try again."
+      );
     } finally {
       setLoading(false);
     }

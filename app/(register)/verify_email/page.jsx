@@ -4,6 +4,10 @@ import React, { useState } from "react";
 import HeaderStyle from "../../../components/sections/auth/HeaderStyle";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import axios from "axios";
+import { baseUrl } from "../../../utility/BaseURL";
+import { toast } from "sonner";
+import axiosClient from "../../../AxiosClient";
 
 function Page() {
   const [loading, setLoading] = useState(false);
@@ -16,14 +20,52 @@ function Page() {
     setError,
   } = useForm();
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     setLoading(true);
+    console.log("inside API call");
 
-    setTimeout(() => {
+    try {
+      const otpResponse = await axiosClient.post(
+        `/v1/vendor/me/email/send-otp?email=${data.email}`
+      );
+
+      if (otpResponse.status === 200) {
+        toast.success("OTP sent successfully. Please verify.");
+      } else {
+        toast.error("Failed to send OTP. Please try again.");
+        return;
+      }
+
+      const registerResponse = await axiosClient.post(
+        `/v1/vendor/me/register`,
+        {
+          email: data.email,
+          password: data.password,
+        }
+      );
+
+      console.log("response from API call");
+
+      if (registerResponse.status === 200) {
+        console.log(registerResponse.data.access_token);
+        localStorage.setItem("token", registerResponse.data.access_token);
+        localStorage.setItem("email", data.email);
+        toast.success("Registration successful!");
+        router.push("/verify_otp");
+      } else {
+        toast.error("Registration failed. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error during OTP or registration:", error);
+
+      if (error.response?.data?.detail) {
+        toast.error(error.response.data.detail);
+      } else {
+        toast.error("An error occurred. Please try again later.");
+      }
+    } finally {
       setLoading(false);
-
-      router.push("/verify_otp");
-    }, 2000);
+    }
   };
 
   return (
