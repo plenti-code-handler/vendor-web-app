@@ -25,6 +25,7 @@ const LoginForm = () => {
   } = useForm();
 
   const handleLogin = async (data, event) => {
+    console.log("Inside handle login");
     event?.preventDefault();
     setLoading(true);
 
@@ -36,16 +37,15 @@ const LoginForm = () => {
     try {
       const response = await axiosClient.post("/v1/vendor/me/login", loginData);
 
+      console.log(response);
       if (response.status === 200) {
+        console.log("Success message ");
+        localStorage.setItem("token", response.data.access_token);
         router.push("/business");
-        toast.success("Login successful!");
-      } else {
-        toast.error("Login failed. Please try again.");
       }
     } catch (error) {
-      toast.error(
-        error.response?.data?.message || "An error occurred. Please try again."
-      );
+      toast.error("Invalid email or password");
+      console.log(error.response.data.detail);
     } finally {
       setLoading(false);
     }
@@ -92,7 +92,7 @@ const LoginForm = () => {
       <button
         type="submit"
         disabled={loading}
-        className={`flex justify-center bg-blueBgDark text-white font-semibold py-2 rounded hover:bg-blueBgDarkHover2 gap-2 lg:w-[100%] ${
+        className={`flex justify-center bg-[#5F22D9] text-white font-semibold py-2 rounded hover:bg-blueBgDarkHover2 gap-2 lg:w-[100%] ${
           loading ? "opacity-50 cursor-not-allowed" : ""
         }`}
       >

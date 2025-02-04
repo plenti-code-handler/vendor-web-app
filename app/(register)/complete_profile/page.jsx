@@ -95,7 +95,7 @@ function Page() {
       // formData.append("image_type", "logo");
 
       // // Get the token from localStorage
-      // const token = localStorage.getItem("token");
+      const token = localStorage.getItem("token");
 
       // // Configure the headers for the request
       // const config = {
@@ -127,7 +127,7 @@ function Page() {
         pincode: data.pincode,
       };
 
-      const uploadVendorDataResponse = await axios.put(
+      const uploadVendorDataResponse = await axiosClient.put(
         "/v1/vendor/me/update",
         vendorData,
         {

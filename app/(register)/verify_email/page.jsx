@@ -50,7 +50,7 @@ function Page() {
         console.log(registerResponse.data.access_token);
         localStorage.setItem("token", registerResponse.data.access_token);
         localStorage.setItem("email", data.email);
-        toast.success("Registration successful!");
+        // toast.success("Registration successful!");
         router.push("/verify_otp");
       } else {
         toast.error("Registration failed. Please try again.");
