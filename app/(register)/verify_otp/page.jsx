@@ -68,6 +68,8 @@ const VerifyAccountForm = () => {
         `/v1/vendor/me/email/verify-otp?email=${email}&otp=${otpCode}`
       );
 
+      console.log(response);
+
       if (response.status === 200) {
         toast.success("OTP Verified Successfully");
         router.push("/complete_profile");
@@ -76,7 +78,7 @@ const VerifyAccountForm = () => {
       }
     } catch (error) {
       toast.error(
-        error.response?.data?.message || "An error occurred. Please try again."
+        error.response?.data?.detail || "An error occurred. Please try again."
       );
     } finally {
       setLoading(false);
@@ -104,6 +106,7 @@ const VerifyAccountForm = () => {
         toast.error("Failed to send OTP. Please try again.");
       }
     } catch (error) {
+      console.log(error);
       toast.error("Failed to resend OTP. Please try again.");
     } finally {
       setLoading(false);

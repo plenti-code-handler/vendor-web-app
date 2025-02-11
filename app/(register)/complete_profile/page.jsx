@@ -75,45 +75,25 @@ function Page() {
 
   const onSubmit = async (data) => {
     try {
-      setLoading(true);
-
-      // // Get the logo file
-      // const logoFile = data.logo[0];
-      // console.log(logoFile);
-
-      // // Create a new FormData instance
-      // const formData = new FormData();
-
-      // // Append the file with the necessary fields (id, key, and uri)
-      // formData.append("file", {
-      //   id: new Date().getTime() + "_logo", // Unique ID for the logo file
-      //   key: logoFile.type, // The MIME type of the file (e.g., 'image/png')
-      //   uri: URL.createObjectURL(logoFile), // The URL for the file (can be a blob URL)
-      // });
-
-      // // Append the image_type field as required by the API
-      // formData.append("image_type", "logo");
-
-      // // Get the token from localStorage
       const token = localStorage.getItem("token");
 
-      // // Configure the headers for the request
-      // const config = {
-      //   headers: {
-      //     Authorization: `Bearer ${token}`,
-      //     Accept: "application/json",
-      //     "Content-Type": "multipart/form-data",
-      //   },
-      // };
+      setLoading(true);
 
-      // // Send the request to upload the logo
-      // const uploadLogoResponse = await axiosClient.post(
-      //   "/v1/vendor/me/images/upload?image_type=logo",
-      //   formData,
-      //   config
-      // );
+      const formData = new FormData();
+      formData.append("file", data.logo[0]);
 
-      // console.log("Logo uploaded successfully:", uploadLogoResponse.data);
+      const uploadLogoResponse = await axiosClient.post(
+        "/v1/vendor/me/images/upload?image_type=logo",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      console.log("Upload successful:", uploadLogoResponse.data);
 
       const vendorData = {
         vendor_name: data.storeName,
@@ -123,7 +103,7 @@ function Page() {
         description: data.description,
         latitude: coordinates.lat,
         longitude: coordinates.lng,
-        address_url: data.adressurl,
+        address_url: address,
         pincode: data.pincode,
       };
 
@@ -147,17 +127,6 @@ function Page() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const fileToBinary = (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        resolve(reader.result);
-      };
-      reader.onerror = reject;
-      reader.readAsArrayBuffer(file);
-    });
   };
 
   return (

@@ -2,192 +2,87 @@ import React, { useEffect, useRef, useState } from "react";
 import TextField from "../../../fields/TextField";
 import { tickSvg } from "../../../../svgs";
 import { Textarea } from "@headlessui/react";
-import { getUserLocal } from "../../../../redux/slices/loggedInUserSlice";
 import { useLoadScript } from "@react-google-maps/api";
-import { db } from "../../../../app/firebase/config";
-import { doc, GeoPoint, updateDoc } from "firebase/firestore";
+import axiosClient from "../../../../AxiosClient";
 
 const libraries = ["places"];
-
-const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY; // Replace with your actual API key
+const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
 const Account = () => {
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [input, setInput] = useState({});
-  const inputRef = useRef(null);
-  const [location, setLocation] = useState("");
-  const [user, setUser] = useState({});
+  const [vendorData, setVendorData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [mapUrl, setMapUrl] = useState("");
 
-  const [lat, setLat] = useState(null);
-  const [lng, setLng] = useState(null);
+  const inputRef = useRef(null);
 
   useEffect(() => {
-    const user = getUserLocal();
-    if (user) {
-      setUser(user);
-    }
+    const fetchVendorData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        const response = await axiosClient.get("/v1/vendor/me/get", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        setVendorData(response.data);
+        if (response.data.latitude && response.data.longitude) {
+          setMapUrl(
+            `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${response.data.latitude},${response.data.longitude}&zoom=14`
+          );
+        }
+      } catch (err) {
+        console.error("Error fetching vendor data:", err);
+        setError(err.response?.data || "Something went wrong.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchVendorData();
   }, []);
 
-  useEffect(() => {
-    if (user.point) {
-      setLat(user.point.latitude || null);
-      setLng(user.point.longitude || null);
-    }
-  }, [user]);
-
-  useEffect(() => {
-    if (lat !== null && lng !== null) {
-      setMapUrl(
-        `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${lat},${lng}&zoom=${zoomLevel}`
-      );
-    }
-  }, [lat, lng]);
-
-  const zoomLevel = 14;
-
-  const [mapUrl, setMapUrl] = useState(
-    `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${lat},${lng}&zoom=${zoomLevel}`
-  );
-
-  const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
-    libraries,
-  });
-
-  const formData = (data) => {
-    const addressComponents = data?.address_components;
-
-    const componentMap = {
-      subPremise: "",
-      premise: "",
-      street_number: "",
-      route: "",
-      country: "",
-      postal_code: "",
-      administrative_area_level_2: "",
-      administrative_area_level_1: "",
-    };
-
-    for (const component of addressComponents) {
-      const componentType = component.types[0];
-      if (componentMap.hasOwnProperty(componentType)) {
-        componentMap[componentType] = component.long_name;
-      }
-    }
-
-    const formattedAddress =
-      `${componentMap.subPremise} ${componentMap.premise} ${componentMap.street_number} ${componentMap.route}`.trim();
-    const latitude = data?.geometry?.location?.lat();
-    const longitude = data?.geometry?.location?.lng();
-
-    setLat(latitude);
-    setLng(longitude);
-    setMapUrl(
-      `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${latitude},${longitude}&zoom=${zoomLevel}`
-    );
-
-    setInput((values) => ({
-      ...values,
-      streetAddress: formattedAddress,
-      country: componentMap.country,
-      zipCode: componentMap.postal_code,
-      city: componentMap.administrative_area_level_2,
-      state: componentMap.administrative_area_level_1,
-      latitude: latitude,
-      longitude: longitude,
-      completeAddress: `${formattedAddress}, ${componentMap.administrative_area_level_2}, ${componentMap.country}`,
-    }));
-  };
-
-  const handlePlaceChanged = async (address) => {
-    if (!isLoaded) return;
-    const place = address.getPlace();
-    setLocation(`${input.streetAddress}, ${input.city}, ${input.country}`);
-
-    if (!place || !place.geometry) {
-      // setInput({});
-      return;
-    }
-    formData(place);
-  };
-
-  useEffect(() => {
-    if (!isLoaded || loadError) return;
-
-    const options = {
-      fields: ["address_components", "geometry"],
-    };
-
-    const autocomplete = new google.maps.places.Autocomplete(
-      inputRef.current,
-      options
-    );
-    autocomplete.addListener("place_changed", () =>
-      handlePlaceChanged(autocomplete)
-    );
-
-    // return () => autocomplete.removeListener("place_changed", handlePlaceChanged);
-  }, [isLoaded, loadError]);
-
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setInput((values) => ({ ...values, [name]: value }));
-  };
-
-  // Submit Handler
-  const updateUser = async () => {
-    try {
-      if (name || description) {
-        const userRef = doc(db, "users", user.uid);
-        await updateDoc(userRef, {
-          name,
-          loc: input.completeAddress,
-          desc: description,
-          point: new GeoPoint(input.latitude, input.longitude),
-        });
-      }
-      console.log("User data updated successfully");
-    } catch (error) {
-      console.error("Error updating user data:", error);
-    }
-  };
-
-  const clearForm = () => {
-    setName("");
-    setInput("");
-    setDescription("");
-  };
-
   return (
-    <div className="flex flex-col gap-4 pt-[30px] pb-[30px]">
+    <div className="flex flex-col gap-4 pt-6 pb-6">
+      {/* Name Field */}
       <TextField
-        placeholder={user.name}
-        value={name}
-        onChange={(e) => setName(e.target.value)}
+        placeholder="Vendor Name"
+        value={loading ? "Loading..." : vendorData?.vendor_name || ""}
+        disabled={loading}
       />
-      <div className="flex justify-between w-full placeholder:font-bold rounded-lg border border-gray-300 bg-[#F4F4F4] py-3 px-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black">
-        <p className="font-semibold text-black">{user.email}</p>
-        <div className="flex gap-1 items-center">
-          <p className="text-main font-semibold">Verified</p>
-          {tickSvg}
-        </div>
+
+      {/* Email */}
+      <div className="flex justify-between w-full rounded-lg border border-gray-300 bg-gray-100 py-3 px-3 text-sm text-black">
+        <p className="font-semibold">
+          {loading ? "Loading..." : vendorData?.email}
+        </p>
+        {vendorData?.email_verified && (
+          <div className="flex gap-1 items-center">
+            <p className="text-green-600 font-semibold">Verified</p>
+            {tickSvg}
+          </div>
+        )}
       </div>
-      <div className="flex justify-between w-full placeholder:font-bold rounded-lg border border-gray-300 bg-[#F4F4F4] py-3 px-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black">
-        <p className="font-semibold text-black">{user.phone}</p>
-        <div className="flex gap-1 items-center">
-          <p className="text-main font-semibold">Verified</p>
-          {tickSvg}
-        </div>
-      </div>
+
+      {/* GST Number */}
+      <TextField
+        placeholder="GST Number"
+        value={loading ? "Loading..." : vendorData?.gst_number || ""}
+        disabled={loading}
+      />
+
+      {/* Address Input */}
       <input
-        value={input.completeAddress || input.streetAddress || ""}
-        className="block w-full placeholder:font-bold rounded-lg border border-gray-300 py-3 px-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
-        onChange={handleChange}
         ref={inputRef}
-        name="streetAddress"
-        placeholder={user.loc}
+        className="block w-full rounded-lg border border-gray-300 py-3 px-3 text-sm text-black bg-gray-100"
+        value={loading ? "Loading..." : vendorData?.address_url || ""}
+        placeholder="Vendor Address"
+        disabled={loading}
       />
+
+      {/* Google Maps Embed */}
       {mapUrl && (
         <iframe
           src={mapUrl}
@@ -195,31 +90,19 @@ const Account = () => {
           height="250"
           className="w-full rounded-lg"
           style={{ border: 0 }}
-          allowFullScreen=""
+          allowFullScreen
           loading="lazy"
         />
       )}
+
+      {/* Description */}
       <Textarea
-        className="block w-full resize-none rounded-lg border border-gray-300 py-3 px-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
-        rows={8}
-        placeholder={user.desc}
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
+        className="block w-full resize-none rounded-lg border border-gray-300 py-3 px-3 text-sm text-black bg-gray-100"
+        rows={5}
+        placeholder="Description"
+        value={loading ? "Loading..." : vendorData?.description || ""}
+        disabled={loading}
       />
-      <div className="flex gap-5 pt-2">
-        <button
-          onClick={clearForm}
-          className="flex justify-center bg-white text-black border border-black font-md py-2  rounded hover:bg-grayTwo gap-2 w-[100%]"
-        >
-          Discard Changes
-        </button>
-        <button
-          onClick={updateUser}
-          className="flex justify-center bg-blueBgDark text-white font-md py-2  rounded hover:bg-blueBgDarkHover2 gap-2 w-[100%]"
-        >
-          Update
-        </button>
-      </div>
     </div>
   );
 };

@@ -9,49 +9,42 @@ import { getUserLocal } from "../../../../redux/slices/loggedInUserSlice";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../../../app/firebase/config";
 import AddCategoryDrawer from "../../../drawers/AddCategoryDrawer";
+import axiosClient from "../../../../AxiosClient";
 
 const ProfileCard = () => {
   const dispatch = useDispatch();
   const [user, setUser] = useState({});
   const [categories, setCategories] = useState([]);
+  const [vendorData, setVendorData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const handleAddCategory = () => {
     dispatch(setOpenDrawer(true));
   };
 
   useEffect(() => {
-    const user = getUserLocal();
-    if (user) {
-      setUser(user);
-    }
-  }, []);
-
-  useEffect(() => {
-    const fetchUserCategories = async () => {
-      if (!user || !user.uid) return; // Ensure user is available
-
+    const fetchVendorData = async () => {
       try {
-        const userDocRef = doc(db, "users", user.uid); // Reference to user document
-        const userDocSnapshot = await getDoc(userDocRef); // Fetch document snapshot
+        const token = localStorage.getItem("token");
 
-        if (userDocSnapshot.exists()) {
-          const userData = userDocSnapshot.data();
-          if (userData.categories) {
-            setCategories(userData.categories);
-          } else {
-            setCategories([]); // Handle case where `categories` field is missing
-          }
-        } else {
-          console.log("No such document!");
-          setCategories([]); // Handle case where document does not exist
-        }
-      } catch (error) {
-        console.error("Error fetching categories:", error);
+        const response = await axiosClient.get("/v1/vendor/me/get", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        setVendorData(response.data);
+      } catch (err) {
+        console.error("Error fetching vendor data:", err);
+        setError(err.response?.data || "Something went wrong.");
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchUserCategories();
-  }, [user]); // Ensure fetch runs when `user` changes
+    fetchVendorData();
+  }, []);
 
   return (
     <>
@@ -59,29 +52,22 @@ const ProfileCard = () => {
         <div className="flex space-x-4">
           <img
             alt="User"
-            src={user.imageUrl}
+            src={vendorData?.logo_url || "/User.png"}
             className="rounded-full h-[120px] w-[120px] object-cover"
           />
+
           <div className="flex flex-col lg:mt-5 lg:gap-y-2">
-            <p className="text-lg font-semibold text-gray-900">{user.name}</p>
+            <p className="text-lg font-semibold text-gray-900">
+              {vendorData?.store_manager_name || "Loading..."}
+            </p>
             <div className="flex items-center text-grayOne font-[600] space-x-2">
               {locationIconSvg}
-              <p className="text-sm">{user.loc}</p>
+              <p className="text-sm">Location</p>
             </div>
             <div className="flex flex-wrap gap-2 mt-2">
-              {categories &&
-                categories.map((category) => {
-                  return (
-                    <div
-                      key={category.id}
-                      className="bg-mainThree border border-mainThree rounded-md px-3 py-1"
-                    >
-                      <p className="text-mainTwo text-sm font-medium">
-                        {category.name}
-                      </p>
-                    </div>
-                  );
-                })}
+              <div className="bg-mainThree border border-mainThree rounded-md px-3 py-1">
+                <p className="text-mainTwo text-sm font-medium">Category</p>
+              </div>
 
               <button
                 onClick={handleAddCategory}
