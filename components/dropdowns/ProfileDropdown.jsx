@@ -73,7 +73,7 @@ const ProfileDropdown = () => {
               {({ active }) => (
                 <button
                   className={`${
-                    active ? "bg-main text-white" : "text-gray-900"
+                    active ? "bg-[#7a48e3] text-white" : "text-gray-900"
                   } group flex w-full items-center rounded-md px-2 py-2 text-xs sm:text-sm`}
                   onClick={() => handleProfileClick()}
                 >
@@ -86,7 +86,7 @@ const ProfileDropdown = () => {
               {({ active }) => (
                 <button
                   className={`${
-                    active ? "bg-main text-white" : "text-gray-900"
+                    active ? "bg-[#7a48e3] text-white" : "text-gray-900"
                   } group flex w-full items-center rounded-md px-2 py-2 text-xs sm:text-sm`}
                   onClick={() => handleOpenDrawer()}
                 >

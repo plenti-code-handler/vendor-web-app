@@ -7,7 +7,8 @@ import BackButton from "../../../components/sections/auth/BackButton";
 import { useForm } from "react-hook-form";
 import axiosClient from "../../../AxiosClient";
 
-const GOOGLE_MAPS_API_KEY = "AIzaSyDOVLieRAacqoM0mB-49sRQnIfN3aCWC38";
+// const GOOGLE_MAPS_API_KEY = "AIzaSyDOVLieRAacqoM0mB-49sRQnIfN3aCWC38";
+const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
 function Page() {
   const {
@@ -28,7 +29,7 @@ function Page() {
     const loadGoogleMapsScript = () => {
       if (!window.google) {
         const script = document.createElement("script");
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places`;
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
         script.async = true;
         script.onload = initializeAutocomplete;
         document.body.appendChild(script);
@@ -333,7 +334,7 @@ function Page() {
             <div className="mt-6">
               <button
                 type="submit"
-                className={`flex justify-center bg-[#5F22D9] text-white font-semibold py-2 rounded hover:bg-[#8349f6] gap-2 w-full ${
+                className={`flex justify-center bg-primary text-white font-semibold py-2 rounded hover:bg-[#8349f6] gap-2 w-full ${
                   loading ? "opacity-50 cursor-not-allowed" : ""
                 }`}
               >

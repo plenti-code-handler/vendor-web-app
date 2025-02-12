@@ -14,7 +14,8 @@ module.exports = {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
-        "gradient-custom": "linear-gradient(to right, #74D5B3, #4AA887)",
+        "gradient-custom":
+          "linear-gradient(to right, #9f7eea, #7a48e3, #5b2fcf)",
         "gradient-hr":
           "linear-gradient(to right, rgba(116,213,179 , 0.6), #FFFFFF)",
         "gradient-hr-alt":
@@ -43,6 +44,8 @@ module.exports = {
       },
       colors: {
         // texts
+        primary: "#5F22D9",
+        hoverPrimary: "#7e45ee",
         main: "#39B88B",
         mainLight: "#74D5B3",
         textLight: "#FFFFFF",

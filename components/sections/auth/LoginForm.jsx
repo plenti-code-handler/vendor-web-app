@@ -92,7 +92,7 @@ const LoginForm = () => {
       <button
         type="submit"
         disabled={loading}
-        className={`flex justify-center bg-[#5F22D9] text-white font-semibold py-2 rounded hover:bg-blueBgDarkHover2 gap-2 lg:w-[100%] ${
+        className={`flex justify-center bg-primary text-white font-semibold py-2 rounded hover:bg-hoverPrimary gap-2 lg:w-[100%] ${
           loading ? "opacity-50 cursor-not-allowed" : ""
         }`}
       >

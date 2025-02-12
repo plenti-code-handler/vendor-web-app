@@ -77,17 +77,22 @@ const BussinessHeader = () => {
 
   return (
     <>
-      <header className="bg-main xl:px-[6%] justify-around ">
-        <div className="mx-auto flex p-2 items-center justify-between py-5">
+      <header
+        style={{
+          background:
+            "linear-gradient(359deg, #cac3d9 -91%, rgb(95, 34, 217) 58%)",
+        }}
+        className=" xl:px-[6%] justify-around "
+      >
+        <div className="mx-auto flex items-center justify-between ">
           <div>
             <img
               alt="Plenti Logo"
-              src={"/logo.png"}
-              className="max-w-[10px] max-w-[80px]"
+              src={"/splash-logo.png"}
+              className="w-full h-full mt-2"
             />
           </div>
           <div className="flex lg:hidden gap-3 items-center">
-            {/* <ProfileDropdown /> */}
             <button
               onClick={toggleMenu}
               className="text-gray-900 hover:text-gray-700 focus:outline-none"
@@ -119,13 +124,13 @@ const BussinessHeader = () => {
                     isSmallDevice ? "w-[100%]" : ""
                   }  ${
                     activePage === name
-                      ? "bg-mainLight text-white"
-                      : "text-white lg:text-textLight hover:bg-mainLight "
+                      ? "bg-[#7a48e3] text-white"
+                      : "text-white lg:text-textLight hover:bg-[#7a48e3] "
                   }`}
                   onClick={() => {
                     handleLinkClick(name);
                     if (isMobile) {
-                      toggleMenu(); // Only trigger toggleMenu on mobile devices
+                      toggleMenu();
                     }
                   }}
                 >
@@ -141,7 +146,7 @@ const BussinessHeader = () => {
             {/* <LanguageDropdown /> */}
             <ProfileDropdown />
             <button
-              className="text-sm font-semibold leading-6 text-gray-900 p-3 transition-colors duration-200 ease-in-out hover:bg-mainLight hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-mainLight focus:ring-offset-2 rounded-lg"
+              className="text-sm font-semibold leading-6 text-gray-900 p-3 transition-colors duration-200 ease-in-out hover:bg-hoverPrimary hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-hoverPrimary focus:ring-offset-2 rounded-lg"
               title="Logout"
               onClick={handleLogout}
             >

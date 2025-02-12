@@ -18,14 +18,15 @@ function ForgetpasswordScreen() {
   } = useForm();
 
   const onSubmit = async (data) => {
-    setLoading(true);
+    // setLoading(true);
     console.log("inside API call");
+    router.push("/resetPassword");
 
-    try {
-    } catch (error) {
-    } finally {
-      setLoading(false);
-    }
+    // try {
+    // } catch (error) {
+    // } finally {
+    //   setLoading(false);
+    // }
   };
 
   return (

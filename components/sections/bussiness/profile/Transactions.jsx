@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import {
   bottomWalletBackground,
   leftWalletBackground,
-  payPalSvg,
   rightWalletBackground,
   topLeftWalletBackground,
   withdrawAmountSvg,
@@ -16,7 +15,9 @@ import Loader from "../../../loader/loader";
 
 const Transactions = () => {
   const dispatch = useDispatch();
-  const [balance, setBalance] = useState(5000); // Dummy balance
+
+  const [balance, setBalance] = useState(5000);
+
   const [withdrawals, setWithdrawals] = useState([
     {
       id: "1",

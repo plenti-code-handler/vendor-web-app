@@ -10,11 +10,15 @@ const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
 const Account = () => {
   const [vendorData, setVendorData] = useState(null);
+  const [description, setDescription] = useState("");
+  const [address, setAddress] = useState("");
+  const [coordinates, setCoordinates] = useState({ lat: null, lng: null });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [mapUrl, setMapUrl] = useState("");
 
   const inputRef = useRef(null);
+  const autoCompleteRef = useRef(null);
 
   useEffect(() => {
     const fetchVendorData = async () => {
@@ -27,7 +31,10 @@ const Account = () => {
           },
         });
 
+        console.log(response.data);
+
         setVendorData(response.data);
+        setDescription(response.data.description);
         if (response.data.latitude && response.data.longitude) {
           setMapUrl(
             `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${response.data.latitude},${response.data.longitude}&zoom=14`
@@ -44,45 +51,95 @@ const Account = () => {
     fetchVendorData();
   }, []);
 
+  useEffect(() => {
+    const loadGoogleMapsScript = () => {
+      if (typeof window.google === "undefined" || !window.google.maps) {
+        const script = document.createElement("script");
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
+        script.async = true;
+        script.defer = true;
+
+        script.onload = () => {
+          console.log("Google Maps API loaded successfully.");
+          initializeAutocomplete();
+        };
+
+        script.onerror = () => {
+          console.error("Google Maps API failed to load.");
+        };
+
+        document.body.appendChild(script);
+      } else {
+        initializeAutocomplete();
+      }
+    };
+
+    const initializeAutocomplete = () => {
+      if (!window.google || !window.google.maps || !window.google.maps.places) {
+        console.error("Google Maps API is not available.");
+        return;
+      }
+
+      if (!autoCompleteRef.current) return;
+
+      const autocomplete = new window.google.maps.places.Autocomplete(
+        autoCompleteRef.current,
+        { types: ["geocode"] }
+      );
+
+      autocomplete.addListener("place_changed", () => {
+        const place = autocomplete.getPlace();
+        if (place.geometry) {
+          const formattedAddress = place.formatted_address;
+          const latitude = place.geometry.location.lat();
+          const longitude = place.geometry.location.lng();
+          setAddress(formattedAddress);
+          setCoordinates({ lat: latitude, lng: longitude });
+          setMapUrl(
+            `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${latitude},${longitude}&zoom=14`
+          );
+        }
+      });
+    };
+
+    loadGoogleMapsScript();
+  }, []);
+
   return (
     <div className="flex flex-col gap-4 pt-6 pb-6">
-      {/* Name Field */}
       <TextField
         placeholder="Vendor Name"
         value={loading ? "Loading..." : vendorData?.vendor_name || ""}
         disabled={loading}
       />
 
-      {/* Email */}
       <div className="flex justify-between w-full rounded-lg border border-gray-300 bg-gray-100 py-3 px-3 text-sm text-black">
         <p className="font-semibold">
           {loading ? "Loading..." : vendorData?.email}
         </p>
         {vendorData?.email_verified && (
           <div className="flex gap-1 items-center">
-            <p className="text-green-600 font-semibold">Verified</p>
+            <p className="text-primary font-semibold">Verified</p>
             {tickSvg}
           </div>
         )}
       </div>
 
-      {/* GST Number */}
       <TextField
         placeholder="GST Number"
         value={loading ? "Loading..." : vendorData?.gst_number || ""}
         disabled={loading}
       />
 
-      {/* Address Input */}
       <input
-        ref={inputRef}
-        className="block w-full rounded-lg border border-gray-300 py-3 px-3 text-sm text-black bg-gray-100"
-        value={loading ? "Loading..." : vendorData?.address_url || ""}
-        placeholder="Vendor Address"
-        disabled={loading}
+        type="text"
+        ref={autoCompleteRef}
+        className="rounded-md border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
+        placeholder="Search your business address"
+        value={address}
+        onChange={(e) => setAddress(e.target.value)}
       />
 
-      {/* Google Maps Embed */}
       {mapUrl && (
         <iframe
           src={mapUrl}
@@ -95,14 +152,21 @@ const Account = () => {
         />
       )}
 
-      {/* Description */}
       <Textarea
-        className="block w-full resize-none rounded-lg border border-gray-300 py-3 px-3 text-sm text-black bg-gray-100"
-        rows={5}
-        placeholder="Description"
-        value={loading ? "Loading..." : vendorData?.description || ""}
-        disabled={loading}
+        className="block w-full resize-none rounded-lg border border-gray-300 py-3 px-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
+        rows={8}
+        placeholder={"Description"}
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
       />
+      <div className="flex gap-5 pt-2">
+        <button className="flex justify-center bg-white text-black border border-black font-md py-2  rounded hover:bg-grayTwo gap-2 w-[100%]">
+          Discard Changes
+        </button>
+        <button className="flex justify-center bg-[#5F22D9] text-white font-md py-2  rounded hover:bg-[#7e45ee] gap-2 w-[100%]">
+          Update
+        </button>
+      </div>
     </div>
   );
 };
