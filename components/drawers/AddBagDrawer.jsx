@@ -14,6 +14,8 @@ import ItemTypeFilter from "../dropdowns/ItemTypeFilter";
 import ItemTagsFilter from "../dropdowns/ItemTagsFilter";
 import { useState } from "react";
 import axiosClient from "../../AxiosClient";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 import { toast } from "sonner";
 import { whiteLoader } from "../../svgs";
@@ -28,6 +30,22 @@ const AddBagDrawer = () => {
   const [pricing, setPricing] = useState("");
   const [originalPrice, setOriginalPrice] = useState("");
   const [loading, setLoading] = useState(false);
+  const [windowStartTime, setWindowStartTime] = useState(new Date());
+  const [windowEndTime, setWindowEndTime] = useState(new Date());
+
+  const handleStartTimeChange = (date) => {
+    setWindowStartTime(date);
+    if (windowEndTime && date > windowEndTime) {
+      setWindowEndTime(date);
+    }
+  };
+
+  const handleEndTimeChange = (date) => {
+    if (date < windowStartTime) {
+      toast.error("End time cannot be before start time!");
+    }
+    setWindowEndTime(date);
+  };
 
   const resetForm = () => {
     setSelectedBag({});
@@ -40,6 +58,11 @@ const AddBagDrawer = () => {
   const handleSubmitBag = async () => {
     try {
       setLoading(true);
+
+      if (windowEndTime < windowStartTime) {
+        toast.error("End time must be after start time!");
+        return;
+      }
 
       const requiredFields = [
         {
@@ -86,10 +109,12 @@ const AddBagDrawer = () => {
         price: pricing,
         actual_price: originalPrice,
         quantity: numberOfBags,
+        window_start_time: Math.floor(windowStartTime.getTime() / 1000),
+        window_end_time: Math.floor(windowEndTime.getTime() / 1000),
       };
 
       const response = await axiosClient.post(
-        "/v1/vendor/listing/add-items?listing_id=lst_krFbYciRxh",
+        "/v1/vendor/item/create",
         newItem
       );
 
@@ -144,6 +169,42 @@ const AddBagDrawer = () => {
                     selectedFilter={selectedTags}
                     onFilterChange={setSelectedTags}
                   />
+
+                  <div>
+                    {/* Window Start Time */}
+                    <div className="flex flex-col pb-5 mt-5">
+                      <p className="text-black font-bold text-xl">
+                        Window Start Time
+                      </p>
+                      <DatePicker
+                        selected={windowStartTime}
+                        onChange={handleStartTimeChange}
+                        showTimeSelect
+                        timeFormat="HH:mm"
+                        timeIntervals={15}
+                        dateFormat="MMMM d, yyyy h:mm aa"
+                        minDate={new Date()} // Disable past dates
+                        className="border border-gray-300 p-2 rounded"
+                      />
+                    </div>
+
+                    {/* Window End Time */}
+                    <div className="flex flex-col pb-5 mt-5">
+                      <p className="text-black font-bold text-xl">
+                        Window End Time
+                      </p>
+                      <DatePicker
+                        selected={windowEndTime}
+                        onChange={handleEndTimeChange}
+                        showTimeSelect
+                        timeFormat="HH:mm"
+                        timeIntervals={15}
+                        dateFormat="MMMM d, yyyy h:mm aa"
+                        minDate={windowStartTime} // Ensure end time is after start time
+                        className="border border-gray-300 p-2 rounded"
+                      />
+                    </div>
+                  </div>
 
                   <div className="flex flex-col pb-5 mt-5 ">
                     <p className="text-black font-bold text-xl">

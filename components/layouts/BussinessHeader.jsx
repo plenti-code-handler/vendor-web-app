@@ -110,12 +110,14 @@ const BussinessHeader = () => {
           <nav
             className={`${
               isMenuOpen ? "block" : "hidden"
-            } absolute top-16 left-0 mt-3 lg:mt-0 w-full h-full bg-main font-base shadow-md transition-transform transform ${
+            } absolute top-16 left-0 mt-14 lg:mt-0 w-full h-full bg-primary  font-base shadow-md transition-transform transform ${
               isMenuOpen ? "translate-y-0" : "-translate-y-full"
             } lg:static lg:block lg:bg-transparent lg:shadow-none lg:translate-y-0 xl:ml-[6%] lg:ml-[3%]`}
-            style={{ zIndex: isSmallDevice ? 1000 : 0 }}
+            style={{
+              zIndex: isSmallDevice ? 1000 : 0,
+            }}
           >
-            <div className="flex flex-col items-start lg:flex-row p-6 lg:p-0 gap-[2.2%]">
+            <div className="flex flex-col  justify-center items-start lg:flex-row p-6 lg:p-0 gap-[2.2%]">
               {menuItemsData.map(({ name, href }) => (
                 <Link
                   key={name}

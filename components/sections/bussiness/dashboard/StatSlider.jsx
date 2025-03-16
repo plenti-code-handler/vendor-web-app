@@ -150,7 +150,7 @@ const StatSlider = () => {
       <div className="px-4">
         <Card
           title={Number(bagToday).toLocaleString("en-US")}
-          content={`Today's Bag`}
+          content={`Total Orders`}
         />
       </div>
     </Slider>

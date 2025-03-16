@@ -334,7 +334,7 @@ function Page() {
             <div className="mt-6">
               <button
                 type="submit"
-                className={`flex justify-center bg-primary text-white font-semibold py-2 rounded hover:bg-[#8349f6] gap-2 w-full ${
+                className={`flex justify-center bg-primary text-white font-semibold py-2 rounded hover:bg-hoverPrimary gap-2 w-full ${
                   loading ? "opacity-50 cursor-not-allowed" : ""
                 }`}
               >

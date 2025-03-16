@@ -1,12 +1,14 @@
 "use client";
-
 import { Tab, TabGroup, TabList } from "@headlessui/react";
 
-const Tabs = ({ tabs, onChange }) => {
+const Tabs = ({ tabs, activeTab, onChange }) => {
   return (
     <div className="flex">
       <div className="w-full">
-        <TabGroup onChange={onChange}>
+        <TabGroup
+          selectedIndex={tabs.findIndex((tab) => tab.name === activeTab)}
+          onChange={(index) => onChange(tabs[index].name)}
+        >
           <TabList className="flex gap-4">
             {tabs.map(({ name }) => (
               <Tab

@@ -35,14 +35,16 @@ const LoginForm = () => {
     };
 
     try {
-      const response = await axiosClient.post("/v1/vendor/me/login", loginData);
+      // const response = await axiosClient.post("/v1/vendor/me/login", loginData);
 
-      console.log(response);
-      if (response.status === 200) {
-        console.log("Success message ");
-        localStorage.setItem("token", response.data.access_token);
-        router.push("/business");
-      }
+      // console.log(response);
+      // if (response.status === 200) {
+      //   console.log("Success message ");
+      //   localStorage.setItem("token", response.data.access_token);
+      //   router.push("/business");
+      // }
+
+      router.push("/business");
     } catch (error) {
       toast.error("Invalid email or password");
       console.log(error.response.data.detail);

@@ -72,7 +72,21 @@ const VerifyAccountForm = () => {
 
       if (response.status === 200) {
         toast.success("OTP Verified Successfully");
-        router.push("/complete_profile");
+        const registerResponse = await axiosClient.post(
+          `/v1/vendor/me/register?token=${response.data.access_token}`,
+          {
+            email: localStorage.getItem("email"),
+            password: localStorage.getItem("password"),
+          }
+        );
+
+        if (registerResponse.status === 200) {
+          console.log(registerResponse.data.access_token);
+          localStorage.setItem("token", registerResponse.data.access_token);
+          router.push("/complete_profile");
+        } else {
+          toast.error("Registration failed. Please try again.");
+        }
       } else {
         toast.error(response.data.message || "OTP verification failed");
       }
@@ -98,8 +112,12 @@ const VerifyAccountForm = () => {
         `/v1/vendor/me/email/send-otp?email=${email}`
       );
 
+      console.log("OTP response inside verify otp");
+      console.log(otpResponse);
+
       if (otpResponse.status === 200) {
         toast.success("OTP sent successfully. Please verify.");
+
         setTimeLeft(60);
         setIsResendDisabled(true);
       } else {
@@ -181,7 +199,7 @@ const VerifyAccountForm = () => {
 
           <button
             onClick={handleVerify}
-            className={`mt-5 bg-[#5F22D9] text-white font-semibold py-2 rounded w-[240px] md:w-[300px] ${
+            className={`mt-5 bg-primary text-white font-semibold py-2 rounded w-[240px] md:w-[300px] ${
               loading ? "opacity-50 cursor-not-allowed" : ""
             }`}
             disabled={loading}

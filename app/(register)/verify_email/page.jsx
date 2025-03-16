@@ -36,25 +36,9 @@ function Page() {
         return;
       }
 
-      const registerResponse = await axiosClient.post(
-        `/v1/vendor/me/register`,
-        {
-          email: data.email,
-          password: data.password,
-        }
-      );
-
-      console.log("response from API call");
-
-      if (registerResponse.status === 200) {
-        console.log(registerResponse.data.access_token);
-        localStorage.setItem("token", registerResponse.data.access_token);
-        localStorage.setItem("email", data.email);
-        // toast.success("Registration successful!");
-        router.push("/verify_otp");
-      } else {
-        toast.error("Registration failed. Please try again.");
-      }
+      localStorage.setItem("email", data.email);
+      localStorage.setItem("password", data.password);
+      router.push("/verify_otp");
     } catch (error) {
       console.error("Error during OTP or registration:", error);
 
@@ -149,7 +133,7 @@ function Page() {
             <div className="w-full flex justify-center">
               <button
                 type="submit"
-                className={`flex justify-center items-center bg-[#5F22D9] text-white font-semibold py-2 rounded hover:bg-[#8349f6] gap-2 w-[240px] md:w-[300px] ${
+                className={`flex justify-center items-center bg-primary text-white font-semibold py-2 rounded hover:bg-[#8349f6] gap-2 w-[240px] md:w-[300px] ${
                   loading ? "opacity-50 cursor-not-allowed" : ""
                 }`}
                 disabled={loading}
