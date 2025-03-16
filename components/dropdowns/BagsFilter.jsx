@@ -14,10 +14,10 @@ const BagsFilter = ({ selectedFilter, onFilterChange }) => {
           <option value="" className="text-base">
             {`All bags`}
           </option>
-          <option value="Baked" className="text-base">
+          <option value="BAKED GOODS" className="text-base">
             {`Baked`}
           </option>
-          <option value="snacks and Desserts" className="text-base">
+          <option value="SNACKS AND DESSERT" className="text-base">
             {`Snacks and Desserts`}
           </option>
           <option value="Meal" className="text-base">

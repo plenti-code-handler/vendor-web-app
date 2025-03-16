@@ -1,16 +1,15 @@
 "use client";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { EyeIcon } from "@heroicons/react/24/outline";
 import axiosClient from "../../../../AxiosClient";
 import LoadMoreButton from "../../../buttons/LoadMoreButton";
 import TableUpper from "./TableUpper";
 import { toast } from "sonner";
-import { BagsContext } from "../../../../contexts/BagsContext";
 import Loader from "../../../loader/loader";
 import { formatTime } from "../../../../utility/FormateTime";
+import Modal from "../../../Modal";
 
 const BagsTable = () => {
-  const { filteredBags, setFilteredBags } = useContext(BagsContext);
   const [items, setItems] = useState([]);
   const [visibleItems, setVisibleItems] = useState(5);
   const [loading, setLoading] = useState(false);
@@ -38,11 +37,13 @@ const BagsTable = () => {
     fetchItems();
   }, []);
 
+  useEffect(() => {
+    setVisibleItems(5);
+  }, [items]);
+
   const handleLoadMore = () => {
-    setVisibleItems((prev) => {
-      const newCount = Math.min(prev + 5, items.length);
-      return newCount;
-    });
+    setVisibleItems((prev) => Math.min(prev + 5, filteredItems.length));
+    console.log("Load More Clicked, Visible Items:", visibleItems);
   };
 
   const handleFilterChange = (filter) => {
@@ -110,7 +111,6 @@ const BagsTable = () => {
                 <td className="py-2 px-2 text-left w-1/6">
                   {item.item_type.replace(/_/g, " ")}
                 </td>
-
                 <td className="py-2 px-2 w-1/6 whitespace-nowrap">
                   {formatTime(item.window_start_time)}
                 </td>
@@ -120,11 +120,9 @@ const BagsTable = () => {
                 <td className="py-2 px-2 w-1/6">{item.quantity}</td>
                 <td className="py-2 px-2 w-1/6">${item.price}</td>
                 <td className="py-2 px-2 w-1/6 text-center">
-                  <div className="flex justify-center items-center">
-                    <button onClick={() => openModal(item)}>
-                      <EyeIcon className="h-5 w-5 text-gray-600 hover:text-gray-900" />
-                    </button>
-                  </div>
+                  <button onClick={() => openModal(item)}>
+                    <EyeIcon className="h-5 w-5 text-gray-600 hover:text-gray-900" />
+                  </button>
                 </td>
               </tr>
             ))}
@@ -132,18 +130,15 @@ const BagsTable = () => {
         </table>
       )}
 
-      {visibleItems < items.length && (
-        <>
-          <LoadMoreButton onClick={handleLoadMore} />
-        </>
+      {filteredItems.length > visibleItems && (
+        <LoadMoreButton loadMore={handleLoadMore} isLoading={loading} />
       )}
 
-      {/* Modal Component */}
-      {/* <Modal
+      <Modal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
         item={selectedItem}
-      /> */}
+      />
     </div>
   );
 };

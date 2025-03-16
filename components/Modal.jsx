@@ -1,5 +1,6 @@
 import React from "react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
+import { formatTime, formatTimestamp } from "../utility/FormateTime";
 
 const Modal = ({ isOpen, onClose, item }) => {
   if (!isOpen || !item) return null;
@@ -7,7 +8,6 @@ const Modal = ({ isOpen, onClose, item }) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
       <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-lg md:max-w-lg">
-        {/* Modal Header */}
         <div className="flex justify-between border-b pb-3">
           <h2 className="text-lg font-semibold">Product Details</h2>
           <button onClick={onClose}>
@@ -15,15 +15,25 @@ const Modal = ({ isOpen, onClose, item }) => {
           </button>
         </div>
 
-        {/* Modal Content */}
         <div className="mt-4 space-y-3">
           <div>
-            <span className="font-medium">Item Name:</span>{" "}
-            {item.item_name || "N/A"}
+            <span className="font-medium">Type:</span>{" "}
+            {item.item_type.replace(/_/g, " ") || "N/A"}
           </div>
           <div>
-            <span className="font-medium">Type:</span> {item.item_type || "N/A"}
+            <span className="font-medium">Tags:</span>{" "}
+            {item.tags && item.tags.length > 0
+              ? item.tags
+                  .map((tag) => tag.replace(/_/g, " ").toLowerCase())
+                  .map((tag) => tag.charAt(0).toUpperCase() + tag.slice(1))
+                  .join(", ")
+              : "N/A"}
           </div>
+          <div>
+            <span className="font-medium">Vegetarian:</span>{" "}
+            {item.veg ? "Yes" : "No"}
+          </div>
+
           <div>
             <span className="font-medium">Stock:</span> {item.quantity || "N/A"}
           </div>
@@ -31,12 +41,27 @@ const Modal = ({ isOpen, onClose, item }) => {
             <span className="font-medium">Price:</span> ${item.price || "N/A"}
           </div>
           <div>
-            <span className="font-medium">Description:</span>{" "}
+            <span className="font-medium">Acutal Price:</span> $
+            {item.actual_price || "N/A"}
+          </div>
+          <div>
+            <span className="font-medium mr-1">Window Start Time:</span>
+            {formatTime(item.window_start_time) || "N/A"}
+          </div>
+          <div>
+            <span className="font-medium mr-1">Window End Time:</span>
+            {formatTime(item.window_end_time) || "N/A"}
+          </div>
+          <div>
+            <span className="font-medium mr-1">Created At:</span>
+            {formatTimestamp(item.created_at) || "N/A"}
+          </div>
+          <div>
+            <span className="font-medium ">Description:</span>{" "}
             {item.description || "No description available"}
           </div>
         </div>
 
-        {/* Close Button */}
         <div className="mt-5 flex justify-end">
           <button
             onClick={onClose}
