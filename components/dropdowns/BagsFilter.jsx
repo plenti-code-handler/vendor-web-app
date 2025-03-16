@@ -2,10 +2,6 @@ import { useEffect, useState } from "react";
 import { arrowDownGray } from "../../svgs";
 
 const BagsFilter = ({ selectedFilter, onFilterChange }) => {
- 
-
-    
-
   return (
     <form className="max-w-lg w-full lg:w-60">
       <div className="relative">
@@ -18,14 +14,14 @@ const BagsFilter = ({ selectedFilter, onFilterChange }) => {
           <option value="" className="text-base">
             {`All bags`}
           </option>
-          <option value="scheduled" className="text-base">
-            {`Scheduled bags`}
+          <option value="Baked" className="text-base">
+            {`Baked`}
           </option>
-          <option value="active" className="text-base">
-            {`Active bags`}
+          <option value="snacks and Desserts" className="text-base">
+            {`Snacks and Desserts`}
           </option>
-          <option value="past" className="text-base">
-            {`Past bags`}
+          <option value="Meal" className="text-base">
+            {`Meal`}
           </option>
         </select>
 

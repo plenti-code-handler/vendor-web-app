@@ -52,7 +52,11 @@ const AddBagDrawer = () => {
     setSelectedTags([]);
     setDescription("");
     setNumberOfBags(0);
+    setWindowStartTime(new Date());
+    setWindowEndTime(new Date());
     setPricing("");
+    setOriginalPrice("");
+    setIsVeg(true);
   };
 
   const handleSubmitBag = async () => {
@@ -171,7 +175,6 @@ const AddBagDrawer = () => {
                   />
 
                   <div>
-                    {/* Window Start Time */}
                     <div className="flex flex-col pb-5 mt-5">
                       <p className="text-black font-bold text-xl">
                         Window Start Time
@@ -183,12 +186,11 @@ const AddBagDrawer = () => {
                         timeFormat="HH:mm"
                         timeIntervals={15}
                         dateFormat="MMMM d, yyyy h:mm aa"
-                        minDate={new Date()} // Disable past dates
-                        className="border border-gray-300 p-2 rounded"
+                        minDate={new Date()}
+                        className="border border-gray-300 w-full p-2 rounded"
                       />
                     </div>
 
-                    {/* Window End Time */}
                     <div className="flex flex-col pb-5 mt-5">
                       <p className="text-black font-bold text-xl">
                         Window End Time
@@ -200,8 +202,8 @@ const AddBagDrawer = () => {
                         timeFormat="HH:mm"
                         timeIntervals={15}
                         dateFormat="MMMM d, yyyy h:mm aa"
-                        minDate={windowStartTime} // Ensure end time is after start time
-                        className="border border-gray-300 p-2 rounded"
+                        minDate={windowStartTime}
+                        className="border border-gray-300 w-full p-2 rounded"
                       />
                     </div>
                   </div>
