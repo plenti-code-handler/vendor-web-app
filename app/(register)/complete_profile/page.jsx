@@ -122,6 +122,8 @@ function Page() {
         "Vendor data uploaded successfully:",
         uploadVendorDataResponse.data
       );
+      localStorage.removeItem("password");
+      localStorage.removeItem("email");
       router.push("/login");
     } catch (error) {
       console.error("Error occurred during form submission:", error);

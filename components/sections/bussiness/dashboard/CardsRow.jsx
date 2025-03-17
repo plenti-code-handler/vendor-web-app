@@ -6,7 +6,6 @@ const CardsRow = () => {
   const [totalBags, setTotalBags] = useState(0);
   const [totalOrders, setTotalOrders] = useState(0);
 
-  // Fetch Total Bags and Total Orders from localStorage after 2 seconds
   useEffect(() => {
     const timeout = setTimeout(() => {
       const storedBags = localStorage.getItem("Totalbags");

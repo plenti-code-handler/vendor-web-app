@@ -8,8 +8,15 @@ import { toast } from "sonner";
 import Loader from "../../../loader/loader";
 import { formatTime } from "../../../../utility/FormateTime";
 import Modal from "../../../Modal";
+import { PencilIcon, TrashIcon } from "@heroicons/react/20/solid";
+import { useDispatch } from "react-redux";
+import {
+  setBagToUpdate,
+  setOpenDrawer,
+} from "../../../../redux/slices/editBagSlice";
 
 const BagsTable = () => {
+  const dispatch = useDispatch();
   const [items, setItems] = useState([]);
   const [visibleItems, setVisibleItems] = useState(5);
   const [loading, setLoading] = useState(false);
@@ -27,6 +34,8 @@ const BagsTable = () => {
         if (response.status === 200) {
           setItems(response.data || []);
         }
+
+        console.log(response.data);
       } catch (error) {
         toast.error("Failed to fetch items");
         console.error("Error fetching items:", error);
@@ -37,6 +46,11 @@ const BagsTable = () => {
     fetchItems();
   }, []);
 
+  const handleEdit = (item) => {
+    dispatch(setBagToUpdate(item));
+    dispatch(setOpenDrawer(true));
+  };
+
   useEffect(() => {
     setVisibleItems(5);
   }, [items]);
@@ -44,6 +58,24 @@ const BagsTable = () => {
   const handleLoadMore = () => {
     setVisibleItems((prev) => Math.min(prev + 5, filteredItems.length));
     console.log("Load More Clicked, Visible Items:", visibleItems);
+  };
+
+  const handleDelete = async (item_id, vendor_id) => {
+    try {
+      const response = await axiosClient.delete(
+        `/v1/vendor/item/items/delete?item_id=${item_id}&vendor_id=${vendor_id}`
+      );
+
+      if (response.status === 200) {
+        toast.success("Item deleted successfully");
+        setItems((prevItems) =>
+          prevItems.filter((item) => item.id !== item_id)
+        );
+      }
+    } catch (error) {
+      toast.error("Failed to delete item");
+      console.error("Error deleting item:", error);
+    }
   };
 
   const handleFilterChange = (filter) => {
@@ -120,9 +152,20 @@ const BagsTable = () => {
                 <td className="py-2 px-2 w-1/6">{item.quantity}</td>
                 <td className="py-2 px-2 w-1/6">${item.price}</td>
                 <td className="py-2 px-2 w-1/6 text-center">
-                  <button onClick={() => openModal(item)}>
-                    <EyeIcon className="h-5 w-5 text-gray-600 hover:text-gray-900" />
-                  </button>
+                  <div className="flex items-center justify-center space-x-2">
+                    <button onClick={() => openModal(item)}>
+                      <EyeIcon className="h-5 w-5 text-gray-600 hover:text-gray-900" />
+                    </button>
+                    <button onClick={() => handleEdit(item)}>
+                      <PencilIcon className="h-5 w-5 text-blue-600 hover:text-blue-900" />
+                    </button>
+
+                    <button
+                      onClick={() => handleDelete(item.id, item.vendor_id)}
+                    >
+                      <TrashIcon className="h-5 w-5 text-red-600 hover:text-red-900" />
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
