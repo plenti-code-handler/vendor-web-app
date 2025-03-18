@@ -70,6 +70,8 @@ const RevenueChart = () => {
             total_packs_created,
             total_orders,
           } = response.data;
+
+          console.log(response.data);
           setTotalRevenue(total_revenue);
 
           localStorage.setItem("Totalbags", total_packs_created);

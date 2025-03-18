@@ -207,7 +207,7 @@ const Account = () => {
           loading="lazy"
         />
       )}
-
+      {/* 
       <Textarea
         className="block w-full resize-none rounded-lg border border-gray-300 py-3 px-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
         rows={8}
@@ -215,7 +215,7 @@ const Account = () => {
         name="description"
         value={formData.description}
         onChange={handleChange}
-      />
+      /> */}
 
       <div className="flex gap-5 pt-2">
         <button

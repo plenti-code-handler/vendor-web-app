@@ -46,6 +46,7 @@ const LoginForm = () => {
 
       router.push("/business");
     } catch (error) {
+      toast.error(error.response.data.detail);
       toast.error("Invalid email or password");
       console.log(error.response.data.detail);
     } finally {

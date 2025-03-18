@@ -12,40 +12,49 @@ import { useDispatch } from "react-redux";
 import { setOpenDrawer } from "../../../../redux/slices/withdrawAmountSlice";
 import WithdrawAmountDrawer from "../../../drawers/WithdrawAmountDrawer";
 import Loader from "../../../loader/loader";
+import axiosClient from "../../../../AxiosClient";
 
 const Transactions = () => {
   const dispatch = useDispatch();
-
   const [balance, setBalance] = useState(5000);
+  const [transactions, setTransactions] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const [withdrawals, setWithdrawals] = useState([
-    {
-      id: "1",
-      withdrawalno: "12345",
-      createdAt: { seconds: 1690000000 },
-      status: "paid",
-      amount: 150.0,
-    },
-    {
-      id: "2",
-      withdrawalno: "12346",
-      createdAt: { seconds: 1690100000 },
-      status: "pending",
-      amount: 200.0,
-    },
-    {
-      id: "3",
-      withdrawalno: "12347",
-      createdAt: { seconds: 1690200000 },
-      status: "not paid",
-      amount: 300.0,
-    },
-  ]);
-  const [countryCode, setCountryCode] = useState("SEK");
-  const [loader, setLoader] = useState(false);
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      try {
+        setLoading(true);
+        const response = await axiosClient.get(
+          "/v1/vendor/payment/get?skip=0&limit=10"
+        );
+
+        console.log(response.data);
+        setTransactions(response.data);
+      } catch (error) {
+        console.error("Error fetching transactions:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTransactions();
+  }, []);
 
   const handleWithdraw = () => {
     dispatch(setOpenDrawer(true));
+  };
+
+  const decideStyle = (status) => {
+    switch (status) {
+      case "PENDING":
+        return "bg-scheduledBg border-badgeScheduled text-badgeScheduled";
+      case "COMPLETED":
+        return "bg-green-200 border-green-500 text-green-500";
+      case "FAILED":
+        return "bg-red-200 text-red-500 border-red-500";
+      default:
+        return "bg-gray-200 text-gray-500 border-gray-500";
+    }
   };
 
   return (
@@ -53,8 +62,8 @@ const Transactions = () => {
       <WithdrawAmountDrawer
         balance={balance}
         setBalance={setBalance}
-        withdrawals={withdrawals}
-        setWithdrawals={setWithdrawals}
+        withdrawals={transactions}
+        setWithdrawals={setTransactions}
       />
       <div
         className="flex flex-col justify-center bg-gradient-custom rounded-xl items-center shadow-lg p-6"
@@ -71,89 +80,66 @@ const Transactions = () => {
           {topLeftWalletBackground}
         </div>
         <p className="text-[40px] font-bold text-white z-0">
-          {countryCode} {Number(balance).toFixed(2)}
+          {Number(balance).toFixed(2)}
         </p>
         <p className="text-base font-medium text-white z-0">My Wallet</p>
 
         <button
           onClick={handleWithdraw}
-          className="flex justify-center items-center bg-black/5 text-white font-medium rounded hover:bg-main p-2 mt-4 z-0"
+          className="flex justify-center items-center bg-black/5 text-white font-medium rounded hover:bg-primary p-2 mt-4 z-0"
         >
           {withdrawAmountSvg}
           <span className="ml-2">Withdraw Amount</span>
         </button>
       </div>
-      {loader ? (
-        <Loader />
-      ) : (
-        <div className="flex flex-col mt-4 p-3">
-          <p className="font-semibold text-2xl text-blackTwo mb-2">
-            Transaction History
-          </p>
-          {withdrawals.length > 0 ? (
-            withdrawals.map((withdrawal) => {
-              const decideStyle = (status) => {
-                switch (status) {
-                  case "paid":
-                    return "bg-green-200 border-green-500 text-green-500";
-                  case "not paid":
-                    return "bg-red-200 text-red-500 border-red-500";
-                  case "pending":
-                    return "bg-scheduledBg border-badgeScheduled text-badgeScheduled";
-                  default:
-                    return "";
-                }
-              };
-              return (
-                <div
-                  key={withdrawal.id}
-                  className="flex justify-between px-6 py-4 items-center bg-white shadow-lg transform translate-y-[-5px] p-2 rounded-lg mt-2 w-full"
-                >
-                  <div className="flex gap-2">
-                    <div className="flex flex-col">
-                      <p className="text-cardNumber text-base font-semibold">
-                        #{withdrawal.withdrawalno}
-                      </p>
-                      <p className="text-date text-sm font-medium">
-                        {new Intl.DateTimeFormat("en-GB", {
-                          day: "numeric",
-                          month: "short",
-                          year: "2-digit",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                          hour12: false,
-                        }).format(
-                          new Date(withdrawal.createdAt.seconds * 1000)
-                        )}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex gap-5 items-center">
-                    <div
-                      className={`${decideStyle(
-                        withdrawal.status
-                      )} font-semibold rounded-full text-center border text-[12px] px-5 py-1`}
-                    >
-                      {withdrawal.status === "paid"
-                        ? "Accepted"
-                        : withdrawal.status === "not paid"
-                        ? "Rejected"
-                        : withdrawal.status === "pending"
-                        ? "Pending"
-                        : ""}
-                    </div>
-                    <div className="text-amount text-xl font-semibold">
-                      {countryCode} {Number(withdrawal.amount).toFixed(2)}
-                    </div>
-                  </div>
+
+      <div className="flex flex-col mt-4 p-3">
+        <p className="font-semibold text-2xl text-blackTwo mb-2">
+          Transaction History
+        </p>
+        {loading ? (
+          <Loader />
+        ) : transactions.length > 0 ? (
+          transactions.map((transaction) => (
+            <div
+              key={transaction.id}
+              className="flex justify-between px-6 py-4 items-center bg-white shadow-lg transform translate-y-[-5px] p-2 rounded-lg mt-2 w-full"
+            >
+              <div className="flex gap-2">
+                <div className="flex flex-col">
+                  <p className="text-cardNumber text-base font-semibold">
+                    #{transaction.payment_order_id}
+                  </p>
+                  <p className="text-date text-sm font-medium">
+                    {new Intl.DateTimeFormat("en-GB", {
+                      day: "numeric",
+                      month: "short",
+                      year: "2-digit",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: false,
+                    }).format(new Date(transaction.created_at * 1000))}
+                  </p>
                 </div>
-              );
-            })
-          ) : (
-            <p>No withdrawals found.</p>
-          )}
-        </div>
-      )}
+              </div>
+              <div className="flex gap-5 items-center">
+                <div
+                  className={`${decideStyle(
+                    transaction.status
+                  )} font-semibold rounded-full text-center border text-[12px] px-5 py-1`}
+                >
+                  {transaction.status}
+                </div>
+                <div className="text-amount text-xl font-semibold">
+                  {Number(transaction.transaction_amount).toFixed(2)}
+                </div>
+              </div>
+            </div>
+          ))
+        ) : (
+          <p>No transactions found.</p>
+        )}
+      </div>
     </div>
   );
 };

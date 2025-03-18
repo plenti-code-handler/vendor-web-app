@@ -4,6 +4,7 @@ import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
 import Rating from "./Rating";
 import Account from "./Account";
 import PaymentInfo from "./PaymentInfo";
+import AddBagImages from "./AddBagImages";
 
 const tabs = [
   {
@@ -17,6 +18,10 @@ const tabs = [
   {
     name: "Rating & Reviews",
     component: <Rating />,
+  },
+  {
+    name: "Add Bag Images",
+    component: <AddBagImages />,
   },
 ];
 

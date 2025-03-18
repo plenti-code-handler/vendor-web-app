@@ -1,124 +1,100 @@
 import React, { useEffect, useState } from "react";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "../../../../app/firebase/config";
-import { useSelector } from "react-redux";
-import CustomerReviews from "./CustomerReviews";
-import { starSvg } from "../../../../svgs";
-import { getUserLocal } from "../../../../redux/slices/loggedInUserSlice";
+import { toast } from "sonner";
+import axiosClient from "../../../../AxiosClient";
 
 const Rating = () => {
   const [reviews, setReviews] = useState([]);
-  const [user, setUser] = useState({});
-
-  const successOpen = useSelector((state) => state.withdrawSuccess.drawerOpen);
-  const amountOpen = useSelector((state) => state.withdrawAmount.drawerOpen);
-
-  // Fetch user and reviews
-  useEffect(() => {
-    const user = getUserLocal();
-    if (user) {
-      setUser(user);
-    }
-  }, []);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const fetchUserReviews = async () => {
-      if (!user || !user.uid) return;
-
+    const fetchReviews = async () => {
+      setLoading(true);
       try {
-        const userDocRef = doc(db, "users", user.uid);
-        const userDocSnapshot = await getDoc(userDocRef);
-
-        if (userDocSnapshot.exists()) {
-          const userData = userDocSnapshot.data();
-          if (userData.reviews) {
-            setReviews(userData.reviews);
-          } else {
-            setReviews([]); // No reviews available
-          }
-        } else {
-          console.log("No such document!");
-          setReviews([]); // Document doesn't exist
+        const response = await axiosClient.get(
+          "/v1/vendor/review/get?skip=0&limit=10"
+        );
+        if (response.status === 200) {
+          setReviews(response.data);
         }
       } catch (error) {
+        toast.error("Failed to fetch reviews");
         console.error("Error fetching reviews:", error);
       }
+      setLoading(false);
     };
 
-    fetchUserReviews();
-  }, [user]);
+    fetchReviews();
+  }, []);
 
-  // Calculate total number of reviews
   const totalReviews = reviews.length;
-
-  // Calculate average rating
-  const averageRating = reviews.length
+  const averageRating = totalReviews
     ? (
         reviews.reduce((acc, review) => acc + review.rating, 0) / totalReviews
       ).toFixed(1)
-    : 0; // If no reviews, show 0
+    : 0;
 
-  // Calculate the percentage of each rating level (1 to 5 stars)
-  const ratingCounts = [0, 0, 0, 0, 0]; // Array to hold counts for 1, 2, 3, 4, 5 star ratings
-
-  // Count the number of reviews for each rating
+  const ratingCounts = [0, 0, 0, 0, 0];
   reviews.forEach((review) => {
-    const roundedRating = Math.round(review.rating); // Round rating to nearest integer
-    if (roundedRating >= 1 && roundedRating <= 5) {
-      ratingCounts[5 - roundedRating]++; // Correct mapping for star ratings
+    const rating = Math.round(review.rating);
+    if (rating >= 1 && rating <= 5) {
+      ratingCounts[5 - rating]++;
     }
   });
 
-  // Convert counts to percentages for each rating
-  const ratingDistribution = ratingCounts.map((count) => {
-    return totalReviews > 0 ? (count / totalReviews) * 100 : 0;
-  });
-
-  // Calculate the percentage for each rating level
-  const ratingPercentages = ratingCounts.map((count) => {
-    return totalReviews ? (count / totalReviews) * 100 : 0;
-  });
+  const ratingPercentages = ratingCounts.map((count) =>
+    totalReviews ? (count / totalReviews) * 100 : 0
+  );
 
   return (
-    <div className="flex flex-col w-full pt-[30px] pb-[30px]">
-      <div className="flex gap-8">
-        {/* Rating Bars */}
-        <div className="flex flex-col gap-2 flex-1">
+    <div className="w-full">
+      <div className="flex justify-between items-center">
+        <div className="text-center">
+          <p className="text-4xl font-bold text-gray-900">{averageRating}</p>
+          <p className="text-gray-500 text-sm">{totalReviews} Reviews</p>
+        </div>
+
+        <div className="flex flex-col gap-2 w-full max-w-sm">
           {[5, 4, 3, 2, 1].map((level, index) => (
             <div key={level} className="flex items-center gap-2">
-              <p className="w-6 text-center">{level}</p>
-              <div className="relative flex-1">
+              <p className="w-6 text-center text-gray-700 font-medium">
+                {level}
+              </p>
+              <div className="relative w-full h-3 bg-gray-200 rounded-md">
                 <div
-                  className={`absolute inset-0 bg-[#FFB400] rounded-sm ${
-                    successOpen || amountOpen ? "" : "z-10"
-                  }`}
-                  style={{
-                    width: `${ratingPercentages[5 - level]}%`,
-                    height: "10px",
-                  }}
-                ></div>
-                <div
-                  className="absolute inset-0 bg-gray-200 rounded-sm"
-                  style={{ height: "10px" }}
+                  className="absolute top-0 left-0 h-3 bg-yellow-500 rounded-md transition-all duration-500"
+                  style={{ width: `${ratingPercentages[5 - level]}%` }}
                 ></div>
               </div>
             </div>
           ))}
         </div>
+      </div>
 
-        {/* Feedback Summary */}
-        <div className="flex flex-col items-start flex-shrink-0 justify-center">
-          <div className="flex items-center gap-2">
-            <p className="text-black text-[40px] font-bold">{averageRating}</p>
-            {starSvg}
-          </div>
-          <p className="text-[#9796A1] text-sm font-medium mt-1">
-            {totalReviews} Reviews
-          </p>
+      <div className="mt-6">
+        <h2 className="text-lg font-semibold text-gray-800">Recent Reviews</h2>
+        <div className="space-y-4 mt-4">
+          {loading ? (
+            <p className="text-gray-500">Loading reviews...</p>
+          ) : reviews.length === 0 ? (
+            <p className="text-gray-500">No reviews yet.</p>
+          ) : (
+            reviews.map((review) => (
+              <div
+                key={review.id}
+                className="p-4 bg-gray-100 rounded-lg shadow-sm animate-fade-in"
+              >
+                <p className="text-yellow-500 font-semibold">
+                  {"★".repeat(review.rating) + "☆".repeat(5 - review.rating)}
+                </p>
+                <p className="mt-1 text-gray-800">{review.review}</p>
+                <p className="text-xs text-gray-500 mt-1">
+                  {new Date(review.created_at * 1000).toLocaleDateString()}
+                </p>
+              </div>
+            ))
+          )}
         </div>
       </div>
-      {/* Pass reviews as props to CustomerReviews */}
-      <CustomerReviews reviews={reviews} />
     </div>
   );
 };
