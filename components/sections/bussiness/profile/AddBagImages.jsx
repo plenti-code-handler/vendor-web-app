@@ -87,7 +87,7 @@ const AddBagImages = () => {
       <button
         onClick={handleUpload}
         disabled={loading}
-        className="mt-6 w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition-all"
+        className="mt-6 w-full bg-primary hover:bg-hoverPrimary    text-white font-semibold py-2 px-4 rounded transition-all"
       >
         {loading ? "Uploading..." : "Upload Image"}
       </button>

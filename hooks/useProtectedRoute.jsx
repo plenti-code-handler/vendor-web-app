@@ -5,7 +5,7 @@ import { getUserLocal } from "../redux/slices/loggedInUserSlice";
 export const useProtectedRoute = (allowedRoles) => {
   const router = useRouter();
 
-  useEffect(() => {
-    router.push("/business");
-  }, []);
+  // useEffect(() => {
+  //   router.push("/business");
+  // }, []);
 };

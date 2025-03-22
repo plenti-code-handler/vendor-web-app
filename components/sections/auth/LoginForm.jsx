@@ -46,9 +46,14 @@ const LoginForm = () => {
 
       router.push("/business");
     } catch (error) {
-      toast.error(error.response.data.detail);
-      toast.error("Invalid email or password");
-      console.log(error.response.data.detail);
+      console.log("Error Response:", error.response);
+      console.log("Error Detail:", error.response?.data?.detail);
+
+      if (error.response?.data?.detail) {
+        toast.error(error.response.data.detail);
+      } else {
+        toast.error("Invalid email or password");
+      }
     } finally {
       setLoading(false);
     }
@@ -95,7 +100,7 @@ const LoginForm = () => {
       <button
         type="submit"
         disabled={loading}
-        className={`flex justify-center bg-primary text-white font-semibold py-2 rounded hover:bg-hoverPrimary gap-2 lg:w-[100%] ${
+        className={`flex justify-center bg-primary hover:bg-hoverPrimary  text-white font-semibold py-2 rounded gap-2 lg:w-[100%] ${
           loading ? "opacity-50 cursor-not-allowed" : ""
         }`}
       >

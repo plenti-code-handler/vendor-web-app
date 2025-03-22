@@ -25,8 +25,8 @@ const decidePath = (pathname) => {
       return "My Dashboard";
     case "manage-bags":
       return "Manage Bags";
-    case "bookings":
-      return "Bookings";
+    case "orders":
+      return "Orders";
     case "more":
       return "More Options";
     case "profile":

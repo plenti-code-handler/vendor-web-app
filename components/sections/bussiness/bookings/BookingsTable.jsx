@@ -1,159 +1,115 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import Image from "next/image";
-import TableUpper from "./TableUpper";
-import { useDispatch } from "react-redux";
-import { setActivePage } from "../../../../redux/slices/headerSlice";
-import StatusDropdown from "./StatusDropdown";
-import LoadMoreButton from "../../../buttons/LoadMoreButton";
 
-const dummyBookings = [
-  {
-    id: "1",
-    customer: "John Doe",
-    dealName: "Summer Deal",
-    size: "Medium",
-    quantity: 2,
-    amount: "$500",
-    orderDate: "2025-01-25",
-    status: "active",
-  },
-  {
-    id: "2",
-    customer: "Jane Smith",
-    dealName: "Winter Special",
-    size: "Large",
-    quantity: 1,
-    amount: "$750",
-    orderDate: "2025-01-22",
-    status: "scheduled",
-  },
-  {
-    id: "3",
-    customer: "Michael Brown",
-    dealName: "Spring Offer",
-    size: "Small",
-    quantity: 3,
-    amount: "$450",
-    orderDate: "2025-01-19",
-    status: "past",
-  },
-];
+import { useEffect, useState } from "react";
+import axiosClient from "../../../../AxiosClient";
+import { toast } from "sonner";
+import OrdersFilter from "../../../dropdowns/OrdersFilter";
+import { TrashIcon } from "@heroicons/react/20/solid";
 
-const BookingsTable = () => {
-  const dispatch = useDispatch();
-  const [bookings, setBookings] = useState(dummyBookings);
-  const [filteredBookings, setFilteredBookings] = useState(dummyBookings);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [bookingFilter, setOnBookingFilter] = useState("active");
+const RecentOrders = () => {
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [filter, setFilter] = useState("");
 
   useEffect(() => {
-    dispatch(setActivePage("Bookings"));
-  }, [dispatch]);
+    const fetchRecentOrders = async () => {
+      setLoading(true);
+      try {
+        const response = await axiosClient.get(
+          "/v1/vendor/order/get?skip=0&limit=10"
+        );
+        if (response.status === 200) {
+          setOrders(response.data || []);
+        }
+      } catch (error) {
+        toast.error("Failed to fetch orders");
+        console.error("Error fetching orders:", error);
+      }
+      setLoading(false);
+    };
 
-  const onBookingFilterChange = (status) => {
-    setOnBookingFilter(status);
+    fetchRecentOrders();
+  }, []);
 
-    const filtered = dummyBookings.filter((booking) => {
-      if (status === "active") return booking.status === "active";
-      if (status === "scheduled") return booking.status === "scheduled";
-      if (status === "past") return booking.status === "past";
-      return true; // Default to all bookings
-    });
-
-    setFilteredBookings(filtered);
+  const formatTimestamp = (timestamp) => {
+    return new Date(timestamp * 1000).toLocaleString();
   };
 
-  useEffect(() => {
-    if (searchTerm === "") {
-      setFilteredBookings(bookings);
-    } else {
-      const filtered = bookings.filter(
-        (booking) =>
-          booking.customer.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          booking.dealName.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setFilteredBookings(filtered);
-    }
-  }, [searchTerm, bookings]);
+  const filteredOrders = filter
+    ? orders.filter((order) => order.current_status === filter)
+    : orders;
 
   return (
     <div className="mt-4 w-full border border-gray-200 rounded-xl p-6 sm:px-4">
-      <TableUpper
-        setSearchTerm={setSearchTerm}
-        bookingFilter={bookingFilter}
-        onBookingFilterChange={onBookingFilterChange}
-      />
-      <div className="no-scrollbar w-full overflow-y-hidden">
-        <table className="w-full table-auto truncate overflow-hidden bg-white">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-lg font-semibold">Recent Orders</h2>
+        <OrdersFilter selectedFilter={filter} onFilterChange={setFilter} />
+      </div>
+
+      <div className="overflow-x-auto">
+        <table className="w-full table-auto bg-white">
           <thead>
-            <tr className="border-b-[1px] border-grayOne border-dashed border-opacity-45 text-sm font-semibold text-grayOne">
-              <th className="pb-[8px] pl-[5%] pt-[18px] text-left w-[18.00%]">
-                CUSTOMER
-              </th>
-              <th className="pb-[8px] px-2 pt-[18px] text-center">Deal Name</th>
-              <th className="pb-[8px] px-2 pt-[18px] text-center">Size</th>
-              <th className="pb-[8px] px-2 pt-[18px] text-center">Quantity</th>
-              <th className="pb-[8px] px-2 pt-[18px] text-center">Amount</th>
-              <th className="pb-[8px] px-2 pt-[18px] text-center">
-                Order Date
-              </th>
-              <th className="pb-[8px] px-2 pt-[18px] text-center">Status</th>
+            <tr className="border-b text-sm font-semibold text-gray-500">
+              <th className="pb-2 pl-5 pt-4 text-left">Order Code</th>
+              <th className="pb-2 px-2 pt-4 text-center">Window Start Time</th>
+              <th className="pb-2 px-2 pt-4 text-center">Window End Time</th>
+              <th className="pb-2 px-2 pt-4 text-center">Created At</th>
+              <th className="pb-2 px-2 pt-4 text-center">Status</th>
+              <th className="pb-2 px-2 pt-4 text-center">Action</th>
             </tr>
           </thead>
           <tbody>
-            {filteredBookings.length > 0 ? (
-              filteredBookings.map((booking, index) => (
-                <tr
-                  key={index}
-                  className="cursor-pointer border-b-[1px] border-[#E4E4E4] border-dashed hover:bg-[#f8f7f7]"
-                >
-                  <td className="truncate pl-2 lg:pl-[5%] pr-6 md:pr-2 w-[14.28%]">
-                    <div className="py-3">{booking.customer}</div>
+            {loading ? (
+              <tr>
+                <td colSpan="6" className="text-center py-4">
+                  Loading...
+                </td>
+              </tr>
+            ) : filteredOrders.length > 0 ? (
+              filteredOrders.map((order, index) => (
+                <tr key={index} className="border-b hover:bg-gray-100">
+                  <td className="pl-5 py-3">{order.order_code}</td>
+                  <td className="text-center px-2">
+                    {formatTimestamp(order.window_start_time)}
                   </td>
-                  <td className="pb-[8px] px-2 pt-[18px] text-center">
-                    {booking.dealName}
+                  <td className="text-center px-2">
+                    {formatTimestamp(order.window_end_time)}
                   </td>
-                  <td className="pb-[8px] px-2 pt-[18px] text-center">
-                    {booking.size}
+                  <td className="text-center px-2">
+                    {formatTimestamp(order.created_at)}
                   </td>
-                  <td className="pb-[8px] px-2 pt-[18px] text-center">
-                    {booking.quantity}
-                  </td>
-                  <td className="pb-[8px] px-2 pt-[18px] text-center">
-                    {booking.amount}
-                  </td>
-                  <td className="pb-[8px] px-2 pt-[18px] text-center">
-                    {booking.orderDate}
-                  </td>
-                  <td className="pb-[8px] px-2 pt-[18px] text-center">
+                  <td className="text-center px-2">
                     <span
                       className={`px-2 py-1 rounded text-white text-xs font-semibold ${
-                        booking.status.toLowerCase() === "active"
+                        order.current_status === "WAITING_FOR_PICKUP"
+                          ? "bg-yellow-500"
+                          : order.current_status === "PICKED_UP"
                           ? "bg-green-500"
-                          : booking.status.toLowerCase() === "past"
-                          ? "bg-red-500"
-                          : "bg-yellow-500"
+                          : "bg-blue-500"
                       }`}
                     >
-                      {booking.status}
+                      {order.current_status.replace(/_/g, " ")}
                     </span>
+                  </td>
+                  <td className="text-center px-2">
+                    <button>
+                      <TrashIcon className="h-5 w-5 text-red-600 hover:text-red-900" />
+                    </button>
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="7" className="text-center py-4">
-                  No bookings found.
+                <td colSpan="6" className="text-center py-4 text-gray-500">
+                  No orders found for the selected filter.
                 </td>
               </tr>
             )}
           </tbody>
         </table>
       </div>
-      <LoadMoreButton onClick={() => console.log("Load more bookings")} />
     </div>
   );
 };
 
-export default BookingsTable;
+export default RecentOrders;
