@@ -42,8 +42,10 @@ const Account = () => {
         });
 
         const vendor = response.data;
+        console.log("Vendor details");
+        console.log(vendor);
         setVendorData(vendor);
-        setOriginalData(vendor); // Store original data for reset
+        setOriginalData(vendor);
         setFormData({
           store_manager_name: vendor.vendor_name || "",
           vendor_type: vendor.vendor_type || "",

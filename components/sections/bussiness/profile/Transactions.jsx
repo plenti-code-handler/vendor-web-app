@@ -16,7 +16,7 @@ import axiosClient from "../../../../AxiosClient";
 
 const Transactions = () => {
   const dispatch = useDispatch();
-  const [balance, setBalance] = useState(5000);
+  const [balance, setBalance] = useState(0);
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -43,6 +43,11 @@ const Transactions = () => {
   const handleWithdraw = () => {
     dispatch(setOpenDrawer(true));
   };
+
+  useEffect(() => {
+    const currentBalance = localStorage.getItem("Totalrevenue");
+    setBalance(currentBalance);
+  }, []);
 
   const decideStyle = (status) => {
     switch (status) {

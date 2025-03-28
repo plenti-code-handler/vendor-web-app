@@ -43,7 +43,7 @@ const RevenueChart = () => {
       yaxis: {
         tickAmount: 4,
         labels: {
-          formatter: (val) => val, // Removed country code
+          formatter: (val) => val,
           style: {
             fontSize: "12px",
             fontWeight: 600,
@@ -76,6 +76,7 @@ const RevenueChart = () => {
 
           localStorage.setItem("Totalbags", total_packs_created);
           localStorage.setItem("Totalorders", total_orders);
+          localStorage.setItem("Totalrevenue", total_revenue ?? 0);
 
           const transformedData = {
             Daily: {
@@ -107,7 +108,16 @@ const RevenueChart = () => {
               ...prevData.options,
               xaxis: {
                 ...prevData.options.xaxis,
+                type: activeTab === "Yearly" ? "category" : "datetime",
                 categories: transformedData[activeTab].categories,
+                labels: {
+                  format: activeTab === "Yearly" ? undefined : "MMM dd",
+                  style: {
+                    fontSize: "12px",
+                    fontWeight: 600,
+                    colors: colorsLabels,
+                  },
+                },
               },
             },
           }));

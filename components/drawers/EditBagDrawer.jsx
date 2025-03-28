@@ -78,6 +78,8 @@ const EditBagDrawer = () => {
     try {
       setLoading(true);
 
+      console.log("Data before API hit");
+
       const payload = {
         item_id: bagToEdit.id,
         vendor_id: bagToEdit.vendor_id,
@@ -85,12 +87,20 @@ const EditBagDrawer = () => {
         description,
         quantity: numberOfBags,
         price: pricing,
-        window_start_time: windowStartTime,
-        window_end_time: windowEndTime,
+        actual_price: originalPrice, // Added
+        tags: selectedTags, // Added
+        veg: isVeg, // Added
+        non_veg: !isVeg, // Added
+        window_start_time: Math.floor(
+          new Date(windowStartTime).getTime() / 1000
+        ),
+        window_end_time: Math.floor(new Date(windowEndTime).getTime() / 1000),
       };
 
+      console.log(payload);
+
       const response = await axiosClient.patch(
-        "/v1/vendor/item/update",
+        `/v1/vendor/item/update?item_id=${bagToEdit.id}`,
         payload
       );
 

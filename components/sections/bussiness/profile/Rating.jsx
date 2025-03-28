@@ -17,8 +17,9 @@ const Rating = () => {
           setReviews(response.data);
         }
       } catch (error) {
-        toast.error("Failed to fetch reviews");
-        console.error("Error fetching reviews:", error);
+        toast.error(error.response.data.detail);
+
+        console.log(error.response.data.detail);
       }
       setLoading(false);
     };

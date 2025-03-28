@@ -101,7 +101,7 @@ const RecentOrders = () => {
             ) : (
               <tr>
                 <td colSpan="6" className="text-center py-4 text-gray-500">
-                  No orders found for the selected filter.
+                  No orders found.
                 </td>
               </tr>
             )}

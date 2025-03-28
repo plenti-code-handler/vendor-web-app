@@ -134,41 +134,50 @@ const BagsTable = () => {
               </th>
             </tr>
           </thead>
-          <tbody>
-            {filteredItems.slice(0, visibleItems).map((item) => (
-              <tr
-                key={item.id}
-                className="border-b border-gray-200 text-center"
-              >
-                <td className="py-2 px-2 text-left w-1/6">
-                  {item.item_type.replace(/_/g, " ")}
-                </td>
-                <td className="py-2 px-2 w-1/6 whitespace-nowrap">
-                  {formatTime(item.window_start_time)}
-                </td>
-                <td className="py-2 px-2 w-1/6 whitespace-nowrap">
-                  {formatTime(item.window_end_time)}
-                </td>
-                <td className="py-2 px-2 w-1/6">{item.quantity}</td>
-                <td className="py-2 px-2 w-1/6">${item.price}</td>
-                <td className="py-2 px-2 w-1/6 text-center">
-                  <div className="flex items-center justify-center space-x-2">
-                    <button onClick={() => openModal(item)}>
-                      <EyeIcon className="h-5 w-5 text-gray-600 hover:text-gray-900" />
-                    </button>
-                    <button onClick={() => handleEdit(item)}>
-                      <PencilIcon className="h-5 w-5 text-blue-600 hover:text-blue-900" />
-                    </button>
 
-                    <button
-                      onClick={() => handleDelete(item.id, item.vendor_id)}
-                    >
-                      <TrashIcon className="h-5 w-5 text-red-600 hover:text-red-900" />
-                    </button>
-                  </div>
+          <tbody>
+            {filteredItems.length === 0 ? (
+              <tr>
+                <td colSpan="6" className="py-4 text-center text-gray-500">
+                  No bags available
                 </td>
               </tr>
-            ))}
+            ) : (
+              filteredItems.slice(0, visibleItems).map((item) => (
+                <tr
+                  key={item.id}
+                  className="border-b border-gray-200 text-center"
+                >
+                  <td className="py-2 px-2 text-left w-1/6">
+                    {item.item_type.replace(/_/g, " ")}
+                  </td>
+                  <td className="py-2 px-2 w-1/6 whitespace-nowrap">
+                    {formatTime(item.window_start_time)}
+                  </td>
+                  <td className="py-2 px-2 w-1/6 whitespace-nowrap">
+                    {formatTime(item.window_end_time)}
+                  </td>
+                  <td className="py-2 px-2 w-1/6">{item.quantity}</td>
+                  <td className="py-2 px-2 w-1/6">${item.price}</td>
+                  <td className="py-2 px-2 w-1/6 text-center">
+                    <div className="flex items-center justify-center space-x-2">
+                      <button onClick={() => openModal(item)}>
+                        <EyeIcon className="h-5 w-5 text-gray-600 hover:text-gray-900" />
+                      </button>
+                      <button onClick={() => handleEdit(item)}>
+                        <PencilIcon className="h-5 w-5 text-blue-600 hover:text-blue-900" />
+                      </button>
+
+                      <button
+                        onClick={() => handleDelete(item.id, item.vendor_id)}
+                      >
+                        <TrashIcon className="h-5 w-5 text-red-600 hover:text-red-900" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       )}

@@ -79,7 +79,7 @@ const ProfileCard = () => {
   return (
     <>
       <div className="flex flex-col gap-5 w-[100%] lg:w-[60%] md:w-[60%] p-5 border border-gray-100 rounded-md">
-        <div className="flex space-x-4">
+        <div className="flex items-center space-x-4">
           <div className="relative w-[120px] h-[120px]">
             <img
               alt="User"
@@ -103,19 +103,13 @@ const ProfileCard = () => {
             </label>
           </div>
 
-          <div className="flex flex-col lg:mt-5 lg:gap-y-2">
+          <div className="flex flex-col gap-y-1">
             <p className="text-lg font-semibold text-gray-900">
               {vendorData?.store_manager_name || "Loading..."}
             </p>
-            <div className="flex items-center text-grayOne font-[600] space-x-2">
-              {locationIconSvg}
-              <p className="text-sm">Location</p>
-            </div>
           </div>
         </div>
-        {/* <p className="text-left leading-5 text-graySeven font-medium">
-          {vendorData?.description || "Loading..."}
-        </p> */}
+
         <Tabs />
       </div>
       {true && (
