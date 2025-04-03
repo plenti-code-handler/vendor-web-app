@@ -1,102 +1,70 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { EyeIcon } from "@heroicons/react/24/outline";
+import { PencilIcon, TrashIcon } from "@heroicons/react/20/solid";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "sonner";
 import axiosClient from "../../../../AxiosClient";
 import LoadMoreButton from "../../../buttons/LoadMoreButton";
 import TableUpper from "./TableUpper";
-import { toast } from "sonner";
 import Loader from "../../../loader/loader";
-import { formatTime } from "../../../../utility/FormateTime";
 import Modal from "../../../Modal";
-import { PencilIcon, TrashIcon } from "@heroicons/react/20/solid";
-import { useDispatch } from "react-redux";
+import { formatTime } from "../../../../utility/FormateTime";
 import {
   setBagToUpdate,
   setOpenDrawer,
 } from "../../../../redux/slices/editBagSlice";
+import { fetchAllBags } from "../../../../redux/slices/bagsSlice";
 
 const BagsTable = () => {
   const dispatch = useDispatch();
-  const [items, setItems] = useState([]);
+  const { items: bags, loading } = useSelector((state) => state.bags);
+
   const [visibleItems, setVisibleItems] = useState(5);
-  const [loading, setLoading] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState("");
 
   useEffect(() => {
-    const fetchItems = async () => {
-      setLoading(true);
-      try {
-        const response = await axiosClient.get(
-          "/v1/vendor/item/get/all?active=true"
-        );
-        if (response.status === 200) {
-          setItems(response.data || []);
-        }
-
-        console.log(response.data);
-      } catch (error) {
-        toast.error("Failed to fetch items");
-        console.error("Error fetching items:", error);
-      }
-      setLoading(false);
-    };
-
-    fetchItems();
-  }, []);
+    dispatch(fetchAllBags());
+  }, [dispatch]);
 
   const handleEdit = (item) => {
     dispatch(setBagToUpdate(item));
     dispatch(setOpenDrawer(true));
   };
 
-  useEffect(() => {
-    setVisibleItems(5);
-  }, [items]);
-
-  const handleLoadMore = () => {
-    setVisibleItems((prev) => Math.min(prev + 5, filteredItems.length));
-    console.log("Load More Clicked, Visible Items:", visibleItems);
-  };
-
   const handleDelete = async (item_id, vendor_id) => {
     try {
-      const response = await axiosClient.delete(
+      await axiosClient.delete(
         `/v1/vendor/item/items/delete?item_id=${item_id}&vendor_id=${vendor_id}`
       );
-
-      if (response.status === 200) {
-        toast.success("Item deleted successfully");
-        setItems((prevItems) =>
-          prevItems.filter((item) => item.id !== item_id)
-        );
-      }
+      toast.success("Item deleted successfully");
+      dispatch(fetchAllBags());
     } catch (error) {
       toast.error("Failed to delete item");
-      console.error("Error deleting item:", error);
     }
   };
 
   const handleFilterChange = (filter) => {
+    console.log("Inside handle change filter");
+    console.log(filter);
     setSelectedFilter(filter);
   };
 
   const filteredItems = selectedFilter
-    ? items.filter((item) => {
+    ? bags.filter((item) => {
         const formattedItemType = item.item_type
           .replace(/_/g, " ")
-          .toLowerCase();
-        const formattedFilter = selectedFilter.toLowerCase();
-
-        return (
-          formattedItemType === formattedFilter ||
-          (formattedItemType.includes("snacks") &&
-            formattedItemType.includes("desserts") &&
-            formattedFilter === "snacks and desserts")
-        );
+          .toLowerCase(); // Make sure formatting is consistent (lowercase + spaces instead of underscores)
+        const formattedFilter = selectedFilter.toLowerCase(); // Ensure case-insensitive comparison
+        return formattedItemType.includes(formattedFilter); // Change equality check to 'includes' to allow partial matches
       })
-    : items;
+    : bags;
+
+  const handleLoadMore = () => {
+    setVisibleItems((prev) => Math.min(prev + 5, filteredItems.length));
+  };
 
   const openModal = (item) => {
     setSelectedItem(item);
@@ -167,7 +135,6 @@ const BagsTable = () => {
                       <button onClick={() => handleEdit(item)}>
                         <PencilIcon className="h-5 w-5 text-blue-600 hover:text-blue-900" />
                       </button>
-
                       <button
                         onClick={() => handleDelete(item.id, item.vendor_id)}
                       >

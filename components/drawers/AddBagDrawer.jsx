@@ -12,7 +12,7 @@ import BagsPerDay from "./components/BagsPerDay";
 import BagPricing from "./components/BagPricing";
 import ItemTypeFilter from "../dropdowns/ItemTypeFilter";
 import ItemTagsFilter from "../dropdowns/ItemTagsFilter";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axiosClient from "../../AxiosClient";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -21,7 +21,7 @@ import { toast } from "sonner";
 import { whiteLoader } from "../../svgs";
 
 const AddBagDrawer = () => {
-  const [selectedBag, setSelectedBag] = useState();
+  const [selectedBag, setSelectedBag] = useState("MEAL");
 
   const [selectedTags, setSelectedTags] = useState([]);
   const [isVeg, setIsVeg] = useState(true);
@@ -35,17 +35,29 @@ const AddBagDrawer = () => {
 
   const handleStartTimeChange = (date) => {
     setWindowStartTime(date);
-    if (windowEndTime && date > windowEndTime) {
-      setWindowEndTime(date);
-    }
+
+    const newEndTime = new Date(date.getTime() + 30 * 60000);
+    setWindowEndTime(newEndTime);
   };
 
   const handleEndTimeChange = (date) => {
+    if (date < new Date()) {
+      toast.error("End time cannot be in the past!");
+      return;
+    }
+
     if (date < windowStartTime) {
       toast.error("End time cannot be before start time!");
+      return;
     }
+
     setWindowEndTime(date);
   };
+
+  useEffect(() => {
+    const initialEndTime = new Date(windowStartTime.getTime() + 30 * 60000);
+    setWindowEndTime(initialEndTime);
+  }, []);
 
   const resetForm = () => {
     setSelectedBag({});
@@ -65,6 +77,7 @@ const AddBagDrawer = () => {
 
       if (windowEndTime < windowStartTime) {
         toast.error("End time must be after start time!");
+        setLoading(false);
         return;
       }
 
@@ -72,32 +85,49 @@ const AddBagDrawer = () => {
         {
           field: selectedBag,
           name: "selectedBag",
-          message: "Please select a item type.",
+          message: "Please select an item type.",
+          validate: (field) => field && field.trim() !== "",
+        },
+        {
+          field: selectedTags,
+          name: "selectedTags",
+          message: "Please select item tags.",
+          validate: (field) => Array.isArray(field) && field.length > 0,
         },
         {
           field: description,
           name: "description",
           message: "Please fill the description.",
+          validate: (field) => field && field.trim() !== "",
         },
         {
           field: numberOfBags,
           name: "numberOfBags",
           message: "Please fill the number of items.",
+          validate: (field) => field > 0,
         },
         {
           field: pricing,
           name: "pricing",
           message: "Please provide the pricing information.",
+          validate: (field) => field && field.trim() !== "",
         },
         {
           field: originalPrice,
           name: "originalPrice",
           message: "Please provide the original price.",
+          validate: (field) => field && field.trim() !== "",
+        },
+        {
+          field: isVeg,
+          name: "isVeg",
+          message: "Please select a meal option (Veg/Non-Veg).",
+          validate: (field) => typeof field === "boolean",
         },
       ];
 
-      for (const { field, name, message } of requiredFields) {
-        if (!field) {
+      for (const { field, name, message, validate } of requiredFields) {
+        if (!validate(field)) {
           console.log(`Field '${name}' is missing or empty.`);
           toast.error(message);
           setLoading(false);
@@ -122,18 +152,16 @@ const AddBagDrawer = () => {
         newItem
       );
 
-      console.log(response);
       if (response.status === 200) {
         toast.success("Item Created Successfully!");
+        resetForm();
+        dispatch(setOpenDrawer(false));
       }
-
-      resetForm();
-
-      dispatch(setOpenDrawer(false));
-      setLoading(false);
     } catch (error) {
       toast.error("Failed to create a bag");
       console.error("Error adding document: ", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -141,6 +169,7 @@ const AddBagDrawer = () => {
   const open = useSelector((state) => state.addBag.drawerOpen);
 
   const handleClose = () => {
+    setLoading(false);
     dispatch(setOpenDrawer(false));
   };
 

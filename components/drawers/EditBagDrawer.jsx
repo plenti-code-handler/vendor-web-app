@@ -20,6 +20,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { toast } from "sonner";
 import { whiteLoader } from "../../svgs";
 import { setOpenDrawer } from "../../redux/slices/editBagSlice";
+import { fetchAllBags } from "../../redux/slices/bagsSlice";
 
 const EditBagDrawer = () => {
   const [selectedBag, setSelectedBag] = useState();
@@ -36,6 +37,8 @@ const EditBagDrawer = () => {
   const { bagToEdit } = useSelector((state) => state.editBag);
 
   useEffect(() => {
+    console.log("Inside eidt bag use effect");
+    console.log(bagToEdit);
     if (bagToEdit) {
       setSelectedTags(bagToEdit.tags);
       setOriginalPrice(bagToEdit.actual_price);
@@ -43,23 +46,29 @@ const EditBagDrawer = () => {
       setDescription(bagToEdit.description);
       setNumberOfBags(bagToEdit.quantity);
       setPricing(bagToEdit.price);
-      setWindowStartTime(new Date(bagToEdit.window_start_time));
-      setWindowEndTime(new Date(bagToEdit.window_end_time));
+      setWindowStartTime(bagToEdit.window_start_time);
+      setWindowEndTime(bagToEdit.window_end_time);
     }
   }, [bagToEdit]);
 
   const handleStartTimeChange = (date) => {
-    setWindowStartTime(date);
-    if (windowEndTime && date > windowEndTime) {
-      setWindowEndTime(date);
+    const timestamp = Math.floor(date.getTime() / 1000);
+    setWindowStartTime(timestamp);
+
+    if (windowEndTime && timestamp > windowEndTime) {
+      setWindowEndTime(timestamp);
     }
   };
 
   const handleEndTimeChange = (date) => {
-    if (date < windowStartTime) {
+    const timestamp = Math.floor(date.getTime() / 1000);
+
+    if (timestamp < windowStartTime) {
       toast.error("End time cannot be before start time!");
+      return;
     }
-    setWindowEndTime(date);
+
+    setWindowEndTime(timestamp);
   };
 
   const resetForm = () => {
@@ -84,17 +93,15 @@ const EditBagDrawer = () => {
         item_id: bagToEdit.id,
         vendor_id: bagToEdit.vendor_id,
         item_type: selectedBag,
-        description,
+        description: description,
         quantity: numberOfBags,
         price: pricing,
-        actual_price: originalPrice, // Added
-        tags: selectedTags, // Added
-        veg: isVeg, // Added
-        non_veg: !isVeg, // Added
-        window_start_time: Math.floor(
-          new Date(windowStartTime).getTime() / 1000
-        ),
-        window_end_time: Math.floor(new Date(windowEndTime).getTime() / 1000),
+        actual_price: originalPrice,
+        tags: selectedTags,
+        veg: isVeg,
+        non_veg: !isVeg,
+        window_start_time: windowStartTime,
+        window_end_time: windowEndTime,
       };
 
       console.log(payload);
@@ -107,6 +114,7 @@ const EditBagDrawer = () => {
       if (response.status === 200) {
         toast.success("Bag updated successfully!");
         dispatch(setOpenDrawer(false));
+        dispatch(fetchAllBags());
       }
 
       console.log(response);
@@ -160,7 +168,11 @@ const EditBagDrawer = () => {
                         Window Start Time
                       </p>
                       <DatePicker
-                        selected={windowStartTime}
+                        selected={
+                          windowStartTime
+                            ? new Date(windowStartTime * 1000)
+                            : null
+                        }
                         onChange={handleStartTimeChange}
                         showTimeSelect
                         timeFormat="HH:mm"
@@ -176,7 +188,11 @@ const EditBagDrawer = () => {
                         Window End Time
                       </p>
                       <DatePicker
-                        selected={windowEndTime}
+                        selected={
+                          windowStartTime
+                            ? new Date(windowEndTime * 1000)
+                            : null
+                        }
                         onChange={handleEndTimeChange}
                         showTimeSelect
                         timeFormat="HH:mm"

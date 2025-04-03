@@ -1,6 +1,6 @@
 export const formatTime = (time) => {
   if (!time) return "N/A";
-  const date = new Date(time);
+  const date = new Date(time * 1000);
   return date.toLocaleTimeString([], {
     hour: "2-digit",
     minute: "2-digit",

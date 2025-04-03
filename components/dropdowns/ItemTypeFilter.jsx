@@ -8,12 +8,9 @@ const ItemTypeFilter = ({ selectedFilter, onFilterChange }) => {
         <select
           id="bags"
           className="bg-grayFive text-grayThree text-sm font-semibold rounded-lg focus:ring-grayTwo focus:border-grayTwo block w-full p-2.5 appearance-none"
-          value={selectedFilter}
+          value={selectedFilter || "MEAL"}
           onChange={(e) => onFilterChange(e.target.value)}
         >
-          <option value="" className="text-base">
-            {`Item Type`}
-          </option>
           <option value="MEAL" className="text-base">
             {`Meal`}
           </option>
