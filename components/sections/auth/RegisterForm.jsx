@@ -16,7 +16,7 @@ import {
 import emailjs from "@emailjs/browser";
 import { useForm } from "react-hook-form";
 import { collection, getDocs, query, where } from "firebase/firestore";
-import { db } from "../../../app/firebase/config";
+// import { db } from "../../../app/firebase/config";
 import { toast } from "sonner";
 
 const RegisterForm = () => {
@@ -43,8 +43,8 @@ const RegisterForm = () => {
       setLoading(true); // Start loading when form is submitted
       try {
         // Query the users collection to check if the email already exists
-        const q = query(collection(db, "users"), where("email", "==", email));
-        const querySnapshot = await getDocs(q);
+        // const q = query(collection(db, "users"), where("email", "==", email));
+        // const querySnapshot = await getDocs(q);
 
         if (!querySnapshot.empty) {
           // Email already exists in the users collection
@@ -58,18 +58,18 @@ const RegisterForm = () => {
         // dispatch(setRegisterPhone(phone));
         // dispatch(setOtpCode(generatedOtp));
 
-        await emailjs.send(
-          process.env.NEXT_PUBLIC_EMAILJS_SERVICE_KEY,
-          process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_KEY,
-          {
-            message: `Your OTP is ${generatedOtp
-              .map((digit) => digit)
-              .join("")}`,
-            to_email: email,
-            reply_to: "",
-          },
-          process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
-        );
+        // await emailjs.send(
+        //   process.env.NEXT_PUBLIC_EMAILJS_SERVICE_KEY,
+        //   process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_KEY,
+        //   {
+        //     message: `Your OTP is ${generatedOtp
+        //       .map((digit) => digit)
+        //       .join("")}`,
+        //     to_email: email,
+        //     reply_to: "",
+        //   },
+        //   process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
+        // );
 
         router.push("/verify");
       } catch (error) {

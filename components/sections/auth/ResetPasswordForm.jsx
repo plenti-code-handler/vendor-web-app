@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import AuthPasswordField from "../../fields/AuthPasswordField";
 // import { useDispatch, useSelector } from "react-redux";
-import { auth, db } from "../../../app/firebase/config";
+// import { auth, db } from "../../../app/firebase/config";
 import { verifyPasswordResetCode, confirmPasswordReset } from "firebase/auth";
 import {
   collection,
