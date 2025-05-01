@@ -3,8 +3,8 @@
 import { Textarea } from "@headlessui/react";
 import React, { useEffect, useRef, useState } from "react";
 import { pencilSvgProfile } from "../../../svgs";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
+// import { useSelector } from "react-redux";
+// import { useDispatch } from "react-redux";
 import {
   registerUser,
   setProfile,
@@ -20,23 +20,22 @@ const libraries = ["places"];
 const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY; // Replace with your actual API key
 
 const ProfileForm = () => {
-  const placeholderImage =
-    "https://firebasestorage.googleapis.com/v0/b/foodie-finder-ee1d8.appspot.com/o/person.png?alt=media&token=3d046313-6334-44cd-abf5-1345111c9cee";
+  const placeholderImage = "";
 
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const router = useRouter();
   const [preview, setPreview] = useState(placeholderImage); // State for image preview
   const [profileImage, setProfileImage] = useState(placeholderImage);
   // const [businessName, setBusinessName] = useState("");
   // const [description, setDescription] = useState("");
 
-  const email = useSelector((state) => state.registerUser.email);
-  const password = useSelector((state) => state.registerUser.password);
-  const phone = useSelector((state) => state.registerUser.phone);
+  // const email = useSelector((state) => state.registerUser.email);
+  // const password = useSelector((state) => state.registerUser.password);
+  // const phone = useSelector((state) => state.registerUser.phone);
 
-  useEffect(() => {
-    if (!email && !password) router.push("/register");
-  }, []);
+  // useEffect(() => {
+  //   if (!email && !password) router.push("/register");
+  // }, []);
 
   const handleImageChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -49,29 +48,29 @@ const ProfileForm = () => {
   const handleProfileSubmit = async (data) => {
     try {
       const { businessName, description } = data;
-      dispatch(setProfile(profileImage, businessName, location, description));
+      // dispatch(setProfile(profileImage, businessName, location, description));
       // Dispatch the registerUser action
-      const userData = dispatch(
-        registerUser({
-          email,
-          password,
-          name: businessName,
-          loc: input.completeAddress,
-          desc: description,
-          img: profileImage,
-          point: new GeoPoint(input.latitude, input.longitude),
-          phone,
-        })
-      )
-        .unwrap()
-        .then((register) => {
-          console.log(register);
-          toast.success("Your request has been sent");
-        })
-        .catch((err) => {
-          console.error("Register failed:", err);
-          toast.error("Something went wrong. Please try again");
-        });
+      // const userData = dispatch(
+      //   registerUser({
+      //     email,
+      //     password,
+      //     name: businessName,
+      //     loc: input.completeAddress,
+      //     desc: description,
+      //     img: profileImage,
+      //     point: new GeoPoint(input.latitude, input.longitude),
+      //     phone,
+      //   })
+      // )
+      //   .unwrap()
+      //   .then((register) => {
+      //     console.log(register);
+      //     toast.success("Your request has been sent");
+      //   })
+      //   .catch((err) => {
+      //     console.error("Register failed:", err);
+      //     toast.error("Something went wrong. Please try again");
+      //   });
 
       router.push("/awaiting");
     } catch (error) {
@@ -221,7 +220,9 @@ const ProfileForm = () => {
             <span className="text-white">{pencilSvgProfile}</span>
           </label>
         </div>
-        <p className="text-[#242424] text-base font-medium mt-2">{email}</p>
+        <p className="text-[#242424] text-base font-medium mt-2">
+          example@gmail.com
+        </p>
       </div>
 
       <input

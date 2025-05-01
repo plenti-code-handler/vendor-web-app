@@ -1,451 +1,206 @@
 "use client";
-import React, { createContext, useContext, useEffect, useState } from "react";
-import Image from "next/image";
-// import { bags } from "../../../../lib/constant_data";
-import { deleteSvg, editSvg } from "../../../../svgs";
-import { useDispatch } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { EyeIcon } from "@heroicons/react/24/outline";
+import { PencilIcon, TrashIcon } from "@heroicons/react/20/solid";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "sonner";
+import axiosClient from "../../../../AxiosClient";
+import LoadMoreButton from "../../../buttons/LoadMoreButton";
+import TableUpper from "./TableUpper";
+import Loader from "../../../loader/loader";
+import Modal from "../../../Modal";
+import { formatTime } from "../../../../utility/FormateTime";
 import {
   setBagToUpdate,
   setOpenDrawer,
-  updateBagsList,
 } from "../../../../redux/slices/editBagSlice";
-import LoadMoreButton from "../../../buttons/LoadMoreButton";
-import {
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  limit,
-  orderBy,
-  query,
-  startAfter,
-  where,
-  Timestamp,
-} from "firebase/firestore";
-import { db } from "../../../../app/firebase/config";
-import { BagsContext } from "../../../../contexts/BagsContext";
-import { getUserLocal } from "../../../../redux/slices/loggedInUserSlice";
-import TableUpper from "./TableUpper";
-import Loader from "../../../loader/loader";
-import { toast } from "sonner";
-import EditBagDrawer from "../../../drawers/EditBagDrawer";
+import { fetchAllBags } from "../../../../redux/slices/bagsSlice";
 
 const BagsTable = () => {
   const dispatch = useDispatch();
+  const { items: bags, loading } = useSelector((state) => state.bags);
 
-  const {
-    bags,
-    lastVisible,
-    filteredBags,
-    setBags,
-    setFilteredBags,
-    setLastVisible,
-  } = useContext(BagsContext);
+  const [visibleItems, setVisibleItems] = useState(5);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedFilter, setSelectedFilter] = useState("");
 
-  // const [bags, setBags] = useState([]);
-  // const [filteredBookings, setFilteredBags] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  // const [lastVisible, setLastVisible] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState({});
-  const [onStatusChange, setOnStatusChange] = useState("");
-  const [loader, setLoader] = useState(false);
-  const [countryCode, setCountryCode] = useState(null);
+  const [showAlert, setShowAlert] = useState(false);
 
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const storedCountryCode = JSON.parse(localStorage.getItem("countryCode"));
-      setCountryCode(storedCountryCode);
-    }
-  }, []);
-
-  useEffect(() => {
-    const localUser = getUserLocal();
-    setUser(localUser);
-  }, []);
-
-  useEffect(() => {
-    if (user && user.uid) {
-      // Ensure the user and user.uid are available
-      const fetchInitialBags = async () => {
-        try {
-          setLoader(true);
-          const colRef = collection(db, "bags");
-          const q = query(
-            colRef,
-            where("resuid", "==", user.uid), // Adjusted field to resuid
-            // orderBy("time"),
-            limit(10)
-          );
-
-          const allBagsSnapshot = await getDocs(q);
-          const bagsData = allBagsSnapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          }));
-          const lastDoc = allBagsSnapshot.docs[allBagsSnapshot.docs.length - 1];
-
-          setBags(bagsData);
-          setFilteredBags(bagsData);
-          setLastVisible(lastDoc);
-        } catch (error) {
-          console.error("Error fetching bookings:", error);
-        } finally {
-          setLoader(false);
-        }
-      };
-
-      fetchInitialBags();
-    } else {
-      console.log("user or user.uid is undefined:", user);
-    }
-  }, [user, setBags, setFilteredBags, setLastVisible]);
-
-  useEffect(() => {
-    if (searchTerm === "") {
-      setFilteredBags(bags);
-    } else {
-      const filtered = bags.filter(
-        (bag) =>
-          bag.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          bag.type.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setFilteredBags(filtered);
-    }
-  }, [searchTerm, bags]);
-
-  if (loader) return <Loader />;
-
-  const fetchMoreBags = async () => {
-    if (loading) return;
-
-    try {
-      setLoading(true);
-
-      const colRef = collection(db, "bags");
-      let q;
-
-      if (lastVisible) {
-        // If lastVisible exists, start after it
-        q = query(
-          colRef,
-          where("resuid", "==", user.uid),
-          // orderBy("time"),
-          startAfter(lastVisible),
-          limit(10)
-        );
-      } else {
-        // If lastVisible is null, just order and limit
-        q = query(
-          colRef,
-          where("resuid", "==", user.uid),
-          // orderBy("time"),
-          limit(10)
-        );
-      }
-
-      const allBagsSnapshot = await getDocs(q);
-
-      if (allBagsSnapshot.empty) {
-        console.log("No more bags to fetch");
-        setLoading(false);
-        return;
-      }
-
-      const bagsData = allBagsSnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      const lastDoc = allBagsSnapshot.docs[allBagsSnapshot.docs.length - 1];
-
-      setBags((prevBags) => [...prevBags, ...bagsData]);
-      setFilteredBags((prevBags) => [...prevBags, ...bagsData]);
-      setLastVisible(lastDoc);
-    } catch (error) {
-      console.error("Error fetching more bags:", error);
-    } finally {
-      setLoading(false);
-    }
+  const handleDelete = () => {
+    setShowAlert(false);
   };
-  const handleEditClick = async (bag) => {
-    // Recontruct values from timestamps and store them in redux
-    const reverseDateArray = bag.date.map((item) => {
-      // Convert Firebase Timestamp to JavaScript Date
-      const dateObj = item.date.toDate();
-      const startTimeObj = item.starttime.toDate();
-      const endTimeObj = item.endtime.toDate();
 
-      console.log(dateObj);
-      const year = dateObj.getFullYear();
-      const month = String(dateObj.getMonth() + 1).padStart(2, "0"); // Months are 0-based, so add 1
-      const day = String(dateObj.getDate()).padStart(2, "0"); // Get day of the month
-      // Format Date object to HTML date format (YYYY-MM-DD)
-      const date = `${year}-${month}-${day}`;
+  useEffect(() => {
+    dispatch(fetchAllBags());
+  }, [dispatch]);
 
-      // Format Time objects to HTML time format (HH:MM)
-      const starttime = startTimeObj.toTimeString().split(" ")[0].slice(0, 5);
-      const endtime = endTimeObj.toTimeString().split(" ")[0].slice(0, 5);
-
-      return {
-        date, // in 'YYYY-MM-DD' format
-        starttime, // in 'HH:MM' format
-        endtime, // in 'HH:MM' format
-      };
-    });
-    dispatch(setBagToUpdate({ ...bag, date: reverseDateArray }));
+  const handleEdit = (item) => {
+    dispatch(setBagToUpdate(item));
     dispatch(setOpenDrawer(true));
   };
 
-  const handleDelete = async (id) => {
-    // Reference to the document to be deleted
-    const docRef = doc(db, "bags", id);
-    await deleteDoc(docRef);
-    toast.success("Bag Deleted Successfully");
-    const colRef = collection(db, "bags");
-    const q = query(
-      colRef,
-      where("resuid", "==", user.uid), // Adjusted field to resuid
-      // orderBy("time"),
-      limit(10)
-    );
+  // const handleDelete = async (item_id, vendor_id) => {
+  //   try {
+  //     await axiosClient.delete(
+  //       `/v1/vendor/item/items/delete?item_id=${item_id}&vendor_id=${vendor_id}`
+  //     );
+  //     toast.success("Item deleted successfully");
+  //     dispatch(fetchAllBags());
+  //   } catch (error) {
+  //     toast.error("Failed to delete item");
+  //   }
+  // };
 
-    const allBagsSnapshot = await getDocs(q);
-    const bagsData = allBagsSnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    const lastDoc = allBagsSnapshot.docs[allBagsSnapshot.docs.length - 1];
-
-    setBags(bagsData);
-    setFilteredBags(bagsData);
-    setLastVisible(lastDoc);
+  const handleFilterChange = (filter) => {
+    console.log("Inside handle change filter");
+    console.log(filter);
+    setSelectedFilter(filter);
   };
 
-  const onFilterChange = (status) => {
-    setOnStatusChange(status);
+  const filteredItems = selectedFilter
+    ? bags.filter((item) => {
+        const formattedItemType = item.item_type
+          .replace(/_/g, " ")
+          .toLowerCase(); // Make sure formatting is consistent (lowercase + spaces instead of underscores)
+        const formattedFilter = selectedFilter.toLowerCase(); // Ensure case-insensitive comparison
+        return formattedItemType.includes(formattedFilter); // Change equality check to 'includes' to allow partial matches
+      })
+    : bags;
 
-    const getStatus = (dateArray) => {
-      const now = new Date();
+  const handleLoadMore = () => {
+    setVisibleItems((prev) => Math.min(prev + 5, filteredItems.length));
+  };
 
-      let activeCount = 0;
-      let scheduledCount = 0;
-      let pastCount = 0;
-
-      dateArray.forEach((dateObj) => {
-        const { date, starttime, endtime } = dateObj;
-
-        const startDateTime = starttime.toDate(); // Convert Firebase timestamp to JavaScript Date
-        const endDateTime = endtime.toDate(); // Convert Firebase timestamp to JavaScript Date
-
-        if (now >= startDateTime && now <= endDateTime) {
-          activeCount++;
-        } else if (now < startDateTime) {
-          scheduledCount++;
-        } else {
-          pastCount++;
-        }
-      });
-
-      if (activeCount > 0) {
-        return "active";
-      } else if (scheduledCount > 0) {
-        return "scheduled";
-      } else {
-        return "past";
-      }
-    };
-
-    const filtered = bags.filter((bag) => {
-      const statusFromDates = getStatus(bag.date); // Assuming bag.dates is the array of date objects
-      return statusFromDates === status || status === ""; // Include all if status is empty
-    });
-
-    setFilteredBags(filtered);
+  const openModal = (item) => {
+    setSelectedItem(item);
+    setModalOpen(true);
   };
 
   return (
-    <div className="no-scrollbar w-full  overflow-y-hidden">
+    <div className="no-scrollbar w-full overflow-y-hidden">
       <TableUpper
-        selectedFilter={onStatusChange}
-        onFilterChange={onFilterChange}
-        setSearchTerm={setSearchTerm}
+        selectedFilter={selectedFilter}
+        onFilterChange={handleFilterChange}
       />
 
-      <table className="w-full table-auto truncate overflow-hidden bg-white">
-        <thead>
-          <tr className="border-b-[1px] border-grayOne border-dashed border-opacity-45 text-sm font-semibold text-grayOne">
-            <th className="pb-[8px] pl-[5%] pt-[18px] text-left w-[25.00%]">
-              {`Bag Deal Title`}
-            </th>
-            <th className="pb-[8px] px-2 pt-[18px] text-center">Size</th>
-            <th className="pb-[8px] px-2 pt-[18px] text-center">Daily Serve</th>
-            <th className="pb-[8px] px-2 pt-[18px] text-center">In Stock</th>
-            <th className="pb-[8px] px-2 pt-[18px] text-center">{`Bag Price`}</th>
-            <th className="pb-[8px] px-2 pt-[18px] text-center">Status</th>
-            <th className="pb-[8px] px-2 pt-[18px] text-center">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredBags.length > 0 ? (
-            filteredBags.map((bag, index) => (
-              <tr
-                key={index}
-                className="cursor-pointer border-b-[1px] border-[#E4E4E4] border-dashed hover:bg-[#f8f7f7]"
-              >
-                <td className="truncate pl-2 lg:pl-[5%] pr-6   md:pr-2 w-[14.28%]">
-                  <div className="py-3">
-                    <div className="flex flex-row items-center gap-x-2">
-                      <div className="flex h-[40px] w-[40px] items-center justify-center overflow-hidden rounded-full">
-                        {bag.type === "Surprise" ? (
-                          <Image
-                            src={`/Round-${bag.type}.png`}
-                            className="h-full w-full object-cover"
-                            width={40}
-                            height={40}
-                            priority
-                          />
-                        ) : bag.type === "Large" ? (
-                          <Image
-                            src={`/Round-${bag.type}.png`}
-                            className="h-full w-full object-cover"
-                            width={40}
-                            height={40}
-                            priority
-                          />
-                        ) : bag.type === "Small" ? (
-                          <Image
-                            src={`/Round-${bag.type}.png`}
-                            className="h-full w-full object-cover"
-                            width={40}
-                            height={40}
-                            priority
-                          />
-                        ) : null}
-                      </div>
-                      <div className="flex flex-col gap-y-1">
-                        <p className="text-sm font-medium truncate overflow-hidden whitespace-nowrap  ">
-                          {bag.title.length > 25
-                            ? `${bag.title.slice(0, 25)}...`
-                            : bag.title}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </td>
-                <td className="truncate text-center px-2">
-                  <p className="text-sm font-semibold text-grayThree">
-                    {bag.type}
-                  </p>
-                </td>
-                <td className="truncate text-center px-2">
-                  <p className="text-sm font-semibold text-grayThree">
-                    {bag.bagaday}
-                  </p>
-                </td>
-                <td className="truncate text-center px-2">
-                  <p className="text-sm font-semibold text-grayThree">
-                    {bag.stock}
-                  </p>
-                </td>
-                <td className="truncate text-center px-2">
-                  <p className="text-sm font-semibold text-grayThree">
-                    {countryCode ? countryCode : "SEK"} {bag.price}
-                  </p>
-                </td>
-                <td className="truncate text-center px-2">
-                  <RenderStatus dates={bag.date} />
-                </td>
-                <td className="truncate text-center">
-                  <div className="flex flex-row justify-center">
-                    <button
-                      onClick={() => handleEditClick(bag)}
-                      className="rounded-md bg-tableButtonBackground p-2 hover:bg-gray-200 hover:p-2"
-                    >
-                      {editSvg}
-                    </button>
-                    <button
-                      onClick={() => handleDelete(bag.id)}
-                      className="rounded-md bg-tableButtonBackground p-2 hover:bg-gray-200 hover:p-2"
-                    >
-                      {deleteSvg}
-                    </button>
-                  </div>
+      {loading ? (
+        <Loader />
+      ) : (
+        <table className="w-full table-auto bg-white">
+          <thead>
+            <tr className="border-b-[1px] border-grayOne border-dashed border-opacity-45 text-sm font-semibold text-grayOne">
+              <th className="pb-[8px] px-2 pt-[18px] text-left w-1/6">Type</th>
+              <th className="pb-[8px] px-2 pt-[18px] text-center w-1/6">
+                Start Time
+              </th>
+              <th className="pb-[8px] px-2 pt-[18px] text-center w-1/6">
+                End Time
+              </th>
+              <th className="pb-[8px] px-2 pt-[18px] text-center w-1/6">
+                Stock
+              </th>
+              <th className="pb-[8px] px-2 pt-[18px] text-center w-1/6">
+                Price
+              </th>
+              <th className="pb-[8px] px-2 pt-[18px] text-center w-1/6">
+                Actions
+              </th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {filteredItems.length === 0 ? (
+              <tr>
+                <td colSpan="6" className="py-4 text-center text-gray-500">
+                  No bags available
                 </td>
               </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="10" className="text-center py-10 text-grayOne">
-                {`No Bag found`}
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-      <LoadMoreButton loadMore={fetchMoreBags} isLoading={loading} />
+            ) : (
+              filteredItems.slice(0, visibleItems).map((item) => (
+                <tr
+                  key={item.id}
+                  className="border-b border-gray-200 text-center"
+                >
+                  <td className="py-2 px-2 text-left w-1/6">
+                    {item.item_type.replace(/_/g, " ")}
+                  </td>
+                  <td className="py-2 px-2 w-1/6 whitespace-nowrap">
+                    {formatTime(item.window_start_time)}
+                  </td>
+                  <td className="py-2 px-2 w-1/6 whitespace-nowrap">
+                    {formatTime(item.window_end_time)}
+                  </td>
+                  <td className="py-2 px-2 w-1/6">{item.quantity}</td>
+                  <td className="py-2 px-2 w-1/6">${item.price}</td>
+                  <td className="py-2 px-2 w-1/6 text-center">
+                    <div className="flex items-center justify-center space-x-2">
+                      <button onClick={() => openModal(item)}>
+                        <EyeIcon className="h-5 w-5 text-gray-600 hover:text-gray-900" />
+                      </button>
+                      <button onClick={() => handleEdit(item)}>
+                        <PencilIcon className="h-5 w-5 text-blue-600 hover:text-blue-900" />
+                      </button>
+                      <button
+                        // onClick={() => handleDelete(item.id, item.vendor_id)}
+                        onClick={() => setShowAlert(true)}
+                      >
+                        <TrashIcon className="h-5 w-5 text-red-600 hover:text-red-900" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      )}
+
+      {filteredItems.length > visibleItems && (
+        <LoadMoreButton loadMore={handleLoadMore} isLoading={loading} />
+      )}
+
+      <Modal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        item={selectedItem}
+      />
+
+      {showAlert && (
+        <div className="fixed top-0 left-0 w-full flex justify-center z-50 animate-slide-down">
+          <div className="bg-white border border-gray-300 shadow-lg rounded-md mt-4 p-4 w-[90%] max-w-md">
+            <p className="text-gray-800 mb-4 font-medium text-center">
+              Are you sure you want to delete this bag?
+            </p>
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={() => setShowAlert(false)}
+                className="bg-white border border-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-100"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDelete}
+                className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+              >
+                Yes, Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <style>{`
+        @keyframes slideDown {
+          from { transform: translateY(-100%); opacity: 0; }
+          to { transform: translateY(0); opacity: 1; }
+        }
+        .animate-slide-down {
+          animation: slideDown 0.3s ease-out;
+        }
+      `}</style>
     </div>
   );
 };
 
 export default BagsTable;
-
-const RenderStatus = ({ dates }) => {
-  // Function to determine status based on current date and time
-  const getStatus = (dateArray) => {
-    const now = new Date();
-
-    let activeCount = 0;
-    let scheduledCount = 0;
-    let pastCount = 0;
-
-    dateArray.forEach((dateObj) => {
-      const { date, starttime, endtime } = dateObj;
-      const startDateTime = starttime.toDate(); // Convert Firebase timestamp to JavaScript Date
-      const endDateTime = endtime.toDate(); // Convert Firebase timestamp to JavaScript Date
-
-      if (now >= startDateTime && now <= endDateTime) {
-        activeCount++;
-      } else if (now < startDateTime) {
-        scheduledCount++;
-      } else {
-        pastCount++;
-      }
-    });
-
-    if (activeCount > 0) {
-      return "active";
-    } else if (scheduledCount > 0) {
-      return "scheduled";
-    } else {
-      return "past";
-    }
-  };
-
-  // Determine the overall status
-  const status = getStatus(dates);
-
-  // Function to decide style based on status
-  const decideStyle = (status) => {
-    switch (status) {
-      case "active":
-        return "bg-pinkBgOne text-pinkTextOne";
-      case "past":
-        return "bg-grayFive text-grayFour";
-      case "scheduled":
-        return "bg-scheduledBg text-badgeScheduled";
-      default:
-        return "";
-    }
-  };
-
-  return (
-    <div
-      className={`mx-auto ${decideStyle(
-        status
-      )} font-semibold rounded-[4px] text-[12px] w-[77px] h-[26px] p-1`}
-    >
-      <p>{status.charAt(0).toUpperCase() + status.slice(1)}</p>
-    </div>
-  );
-};

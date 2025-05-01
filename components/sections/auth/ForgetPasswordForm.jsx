@@ -3,9 +3,9 @@
 import React, { useState } from "react";
 import BackButton from "./BackButton";
 import { useRouter } from "next/navigation";
-import { useDispatch } from "react-redux";
+// import { useDispatch } from "react-redux";
 import { sendPasswordResetEmail } from "firebase/auth";
-import { auth, db } from "../../../app/firebase/config";
+// import { auth, db } from "../../../app/firebase/config";
 import {
   setOtpCode,
   setRegisterEmail,
@@ -33,11 +33,11 @@ const ForgetPasswordForm = () => {
 
     try {
       // Check if the email exists in the users collection
-      const q = query(
-        collection(db, "users"),
-        where("email", "==", email),
-        where("role", "==", "vendor")
-      );
+      // const q = query(
+      //   collection(db, "users"),
+      //   where("email", "==", email),
+      //   where("role", "==", "vendor")
+      // );
       const querySnapshot = await getDocs(q);
 
       if (querySnapshot.empty) {
@@ -46,10 +46,10 @@ const ForgetPasswordForm = () => {
         return;
       }
 
-      await sendPasswordResetEmail(auth, email, {
-        url: `https://foodiefinder.se/reset_password?email=${email}`,
-        handleCodeInApp: true,
-      });
+      // await sendPasswordResetEmail(auth, email, {
+      //   url: ``,
+      //   handleCodeInApp: true,
+      // });
 
       toast.success("Password reset email sent! Check your Email");
     } catch (error) {

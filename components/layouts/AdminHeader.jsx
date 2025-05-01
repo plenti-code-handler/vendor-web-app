@@ -8,7 +8,7 @@ import { setActivePage } from "../../redux/slices/headerSlice";
 import { menuItemsData } from "../../lib/admin_menu";
 import { appLogoUrl } from "../../lib/constant_data";
 import { getUserLocal, logoutUser } from "../../redux/slices/loggedInUserSlice";
-import { auth, db } from "../../app/firebase/config";
+// import { auth, db } from "../../app/firebase/config";
 import { useRouter } from "next/navigation";
 import LanguageDropdown from "../dropdowns/LanguageDropdown";
 import { doc, getDoc } from "firebase/firestore";
@@ -61,7 +61,7 @@ const AdminHeader = () => {
 
         try {
           // Fetch the user data from Firestore
-          const userDoc = await getDoc(doc(db, "users", uid)); // Assuming 'users' collection
+          // const userDoc = await getDoc(doc(db, "users", uid)); // Assuming 'users' collection
 
           if (userDoc.exists()) {
             const userData = userDoc.data();
@@ -93,7 +93,7 @@ const AdminHeader = () => {
   }, [isMenuOpen]);
 
   const handleLogout = async () => {
-    await auth.signOut();
+    // await auth.signOut();
     dispatch(logoutUser());
     router.push("/");
   };

@@ -6,7 +6,7 @@ import "slick-carousel/slick/slick-theme.css";
 import Card from "./Card";
 import { getUserLocal } from "../../../../redux/slices/loggedInUserSlice";
 import { collection, getDocs, query, where } from "firebase/firestore";
-import { db } from "../../../../app/firebase/config";
+// import { db } from "../../../../app/firebase/config";
 
 const StatSlider = () => {
   const [current, setCurrent] = useState(0);
@@ -14,7 +14,6 @@ const StatSlider = () => {
   const [user, setUser] = useState({});
   const [bagToday, setBagToday] = useState("");
   const [totalBags, setTotalBags] = useState("");
-
 
   useEffect(() => {
     const localUser = getUserLocal();
@@ -89,11 +88,11 @@ const StatSlider = () => {
       // Ensure the user and user.uid are available
       const fetchInitialBags = async () => {
         try {
-          const colRef = collection(db, "bags");
-          const q = query(
-            colRef,
-            where("resuid", "==", user.uid) // Adjusted field to resuid
-          );
+          // const colRef = collection(db, "bags");
+          // const q = query(
+          //   colRef,
+          //   where("resuid", "==", user.uid) // Adjusted field to resuid
+          // );
 
           const allBagsSnapshot = await getDocs(q);
           const bagsData = allBagsSnapshot.docs.map((doc) => ({
@@ -151,7 +150,7 @@ const StatSlider = () => {
       <div className="px-4">
         <Card
           title={Number(bagToday).toLocaleString("en-US")}
-          content={`Today's Bag`}
+          content={`Total Orders`}
         />
       </div>
     </Slider>

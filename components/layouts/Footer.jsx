@@ -10,7 +10,6 @@ import Link from "next/link";
 const Footer = () => {
   const dispatch = useDispatch();
 
-
   const openContactForm = () => {
     dispatch(setOpenDrawer(true));
   };
@@ -71,9 +70,7 @@ const Footer = () => {
                     className="flex items-center gap-5 hover:text-main transition-colors duration-300 w-fit"
                   >
                     {horizontalChecklistIcon}
-                    <span>
-                      {`Surprise Bag `}
-                    </span>
+                    <span>{`Surprise Bag `}</span>
                   </Link>
                 </li>
                 <li>
@@ -82,9 +79,7 @@ const Footer = () => {
                     className="flex items-center gap-5 hover:text-main transition-colors duration-300 w-fit"
                   >
                     {horizontalChecklistIcon}
-                    <span>
-                      {`Small & Medium Bag `}
-                    </span>
+                    <span>{`Small & Medium Bag `}</span>
                   </Link>
                 </li>
                 <li>
@@ -214,7 +209,7 @@ const Footer = () => {
                 {facebookLogo}
               </a>
               <a
-                href="https://www.instagram.com/foodie.finder/"
+                href=""
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:scale-110 hover:text-pink-500 transition transform duration-300 ease-in-out"
@@ -246,12 +241,7 @@ const Footer = () => {
             <div className="flex flex-col gap-4">
               <h2 className="text-[1.25em] text-[400]">drop us a line</h2>
               <p className={`underline text-base`}>
-                <a
-                  href="mailto:kontakt@foodiefinder.se"
-                  className="underline hover:text-secondary"
-                >
-                  kontakt@foodiefinder.se
-                </a>
+                <a href="" className="underline hover:text-secondary"></a>
               </p>
               <div className="flex items-center gap-5">
                 <Link

@@ -11,8 +11,8 @@ const BagsPerDay = ({ numberOfBags, setNumberOfBags }) => {
     setNumberOfBags((prevCount) => Math.max(prevCount - 1, 0));
   };
   return (
-    <div className="flex justify-between items-center mt-3 pl-1 pr-1">
-      <p className="text-black font-semibold text-base">Bags per day</p>
+    <div className="flex justify-between items-center mt-5 pr-1">
+      <p className="text-black font-semibold text-lg">Quantity</p>
       <div className="flex items-center gap-2">
         <button
           onClick={handleDecrease}

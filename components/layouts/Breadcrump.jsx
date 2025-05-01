@@ -4,19 +4,14 @@ import { usePathname, useRouter } from "next/navigation";
 import { addUserSvg, backButtonSvg } from "../../svgs";
 import { useDispatch } from "react-redux";
 import { setOpenDrawer } from "../../redux/slices/addBagSlice";
-import { collection, getDocs, query, where } from "firebase/firestore";
-import { db } from "../../app/firebase/config";
 
 const decidePath = (pathname) => {
-  // Check for specific patterns
-  console.log(pathname);
   if (pathname.match(/\/admin\/users\/business\/[a-zA-Z0-9]+/)) {
     return "Business Details";
   } else if (pathname.match(/\/admin\/users\/customer\/[a-zA-Z0-9]+/)) {
     return "Customer Details";
   }
 
-  // Check the last part of the path for general cases
   const path = pathname.split("/");
   const lastPath = path.at(-1);
 
@@ -24,9 +19,9 @@ const decidePath = (pathname) => {
     case "business":
       return "My Dashboard";
     case "manage-bags":
-      return "Manage Pouches";
-    case "bookings":
-      return "Bookings";
+      return "Manage Bags";
+    case "orders":
+      return "Orders";
     case "more":
       return "More Options";
     case "profile":
@@ -50,8 +45,7 @@ const Breadcrumb = () => {
   const pathname = usePathname();
   const dispatch = useDispatch();
   const router = useRouter();
-  const [pendingUsersCount, setPendingUsersCount] = useState(0);
-  
+  const [pendingUsersCount] = useState(0); // Firebase logic removed
 
   const handleOpenDrawer = useCallback(() => {
     dispatch(setOpenDrawer(true));
@@ -61,41 +55,14 @@ const Breadcrumb = () => {
     router.replace("/admin/users");
   }, [router]);
 
-
-
-  useEffect(() => {
-    const fetchPendingUsersCount = async () => {
-      try {
-        // Query the "users" collection for documents where "status" is "pending"
-        const q = query(
-          collection(db, "users"),
-          where("status", "==", "pending")
-        );
-
-        // Execute the query and get the documents
-        const querySnapshot = await getDocs(q);
-
-        // Set the count of pending users in state
-        setPendingUsersCount(querySnapshot.size);
-      } catch (error) {
-        console.error("Error fetching pending users:", error);
-        toast.error("An error occurred while fetching pending users.");
-      }
-    };
-
-    fetchPendingUsersCount();
-  }, []); // Empty dependency array to run this effect only once on mount
-
   const currentPath = useMemo(() => decidePath(pathname), [pathname]);
-
-
 
   const MoreOptionsContent = () => (
     <div className="flex flex-col items-center">
       <img
         alt="Plenti Logo"
-        src={"/logo_more.png"}
-        className="w-[60%] h-[80%] p-5 lg:p-0 lg:h-[25%] lg:w-[25%]"
+        src={"/logo.png"}
+        className="w-[20%] h-[30%] p-5 lg:p-0 lg:h-[25%] lg:w-[25%]"
       />
       <p className="text-lg sm:text-sm md:text-2xl lg:text-xl font-semibold text-graySix">
         {currentPath}
@@ -106,19 +73,15 @@ const Breadcrumb = () => {
   const DefaultContent = () => (
     <div className="flex justify-between items-center lg:mr-auto lg:mt-4 lg:mb-4 lg:py-2 lg:w-[99%]">
       <p className="m-4 text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-one">
-        {currentPath === "Manage Pouches" ? (
-          <>{`Manage Bags `}</>
-        ) : (
-          <>{currentPath}</>
-        )}
+        {currentPath === "Manage Bags" ? "Manage Bags" : currentPath}
       </p>
 
-      {currentPath === "Manage Pouches" && (
+      {currentPath === "Manage Bags" && (
         <button
           onClick={handleOpenDrawer}
           className="mr-3 mt-2 lg:m-0 flex items-center text-center justify-center bg-blueBgDark text-white font-semibold py-2 px-4 rounded-[6px] hover:bg-blueBgDarkHover2"
         >
-          <span className="mr-3 ml-2 font-semibold">{`New Bags`}</span>
+          <span className="mr-3 ml-2 font-semibold">New Bags</span>
           <span>{addUserSvg}</span>
         </button>
       )}
@@ -131,7 +94,7 @@ const Breadcrumb = () => {
         {currentPath}
       </p>
       <p className="text-lg sm:m-0 sm:text-xl md:text-2xl lg:text-3xl font-medium text-secondary">
-        {`(${pendingUsersCount} New)`}
+        ({pendingUsersCount} New)
       </p>
     </div>
   );

@@ -1,458 +1,115 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import Image from "next/image";
-import TableUpper from "./TableUpper";
-import { bookings } from "../../../../lib/constant_data";
-import { useDispatch } from "react-redux";
-import { setActivePage } from "../../../../redux/slices/headerSlice";
-import StatusDropdown from "./StatusDropdown";
-import LoadMoreButton from "../../../buttons/LoadMoreButton";
-import {
-  collection,
-  getDocs,
-  query,
-  orderBy,
-  limit,
-  startAfter,
-  doc,
-  updateDoc,
-  where,
-  getDoc,
-} from "firebase/firestore";
-import { db } from "../../../../app/firebase/config";
-import { getUserLocal } from "../../../../redux/slices/loggedInUserSlice";
-import { convertTimestampToDDMMYYYY } from "../../../../utility/date";
-import Loader from "../../../loader/loader";
 
-const BookingsTable = () => {
-  const dispatch = useDispatch();
+import { useEffect, useState } from "react";
+import axiosClient from "../../../../AxiosClient";
+import { toast } from "sonner";
+import OrdersFilter from "../../../dropdowns/OrdersFilter";
+import { TrashIcon } from "@heroicons/react/20/solid";
 
-  useEffect(() => {
-    dispatch(setActivePage("Bookings"));
-  }, [dispatch]);
-
-  const handleStatusChange = async (newStatus, bookingId) => {
-    const docRef = doc(db, "bookings", bookingId);
-    await updateDoc(docRef, {
-      status: newStatus,
-      ispic: true,
-    });
-    const colRef = collection(db, "bookings");
-    const q = query(
-      colRef,
-      where("vendorid", "==", user.uid),
-      // orderBy("time"),
-      limit(10)
-    );
-
-    const allBookingsSnapshot = await getDocs(q);
-    const bookingsData = await Promise.all(
-      allBookingsSnapshot.docs.map(async (entry) => {
-        const booking = {
-          id: entry.id, // Include the document ID here
-          ...entry.data(),
-        };
-
-        // Fetch user data based on the user ID in the booking
-        const userDocRef = doc(db, "users", booking.uid); // Assuming booking.uid is the field for user ID
-        const userDocSnap = await getDoc(userDocRef);
-
-        const bagDocRef = doc(db, "bags", booking.bagid);
-        const bagDocSnap = await getDoc(bagDocRef);
-
-        if (userDocSnap.exists() && bagDocSnap.exists()) {
-          const userData = userDocSnap.data();
-          const bagData = bagDocSnap.data();
-
-          return {
-            ...booking,
-            user: userData, // Merge user data with booking
-            bag: bagData,
-          };
-        } else {
-          console.log("User data not found for UID:", booking.uid);
-          return booking; // Return booking without user data if not found
-        }
-      })
-    );
-    const lastDoc =
-      allBookingsSnapshot.docs[allBookingsSnapshot.docs.length - 1];
-
-    setBookings(bookingsData);
-    setFilteredBookings(bookingsData);
-    setLastVisible(lastDoc);
-  };
-
-  const [bookings, setBookings] = useState([]);
-  const [filteredBookings, setFilteredBookings] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [lastVisible, setLastVisible] = useState(null);
+const RecentOrders = () => {
+  const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState({});
-  const [loader, setLoader] = useState(false);
-  const [onStatusChange, setOnStatusChange] = useState("both");
-  const [bookingFilter, setOnBookingFilter] = useState("active");
-  const [countryCode, setCountryCode] = useState(null);
+  const [filter, setFilter] = useState("");
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const storedCountryCode = JSON.parse(localStorage.getItem("countryCode"));
-      setCountryCode(storedCountryCode);
-    }
-  }, []);
-
-  useEffect(() => {
-    const localUser = getUserLocal();
-    setUser(localUser);
-  }, []);
-
-  const onBookingFilterChange = (status) => {
-    setOnBookingFilter(status);
-
-    if (status === "cancelled") {
-      const filtered = bookings.filter((booking) => booking.iscancelled);
-      setFilteredBookings(filtered);
-      return;
-    }
-
-    const getStatus = (dateArray, endtime, initialStatus) => {
-      const now = new Date();
-
-      let activeCount = 0;
-      let scheduledCount = 0;
-      let pastCount = 0;
-
-      const startDateTime = dateArray.toDate(); // Convert Firebase timestamp to JavaScript Date
-      const endDateTime = endtime.toDate(); // Convert Firebase timestamp to JavaScript Date
-
-      if (initialStatus === "cancelled") {
-        return;
+    const fetchRecentOrders = async () => {
+      setLoading(true);
+      try {
+        const response = await axiosClient.get(
+          "/v1/vendor/order/get?skip=0&limit=10"
+        );
+        if (response.status === 200) {
+          setOrders(response.data || []);
+        }
+      } catch (error) {
+        toast.error("Failed to fetch orders");
+        console.error("Error fetching orders:", error);
       }
-      if (now >= startDateTime && now <= endDateTime) {
-        activeCount++;
-      } else if (now < startDateTime) {
-        scheduledCount++;
-      } else {
-        pastCount++;
-      }
-
-      const bookingEndTime = endtime.toDate();
-
-      if (initialStatus === "picked" || now > bookingEndTime) {
-        return "past";
-      }
-
-      if (activeCount > 0) {
-        return "active";
-      } else if (scheduledCount > 0) {
-        return "scheduled";
-      } else {
-        return "past";
-      }
+      setLoading(false);
     };
 
-    const filtered = bookings.filter((booking) => {
-      const statusFromDates = getStatus(
-        booking.starttime,
-        booking.endtime,
-        booking.status
-      );
-      return statusFromDates === status || status === "";
-    });
+    fetchRecentOrders();
+  }, []);
 
-    setFilteredBookings(filtered);
+  const formatTimestamp = (timestamp) => {
+    return new Date(timestamp * 1000).toLocaleString();
   };
 
-  // const onFilterChange = (status) => {
-  //   console.log(bookings);
-  //   setOnStatusChange(status);
-  //   if (status === "cancel") {
-  //     const filtered = bookings.filter((booking) => booking.iscancelled);
-  //     setFilteredBookings(filtered);
-  //   } else if (status === "both" || status === "") {
-  //     setFilteredBookings(bookings); // Show all bookings without filtering
-  //   }
-  // };
-
-  useEffect(() => {
-    if (user && user.uid) {
-      // Ensure the user and user.uid are available
-      const fetchInitialBookings = async () => {
-        try {
-          setLoader(true);
-          const colRef = collection(db, "bookings");
-          const q = query(
-            colRef,
-            where("vendorid", "==", user.uid),
-            // orderBy("time"),
-            limit(10)
-          );
-
-          const allBookingsSnapshot = await getDocs(q);
-          const bookingsData = await Promise.all(
-            allBookingsSnapshot.docs.map(async (entry) => {
-              const booking = {
-                id: entry.id, // Include the document ID here
-                ...entry.data(),
-              };
-
-              // Fetch user data based on the user ID in the booking
-              const userDocRef = doc(db, "users", booking.uid); // Assuming booking.uid is the field for user ID
-              const userDocSnap = await getDoc(userDocRef);
-
-              const bagDocRef = doc(db, "bags", booking.bagid);
-              const bagDocSnap = await getDoc(bagDocRef);
-
-              if (userDocSnap.exists() && bagDocSnap.exists()) {
-                const userData = userDocSnap.data();
-                const bagData = bagDocSnap.data();
-                return {
-                  ...booking,
-                  user: userData, // Merge user data with booking
-                  bag: bagData,
-                };
-              } else {
-                console.log("User data not found for UID:", booking.uid);
-                return booking; // Return booking without user data if not found
-              }
-            })
-          );
-          const lastDoc =
-            allBookingsSnapshot.docs[allBookingsSnapshot.docs.length - 1];
-
-          setBookings(bookingsData);
-          // setFilteredBookings(bookingsData);
-          setLastVisible(lastDoc);
-        } catch (error) {
-          console.error("Error fetching bookings:", error);
-        } finally {
-          setLoader(false);
-        }
-      };
-
-      fetchInitialBookings();
-    } else {
-      console.log("user or user.uid is undefined:", user);
-    }
-  }, [user]);
-
-  // Apply search filtering to the already filtered bookings
-  useEffect(() => {
-    if (searchTerm === "") {
-      setFilteredBookings(bookings);
-    } else {
-      const filtered = bookings.filter(
-        (booking) =>
-          booking.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          booking.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setFilteredBookings(filtered);
-    }
-  }, [searchTerm]);
-
-  // Apply filters whenever bookings data changes
-  useEffect(() => {
-    if (bookings.length > 0) {
-      // onFilterChange(onStatusChange); // Apply the status filter
-      onBookingFilterChange(bookingFilter); // Apply the booking filter
-    }
-  }, [bookings, bookingFilter]);
-
-  if (loader) return <Loader />;
-
-  const fetchMoreBookings = async () => {
-    // Prevent the function from running if it’s already loading
-    if (loading) return;
-
-    try {
-      setLoading(true);
-
-      const colRef = collection(db, "bookings");
-      let q;
-
-      if (lastVisible) {
-        // If lastVisible exists, start after it
-        q = query(
-          colRef,
-          where("vendorid", "==", user.uid),
-          // orderBy("time"),
-          startAfter(lastVisible),
-          limit(10)
-        );
-      } else {
-        // If lastVisible is null, just order and limit
-        q = query(
-          colRef,
-          where("vendorid", "==", user.uid),
-          // orderBy("time"),
-          limit(10)
-        );
-      }
-
-      const allBookingsSnapshot = await getDocs(q);
-
-      // Handle empty snapshots (end of collection)
-      if (allBookingsSnapshot.empty) {
-        console.log("No more bookings to fetch");
-        setLoading(false);
-        return;
-      }
-
-      const bookingsData = await Promise.all(
-        allBookingsSnapshot.docs.map(async (entry) => {
-          const booking = {
-            id: entry.id, // Include the document ID here
-            ...entry.data(),
-          };
-
-          // Fetch user data based on the user ID in the booking
-          const userDocRef = doc(db, "users", booking.uid); // Assuming booking.uid is the field for user ID
-          const userDocSnap = await getDoc(userDocRef);
-
-          const bagDocRef = doc(db, "bags", booking.bagid);
-          const bagDocSnap = await getDoc(bagDocRef);
-
-          if (userDocSnap.exists() && bagDocSnap.exists()) {
-            const userData = userDocSnap.data();
-            const bagData = bagDocSnap.data();
-
-            return {
-              ...booking,
-              user: userData, // Merge user data with booking
-              bag: bagData,
-            };
-          } else {
-            console.log("User data not found for UID:", booking.uid);
-            return booking; // Return booking without user data if not found
-          }
-        })
-      );
-
-      // Determine the last document for pagination
-      const lastDoc =
-        allBookingsSnapshot.docs[allBookingsSnapshot.docs.length - 1];
-
-      // Update state with new data
-      setBookings((prevBookings) => [...prevBookings, ...bookingsData]);
-      setFilteredBookings((prevBookings) => [...prevBookings, ...bookingsData]);
-      setLastVisible(lastDoc); // Set the last visible document for pagination
-    } catch (error) {
-      console.error("Error fetching more bookings:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const filteredOrders = filter
+    ? orders.filter((order) => order.current_status === filter)
+    : orders;
 
   return (
     <div className="mt-4 w-full border border-gray-200 rounded-xl p-6 sm:px-4">
-      <TableUpper
-        setSearchTerm={setSearchTerm}
-        // selectedFilter={onStatusChange}
-        // onFilterChange={onFilterChange}
-        bookingFilter={bookingFilter}
-        onBookingFilterChange={onBookingFilterChange}
-      />
-      <div className="no-scrollbar w-full overflow-y-hidden">
-        <table className="w-full table-auto truncate overflow-hidden bg-white">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-lg font-semibold">Recent Orders</h2>
+        <OrdersFilter selectedFilter={filter} onFilterChange={setFilter} />
+      </div>
+
+      <div className="overflow-x-auto">
+        <table className="w-full table-auto bg-white">
           <thead>
-            <tr className="border-b-[1px] border-grayOne border-dashed border-opacity-45 text-sm font-semibold text-grayOne">
-              <th className="pb-[8px] pl-[5%] pt-[18px] text-left w-[18.00%]">
-                CUSTOMER
-              </th>
-              <th className="pb-[8px] px-2 pt-[18px] text-center">Deal Name</th>
-              <th className="pb-[8px] px-2 pt-[18px] text-center">Size</th>
-              <th className="pb-[8px] px-2 pt-[18px] text-center">Quantity</th>
-              <th className="pb-[8px] px-2 pt-[18px] text-center">Amount</th>
-              <th className="pb-[8px] px-2 pt-[18px] text-center">
-                Order Date
-              </th>
-              <th className="pb-[8px] px-2 pt-[18px] text-center">Status</th>
+            <tr className="border-b text-sm font-semibold text-gray-500">
+              <th className="pb-2 pl-5 pt-4 text-left">Order Code</th>
+              <th className="pb-2 px-2 pt-4 text-center">Window Start Time</th>
+              <th className="pb-2 px-2 pt-4 text-center">Window End Time</th>
+              <th className="pb-2 px-2 pt-4 text-center">Created At</th>
+              <th className="pb-2 px-2 pt-4 text-center">Status</th>
+              <th className="pb-2 px-2 pt-4 text-center">Action</th>
             </tr>
           </thead>
           <tbody>
-            {filteredBookings.length > 0 ? (
-              filteredBookings.map((booking, index) => {
-                return (
-                  <tr
-                    key={index}
-                    className="cursor-pointer border-b-[1px] border-[#E4E4E4] border-dashed hover:bg-[#f8f7f7]"
-                  >
-                    <td className="truncate pl-2 lg:pl-[5%] pr-6   md:pr-2 w-[14.28%]">
-                      <div className="py-3">
-                        <div className="flex flex-row items-center gap-x-2">
-                          <div className="flex h-[40px] w-[40px] items-center justify-center overflow-hidden rounded-full">
-                            <Image
-                              src={`/Round-${booking.size}.png`}
-                              className="h-full w-full object-fill"
-                              width={40}
-                              height={40}
-                              priority
-                            />
-                          </div>
-                          <div className="flex flex-col gap-y-1">
-                            <p className="text-sm font-semibold text-grayThree truncate overflow-hidden whitespace-nowrap  ">
-                              {booking.username.length > 20
-                                ? `${booking.username.slice(0, 20)}...`
-                                : booking.username}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="truncate text-center px-2">
-                      <p className="text-sm font-semibold text-grayThree">
-                        {booking.name}
-                      </p>
-                    </td>
-                    <td className="truncate text-center px-2">
-                      <p className="text-sm font-semibold text-grayThree">
-                        {booking.size}
-                      </p>
-                    </td>
-                    <td className="truncate text-center px-2">
-                      <p className="text-sm font-semibold text-grayThree">
-                        {booking.quantity}
-                      </p>
-                    </td>
-                    <td className="truncate text-center px-2">
-                      <p className="text-sm font-semibold text-grayThree">
-                        {countryCode ? countryCode : "SEK"}
-                        {booking.price}
-                      </p>
-                    </td>
-                    <td className="truncate text-center px-2">
-                      <p className="text-sm font-semibold text-grayThree">
-                        {convertTimestampToDDMMYYYY(booking.bookingdate)}
-                      </p>
-                    </td>
-                    <td className="truncate text-center px-2">
-                      <StatusDropdown
-                        bagDate={booking.bookingdate}
-                        cancelled={booking.iscancelled}
-                        initialStatus={booking.status}
-                        starttime={booking.starttime}
-                        endtime={booking.endtime}
-                        onStatusChange={(newStatus) =>
-                          handleStatusChange(newStatus, booking.id)
-                        }
-                      />
-                    </td>
-                  </tr>
-                );
-              })
+            {loading ? (
+              <tr>
+                <td colSpan="6" className="text-center py-4">
+                  Loading...
+                </td>
+              </tr>
+            ) : filteredOrders.length > 0 ? (
+              filteredOrders.map((order, index) => (
+                <tr key={index} className="border-b hover:bg-gray-100">
+                  <td className="pl-5 py-3">{order.order_code}</td>
+                  <td className="text-center px-2">
+                    {formatTimestamp(order.window_start_time)}
+                  </td>
+                  <td className="text-center px-2">
+                    {formatTimestamp(order.window_end_time)}
+                  </td>
+                  <td className="text-center px-2">
+                    {formatTimestamp(order.created_at)}
+                  </td>
+                  <td className="text-center px-2">
+                    <span
+                      className={`px-2 py-1 rounded text-white text-xs font-semibold ${
+                        order.current_status === "WAITING_FOR_PICKUP"
+                          ? "bg-yellow-500"
+                          : order.current_status === "PICKED_UP"
+                          ? "bg-green-500"
+                          : "bg-blue-500"
+                      }`}
+                    >
+                      {order.current_status.replace(/_/g, " ")}
+                    </span>
+                  </td>
+                  <td className="text-center px-2">
+                    <button>
+                      <TrashIcon className="h-5 w-5 text-red-600 hover:text-red-900" />
+                    </button>
+                  </td>
+                </tr>
+              ))
             ) : (
               <tr>
-                <td colSpan="10" className="text-center py-10 text-grayOne">
-                  No Bookings found
+                <td colSpan="6" className="text-center py-4 text-gray-500">
+                  No orders found.
                 </td>
               </tr>
             )}
           </tbody>
         </table>
       </div>
-      <LoadMoreButton loadMore={fetchMoreBookings} isLoading={loading} />
     </div>
   );
 };
 
-export default BookingsTable;
+export default RecentOrders;

@@ -47,7 +47,6 @@ export const dashboardSvg = (
   </svg>
 );
 
-
 export const whiteLoader = (
   <svg
     className="   text-white"
@@ -509,7 +508,7 @@ export const tickSvg = (
   >
     <path
       d="M7 0C3.13542 0 0 3.13542 0 7C0 10.8646 3.13542 14 7 14C10.8646 14 14 10.8646 14 7C14 3.13542 10.8646 0 7 0ZM10.6021 5.30833L6.48958 9.43542C6.35833 9.56667 6.16875 9.65417 5.97917 9.65417C5.78958 9.65417 5.6 9.58125 5.46875 9.43542L3.39792 7.36458C3.10625 7.07292 3.10625 6.62083 3.39792 6.32917C3.68958 6.0375 4.14167 6.0375 4.43333 6.32917L5.97917 7.875L9.58125 4.27292C9.87292 3.98125 10.325 3.98125 10.6167 4.27292C10.8938 4.56458 10.8937 5.01667 10.6021 5.30833Z"
-      fill="#74D5B3"
+      fill="#7a48e3"
     />
   </svg>
 );
@@ -1506,7 +1505,7 @@ export const headerTopRightSvg = (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <circle cx="135.525" cy="-18.5" r="135" fill="#74D5B3" stroke="#74D5B3" />
+    <circle cx="135.525" cy="-18.5" r="135" fill="#5F22D9" stroke="#5F22D9" />
   </svg>
 );
 
@@ -1522,7 +1521,7 @@ export const headerTopLeftSvg = (
       cx="97.8839"
       cy="-15.5052"
       r="123.522"
-      fill="#74D5B3"
+      fill="#7e45ee "
       fillOpacity="0.4"
     />
   </svg>
@@ -1540,8 +1539,8 @@ export const headerTopLeftSvgInnerTop = (
       cx="-15.1575"
       cy="28.6633"
       r="53.8674"
-      fill="#74D5B3"
-      stroke="#74D5B3"
+      fill="#5F22D9 "
+      stroke="#5F22D9 "
       strokeWidth="36"
     />
   </svg>
@@ -1634,19 +1633,19 @@ export const bottomWalletBackground = (
     <path
       opacity="0.1"
       d="M0.978027 35.8169L59.5693 70.6917V129.659L0.978027 94.468V35.8169Z"
-      fill="#E7FAF4"
+      fill="#7a48e3"
       fillOpacity="0.2"
     />
     <path
       opacity="0.2"
       d="M117.955 35.8521L59.3655 70.6903V129.595L117.955 94.4416V35.8521Z"
-      fill="#E7FAF4"
+      fill="#7a48e3"
       fillOpacity="0.2"
     />
     <path
       opacity="0.3"
       d="M0.978027 36.01L59.5693 0.819336L118.16 36.01V36.2732L59.5693 71.4638L0.978027 36.2732V36.01Z"
-      fill="#E7FAF4"
+      fill="#7a48e3"
       fillOpacity="0.2"
     />
   </svg>
@@ -1663,23 +1662,24 @@ export const topLeftWalletBackground = (
     <path
       opacity="0.1"
       d="M0.614258 -21.0708L59.2055 13.804V72.7709L0.614258 37.5803V-21.0708Z"
-      fill="#E7FAF4"
+      fill="#d5c3f5"
       fillOpacity="0.2"
     />
     <path
       opacity="0.2"
       d="M117.591 -21.0356L59.0017 13.8026V72.7077L117.591 37.5539V-21.0356Z"
-      fill="#E7FAF4"
+      fill="#d5c3f5"
       fillOpacity="0.2"
     />
     <path
       opacity="0.3"
       d="M0.614258 -20.8777L59.2055 -56.0684L117.797 -20.8777V-20.6145L59.2055 14.5761L0.614258 -20.6145V-20.8777Z"
-      fill="#E7FAF4"
+      fill="#d5c3f5"
       fillOpacity="0.2"
     />
   </svg>
 );
+
 export const leftWalletBackground = (
   <svg
     width="130"
@@ -1691,13 +1691,13 @@ export const leftWalletBackground = (
     <path
       opacity="0.2"
       d="M128.974 84.4409L-11.5436 167.995V309.269L128.974 224.959V84.4409Z"
-      fill="#E7FAF4"
+      fill="#e5dbfc"
       fillOpacity="0.2"
     />
     <path
       opacity="0.3"
       d="M-151.577 84.8195L-11.0555 0.42041L129.466 84.8195V85.4508L-11.0555 169.85L-151.577 85.4508V84.8195Z"
-      fill="#E7FAF4"
+      fill="#c7b3f3"
       fillOpacity="0.2"
     />
   </svg>
@@ -1714,19 +1714,19 @@ export const rightWalletBackground = (
     <path
       opacity="0.1"
       d="M0.704102 40.1274L141.226 123.769V265.192L0.704102 180.793V40.1274Z"
-      fill="#E7FAF4"
+      fill="#e5dbfc"
       fillOpacity="0.2"
     />
     <path
       opacity="0.2"
       d="M281.255 40.2119L140.738 123.766V265.04L281.255 180.73V40.2119Z"
-      fill="#E7FAF4"
+      fill="#e5dbfc"
       fillOpacity="0.2"
     />
     <path
       opacity="0.3"
       d="M0.704102 40.5905L141.226 -43.8086L281.747 40.5905V41.2218L141.226 125.621L0.704102 41.2218V40.5905Z"
-      fill="#E7FAF4"
+      fill="#c7b3f3"
       fillOpacity="0.2"
     />
   </svg>

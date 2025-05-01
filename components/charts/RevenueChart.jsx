@@ -9,7 +9,7 @@ import {
   getDocs,
   Timestamp,
 } from "firebase/firestore";
-import { auth, db } from "../../app/firebase/config";
+// import { auth, db } from "../../app/firebase/config";
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
@@ -96,74 +96,74 @@ const RevenueChart = () => {
       const revenueData = Array(7).fill(0); // To hold revenue for each of the last 7 days
       console.log("Initialized revenue data:", revenueData); // Log initialized revenue data
 
-      const unsubscribe = auth.onAuthStateChanged(async (user) => {
-        if (!user) {
-          console.error("User not authenticated");
-          return;
-        }
+      // const unsubscribe = auth.onAuthStateChanged(async (user) => {
+      //   if (!user) {
+      //     console.error("User not authenticated");
+      //     return;
+      //   }
 
-        console.log("Authenticated user:", user.uid);
+      //   console.log("Authenticated user:", user.uid);
 
-        try {
-          const bookingQuery = query(
-            collection(db, "bookings"),
-            where("vendorid", "==", user.uid), // Match vendorid with the authenticated user's uid
-            where(
-              "bookingdate",
-              ">=",
-              Timestamp.fromDate(new Date(lastSevenDays[6])) // Convert date to Firebase Timestamp
-            )
-          );
-          console.log("Booking query created for user:", user.uid); // Log the Firestore query
+      //   try {
+      //     const bookingQuery = query(
+      //       collection(db, "bookings"),
+      //       where("vendorid", "==", user.uid), // Match vendorid with the authenticated user's uid
+      //       where(
+      //         "bookingdate",
+      //         ">=",
+      //         Timestamp.fromDate(new Date(lastSevenDays[6])) // Convert date to Firebase Timestamp
+      //       )
+      //     );
+      //     console.log("Booking query created for user:", user.uid); // Log the Firestore query
 
-          const querySnapshot = await getDocs(bookingQuery);
-          console.log(
-            "Query snapshot received, number of bookings:",
-            querySnapshot.size
-          ); // Log the number of bookings received
+      //     const querySnapshot = await getDocs(bookingQuery);
+      //     console.log(
+      //       "Query snapshot received, number of bookings:",
+      //       querySnapshot.size
+      //     ); // Log the number of bookings received
 
-          querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            console.log("Booking data:", data); // Log each booking's data
+      //     querySnapshot.forEach((doc) => {
+      //       const data = doc.data();
+      //       console.log("Booking data:", data); // Log each booking's data
 
-            const bookingDate = data.bookingdate
-              .toDate()
-              .toISOString()
-              .split("T")[0]; // Convert Firebase Timestamp to 'YYYY-MM-DD'
-            console.log("Converted booking date:", bookingDate); // Log the converted booking date
+      //       const bookingDate = data.bookingdate
+      //         .toDate()
+      //         .toISOString()
+      //         .split("T")[0]; // Convert Firebase Timestamp to 'YYYY-MM-DD'
+      //       console.log("Converted booking date:", bookingDate); // Log the converted booking date
 
-            const index = lastSevenDays.indexOf(bookingDate);
-            if (index !== -1) {
-              console.log(data.price);
-              const percentage90 = data.price * 0.85;
-              revenueData[index] += percentage90; // Calculate revenue
-              console.log(
-                `Updated revenue for ${bookingDate}:`,
-                revenueData[index]
-              ); // Log updated revenue for the specific day
-            }
-          });
+      //       const index = lastSevenDays.indexOf(bookingDate);
+      //       if (index !== -1) {
+      //         console.log(data.price);
+      //         const percentage90 = data.price * 0.85;
+      //         revenueData[index] += percentage90; // Calculate revenue
+      //         console.log(
+      //           `Updated revenue for ${bookingDate}:`,
+      //           revenueData[index]
+      //         ); // Log updated revenue for the specific day
+      //       }
+      //     });
 
-          // Update chart data with the new revenue data and dates
-          console.log("Final revenue data for the last 7 days:", revenueData); // Log the final revenue data
-          setChartData((prevData) => ({
-            ...prevData,
-            series: [{ ...prevData.series[0], data: revenueData }],
-            options: {
-              ...prevData.options,
-              xaxis: {
-                ...prevData.options.xaxis,
-                categories: lastSevenDays.map((date) =>
-                  new Date(date).toISOString()
-                ), // Convert dates to ISO format
-              },
-            },
-          }));
-          console.log("Chart data updated successfully."); // Log success message after updating chart
-        } catch (error) {
-          console.error("Error fetching bookings:", error); // Log errors, if any
-        }
-      });
+      //     // Update chart data with the new revenue data and dates
+      //     console.log("Final revenue data for the last 7 days:", revenueData); // Log the final revenue data
+      //     setChartData((prevData) => ({
+      //       ...prevData,
+      //       series: [{ ...prevData.series[0], data: revenueData }],
+      //       options: {
+      //         ...prevData.options,
+      //         xaxis: {
+      //           ...prevData.options.xaxis,
+      //           categories: lastSevenDays.map((date) =>
+      //             new Date(date).toISOString()
+      //           ), // Convert dates to ISO format
+      //         },
+      //       },
+      //     }));
+      //     console.log("Chart data updated successfully."); // Log success message after updating chart
+      //   } catch (error) {
+      //     console.error("Error fetching bookings:", error); // Log errors, if any
+      //   }
+      // });
 
       // Cleanup subscription on unmount
       return () => unsubscribe();

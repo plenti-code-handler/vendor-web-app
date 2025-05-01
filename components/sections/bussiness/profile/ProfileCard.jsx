@@ -5,96 +5,111 @@ import { locationIconSvg, plusIconSvg } from "../../../../svgs";
 import Tabs from "./Tabs";
 import { setOpenDrawer } from "../../../../redux/slices/addCategorySlice";
 import { useDispatch } from "react-redux";
-import { getUserLocal } from "../../../../redux/slices/loggedInUserSlice";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "../../../../app/firebase/config";
+
 import AddCategoryDrawer from "../../../drawers/AddCategoryDrawer";
+import axiosClient from "../../../../AxiosClient";
+import { PencilIcon } from "@heroicons/react/20/solid";
 
 const ProfileCard = () => {
   const dispatch = useDispatch();
   const [user, setUser] = useState({});
+  const [image, setImage] = useState("");
   const [categories, setCategories] = useState([]);
+  const [vendorData, setVendorData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const handleAddCategory = () => {
     dispatch(setOpenDrawer(true));
   };
 
   useEffect(() => {
-    const user = getUserLocal();
-    if (user) {
-      setUser(user);
-    }
-  }, []);
-
-  useEffect(() => {
-    const fetchUserCategories = async () => {
-      if (!user || !user.uid) return; // Ensure user is available
-
+    const fetchVendorData = async () => {
       try {
-        const userDocRef = doc(db, "users", user.uid); // Reference to user document
-        const userDocSnapshot = await getDoc(userDocRef); // Fetch document snapshot
+        const token = localStorage.getItem("token");
 
-        if (userDocSnapshot.exists()) {
-          const userData = userDocSnapshot.data();
-          if (userData.categories) {
-            setCategories(userData.categories);
-          } else {
-            setCategories([]); // Handle case where `categories` field is missing
-          }
-        } else {
-          console.log("No such document!");
-          setCategories([]); // Handle case where document does not exist
-        }
-      } catch (error) {
-        console.error("Error fetching categories:", error);
+        const response = await axiosClient.get("/v1/vendor/me/get", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        setVendorData(response.data);
+        setImage(response.data.logo_url);
+      } catch (err) {
+        console.error("Error fetching vendor data:", err);
+        setError(err.response?.data || "Something went wrong.");
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchUserCategories();
-  }, [user]); // Ensure fetch runs when `user` changes
+    fetchVendorData();
+  }, []);
+
+  const handleImageChange = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    try {
+      const token = localStorage.getItem("token");
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await axiosClient.post(
+        "/v1/vendor/me/images/upload?image_type=logo",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      if (response.data?.url) {
+        setImage(response.data.url);
+      }
+    } catch (error) {
+      console.error("Error uploading image:", error);
+    }
+  };
 
   return (
     <>
       <div className="flex flex-col gap-5 w-[100%] lg:w-[60%] md:w-[60%] p-5 border border-gray-100 rounded-md">
-        <div className="flex space-x-4">
-          <img
-            alt="User"
-            src={user.imageUrl}
-            className="rounded-full h-[120px] w-[120px] object-cover"
-          />
-          <div className="flex flex-col lg:mt-5 lg:gap-y-2">
-            <p className="text-lg font-semibold text-gray-900">{user.name}</p>
-            <div className="flex items-center text-grayOne font-[600] space-x-2">
-              {locationIconSvg}
-              <p className="text-sm">{user.loc}</p>
-            </div>
-            <div className="flex flex-wrap gap-2 mt-2">
-              {categories &&
-                categories.map((category) => {
-                  return (
-                    <div
-                      key={category.id}
-                      className="bg-mainThree border border-mainThree rounded-md px-3 py-1"
-                    >
-                      <p className="text-mainTwo text-sm font-medium">
-                        {category.name}
-                      </p>
-                    </div>
-                  );
-                })}
+        <div className="flex items-center space-x-4">
+          <div className="relative w-[120px] h-[120px]">
+            <img
+              alt="User"
+              src={image}
+              className="rounded-full w-full h-full object-cover"
+            />
 
-              <button
-                onClick={handleAddCategory}
-                className="bg-secondary hover:bg-secondary hover:bg-opacity-80 rounded-[4px] px-3 py-1"
-              >
-                {plusIconSvg}
-              </button>
-            </div>
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              id="imageUpload"
+              onChange={handleImageChange}
+            />
+
+            <label
+              htmlFor="imageUpload"
+              className="absolute bottom-2 right-2 bg-white p-1.5 rounded-full shadow-md cursor-pointer flex items-center justify-center"
+            >
+              <PencilIcon className="w-4 h-4 text-[#7a48e3]" />
+            </label>
+          </div>
+
+          <div className="flex flex-col gap-y-1">
+            <p className="text-lg font-semibold text-gray-900">
+              {vendorData?.store_manager_name || "Loading..."}
+            </p>
           </div>
         </div>
-        <p className="text-left leading-5 text-graySeven font-medium">
-          {user.desc}
-        </p>
+
         <Tabs />
       </div>
       {true && (

@@ -28,7 +28,7 @@ export async function POST(request) {
   // Extract token and projectId from userData or environment variables
 
   // Define the new FCM URL
-  const fcmUrl = `https://fcm.googleapis.com/v1/projects/foodie-finder-ee1d8/messages:send`;
+  const fcmUrl = ``;
 
   // Create the payload for the notification
   const payload = {

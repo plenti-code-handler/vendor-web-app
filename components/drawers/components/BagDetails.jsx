@@ -1,7 +1,7 @@
 import { Textarea } from "@headlessui/react";
 import { collection, getDocs } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
-import { db } from "../../../app/firebase/config";
+// import { db } from "../../../app/firebase/config";
 import { XMarkIcon } from "@heroicons/react/20/solid";
 
 const BagDetails = ({
@@ -23,7 +23,7 @@ const BagDetails = ({
 
   useEffect(() => {
     const fetchTags = async () => {
-      const tagsCollection = collection(db, "filters");
+      // const tagsCollection = collection(db, "filters");
       const tagsSnapshot = await getDocs(tagsCollection);
       const tagsList = tagsSnapshot.docs.map((doc) => doc.data().name);
       setAllTags(tagsList);

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import AuthPasswordField from "../../fields/AuthPasswordField";
-import { useDispatch, useSelector } from "react-redux";
-import { auth, db } from "../../../app/firebase/config";
+// import { useDispatch, useSelector } from "react-redux";
+// import { auth, db } from "../../../app/firebase/config";
 import { verifyPasswordResetCode, confirmPasswordReset } from "firebase/auth";
 import {
   collection,
@@ -16,8 +16,6 @@ import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 
 const ResetPasswordForm = () => {
-  // const [password, setPassword] = useState("");
-  // const [confirmPassword, setConfirmPassword] = useState("");
   const [email, setEmail] = useState("");
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -28,57 +26,7 @@ const ResetPasswordForm = () => {
     formState: { errors },
   } = useForm();
 
-  const oobCode = searchParams.get("oobCode");
-  const continueUrl = searchParams.get("continueUrl");
-
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    const url = new URL(continueUrl);
-    const userEmail = decodeURIComponent(url.searchParams.get("email") || "");
-    setEmail(userEmail);
-  }, [continueUrl]);
-
-  const handlePasswordReset = async (data) => {
-    const { password, confirmPassword } = data;
-    if (password === confirmPassword) {
-      try {
-        // Verify the oobCode
-        await verifyPasswordResetCode(auth, oobCode);
-        // Confirm the new password
-        await confirmPasswordReset(auth, oobCode, password);
-
-        // Redirect the user to login or another page
-        // Create a query to find the user by email
-        const usersRef = collection(db, "users");
-        const q = query(usersRef, where("email", "==", email));
-
-        // Execute the query
-        const querySnapshot = await getDocs(q);
-
-        // Assuming email is unique and there's only one user with this email
-        if (!querySnapshot.empty) {
-          querySnapshot.forEach(async (document) => {
-            // Get the document reference
-            const userDocRef = doc(db, "users", document.id);
-
-            // Update the pass field with the new password
-            await updateDoc(userDocRef, { pass: password });
-
-            toast.success("Password updated successfully");
-          });
-        } else {
-          toast.error("No user found with the provided email.");
-        }
-        router.push("/login");
-      } catch (error) {
-        toast.success("Failed to reset password");
-      }
-      router.push("/login");
-    } else {
-      toast.error("Passwords do not match");
-    }
-  };
+  const handlePasswordReset = async (data) => {};
 
   return (
     <form

@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import BackButton from "./BackButton";
-import { useDispatch, useSelector } from "react-redux";
+// import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { auth } from "../../../app/firebase/config"; // Ensure this is set up correctly
 import {
@@ -20,15 +20,15 @@ const VerifyAccountForm = () => {
   const inputRefs = useRef([]);
   const recaptchaVerifierRef = useRef(null);
 
-  const dispatch = useDispatch();
-  const email = useSelector((state) => state.registerUser.email);
-  const phone = useSelector((state) => state.registerUser.phone);
-  const generatedOtp = useSelector((state) => state.registerUser.otp);
+  // const dispatch = useDispatch();
+  // const email = useSelector((state) => state.registerUser.email);
+  // const phone = useSelector((state) => state.registerUser.phone);
+  // const generatedOtp = useSelector((state) => state.registerUser.otp);
   const router = useRouter();
 
-  useEffect(() => {
-    if (!email && !phone) router.push("/register");
-  }, [email, phone]);
+  // useEffect(() => {
+  //   if (!email && !phone) router.push("/register");
+  // }, [email, phone]);
 
   useEffect(() => {
     recaptchaVerifierRef.current = new RecaptchaVerifier(
@@ -70,52 +70,10 @@ const VerifyAccountForm = () => {
     }
   };
 
-  const handleResend = () => {
-    if (!isResendDisabled) {
-      const otpCode = Array.from({ length: 4 }, () =>
-        Math.floor(Math.random() * 10).toString()
-      );
-      dispatch(setOtpCode(otpCode));
-      emailjs.send(
-        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_KEY,
-        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_KEY,
-        {
-          message: `Your OTP is ${otpCode.join("")}`,
-          to_email: email,
-          reply_to: "kontakt@foodiefinder.se",
-        },
-        { publicKey: process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY }
-      );
-      setTimeLeft(60);
-      setIsResendDisabled(true);
-    }
-  };
+  const handleResend = () => {};
 
   const handleVerify = () => {
-    const otpMatches = otp.every(
-      (digit, index) => digit === generatedOtp[index]
-    );
-
-    if (otpMatches) {
-      if (!recaptchaVerifierRef.current) {
-        toast.error("Recaptcha is not initialized");
-        return;
-      }
-
-      signInWithPhoneNumber(auth, phone, recaptchaVerifierRef.current)
-        .then((confirmationResult) => {
-          dispatch(setConfirmationResult(confirmationResult));
-          toast.success("OTP sent to your phone!");
-          router.push("/verify_phone"); // Only navigate after OTP is sent
-        })
-        .catch((error) => {
-          toast.error("Error sending OTP: " + error.message);
-          console.error("Error during phone number sign-in:", error);
-        });
-    } else {
-      toast.error("Invalid OTP");
-      console.log("OTP does not match. Please try again.");
-    }
+    router.push("/business");
   };
 
   return (
@@ -125,7 +83,7 @@ const VerifyAccountForm = () => {
         <p className="text-black font-semibold text-[28px]">Verify Account</p>
         <p className="text-base">
           Code has been sent to{" "}
-          <span className="font-bold text-blackTwo">{email}.</span>
+          <span className="font-bold text-blackTwo">example@email.com</span>
           <br />
           Enter the code to verify your account
         </p>

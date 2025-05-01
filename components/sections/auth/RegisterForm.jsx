@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import BackButton from "./BackButton";
 import { useRouter } from "next/navigation";
-import { useDispatch } from "react-redux";
+// import { useDispatch } from "react-redux";
 import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
 import { whiteLoader } from "../../../svgs";
@@ -16,7 +16,7 @@ import {
 import emailjs from "@emailjs/browser";
 import { useForm } from "react-hook-form";
 import { collection, getDocs, query, where } from "firebase/firestore";
-import { db } from "../../../app/firebase/config";
+// import { db } from "../../../app/firebase/config";
 import { toast } from "sonner";
 
 const RegisterForm = () => {
@@ -28,7 +28,7 @@ const RegisterForm = () => {
   );
   const [phone, setPhone] = useState("");
 
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   const {
     register,
@@ -43,8 +43,8 @@ const RegisterForm = () => {
       setLoading(true); // Start loading when form is submitted
       try {
         // Query the users collection to check if the email already exists
-        const q = query(collection(db, "users"), where("email", "==", email));
-        const querySnapshot = await getDocs(q);
+        // const q = query(collection(db, "users"), where("email", "==", email));
+        // const querySnapshot = await getDocs(q);
 
         if (!querySnapshot.empty) {
           // Email already exists in the users collection
@@ -54,22 +54,22 @@ const RegisterForm = () => {
         }
 
         // If email does not exist, proceed with OTP generation and email sending
-        dispatch(setRegisterEmail(email));
-        dispatch(setRegisterPhone(phone));
-        dispatch(setOtpCode(generatedOtp));
+        // dispatch(setRegisterEmail(email));
+        // dispatch(setRegisterPhone(phone));
+        // dispatch(setOtpCode(generatedOtp));
 
-        await emailjs.send(
-          process.env.NEXT_PUBLIC_EMAILJS_SERVICE_KEY,
-          process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_KEY,
-          {
-            message: `Your OTP is ${generatedOtp
-              .map((digit) => digit)
-              .join("")}`,
-            to_email: email,
-            reply_to: "kontakt@foodiefinder.se",
-          },
-          process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
-        );
+        // await emailjs.send(
+        //   process.env.NEXT_PUBLIC_EMAILJS_SERVICE_KEY,
+        //   process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_KEY,
+        //   {
+        //     message: `Your OTP is ${generatedOtp
+        //       .map((digit) => digit)
+        //       .join("")}`,
+        //     to_email: email,
+        //     reply_to: "",
+        //   },
+        //   process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
+        // );
 
         router.push("/verify");
       } catch (error) {

@@ -10,7 +10,7 @@ import { appLogoUrl } from "../../lib/constant_data";
 import { menuItemsData } from "../../lib/business_menu";
 import { logoutUser } from "../../redux/slices/loggedInUserSlice";
 import { useRouter } from "next/navigation";
-import { auth } from "../../app/firebase/config";
+// import { auth } from "../../app/firebase/config";
 import { toast } from "sonner";
 
 const BussinessHeader = () => {
@@ -18,7 +18,6 @@ const BussinessHeader = () => {
   const activePage = useSelector((state) => state.header.activePage);
   const dispatch = useDispatch();
   const [isSmallDevice, setIsSmallDevice] = useState(false);
-
 
   const router = useRouter();
 
@@ -37,8 +36,6 @@ const BussinessHeader = () => {
 
     return () => window.removeEventListener("resize", checkIsMobile);
   }, []);
-
-
 
   useEffect(() => {
     const handleResize = () => {
@@ -60,13 +57,11 @@ const BussinessHeader = () => {
   };
 
   const handleLogout = async () => {
-    await auth.signOut();
+    // await auth.signOut();
     toast.success("Signed Out Successfully!");
     dispatch(logoutUser());
     router.push("/");
   };
-
- 
 
   useEffect(() => {
     if (isMenuOpen) {
@@ -82,17 +77,22 @@ const BussinessHeader = () => {
 
   return (
     <>
-      <header className="bg-main xl:px-[6%] justify-around ">
-        <div className="mx-auto flex p-2 items-center justify-between py-5">
+      <header
+        style={{
+          background:
+            "linear-gradient(359deg, #cac3d9 -91%, rgb(95, 34, 217) 58%)",
+        }}
+        className=" xl:px-[6%] justify-around "
+      >
+        <div className="mx-auto flex items-center justify-between ">
           <div>
             <img
               alt="Plenti Logo"
-              src={"/logo.png"}
-              className="max-w-[10px] max-w-[140px]"
+              src={"/splash-logo.png"}
+              className="w-full h-full mt-2"
             />
           </div>
           <div className="flex lg:hidden gap-3 items-center">
-            {/* <ProfileDropdown /> */}
             <button
               onClick={toggleMenu}
               className="text-gray-900 hover:text-gray-700 focus:outline-none"
@@ -110,12 +110,14 @@ const BussinessHeader = () => {
           <nav
             className={`${
               isMenuOpen ? "block" : "hidden"
-            } absolute top-16 left-0 mt-3 lg:mt-0 w-full h-full bg-main font-base shadow-md transition-transform transform ${
+            } absolute top-16 left-0 mt-14 lg:mt-0 w-full h-full bg-primary  font-base shadow-md transition-transform transform ${
               isMenuOpen ? "translate-y-0" : "-translate-y-full"
             } lg:static lg:block lg:bg-transparent lg:shadow-none lg:translate-y-0 xl:ml-[6%] lg:ml-[3%]`}
-            style={{ zIndex: isSmallDevice ? 1000 : 0 }}
+            style={{
+              zIndex: isSmallDevice ? 1000 : 0,
+            }}
           >
-            <div className="flex flex-col items-start lg:flex-row p-6 lg:p-0 gap-[2.2%]">
+            <div className="flex flex-col  justify-center items-start lg:flex-row p-6 lg:p-0 gap-[2.2%]">
               {menuItemsData.map(({ name, href }) => (
                 <Link
                   key={name}
@@ -124,13 +126,13 @@ const BussinessHeader = () => {
                     isSmallDevice ? "w-[100%]" : ""
                   }  ${
                     activePage === name
-                      ? "bg-mainLight text-white"
-                      : "text-white lg:text-textLight hover:bg-mainLight "
+                      ? "bg-[#7a48e3] text-white"
+                      : "text-white lg:text-textLight hover:bg-[#7a48e3] "
                   }`}
                   onClick={() => {
                     handleLinkClick(name);
                     if (isMobile) {
-                      toggleMenu(); // Only trigger toggleMenu on mobile devices
+                      toggleMenu();
                     }
                   }}
                 >
@@ -146,7 +148,7 @@ const BussinessHeader = () => {
             {/* <LanguageDropdown /> */}
             <ProfileDropdown />
             <button
-              className="text-sm font-semibold leading-6 text-gray-900 p-3 transition-colors duration-200 ease-in-out hover:bg-mainLight hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-mainLight focus:ring-offset-2 rounded-lg"
+              className="text-sm font-semibold leading-6 text-gray-900 p-3 transition-colors duration-200 ease-in-out hover:bg-hoverPrimary hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-hoverPrimary focus:ring-offset-2 rounded-lg"
               title="Logout"
               onClick={handleLogout}
             >
