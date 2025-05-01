@@ -2,12 +2,10 @@
 import SearchField from "../../../fields/SearchField";
 import React from "react";
 import BookingsFilter from "../../../dropdowns/BookingsFilter";
-import StatusFilter from "../../../dropdowns/StatusFilter";
 
 const TableUpper = ({
   setSearchTerm,
-  // selectedFilter,
-  // onFilterChange,
+
   bookingFilter,
   onBookingFilterChange,
 }) => {
@@ -18,10 +16,6 @@ const TableUpper = ({
       </p>
       <div className="flex flex-col items-center gap-2 sm:flex-row w-full sm:w-auto">
         <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-          {/* <StatusFilter
-            selectedFilter={selectedFilter}
-            onFilterChange={onFilterChange}
-          /> */}
           <BookingsFilter
             selectedFilter={bookingFilter}
             onFilterChange={onBookingFilterChange}

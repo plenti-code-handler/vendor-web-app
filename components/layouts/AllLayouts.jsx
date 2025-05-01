@@ -4,7 +4,7 @@ import AdminMain from "./AdminMain";
 import Header from "./Header";
 
 import Main from "./Main";
-import ContactDrawer from "../drawers/ContactDrawer";
+// import ContactDrawer from "../drawers/ContactDrawer";
 import { BagsProvider } from "../../contexts/BagsContext";
 import { AdminProvider } from "../../contexts/AdminContext";
 
@@ -39,9 +39,7 @@ export const BusinessLayout = ({ children }) => {
 export const LandingLayout = ({ children }) => {
   return (
     <>
-     
       <div>{children}</div>
-    
     </>
   );
 };

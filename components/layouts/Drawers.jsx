@@ -6,7 +6,7 @@ import AddCategoryDrawer from "../drawers/AddCategoryDrawer";
 import WithdrawAmountDrawer from "../drawers/WithdrawAmountDrawer";
 import SuccessWithdrawDrawer from "../drawers/SuccessWithdrawDrawer";
 import EditBagDrawer from "../drawers/EditBagDrawer";
-import ContactDrawer from "../drawers/ContactDrawer";
+// import ContactDrawer from "../drawers/ContactDrawer";
 
 const Drawers = () => {
   return (
@@ -18,7 +18,7 @@ const Drawers = () => {
       {/* {true && <WithdrawAmountDrawer />} */}
       {/* {true && <SuccessWithdrawDrawer />} */}
       {true && <EditBagDrawer />}
-      {true && <ContactDrawer />}
+      {/* {true && <ContactDrawer />} */}
     </>
   );
 };
