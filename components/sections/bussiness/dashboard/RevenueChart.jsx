@@ -23,7 +23,7 @@ const RevenueChart = () => {
         toolbar: { show: false },
       },
       dataLabels: { enabled: false },
-      colors: ["#74D5B3"],
+      colors: ["#5F22D9"],
       stroke: { curve: "smooth" },
       xaxis: {
         type: "datetime",
@@ -144,7 +144,7 @@ const RevenueChart = () => {
             onChange={setActiveTab}
           />
         </div>
-        <h1 className="text-[40px] leading-[28px] text-mainLight font-bold my-4">
+        <h1 className="text-[40px] leading-[28px] text-primary font-bold my-4">
           {totalRevenue ? totalRevenue : "0"}
         </h1>
       </div>

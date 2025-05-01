@@ -73,7 +73,6 @@ const FaqForm = () => {
         <p className="font-semibold text-md">
           You can send us an email with your query at
         </p>
-        <p className="font-bold text-lg">kontakt@foodiefinder.se</p>
       </div>
       <form
         onSubmit={handleSubmit}

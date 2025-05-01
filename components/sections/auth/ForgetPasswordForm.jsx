@@ -47,7 +47,7 @@ const ForgetPasswordForm = () => {
       }
 
       await sendPasswordResetEmail(auth, email, {
-        url: `https://foodiefinder.se/reset_password?email=${email}`,
+        url: ``,
         handleCodeInApp: true,
       });
 

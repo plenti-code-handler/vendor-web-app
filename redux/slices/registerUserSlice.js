@@ -19,8 +19,7 @@ export const registerUser = createAsyncThunk(
       );
       const user = userCredential.user;
 
-      const placeholderImage =
-        "https://firebasestorage.googleapis.com/v0/b/foodie-finder-ee1d8.appspot.com/o/person.png?alt=media&token=3d046313-6334-44cd-abf5-1345111c9cee";
+      const placeholderImage = "";
 
       let userData = {};
 

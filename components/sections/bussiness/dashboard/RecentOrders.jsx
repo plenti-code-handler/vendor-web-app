@@ -11,6 +11,12 @@ const RecentOrders = () => {
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState("");
 
+  const [showAlert, setShowAlert] = useState(false);
+
+  const handleDelete = () => {
+    setShowAlert(false);
+  };
+
   useEffect(() => {
     const fetchRecentOrders = async () => {
       setLoading(true);
@@ -92,7 +98,7 @@ const RecentOrders = () => {
                     </span>
                   </td>
                   <td className="text-center px-2">
-                    <button>
+                    <button onClick={() => setShowAlert(true)}>
                       <TrashIcon className="h-5 w-5 text-red-600 hover:text-red-900" />
                     </button>
                   </td>
@@ -107,6 +113,40 @@ const RecentOrders = () => {
             )}
           </tbody>
         </table>
+
+        {showAlert && (
+          <div className="fixed top-0 left-0 w-full flex justify-center z-50 animate-slide-down">
+            <div className="bg-white border border-gray-300 shadow-lg rounded-md mt-4 p-4 w-[90%] max-w-md">
+              <p className="text-gray-800 mb-4 font-medium text-center">
+                Are you sure you want to delete this order?
+              </p>
+              <div className="flex justify-center gap-4">
+                <button
+                  onClick={() => setShowAlert(false)}
+                  className="bg-white border border-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-100"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDelete}
+                  className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+                >
+                  Yes, Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <style>{`
+        @keyframes slideDown {
+          from { transform: translateY(-100%); opacity: 0; }
+          to { transform: translateY(0); opacity: 1; }
+        }
+        .animate-slide-down {
+          animation: slideDown 0.3s ease-out;
+        }
+      `}</style>
       </div>
     </div>
   );

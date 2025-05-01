@@ -52,7 +52,6 @@ const ContactDrawer = () => {
                     <hr className="w-1/2 " />
                     <div className="flex md:flex-row flex-col font-[400] text-[1.5em] items-center justify-between">
                       <p>drop us a line</p>
-                      <p className="underline">contact@foodiefinder.com</p>
                     </div>
                     <div className="flex md:flex-row flex-col md:items-center gap-5 justify-between">
                       <div className="flex flex-col gap-3 basis-full">

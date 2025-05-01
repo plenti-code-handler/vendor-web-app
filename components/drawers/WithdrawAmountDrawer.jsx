@@ -77,7 +77,7 @@ const WithdrawAmountDrawer = ({ balance }) => {
                       Withdraw Amount
                     </p>
                     <button
-                      className="p-2 hover:bg-main rounded"
+                      className="p-2 hover:bg-hoverPrimary rounded"
                       onClick={handleClose}
                     >
                       {crossIconWhiteSvg}
