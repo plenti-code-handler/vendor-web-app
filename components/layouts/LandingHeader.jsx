@@ -6,7 +6,7 @@ import { menuItemsData } from "../../lib/landing_menu";
 import { useDispatch, useSelector } from "react-redux";
 import { rightArrowIcon } from "../../svgs";
 import { setActivePage } from "../../redux/slices/headerSlice";
-import { setOpenDrawer } from "../../redux/slices/contactUserSlice";
+// import { setOpenDrawer } from "../../redux/slices/contactUserSlice";
 import LanguageDropdown from "../dropdowns/LanguageDropdown";
 import {
   Menu,
@@ -53,9 +53,9 @@ const LandingHeader = () => {
     dispatch(setActivePage(page));
   };
 
-  const handleContactBtnClick = () => {
-    dispatch(setOpenDrawer(true));
-  };
+  // const handleContactBtnClick = () => {
+  //   dispatch(setOpenDrawer(true));
+  // };
 
   useEffect(() => {
     if (isMenuOpen) {

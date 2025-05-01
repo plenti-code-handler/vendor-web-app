@@ -3,16 +3,16 @@
 import React, { useEffect, useState } from "react";
 import { appLogoUrl } from "../../lib/constant_data";
 import { appleLogoSvg, googleLogoSvg, rightArrowIcon } from "../../svgs";
-import { setOpenDrawer } from "../../redux/slices/contactUserSlice";
+// import { setOpenDrawer } from "../../redux/slices/contactUserSlice";
 import { useDispatch } from "react-redux";
 import Link from "next/link";
 
 const Footer = () => {
   const dispatch = useDispatch();
 
-  const openContactForm = () => {
-    dispatch(setOpenDrawer(true));
-  };
+  // const openContactForm = () => {
+  //   dispatch(setOpenDrawer(true));
+  // };
 
   return (
     <div className="text-[75%] md:text-[100%]">
