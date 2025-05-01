@@ -11,7 +11,7 @@ import {
   getDocs,
   updateDoc,
 } from "firebase/firestore";
-import { db } from "../../../../app/firebase/config";
+// import { db } from "../../../../app/firebase/config";
 
 const FaqForm = () => {
   const [query, setQuery] = useState("");
@@ -33,8 +33,8 @@ const FaqForm = () => {
 
     try {
       // Fetch user details from Firestore using user.uid
-      const userRef = doc(db, "users", user.uid);
-      const userDoc = await getDoc(userRef);
+      // const userRef = doc(db, "users", user.uid);
+      // const userDoc = await getDoc(userRef);
 
       if (!userDoc.exists()) {
         toast.error("User data not found in Firestore.");

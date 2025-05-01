@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth, db } from "../../app/firebase/config";
+// import { auth, db } from "../../app/firebase/config";
 import { collection, addDoc, updateDoc, setDoc, doc } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from "../../app/firebase/config";
@@ -47,7 +47,7 @@ export const registerUser = createAsyncThunk(
           listuids: [],
         };
 
-        const myCollection = collection(db, "users");
+        // const myCollection = collection(db, "users");
 
         // Define the document reference
         const myDocRef = doc(myCollection, user.uid);
@@ -115,7 +115,7 @@ export const registerUser = createAsyncThunk(
           // Handle successful uploads
           try {
             const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-            const myCollection = collection(db, "users");
+            // const myCollection = collection(db, "users");
             const myDocumentData = {
               ...userData,
               uid: user.uid,
@@ -123,7 +123,7 @@ export const registerUser = createAsyncThunk(
             };
 
             // Define the document reference
-            const myDocRef = doc(myCollection, user.uid);
+            // const myDocRef = doc(myCollection, user.uid);
 
             // Add or update the document
             await setDoc(myDocRef, myDocumentData);

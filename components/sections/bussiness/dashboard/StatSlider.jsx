@@ -6,7 +6,7 @@ import "slick-carousel/slick/slick-theme.css";
 import Card from "./Card";
 import { getUserLocal } from "../../../../redux/slices/loggedInUserSlice";
 import { collection, getDocs, query, where } from "firebase/firestore";
-import { db } from "../../../../app/firebase/config";
+// import { db } from "../../../../app/firebase/config";
 
 const StatSlider = () => {
   const [current, setCurrent] = useState(0);
@@ -88,11 +88,11 @@ const StatSlider = () => {
       // Ensure the user and user.uid are available
       const fetchInitialBags = async () => {
         try {
-          const colRef = collection(db, "bags");
-          const q = query(
-            colRef,
-            where("resuid", "==", user.uid) // Adjusted field to resuid
-          );
+          // const colRef = collection(db, "bags");
+          // const q = query(
+          //   colRef,
+          //   where("resuid", "==", user.uid) // Adjusted field to resuid
+          // );
 
           const allBagsSnapshot = await getDocs(q);
           const bagsData = allBagsSnapshot.docs.map((doc) => ({

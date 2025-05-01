@@ -15,7 +15,7 @@ import {
   getDocs,
   updateDoc,
 } from "firebase/firestore";
-import { db } from "../../app/firebase/config";
+// import { db } from "../../app/firebase/config";
 import { getUserLocal } from "../../redux/slices/loggedInUserSlice";
 
 const AddCategoryDrawer = ({ items, setCategories: updateCategories }) => {
@@ -27,10 +27,10 @@ const AddCategoryDrawer = ({ items, setCategories: updateCategories }) => {
     const fetchCategories = async () => {
       try {
         // Reference to the `categories` collection
-        const colRef = collection(db, "categories");
+        // const colRef = collection(db, "categories");
 
         // Fetch all documents from the collection
-        const snapshot = await getDocs(colRef);
+        // const snapshot = await getDocs(colRef);
 
         // Extract data and format it
         const fetchedCategories = snapshot.docs.map((doc) => ({
@@ -78,7 +78,7 @@ const AddCategoryDrawer = ({ items, setCategories: updateCategories }) => {
         .map(({ selected, ...rest }) => rest); // Remove the `selected` property
 
       // Reference to the user document
-      const userRef = doc(db, "users", user.uid);
+      // const userRef = doc(db, "users", user.uid);
 
       // Update the user document with the formatted categories
       await updateDoc(userRef, {
@@ -90,7 +90,7 @@ const AddCategoryDrawer = ({ items, setCategories: updateCategories }) => {
       if (!user || !user.uid) return; // Ensure user is available
 
       try {
-        const userDocRef = doc(db, "users", user.uid); // Reference to user document
+        // const userDocRef = doc(db, "users", user.uid); // Reference to user document
         const userDocSnapshot = await getDoc(userDocRef); // Fetch document snapshot
 
         if (userDocSnapshot.exists()) {
