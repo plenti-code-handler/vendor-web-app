@@ -77,19 +77,13 @@ const BussinessHeader = () => {
 
   return (
     <>
-      <header
-        style={{
-          background:
-            "linear-gradient(359deg, #cac3d9 -91%, rgb(95, 34, 217) 58%)",
-        }}
-        className=" xl:px-[6%] justify-around "
-      >
+      <header className=" xl:px-[6%] py-2  justify-around bg-[#5f22d9] ">
         <div className="mx-auto flex items-center justify-between ">
           <div>
             <img
               alt="Plenti Logo"
               src={"/splash-logo.png"}
-              className="w-full h-full mt-2"
+              className="w-36 h-auto"
             />
           </div>
           <div className="flex lg:hidden gap-3 items-center">
@@ -139,13 +133,10 @@ const BussinessHeader = () => {
                   {name}
                 </Link>
               ))}
-              <div className="w-full lg:hidden">
-                {/* <LanguageDropdown /> */}
-              </div>
+              <div className="w-full lg:hidden"></div>
             </div>
           </nav>
           <div className="hidden lg:flex items-center gap-5">
-            {/* <LanguageDropdown /> */}
             <ProfileDropdown />
             <button
               className="text-sm font-semibold leading-6 text-gray-900 p-3 transition-colors duration-200 ease-in-out hover:bg-hoverPrimary hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-hoverPrimary focus:ring-offset-2 rounded-lg"

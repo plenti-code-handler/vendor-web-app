@@ -21,7 +21,7 @@ const ProfileDropdown = () => {
     <div className="relative inline-block text-left" title="Your Profile">
       <button
         onClick={handleProfileClick}
-        className="flex items-center h-9 w-9 sm:h-10 sm:w-10 lg:h-10 lg:w-10 rounded-md focus:outline-none focus:ring-2 focus:ring-white hover:ring-2 hover:ring-white"
+        className="flex items-center h-9 w-9 sm:h-10 sm:w-10 lg:h-10 lg:w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-white hover:ring-2 hover:ring-white"
       >
         <img
           alt="User"

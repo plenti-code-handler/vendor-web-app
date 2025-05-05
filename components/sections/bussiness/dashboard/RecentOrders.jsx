@@ -49,11 +49,12 @@ const RecentOrders = () => {
     <div className="mt-4 w-full border border-gray-200 rounded-xl p-6 sm:px-4">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-semibold">Recent Orders</h2>
+
         <OrdersFilter selectedFilter={filter} onFilterChange={setFilter} />
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full table-auto bg-white">
+      <div className="w-full overflow-x-auto">
+        <table className="w-full min-w-[800px] table-auto bg-white">
           <thead>
             <tr className="border-b text-sm font-semibold text-gray-500">
               <th className="pb-2 pl-5 pt-4 text-left">Order Code</th>
@@ -61,7 +62,6 @@ const RecentOrders = () => {
               <th className="pb-2 px-2 pt-4 text-center">Window End Time</th>
               <th className="pb-2 px-2 pt-4 text-center">Created At</th>
               <th className="pb-2 px-2 pt-4 text-center">Status</th>
-              <th className="pb-2 px-2 pt-4 text-center">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -74,19 +74,21 @@ const RecentOrders = () => {
             ) : filteredOrders.length > 0 ? (
               filteredOrders.map((order, index) => (
                 <tr key={index} className="border-b hover:bg-gray-100">
-                  <td className="pl-5 py-3">{order.order_code}</td>
-                  <td className="text-center px-2">
+                  <td className="pl-5 py-3 text-sm whitespace-nowrap">
+                    {order.order_code}
+                  </td>
+                  <td className="text-center px-2 text-sm whitespace-nowrap">
                     {formatTimestamp(order.window_start_time)}
                   </td>
-                  <td className="text-center px-2">
+                  <td className="text-center px-2 text-sm whitespace-nowrap">
                     {formatTimestamp(order.window_end_time)}
                   </td>
-                  <td className="text-center px-2">
+                  <td className="text-center px-2 text-sm whitespace-nowrap">
                     {formatTimestamp(order.created_at)}
                   </td>
-                  <td className="text-center px-2">
+                  <td className="text-center px-2 text-sm whitespace-nowrap">
                     <span
-                      className={`px-2 py-1 rounded text-white text-xs font-semibold ${
+                      className={`inline-block px-2 py-1 rounded text-white text-xs font-semibold whitespace-nowrap ${
                         order.current_status === "WAITING_FOR_PICKUP"
                           ? "bg-yellow-500"
                           : order.current_status === "PICKED_UP"
@@ -96,11 +98,6 @@ const RecentOrders = () => {
                     >
                       {order.current_status.replace(/_/g, " ")}
                     </span>
-                  </td>
-                  <td className="text-center px-2">
-                    <button onClick={() => setShowAlert(true)}>
-                      <TrashIcon className="h-5 w-5 text-red-600 hover:text-red-900" />
-                    </button>
                   </td>
                 </tr>
               ))
@@ -113,40 +110,6 @@ const RecentOrders = () => {
             )}
           </tbody>
         </table>
-
-        {showAlert && (
-          <div className="fixed top-0 left-0 w-full flex justify-center z-50 animate-slide-down">
-            <div className="bg-white border border-gray-300 shadow-lg rounded-md mt-4 p-4 w-[90%] max-w-md">
-              <p className="text-gray-800 mb-4 font-medium text-center">
-                Are you sure you want to delete this order?
-              </p>
-              <div className="flex justify-center gap-4">
-                <button
-                  onClick={() => setShowAlert(false)}
-                  className="bg-white border border-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-100"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleDelete}
-                  className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
-                >
-                  Yes, Delete
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        <style>{`
-        @keyframes slideDown {
-          from { transform: translateY(-100%); opacity: 0; }
-          to { transform: translateY(0); opacity: 1; }
-        }
-        .animate-slide-down {
-          animation: slideDown 0.3s ease-out;
-        }
-      `}</style>
       </div>
     </div>
   );

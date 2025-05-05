@@ -18,6 +18,8 @@ const ProfileCard = () => {
   const [vendorData, setVendorData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [coverLoaded, setCoverLoaded] = useState(false);
+  const [profileLoaded, setProfileLoaded] = useState(false);
 
   const handleAddCategory = () => {
     dispatch(setOpenDrawer(true));
@@ -36,6 +38,8 @@ const ProfileCard = () => {
 
         setVendorData(response.data);
         setImage(response.data.logo_url);
+        setCoverLoaded(true);
+        setProfileLoaded(true);
       } catch (err) {
         console.error("Error fetching vendor data:", err);
         setError(err.response?.data || "Something went wrong.");
@@ -69,7 +73,9 @@ const ProfileCard = () => {
       );
 
       if (response.data?.url) {
-        setImage(response.data.url);
+        console.log("Inside if url...");
+        console.log(response.data.url);
+        setImage(`${response.data.url}?t=${new Date().getTime()}`);
       }
     } catch (error) {
       console.error("Error uploading image:", error);
@@ -78,43 +84,67 @@ const ProfileCard = () => {
 
   return (
     <>
-      <div className="flex flex-col gap-5 w-[100%] lg:w-[60%] md:w-[60%] p-5 border border-gray-100 rounded-md">
-        <div className="flex items-center space-x-4">
-          <div className="relative w-[120px] h-[120px]">
-            <img
-              alt="User"
-              src={image}
-              className="rounded-full w-full h-full object-cover"
-            />
-
-            <input
-              type="file"
-              accept="image/*"
-              className="hidden"
-              id="imageUpload"
-              onChange={handleImageChange}
-            />
-
-            <label
-              htmlFor="imageUpload"
-              className="absolute bottom-2 right-2 bg-white p-1.5 rounded-full shadow-md cursor-pointer flex items-center justify-center"
-            >
-              <PencilIcon className="w-4 h-4 text-[#7a48e3]" />
-            </label>
+      <div className="flex flex-col    w-[100%] lg:w-[60%] md:w-[60%] border border-gray-100 rounded-md">
+        <div className="w-full">
+          {/* Cover Image */}
+          <div className="relative w-full h-48">
+            {!coverLoaded ? (
+              <div className="w-full h-full bg-gray-200 animate-pulse rounded-t-md" />
+            ) : (
+              <img
+                src={vendorData?.backcover_url}
+                alt="Cover"
+                className="w-full h-full object-cover rounded-t-md"
+                onLoad={() => setCoverLoaded(true)}
+              />
+            )}
           </div>
 
-          <div className="flex flex-col gap-y-1">
-            <p className="text-lg font-semibold text-gray-900">
-              {vendorData?.store_manager_name || "Loading..."}
-            </p>
+          {/* Profile & Name Section */}
+          <div className="relative bg-white px-4 pt-16 pb-6">
+            {/* Profile Image Container */}
+            <div className="absolute -top-16 left-4 w-32 h-32">
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                id="imageUpload"
+                onChange={handleImageChange}
+              />
+
+              <label
+                htmlFor="imageUpload"
+                className="group relative w-full h-full rounded-full border-4 border-white shadow-md cursor-pointer overflow-hidden block"
+              >
+                {!profileLoaded ? (
+                  <div className="w-full h-full rounded-full bg-gray-200 animate-pulse" />
+                ) : (
+                  <img
+                    src={image}
+                    alt="Profile"
+                    className="w-full h-full object-cover rounded-full transition-opacity duration-300 group-hover:opacity-50"
+                    onLoad={() => setProfileLoaded(true)}
+                  />
+                )}
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <PencilIcon className="w-6 h-6 text-[#7a48e3] bg-white p-1 rounded-full shadow" />
+                </div>
+              </label>
+            </div>
           </div>
         </div>
 
-        <Tabs />
+        <div className="p-5 ">
+          <Tabs />
+
+          {true && (
+            <AddCategoryDrawer
+              items={categories}
+              setCategories={setCategories}
+            />
+          )}
+        </div>
       </div>
-      {true && (
-        <AddCategoryDrawer items={categories} setCategories={setCategories} />
-      )}
     </>
   );
 };

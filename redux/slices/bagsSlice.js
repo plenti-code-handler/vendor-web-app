@@ -8,7 +8,6 @@ export const fetchAllBags = createAsyncThunk("bags/fetchAllBags", async () => {
     const response = await axiosClient.get(
       "/v1/vendor/item/get/all?active=true"
     );
-
     return response.data || [];
   } catch (error) {
     toast.error("Failed to fetch items");
