@@ -86,6 +86,7 @@ const Transactions = () => {
         </div>
         <p className="text-[40px] font-bold text-white z-0">
           {Number(balance).toFixed(2)}
+          <span className="text-base ml-1">{"INR ₹"}</span>
         </p>
         <p className="text-base font-medium text-white z-0">My Wallet</p>
 
@@ -113,7 +114,7 @@ const Transactions = () => {
               <div className="flex gap-2">
                 <div className="flex flex-col">
                   <p className="text-cardNumber text-base font-semibold">
-                    #{transaction.payment_order_id}
+                    {transaction.payment_order_id}
                   </p>
                   <p className="text-date text-sm font-medium">
                     {new Intl.DateTimeFormat("en-GB", {

@@ -79,11 +79,11 @@ const BussinessHeader = () => {
     <>
       <header className=" xl:px-[6%] py-2  justify-around bg-[#5f22d9] ">
         <div className="mx-auto flex items-center justify-between ">
-          <div>
+          <div onClick={() => router.push("/business")}>
             <img
               alt="Plenti Logo"
               src={"/splash-logo.png"}
-              className="w-36 h-auto"
+              className="w-36 h-auto cursor-pointer"
             />
           </div>
           <div className="flex lg:hidden gap-3 items-center">
@@ -111,17 +111,17 @@ const BussinessHeader = () => {
               zIndex: isSmallDevice ? 1000 : 0,
             }}
           >
-            <div className="flex flex-col  justify-center items-start lg:flex-row p-6 lg:p-0 gap-[2.2%]">
+            <div className="flex flex-col  justify-center items-start lg:flex-row p-6 lg:p-0 gap-2">
               {menuItemsData.map(({ name, href }) => (
                 <Link
                   key={name}
                   href={href}
-                  className={`lg:text-[12px] xl:text-base font-semibold leading-6 transition-all rounded-md flex items-center justify-start lg:justify-center px-[3%] py-[1%] m-2 lg:m-0 ${
+                  className={`lg:text-[12px] xl:text-base font-semibold leading-6 transition-all rounded-md flex items-center justify-start lg:justify-center px-[2%] py-2 m-2 lg:m-0 ${
                     isSmallDevice ? "w-[100%]" : ""
                   }  ${
                     activePage === name
-                      ? "bg-[#7a48e3] text-white"
-                      : "text-white lg:text-textLight hover:bg-[#7a48e3] "
+                      ? "bg-[#7a48e3]  text-white"
+                      : "text-white lg:text-textLight  hover:bg-[#7a48e3] "
                   }`}
                   onClick={() => {
                     handleLinkClick(name);

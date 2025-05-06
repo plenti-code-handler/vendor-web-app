@@ -87,8 +87,9 @@ const WithdrawAmountDrawer = ({ balance }) => {
                   <div className="flex flex-col mt-3 pb-3 flex-1 px-4 sm:px-6 space-y-4 items-center gap-5">
                     <div className="flex flex-col items-center">
                       <p className="text-white text-sm">Current Balance</p>
-                      <p className="text-white text-base font-bold">
+                      <p className="text-white text-lg font-bold">
                         {Number(balance).toFixed(2)}
+                        <span className="text-xs ml-1">{"INR ₹"}</span>
                       </p>
                     </div>
                     <h2 className="text-white font-medium text-lg">

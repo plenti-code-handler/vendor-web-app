@@ -131,6 +131,27 @@ const RevenueChart = () => {
     fetchStats();
   }, [activeTab]);
 
+  useEffect(() => {
+    const fetchVendorDetails = async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        const response = await axiosClient.get("/v1/vendor/me/get", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        localStorage.setItem("logo", response.data.logo_url);
+      } catch (error) {
+        toast.error("Failed to fetch vendor logo");
+        console.error("Error fetching logo:", error);
+      }
+    };
+
+    fetchVendorDetails();
+  }, []);
+
   return (
     <div className="flex h-full flex-col justify-between py-2.5 border border-gray-300 rounded-2xl lg:w-full">
       <div className="flex flex-col mt-4 ml-8">
@@ -144,8 +165,9 @@ const RevenueChart = () => {
             onChange={setActiveTab}
           />
         </div>
-        <h1 className="text-[40px] leading-[28px] text-primary font-bold my-4">
+        <h1 className="text-[40px]  leading-[28px] text-primary font-bold my-4">
           {totalRevenue ? totalRevenue : "0"}
+          <span className="text-base ml-1">{"INR ₹"}</span>
         </h1>
       </div>
       <div id="chart" className="w-full">

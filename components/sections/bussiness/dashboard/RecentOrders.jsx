@@ -24,6 +24,9 @@ const RecentOrders = () => {
         const response = await axiosClient.get(
           "/v1/vendor/order/get?skip=0&limit=10"
         );
+
+        console.log("all orders data");
+        console.log(response.data);
         if (response.status === 200) {
           setOrders(response.data || []);
         }
@@ -57,7 +60,6 @@ const RecentOrders = () => {
         <table className="w-full min-w-[800px] table-auto bg-white">
           <thead>
             <tr className="border-b text-sm font-semibold text-gray-500">
-              <th className="pb-2 pl-5 pt-4 text-left">Order Code</th>
               <th className="pb-2 px-2 pt-4 text-center">Window Start Time</th>
               <th className="pb-2 px-2 pt-4 text-center">Window End Time</th>
               <th className="pb-2 px-2 pt-4 text-center">Created At</th>
@@ -74,9 +76,6 @@ const RecentOrders = () => {
             ) : filteredOrders.length > 0 ? (
               filteredOrders.map((order, index) => (
                 <tr key={index} className="border-b hover:bg-gray-100">
-                  <td className="pl-5 py-3 text-sm whitespace-nowrap">
-                    {order.order_code}
-                  </td>
                   <td className="text-center px-2 text-sm whitespace-nowrap">
                     {formatTimestamp(order.window_start_time)}
                   </td>

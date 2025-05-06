@@ -90,7 +90,9 @@ const BagsTable = () => {
         <table className="w-full table-auto bg-white">
           <thead>
             <tr className="border-b-[1px] border-grayOne border-dashed border-opacity-45 text-sm font-semibold text-grayOne">
-              <th className="pb-[8px] px-2 pt-[18px] text-left w-1/6">Image</th>
+              <th className="pb-[8px] px-2 pt-[18px] text-left w-[80px]">
+                Image
+              </th>
               <th className="pb-[8px] px-2 pt-[18px] text-left w-1/6">Type</th>
               <th className="pb-[8px] px-2 pt-[18px] text-center w-1/6">
                 Start Time
@@ -123,13 +125,16 @@ const BagsTable = () => {
                   key={item.id}
                   className="border-b border-gray-200 text-center"
                 >
-                  <td className="py-2 px-2 text-left w-1/6">
-                    <img
-                      src={item.image_url}
-                      alt="Item"
-                      className="h-12 w-12 object-cover rounded"
-                    />
+                  <td className="py-2 px-2 text-left">
+                    <div className="w-[48px] h-[48px]">
+                      <img
+                        src={item.image_url}
+                        alt="Item"
+                        className="h-full w-full object-cover rounded"
+                      />
+                    </div>
                   </td>
+
                   <td className="py-2 px-2 text-left w-1/6">
                     {item.item_type.replace(/_/g, " ")}
                   </td>
