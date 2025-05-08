@@ -127,6 +127,7 @@ const Account = () => {
       longitude: originalData.longitude || null,
       address_url: removeDuplicateWords(originalData.address_url) || "",
       pincode: originalData.pincode || "",
+      phone_number: originalData.phone_number || "",
     });
   };
 
@@ -204,7 +205,7 @@ const Account = () => {
         <h3 className="font-medium ml-1 mb-1">Phone Number</h3>
         <TextField
           placeholder="Phone Number"
-          name="gst_number"
+          name="phone_number"
           value={formData.phone_number}
           onChange={handleChange}
         />

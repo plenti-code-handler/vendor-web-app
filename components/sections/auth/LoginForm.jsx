@@ -46,9 +46,6 @@ const LoginForm = () => {
 
       router.push("/business");
     } catch (error) {
-      console.log("Error Response:", error.response);
-      console.log("Error Detail:", error.response?.data?.detail);
-
       if (error.response?.data?.detail) {
         toast.error(error.response.data.detail);
       } else {

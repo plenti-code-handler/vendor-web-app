@@ -27,7 +27,8 @@ const Transactions = () => {
         const response = await axiosClient.get(
           "/v1/vendor/payment/get?skip=0&limit=10"
         );
-
+        console.log("all transaction history");
+        console.log(response.data);
         console.log(response.data);
         setTransactions(response.data);
       } catch (error) {
@@ -106,42 +107,46 @@ const Transactions = () => {
         {loading ? (
           <Loader />
         ) : transactions.length > 0 ? (
-          transactions.map((transaction) => (
-            <div
-              key={transaction.id}
-              className="flex justify-between px-6 py-4 items-center bg-white shadow-lg transform translate-y-[-5px] p-2 rounded-lg mt-2 w-full"
-            >
-              <div className="flex gap-2">
-                <div className="flex flex-col">
-                  <p className="text-cardNumber text-base font-semibold">
-                    {transaction.payment_order_id}
-                  </p>
-                  <p className="text-date text-sm font-medium">
-                    {new Intl.DateTimeFormat("en-GB", {
-                      day: "numeric",
-                      month: "short",
-                      year: "2-digit",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      hour12: false,
-                    }).format(new Date(transaction.created_at * 1000))}
-                  </p>
-                </div>
-              </div>
-              <div className="flex gap-5 items-center">
+          <div className="overflow-x-auto sm:overflow-x-visible">
+            <div className="flex flex-col sm:flex-col gap-2 min-w-[350px] sm:min-w-0">
+              {transactions.map((transaction) => (
                 <div
-                  className={`${decideStyle(
-                    transaction.status
-                  )} font-semibold rounded-full text-center border text-[12px] px-5 py-1`}
+                  key={transaction.id}
+                  className="flex justify-between items-center bg-white shadow-lg transform translate-y-[-5px] rounded-lg w-full p-4 whitespace-normal sm:whitespace-normal min-w-[350px] sm:min-w-0"
                 >
-                  {transaction.status}
+                  <div className="flex gap-2">
+                    <div className="flex flex-col">
+                      <p className="text-cardNumber text-base font-semibold">
+                        {transaction.id}
+                      </p>
+                      <p className="text-date text-sm font-medium">
+                        {new Intl.DateTimeFormat("en-GB", {
+                          day: "numeric",
+                          month: "short",
+                          year: "2-digit",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          hour12: false,
+                        }).format(new Date(transaction.created_at * 1000))}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex gap-5 items-center">
+                    <div
+                      className={`${decideStyle(
+                        transaction.status
+                      )} font-semibold rounded-full text-center border text-[12px] px-5 py-1`}
+                    >
+                      {transaction.status}
+                    </div>
+                    <div className="text-amount text-xl font-semibold">
+                      {Number(transaction.transaction_amount).toFixed(2)}
+                    </div>
+                  </div>
                 </div>
-                <div className="text-amount text-xl font-semibold">
-                  {Number(transaction.transaction_amount).toFixed(2)}
-                </div>
-              </div>
+              ))}
             </div>
-          ))
+          </div>
         ) : (
           <p>No transactions found.</p>
         )}

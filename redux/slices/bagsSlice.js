@@ -10,7 +10,7 @@ export const fetchAllBags = createAsyncThunk("bags/fetchAllBags", async () => {
     );
     return response.data || [];
   } catch (error) {
-    toast.error("Failed to fetch items");
+    console.log(error);
     throw error;
   }
 });

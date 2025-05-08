@@ -82,22 +82,74 @@ const ProfileCard = () => {
     }
   };
 
+  const handleCoverChange = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    try {
+      const token = localStorage.getItem("token");
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await axiosClient.post(
+        "/v1/vendor/me/images/upload?image_type=backcover",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      console.log("Cover API response");
+      console.log(response.data);
+      if (response.data?.url) {
+        setVendorData((prev) => ({
+          ...prev,
+          backcover_url: `${response.data.url}?t=${new Date().getTime()}`,
+        }));
+        setCoverLoaded(true);
+      }
+    } catch (error) {
+      console.error("Error uploading cover image:", error);
+    }
+  };
+
   return (
     <>
       <div className="flex flex-col    w-[100%] lg:w-[60%] md:w-[60%] border border-gray-100 rounded-md">
         <div className="w-full">
           {/* Cover Image */}
+          {/* Cover Image with Upload */}
           <div className="relative w-full h-48">
-            {!coverLoaded ? (
-              <div className="w-full h-full bg-gray-200 animate-pulse rounded-t-md" />
-            ) : (
-              <img
-                src={vendorData?.backcover_url}
-                alt="Cover"
-                className="w-full h-full object-cover rounded-t-md"
-                onLoad={() => setCoverLoaded(true)}
-              />
-            )}
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              id="coverUpload"
+              onChange={handleCoverChange}
+            />
+
+            <label
+              htmlFor="coverUpload"
+              className="group relative w-full h-full cursor-pointer block"
+            >
+              {!coverLoaded ? (
+                <div className="w-full h-full bg-gray-200 animate-pulse rounded-t-md" />
+              ) : (
+                <img
+                  src={vendorData?.backcover_url}
+                  alt="Cover"
+                  className="w-full h-full object-cover rounded-t-md transition-opacity duration-300 group-hover:opacity-50"
+                  onLoad={() => setCoverLoaded(true)}
+                />
+              )}
+
+              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <PencilIcon className="w-6 h-6 text-[#7a48e3] bg-white p-1 rounded-full shadow" />
+              </div>
+            </label>
           </div>
 
           {/* Profile & Name Section */}

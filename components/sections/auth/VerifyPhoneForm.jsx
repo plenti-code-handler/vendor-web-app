@@ -2,11 +2,10 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import BackButton from "./BackButton";
-// import { useDispatch, useSelector } from "react-redux";
+
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { setConfirmationResult } from "../../../redux/slices/registerUserSlice";
-import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+
+import { RecaptchaVerifier } from "firebase/auth";
 import { auth } from "../../../app/firebase/config";
 
 const VerifyPhoneForm = () => {
@@ -16,12 +15,6 @@ const VerifyPhoneForm = () => {
   const inputRefs = useRef([]);
   const recaptchaVerifierRef = useRef(null);
 
-  // const dispatch = useDispatch();
-  // const email = useSelector((state) => state.registerUser.email);
-  // const phone = useSelector((state) => state.registerUser.phone);
-  // const confirmationResult = useSelector(
-  //   (state) => state.registerUser.confirmationResult
-  // );
   const router = useRouter();
 
   useEffect(() => {

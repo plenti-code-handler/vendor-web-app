@@ -61,6 +61,7 @@ const BussinessHeader = () => {
     toast.success("Signed Out Successfully!");
     dispatch(logoutUser());
     router.push("/");
+    localStorage.clear();
   };
 
   useEffect(() => {
