@@ -94,7 +94,6 @@ const RevenueChart = () => {
       });
 
       const revenueData = Array(7).fill(0); // To hold revenue for each of the last 7 days
-      console.log("Initialized revenue data:", revenueData); // Log initialized revenue data
 
       // const unsubscribe = auth.onAuthStateChanged(async (user) => {
       //   if (!user) {

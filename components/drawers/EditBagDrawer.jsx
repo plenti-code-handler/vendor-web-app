@@ -37,8 +37,6 @@ const EditBagDrawer = () => {
   const { bagToEdit } = useSelector((state) => state.editBag);
 
   useEffect(() => {
-    console.log("Inside eidt bag use effect");
-    console.log(bagToEdit);
     if (bagToEdit) {
       setSelectedTags(bagToEdit.tags);
       setOriginalPrice(bagToEdit.actual_price);

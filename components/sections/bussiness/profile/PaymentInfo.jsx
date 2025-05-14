@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axiosClient from "../../../../AxiosClient";
 import { toast } from "sonner";
 import { PencilIcon } from "@heroicons/react/20/solid";
+import Loader from "../../../loader/loader";
 
 const PaymentInfo = () => {
   const [view, setView] = useState("initial");
@@ -79,10 +80,9 @@ const PaymentInfo = () => {
   return (
     <div className="flex flex-col justify-center p-6 w-full ">
       {!fetchedOnce ? (
-        <p className="text-center">Loading bank information...</p>
+        <Loader />
       ) : (
         <>
-          {/* Show Add Button */}
           {view === "initial" && (
             <div className="flex flex-col items-center gap-4">
               <p className="text-gray-700 text-center">
@@ -97,7 +97,6 @@ const PaymentInfo = () => {
             </div>
           )}
 
-          {/* Show Existing Details with Edit Option */}
           {view === "linkedBank" && (
             <div className="relative w-full bg-white border p-6 rounded-lg shadow">
               <div
@@ -109,51 +108,95 @@ const PaymentInfo = () => {
               <h2 className="text-xl font-semibold mb-4">
                 Linked Bank Details
               </h2>
-              <p>
-                <strong>Account Holder:</strong> {accountHolder}
-              </p>
-              <p>
-                <strong>Account Number:</strong> {accountNumber}
-              </p>
-              <p>
-                <strong>IFSC Code:</strong> {ifscCode}
-              </p>
-              <p>
-                <strong>Bank Name:</strong> {bankName}
-              </p>
+
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Account Holder Name
+                </label>
+                <div className="w-full p-3 border rounded-lg bg-gray-50">
+                  {accountHolder}
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Account Number
+                </label>
+                <div className="w-full p-3 border rounded-lg bg-gray-50">
+                  {accountNumber}
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  IFSC Code
+                </label>
+                <div className="w-full p-3 border rounded-lg bg-gray-50">
+                  {ifscCode}
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Bank Name
+                </label>
+                <div className="w-full p-3 border rounded-lg bg-gray-50">
+                  {bankName}
+                </div>
+              </div>
             </div>
           )}
 
-          {/* Add or Edit Form */}
           {view === "addCard" && (
             <div className="bg-white p-6 w-full border rounded-lg shadow">
               <h2 className="text-xl font-semibold mb-4">
                 Add / Edit Bank Details
               </h2>
-              <input
-                className="w-full p-3 mb-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Account Holder Name"
-                value={accountHolder}
-                onChange={(e) => setAccountHolder(e.target.value)}
-              />
-              <input
-                className="w-full p-3 mb-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Account Number"
-                value={accountNumber}
-                onChange={(e) => setAccountNumber(e.target.value)}
-              />
-              <input
-                className="w-full p-3 mb-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="IFSC Code"
-                value={ifscCode}
-                onChange={(e) => setIfscCode(e.target.value)}
-              />
-              <input
-                className="w-full p-3 mb-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Bank Name"
-                value={bankName}
-                onChange={(e) => setBankName(e.target.value)}
-              />
+
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Account Holder Name
+                </label>
+                <input
+                  className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  value={accountHolder}
+                  onChange={(e) => setAccountHolder(e.target.value)}
+                />
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Account Number
+                </label>
+                <input
+                  className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  value={accountNumber}
+                  onChange={(e) => setAccountNumber(e.target.value)}
+                />
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  IFSC Code
+                </label>
+                <input
+                  className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  value={ifscCode}
+                  onChange={(e) => setIfscCode(e.target.value)}
+                />
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Bank Name
+                </label>
+                <input
+                  className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  value={bankName}
+                  onChange={(e) => setBankName(e.target.value)}
+                />
+              </div>
+
               <div className="flex gap-4">
                 <button
                   onClick={() =>

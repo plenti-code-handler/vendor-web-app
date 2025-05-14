@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import axiosClient from "../../../../AxiosClient";
 import { toast } from "sonner";
 import OrdersFilter from "../../../dropdowns/OrdersFilter";
-import { TrashIcon } from "@heroicons/react/20/solid";
+
+import { formatTime } from "../../../../utility/FormateTime";
 
 const RecentOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -60,6 +61,8 @@ const RecentOrders = () => {
         <table className="w-full min-w-[800px] table-auto bg-white">
           <thead>
             <tr className="border-b text-sm font-semibold text-gray-500">
+              <th className="pb-2 px-2 pt-4 text-center">Transaction amount</th>
+
               <th className="pb-2 px-2 pt-4 text-center">Window Start Time</th>
               <th className="pb-2 px-2 pt-4 text-center">Window End Time</th>
               <th className="pb-2 px-2 pt-4 text-center">Created At</th>
@@ -77,26 +80,59 @@ const RecentOrders = () => {
               filteredOrders.map((order, index) => (
                 <tr key={index} className="border-b hover:bg-gray-100">
                   <td className="text-center px-2 text-sm whitespace-nowrap">
-                    {formatTimestamp(order.window_start_time)}
+                    {order.transaction_amount}
                   </td>
                   <td className="text-center px-2 text-sm whitespace-nowrap">
-                    {formatTimestamp(order.window_end_time)}
+                    {formatTime(order.window_start_time)}
+                  </td>
+                  <td className="text-center px-2 text-sm whitespace-nowrap">
+                    {formatTime(order.window_end_time)}
                   </td>
                   <td className="text-center px-2 text-sm whitespace-nowrap">
                     {formatTimestamp(order.created_at)}
                   </td>
                   <td className="text-center px-2 text-sm whitespace-nowrap">
-                    <span
-                      className={`inline-block px-2 py-1 rounded text-white text-xs font-semibold whitespace-nowrap ${
-                        order.current_status === "WAITING_FOR_PICKUP"
-                          ? "bg-yellow-500"
-                          : order.current_status === "PICKED_UP"
-                          ? "bg-green-500"
-                          : "bg-blue-500"
-                      }`}
-                    >
-                      {order.current_status.replace(/_/g, " ")}
-                    </span>
+                    {(() => {
+                      const rawStatus = order.current_status;
+
+                      if (!rawStatus) {
+                        return (
+                          <span className="inline-block px-2 py-1 rounded bg-gray-400 text-white text-xs font-semibold">
+                            Not Available
+                          </span>
+                        );
+                      }
+
+                      const status = rawStatus
+                        .replace("order.", "")
+                        .toUpperCase();
+
+                      const getStatusColor = (status) => {
+                        switch (status) {
+                          case "READY_FOR_PICKUP":
+                            return "bg-yellow-500";
+                          case "PICKED_UP":
+                            return "bg-green-500";
+                          default:
+                            return "bg-blue-500";
+                        }
+                      };
+
+                      const formattedText = status
+                        .toLowerCase()
+                        .replace(/_/g, " ")
+                        .replace(/\b\w/g, (l) => l.toUpperCase());
+
+                      return (
+                        <span
+                          className={`inline-block px-2 py-1 rounded text-white text-xs font-semibold whitespace-nowrap ${getStatusColor(
+                            status
+                          )}`}
+                        >
+                          {formattedText}
+                        </span>
+                      );
+                    })()}
                   </td>
                 </tr>
               ))
