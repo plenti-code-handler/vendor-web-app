@@ -3,7 +3,7 @@ import { arrowDownGray } from "../../svgs";
 
 const OrdersFilter = ({ selectedFilter, onFilterChange }) => {
   return (
-    <form className="max-w-lg w-full lg:w-60">
+    <form className="max-w-lg w-44 lg:w-60">
       <div className="relative">
         <select
           id="orders"

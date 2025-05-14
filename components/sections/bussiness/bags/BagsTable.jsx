@@ -90,6 +90,9 @@ const BagsTable = () => {
         <table className="w-full table-auto bg-white">
           <thead>
             <tr className="border-b-[1px] border-grayOne border-dashed border-opacity-45 text-sm font-semibold text-grayOne">
+              <th className="pb-[8px] px-2 pt-[18px] text-left w-[80px]">
+                Image
+              </th>
               <th className="pb-[8px] px-2 pt-[18px] text-left w-1/6">Type</th>
               <th className="pb-[8px] px-2 pt-[18px] text-center w-1/6">
                 Start Time
@@ -112,7 +115,7 @@ const BagsTable = () => {
           <tbody>
             {filteredItems.length === 0 ? (
               <tr>
-                <td colSpan="6" className="py-4 text-center text-gray-500">
+                <td colSpan="7" className="py-4 text-center text-gray-500">
                   No bags available
                 </td>
               </tr>
@@ -122,6 +125,16 @@ const BagsTable = () => {
                   key={item.id}
                   className="border-b border-gray-200 text-center"
                 >
+                  <td className="py-2 px-2 text-left">
+                    <div className="w-[48px] h-[48px]">
+                      <img
+                        src={item.image_url}
+                        alt="Item"
+                        className="h-full w-full object-cover rounded"
+                      />
+                    </div>
+                  </td>
+
                   <td className="py-2 px-2 text-left w-1/6">
                     {item.item_type.replace(/_/g, " ")}
                   </td>
@@ -141,10 +154,7 @@ const BagsTable = () => {
                       <button onClick={() => handleEdit(item)}>
                         <PencilIcon className="h-5 w-5 text-blue-600 hover:text-blue-900" />
                       </button>
-                      <button
-                        // onClick={() => handleDelete(item.id, item.vendor_id)}
-                        onClick={() => setShowAlert(true)}
-                      >
+                      <button onClick={() => setShowAlert(true)}>
                         <TrashIcon className="h-5 w-5 text-red-600 hover:text-red-900" />
                       </button>
                     </div>

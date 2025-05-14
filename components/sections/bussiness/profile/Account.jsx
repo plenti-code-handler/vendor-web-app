@@ -22,6 +22,7 @@ const Account = () => {
     longitude: null,
     address_url: "",
     pincode: "",
+    phone_number: "",
   });
 
   const [loading, setLoading] = useState(true);
@@ -55,6 +56,7 @@ const Account = () => {
           longitude: vendor.longitude || null,
           address_url: removeDuplicateWords(vendor.address_url) || "",
           pincode: vendor.pincode || "",
+          phone_number: vendor.phone_number || "",
         });
 
         if (vendor.latitude && vendor.longitude) {
@@ -125,6 +127,7 @@ const Account = () => {
       longitude: originalData.longitude || null,
       address_url: removeDuplicateWords(originalData.address_url) || "",
       pincode: originalData.pincode || "",
+      phone_number: originalData.phone_number || "",
     });
   };
 
@@ -151,52 +154,75 @@ const Account = () => {
 
   return (
     <div className="flex flex-col gap-4 pt-6 pb-6">
-      <TextField
-        placeholder="Store Name"
-        name="store_manager_name"
-        value={formData.store_manager_name}
-        onChange={handleChange}
-      />
-
-      <div className="flex justify-between w-full rounded-lg border border-gray-300 bg-gray-100 py-3 px-3 text-sm text-black">
-        <p className="font-semibold">
-          {loading ? "Loading..." : vendorData?.email}
-        </p>
-        {vendorData?.email_verified && (
-          <div className="flex gap-1 items-center">
-            <p className="text-primary font-semibold">Verified</p>
-            {tickSvg}
-          </div>
-        )}
+      <div>
+        <h3 className="font-medium ml-1 mb-1">Store name</h3>
+        <TextField
+          placeholder="Store Name"
+          name="store_manager_name"
+          value={formData.store_manager_name}
+          onChange={handleChange}
+        />
+      </div>
+      <div>
+        <h3 className="font-medium ml-1 mb-1">Email</h3>
+        <div className="flex justify-between w-full rounded-lg border border-gray-300 bg-gray-100 py-3 px-3 text-sm text-black">
+          <p className="font-semibold">
+            {loading ? "Loading..." : vendorData?.email}
+          </p>
+          {vendorData?.email_verified && (
+            <div className="flex gap-1 items-center">
+              <p className="text-primary font-semibold">Verified</p>
+              {tickSvg}
+            </div>
+          )}
+        </div>
       </div>
 
-      <select
-        className="rounded-md border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
-        name="vendor_type"
-        value={formData.vendor_type}
-        onChange={handleChange}
-      >
-        <option value="RESTAURANT">Restaurant</option>
-        <option value="SUPERMARKET">Super Market</option>
-        <option value="BAKERY">Bakery</option>
-      </select>
+      <div className="w-full">
+        <h3 className="font-medium ml-1 mb-1">Store Type</h3>
+        <select
+          className="rounded-md w-full border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
+          name="vendor_type"
+          value={formData.vendor_type}
+          onChange={handleChange}
+        >
+          <option value="RESTAURANT">Restaurant</option>
+          <option value="SUPERMARKET">Super Market</option>
+          <option value="BAKERY">Bakery</option>
+        </select>
+      </div>
 
-      <TextField
-        placeholder="GST Number"
-        name="gst_number"
-        value={formData.gst_number}
-        onChange={handleChange}
-      />
+      <div>
+        <h3 className="font-medium ml-1 mb-1">GST Number</h3>
+        <TextField
+          placeholder="GST Number"
+          name="gst_number"
+          value={formData.gst_number}
+          onChange={handleChange}
+        />
+      </div>
+      <div>
+        <h3 className="font-medium ml-1 mb-1">Phone Number</h3>
+        <TextField
+          placeholder="Phone Number"
+          name="phone_number"
+          value={formData.phone_number}
+          onChange={handleChange}
+        />
+      </div>
 
-      <input
-        type="text"
-        ref={autoCompleteRef}
-        className="rounded-md border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
-        placeholder="Search your business address"
-        name="address_url"
-        value={formData.address_url}
-        onChange={handleChange}
-      />
+      <div className="w-full">
+        <h3 className="font-medium ml-1 mb-1">Store Address</h3>
+        <input
+          type="text"
+          ref={autoCompleteRef}
+          className="rounded-md w-full border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
+          placeholder="Search your business address"
+          name="address_url"
+          value={formData.address_url}
+          onChange={handleChange}
+        />
+      </div>
 
       {mapUrl && (
         <iframe

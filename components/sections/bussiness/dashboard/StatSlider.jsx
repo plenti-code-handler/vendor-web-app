@@ -76,7 +76,7 @@ const StatSlider = () => {
     ),
     customPaging: (index) => (
       <div
-        className={`h-2 w-2 rounded-full bg-secondary ${
+        className={`h-2 w-2 rounded-full bg-primary ${
           index === current ? "opacity-100" : "opacity-50"
         }`}
       ></div>

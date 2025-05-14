@@ -81,7 +81,7 @@ const Breadcrumb = () => {
           onClick={handleOpenDrawer}
           className="mr-3 mt-2 lg:m-0 flex items-center text-center justify-center bg-blueBgDark text-white font-semibold py-2 px-4 rounded-[6px] hover:bg-blueBgDarkHover2"
         >
-          <span className="mr-3 ml-2 font-semibold">New Bags</span>
+          <span className="mr-3 ml-2 font-semibold">Add New Bags</span>
           <span>{addUserSvg}</span>
         </button>
       )}

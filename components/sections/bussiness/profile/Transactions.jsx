@@ -18,6 +18,8 @@ const Transactions = () => {
   const dispatch = useDispatch();
   const [balance, setBalance] = useState(0);
   const [transactions, setTransactions] = useState([]);
+  const [payouts, setPayouts] = useState([]);
+  const [activeTab, setActiveTab] = useState("transactions");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -27,8 +29,6 @@ const Transactions = () => {
         const response = await axiosClient.get(
           "/v1/vendor/payment/get?skip=0&limit=10"
         );
-
-        console.log(response.data);
         setTransactions(response.data);
       } catch (error) {
         console.error("Error fetching transactions:", error);
@@ -40,18 +40,46 @@ const Transactions = () => {
     fetchTransactions();
   }, []);
 
+  useEffect(() => {
+    const fetchBalance = async () => {
+      try {
+        setLoading(true);
+        const response = await axiosClient.get("/v1/vendor/me/balance");
+        setBalance(response.data.balance);
+      } catch (error) {
+        console.error("Error fetching balance:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBalance();
+  }, []);
+
+  useEffect(() => {
+    const fetchPayouts = async () => {
+      try {
+        const response = await axiosClient.get(
+          "/v1/vendor/payout/get?skip=0&limit=10"
+        );
+        setPayouts(response.data);
+      } catch (error) {
+        console.error("Error fetching payouts:", error);
+      }
+    };
+
+    fetchPayouts();
+  }, []);
+
   const handleWithdraw = () => {
     dispatch(setOpenDrawer(true));
   };
 
-  useEffect(() => {
-    const currentBalance = localStorage.getItem("Totalrevenue");
-    setBalance(currentBalance);
-  }, []);
-
   const decideStyle = (status) => {
     switch (status) {
       case "PENDING":
+      case "INITIATED":
+      case "PROCESSING":
         return "bg-scheduledBg border-badgeScheduled text-badgeScheduled";
       case "COMPLETED":
         return "bg-green-200 border-green-500 text-green-500";
@@ -85,7 +113,8 @@ const Transactions = () => {
           {topLeftWalletBackground}
         </div>
         <p className="text-[40px] font-bold text-white z-0">
-          {Number(balance).toFixed(2)}
+          {Number(balance).toFixed(2)}{" "}
+          <span className="text-base ml-1">INR ₹</span>
         </p>
         <p className="text-base font-medium text-white z-0">My Wallet</p>
 
@@ -98,51 +127,110 @@ const Transactions = () => {
         </button>
       </div>
 
-      <div className="flex flex-col mt-4 p-3">
-        <p className="font-semibold text-2xl text-blackTwo mb-2">
+      {/* Tabs */}
+      <div className="flex mt-6 border-b border-gray-200">
+        <button
+          onClick={() => setActiveTab("transactions")}
+          className={`px-4 py-2 text-sm font-semibold ${
+            activeTab === "transactions"
+              ? "text-primary  border-b-[2px] border-primary"
+              : "text-gray-500"
+          }`}
+        >
           Transaction History
-        </p>
+        </button>
+        <button
+          onClick={() => setActiveTab("payouts")}
+          className={`ml-4 px-4 py-2 text-sm font-semibold ${
+            activeTab === "payouts"
+              ? "text-primary border-b-2 border-primary"
+              : "text-gray-500"
+          }`}
+        >
+          Payout History
+        </button>
+      </div>
+
+      <div className="flex flex-col mt-4 p-3">
         {loading ? (
           <Loader />
-        ) : transactions.length > 0 ? (
-          transactions.map((transaction) => (
-            <div
-              key={transaction.id}
-              className="flex justify-between px-6 py-4 items-center bg-white shadow-lg transform translate-y-[-5px] p-2 rounded-lg mt-2 w-full"
-            >
-              <div className="flex gap-2">
-                <div className="flex flex-col">
-                  <p className="text-cardNumber text-base font-semibold">
-                    #{transaction.payment_order_id}
-                  </p>
-                  <p className="text-date text-sm font-medium">
-                    {new Intl.DateTimeFormat("en-GB", {
-                      day: "numeric",
-                      month: "short",
-                      year: "2-digit",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      hour12: false,
-                    }).format(new Date(transaction.created_at * 1000))}
-                  </p>
-                </div>
-              </div>
-              <div className="flex gap-5 items-center">
-                <div
-                  className={`${decideStyle(
-                    transaction.status
-                  )} font-semibold rounded-full text-center border text-[12px] px-5 py-1`}
-                >
-                  {transaction.status}
-                </div>
-                <div className="text-amount text-xl font-semibold">
-                  {Number(transaction.transaction_amount).toFixed(2)}
-                </div>
+        ) : activeTab === "transactions" ? (
+          transactions.length > 0 ? (
+            <div className="overflow-x-auto sm:overflow-x-visible">
+              <div className="flex flex-col sm:flex-col gap-2 min-w-[350px] sm:min-w-0">
+                {transactions.map((transaction) => (
+                  <div
+                    key={transaction.id}
+                    className="flex justify-between items-center bg-white shadow-lg transform translate-y-[-5px] rounded-lg w-full p-4"
+                  >
+                    <div className="flex flex-col">
+                      <p className="text-cardNumber text-base font-semibold">
+                        {transaction.id}
+                      </p>
+                      <p className="text-date text-sm font-medium">
+                        {new Intl.DateTimeFormat("en-GB", {
+                          day: "numeric",
+                          month: "short",
+                          year: "2-digit",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          hour12: false,
+                        }).format(new Date(transaction.created_at * 1000))}
+                      </p>
+                    </div>
+                    <div className="flex gap-5 items-center">
+                      <div
+                        className={`${decideStyle(
+                          transaction.status
+                        )} font-semibold rounded-full text-center border text-[12px] px-5 py-1`}
+                      >
+                        {transaction.status}
+                      </div>
+                      <div className="text-amount text-xl font-semibold">
+                        {Number(transaction.transaction_amount).toFixed(2)}
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
-          ))
+          ) : (
+            <p>No transactions found.</p>
+          )
+        ) : payouts.length > 0 ? (
+          <div className="overflow-x-auto sm:overflow-x-visible">
+            <div className="flex flex-col sm:flex-col gap-2 min-w-[350px] sm:min-w-0">
+              {payouts.map((payout) => (
+                <div
+                  key={payout.id}
+                  className="flex justify-between items-center bg-white shadow-lg transform translate-y-[-5px] rounded-lg w-full p-4"
+                >
+                  <div className="flex flex-col">
+                    <p className="text-cardNumber text-base font-semibold">
+                      {payout.id}
+                    </p>
+                    <p className="text-date text-sm font-medium">
+                      {payout.description}
+                    </p>
+                  </div>
+                  <div className="flex gap-5 items-center">
+                    <div
+                      className={`${decideStyle(
+                        payout.status
+                      )} font-semibold rounded-full text-center border text-[12px] px-5 py-1`}
+                    >
+                      {payout.status}
+                    </div>
+                    <div className="text-amount text-xl font-semibold">
+                      {Number(payout.amount).toFixed(2)}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         ) : (
-          <p>No transactions found.</p>
+          <p>No payouts found.</p>
         )}
       </div>
     </div>

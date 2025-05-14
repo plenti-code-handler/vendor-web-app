@@ -16,7 +16,7 @@ const Tabs = ({ tabs, activeTab, onChange }) => {
                 className={({ selected }) =>
                   `relative py-1 lg:py-2 px-2 text-xs sm:text-sm lg:text-sm font-semibold focus:outline-none transition-all duration-300 ${
                     selected
-                      ? "text-tabColor after:content-[''] after:absolute after:left-0 after:right-0 after:bottom-[-6px] after:h-[2px] after:bg-tabColor"
+                      ? "text-primary after:content-[''] after:absolute after:left-0 after:right-0 after:bottom-[-6px] after:h-[2px] after:bg-primary"
                       : "text-gray-500"
                   } hover:bg-black/5`
                 }
