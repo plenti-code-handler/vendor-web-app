@@ -19,6 +19,7 @@ import "react-datepicker/dist/react-datepicker.css";
 
 import { toast } from "sonner";
 import { whiteLoader } from "../../svgs";
+import { fetchAllBags } from "../../redux/slices/bagsSlice";
 
 const AddBagDrawer = () => {
   const [selectedBag, setSelectedBag] = useState("MEAL");
@@ -156,8 +157,27 @@ const AddBagDrawer = () => {
         toast.success("Item Created Successfully!");
         resetForm();
         dispatch(setOpenDrawer(false));
+        dispatch(fetchAllBags());
       }
     } catch (error) {
+      const errorDetail = error?.response?.data?.detail;
+
+      if (Array.isArray(errorDetail)) {
+        const windowTimeError = errorDetail.find(
+          (err) =>
+            err?.msg &&
+            typeof err.msg === "string" &&
+            err.msg.includes("Window start time cannot be in the past")
+        );
+
+        if (windowTimeError) {
+          toast.error("Window time cannot be in the past");
+          setLoading(false);
+          return;
+        }
+      }
+
+      setLoading(false);
       toast.error("Failed to create a bag");
       console.error("Error adding document: ", error);
     } finally {

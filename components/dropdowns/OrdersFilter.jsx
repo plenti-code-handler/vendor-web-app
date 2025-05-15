@@ -18,7 +18,7 @@ const OrdersFilter = ({ selectedFilter, onFilterChange }) => {
           >{`Waiting for Pickup`}</option>
           <option value="PICKED_UP" className="text-base">{`Picked Up`}</option>
           <option
-            value="READY_TO_PICKUP"
+            value="READY_FOR_PICKUP"
             className="text-base"
           >{`Ready to Picked Up`}</option>
         </select>

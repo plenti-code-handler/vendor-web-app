@@ -8,15 +8,18 @@ import {
   topLeftWalletBackground,
   withdrawAmountSvg,
 } from "../../../../svgs";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setOpenDrawer } from "../../../../redux/slices/withdrawAmountSlice";
 import WithdrawAmountDrawer from "../../../drawers/WithdrawAmountDrawer";
 import Loader from "../../../loader/loader";
 import axiosClient from "../../../../AxiosClient";
+import { fetchBalance } from "../../../../redux/slices/blanceSlice";
 
 const Transactions = () => {
   const dispatch = useDispatch();
-  const [balance, setBalance] = useState(0);
+  const { value: balance } = useSelector((state) => state.balance);
+  const [newbalance, setBalance] = useState(0);
+
   const [transactions, setTransactions] = useState([]);
   const [payouts, setPayouts] = useState([]);
   const [activeTab, setActiveTab] = useState("transactions");
@@ -41,20 +44,24 @@ const Transactions = () => {
   }, []);
 
   useEffect(() => {
-    const fetchBalance = async () => {
-      try {
-        setLoading(true);
-        const response = await axiosClient.get("/v1/vendor/me/balance");
-        setBalance(response.data.balance);
-      } catch (error) {
-        console.error("Error fetching balance:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    dispatch(fetchBalance());
+  }, [dispatch]);
 
-    fetchBalance();
-  }, []);
+  // useEffect(() => {
+  //   const fetchBalance = async () => {
+  //     try {
+  //       setLoading(true);
+  //       const response = await axiosClient.get("/v1/vendor/me/balance");
+  //       setBalance(response.data.balance);
+  //     } catch (error) {
+  //       console.error("Error fetching balance:", error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   fetchBalance();
+  // }, []);
 
   useEffect(() => {
     const fetchPayouts = async () => {

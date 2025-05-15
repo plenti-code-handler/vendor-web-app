@@ -9,6 +9,7 @@ import withdrawSuccessReducer from "./slices/withdrawSuccessSlice";
 import editBagReducer from "./slices/editBagSlice";
 import loggedInUserReducer from "./slices/loggedInUserSlice";
 import registerUserReducer from "./slices/registerUserSlice";
+import balanceReducer from "./slices/blanceSlice";
 // import contactUserReducer from "./slices/contactUserSlice";
 import selectedBusinessReducer from "./slices/selectedBusinessSlice";
 import bagsReducer from "./slices/bagsSlice";
@@ -28,6 +29,7 @@ export const store = configureStore({
     // contactUser: contactUserReducer,
     selectBusiness: selectedBusinessReducer,
     bags: bagsReducer,
+    balance: balanceReducer,
   },
   devTools: process.env.NODE_ENV !== "production",
 });
