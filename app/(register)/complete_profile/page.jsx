@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import BackButton from "../../../components/sections/auth/BackButton";
 import { useForm } from "react-hook-form";
 import axiosClient from "../../../AxiosClient";
+import Link from "next/link";
 
 // const GOOGLE_MAPS_API_KEY = "AIzaSyDOVLieRAacqoM0mB-49sRQnIfN3aCWC38";
 const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
@@ -124,7 +125,7 @@ function Page() {
       );
       localStorage.removeItem("password");
       localStorage.removeItem("email");
-      router.push("/login");
+      router.push("/");
     } catch (error) {
       console.error("Error occurred during form submission:", error);
     } finally {
@@ -133,29 +134,32 @@ function Page() {
   };
 
   return (
-    <div className="flex flex-col md:flex-row justify-between mt-10 min-h-screen px-6 lg:px-20">
-      <div className="flex justify-center flex-col lg:w-1/2 text-center lg:text-left mb-8 lg:mb-0">
-        <a href="/">
-          <img
-            alt="Plenti Logo"
-            src={"/Logo.png"}
-            className="max-w-[180px] md:max-w-[240px] mx-auto lg:mx-0"
-          />
-        </a>
-        <div className="flex flex-col gap-4 mt-4 lg:mt-6">
-          <p className="text-[40px] font-bold text-gray-800">
-            Stop waste, save food!
-          </p>
-          <p className="text-sm font-medium text-[#7E8299] leading-6">
-            Choose from curated meal bags small, large, or surprise prepared by
-            your favorite restaurants. Fast, easy, and always delicious.
-            Download the app and grab your meal today!
-          </p>
+    <div
+      className="flex flex-col md:flex-row justify-between  min-h-screen px-6 lg:px-20 bg-cover bg-center bg-no-repeat"
+      style={{ backgroundImage: "url('/Background.png')" }}
+    >
+      <div className="flex  lg:w-[45%] items-center text-center mb-[5%] lg:mb-[0%] justify-center w-full lg:h-screen">
+        <div className="flex ">
+          <Link href="/">
+            <img
+              alt="Plenti Logo"
+              src={"/splash-logo.png"}
+              className="max-w-[180px] md:max-w-[240px] cursor-pointer"
+            />
+          </Link>
+          <div className="bg-white w-1 h-20 mt-2"></div>
+          <div className="flex flex-col gap-2">
+            <h2 className="text-2xl text-white text-start ml-5 mt-2">
+              India'a first
+            </h2>
+            <h3 className="text-2xl text-white text-start ml-5">
+              surplus Food Marketspace
+            </h3>
+          </div>
         </div>
       </div>
 
-      <div className="flex flex-col w-full md:w-[80%] lg:w-[40%] bg-white rounded-[24px] justify-start shadow-lg h-auto">
-        <HeaderStyle />
+      <div className="flex flex-col w-full mt-10 mb-10 md:w-[80%] lg:w-[40%] bg-white rounded-[24px] justify-start shadow-lg h-auto">
         <div className="ml-5 mt-10">
           <BackButton />
         </div>

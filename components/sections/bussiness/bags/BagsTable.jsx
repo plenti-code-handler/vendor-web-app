@@ -24,6 +24,7 @@ const BagsTable = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState("");
+  const [itemToDelete, setItemToDelete] = useState(null);
 
   const [showAlert, setShowAlert] = useState(false);
 
@@ -75,6 +76,28 @@ const BagsTable = () => {
   const openModal = (item) => {
     setSelectedItem(item);
     setModalOpen(true);
+  };
+
+  const DeleteBag = async () => {
+    if (!itemToDelete) return;
+
+    try {
+      const response = await axiosClient.delete(
+        `/v1/vendor/item/items/delete?item_id=${itemToDelete.id}&vendor_id=${itemToDelete.vendor_id}`
+      );
+
+      if (response.status === 200) {
+        dispatch(fetchAllBags());
+        toast.success("Bag deleted successfully");
+        setShowAlert(false);
+        setSelectedItem(null);
+      } else {
+        toast.error("Failed to delete bag");
+      }
+    } catch (error) {
+      console.error("Error deleting bag:", error);
+      toast.error("An error occurred while deleting the bag");
+    }
   };
 
   return (
@@ -154,7 +177,12 @@ const BagsTable = () => {
                       <button onClick={() => handleEdit(item)}>
                         <PencilIcon className="h-5 w-5 text-blue-600 hover:text-blue-900" />
                       </button>
-                      <button onClick={() => setShowAlert(true)}>
+                      <button
+                        onClick={() => {
+                          setItemToDelete(item);
+                          setShowAlert(true);
+                        }}
+                      >
                         <TrashIcon className="h-5 w-5 text-red-600 hover:text-red-900" />
                       </button>
                     </div>
@@ -190,7 +218,7 @@ const BagsTable = () => {
                 Cancel
               </button>
               <button
-                onClick={handleDelete}
+                onClick={() => DeleteBag()}
                 className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
               >
                 Yes, Delete

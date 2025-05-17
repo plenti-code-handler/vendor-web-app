@@ -81,40 +81,35 @@ const Account = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Handle address selection
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey: apiKey,
+    libraries: ["places"],
+  });
+
   useEffect(() => {
-    const initializeAutocomplete = () => {
-      if (!window.google || !window.google.maps || !window.google.maps.places) {
-        console.error("Google Maps API is not available.");
-        return;
+    if (!isLoaded) return;
+
+    const autocomplete = new window.google.maps.places.Autocomplete(
+      autoCompleteRef.current,
+      { types: ["geocode"] }
+    );
+
+    autocomplete.addListener("place_changed", () => {
+      const place = autocomplete.getPlace();
+      if (place.geometry) {
+        setFormData((prev) => ({
+          ...prev,
+          address_url: place.formatted_address,
+          latitude: place.geometry.location.lat(),
+          longitude: place.geometry.location.lng(),
+        }));
+
+        setMapUrl(
+          `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${place.geometry.location.lat()},${place.geometry.location.lng()}&zoom=14`
+        );
       }
-
-      if (!autoCompleteRef.current) return;
-
-      const autocomplete = new window.google.maps.places.Autocomplete(
-        autoCompleteRef.current,
-        { types: ["geocode"] }
-      );
-
-      autocomplete.addListener("place_changed", () => {
-        const place = autocomplete.getPlace();
-        if (place.geometry) {
-          setFormData((prev) => ({
-            ...prev,
-            address_url: place.formatted_address,
-            latitude: place.geometry.location.lat(),
-            longitude: place.geometry.location.lng(),
-          }));
-
-          setMapUrl(
-            `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${place.geometry.location.lat()},${place.geometry.location.lng()}&zoom=14`
-          );
-        }
-      });
-    };
-
-    initializeAutocomplete();
-  }, []);
+    });
+  }, [isLoaded]);
 
   // Discard changes
   const handleDiscardChanges = () => {
@@ -235,15 +230,6 @@ const Account = () => {
           loading="lazy"
         />
       )}
-      {/* 
-      <Textarea
-        className="block w-full resize-none rounded-lg border border-gray-300 py-3 px-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
-        rows={8}
-        placeholder="Description"
-        name="description"
-        value={formData.description}
-        onChange={handleChange}
-      /> */}
 
       <div className="flex gap-5 pt-2">
         <button

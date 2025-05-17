@@ -11,6 +11,7 @@ import { setOpenDrawer } from "../../redux/slices/withdrawAmountSlice";
 import { crossIconWhiteSvg } from "../../svgs";
 import { useEffect, useState } from "react";
 import axiosClient from "../../AxiosClient";
+import { fetchBalance } from "../../redux/slices/blanceSlice";
 
 const WithdrawAmountDrawer = ({ balance }) => {
   const dispatch = useDispatch();
@@ -47,6 +48,7 @@ const WithdrawAmountDrawer = ({ balance }) => {
       );
 
       console.log("Withdraw response:", response);
+      dispatch(fetchBalance());
       toast.success("Withdrawal request submitted successfully!");
       handleClose();
     } catch (error) {

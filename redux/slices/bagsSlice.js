@@ -8,6 +8,8 @@ export const fetchAllBags = createAsyncThunk("bags/fetchAllBags", async () => {
     const response = await axiosClient.get(
       "/v1/vendor/item/get/all?active=true"
     );
+    console.log("All bags");
+    console.log(response.data);
     return response.data || [];
   } catch (error) {
     console.log(error);

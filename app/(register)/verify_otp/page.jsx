@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { baseUrl } from "../../../utility/BaseURL";
 import axiosClient from "../../../AxiosClient";
+import Link from "next/link";
 
 const VerifyAccountForm = () => {
   const [otp, setOtp] = useState(new Array(6).fill(""));
@@ -132,29 +133,33 @@ const VerifyAccountForm = () => {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row justify-between h-screen px-6 items-center">
-      <div className="flex flex-col lg:w-1/2 text-center lg:text-left mb-8 lg:mb-0">
-        <a href="/">
-          <img
-            alt="Plenti Logo"
-            src={"/Logo.png"}
-            className="max-w-[180px] md:max-w-[240px] mx-auto lg:mx-0 "
-          />
-        </a>
-        <div className="flex flex-col gap-4 mt-4 lg:mt-6">
-          <p className="text-[40px] font-bold text-gray-800">
-            Stop waste, save food!
-          </p>
-          <p className="text-sm font-medium text-[#7E8299] leading-6">
-            Choose from curated meal bags small, large, or surprise prepared by
-            your favorite restaurants. Fast, easy, and always delicious.
-          </p>
+    <div
+      className="flex flex-col md:flex-row justify-between items-center min-h-screen px-6 lg:px-20 bg-cover bg-center bg-no-repeat"
+      style={{ backgroundImage: "url('/Background.png')" }}
+    >
+      <div className="flex lg:w-[45%] items-center justify-center text-center h-full">
+        <div className="flex">
+          <Link href="/">
+            <img
+              alt="Plenti Logo"
+              src={"/splash-logo.png"}
+              className="max-w-[180px] md:max-w-[240px] cursor-pointer"
+            />
+          </Link>
+          <div className="bg-white w-1 h-20 mt-2"></div>
+          <div className="flex flex-col gap-2">
+            <h2 className="text-2xl text-white text-start ml-5 mt-2">
+              India'a first
+            </h2>
+            <h3 className="text-2xl text-white text-start ml-5">
+              surplus Food Marketspace
+            </h3>
+          </div>
         </div>
       </div>
 
-      <div className="flex flex-col w-full md:w-[80%] lg:w-[40%] bg-white h-[90vh] max-h-[800px] rounded-[24px] shadow-lg overflow-hidden">
-        <HeaderStyle />
-        <div className="ml-10">
+      <div className="flex flex-col w-full md:w-[80%] mt-10 lg:w-[40%] bg-white h-[90vh] max-h-[800px] rounded-[24px] shadow-lg overflow-hidden">
+        <div className="ml-10 mt-10">
           <BackButton />
         </div>
 

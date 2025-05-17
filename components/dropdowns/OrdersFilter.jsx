@@ -11,16 +11,27 @@ const OrdersFilter = ({ selectedFilter, onFilterChange }) => {
           value={selectedFilter}
           onChange={(e) => onFilterChange(e.target.value)}
         >
-          <option value="" className="text-base">{`All Orders`}</option>
-          <option
-            value="WAITING_FOR_PICKUP"
-            className="text-base"
-          >{`Waiting for Pickup`}</option>
-          <option value="PICKED_UP" className="text-base">{`Picked Up`}</option>
-          <option
-            value="READY_TO_PICKUP"
-            className="text-base"
-          >{`Ready to Picked Up`}</option>
+          <option value="" className="text-base">
+            All Orders
+          </option>
+          <option value="CREATED" className="text-base">
+            Created
+          </option>
+          <option value="WAITING_FOR_PICKUP" className="text-base">
+            Waiting for Pickup
+          </option>
+          <option value="READY_FOR_PICKUP" className="text-base">
+            Ready for Pickup
+          </option>
+          <option value="PICKED_UP" className="text-base">
+            Picked Up
+          </option>
+          <option value="NOT_PICKED_UP" className="text-base">
+            Not Picked Up
+          </option>
+          <option value="CANCELLED" className="text-base">
+            Cancelled
+          </option>
         </select>
 
         <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
