@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axiosClient from "../../../../AxiosClient";
 import { toast } from "sonner";
 import OrdersFilter from "../../../dropdowns/OrdersFilter";
 import { formatTime } from "../../../../utility/FormateTime";
-import { EyeIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { EyeIcon, XMarkIcon, shieldCheck } from "@heroicons/react/24/outline";
+import { ShieldCheckIcon } from "@heroicons/react/20/solid";
 
 const RecentOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -14,6 +15,52 @@ const RecentOrders = () => {
 
   const [selectedItem, setSelectedItem] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+
+  const [verifyModalOpen, setVerifyModalOpen] = useState(false);
+  const [otp, setOtp] = useState(["", "", "", "", ""]);
+  const inputRefs = useRef([]);
+  const [verifying, setVerifying] = useState(false);
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
+
+  const handleOtpChange = (value, index) => {
+    if (!/^\d*$/.test(value)) return;
+
+    const newOtp = [...otp];
+    newOtp[index] = value;
+    setOtp(newOtp);
+
+    if (value && index < 4) {
+      inputRefs.current[index + 1]?.focus();
+    }
+  };
+
+  const handleVerifyCode = async () => {
+    const code = otp.join("");
+    console.log("inside handle verify code");
+    console.log(selectedOrderId);
+    console.log(code);
+    if (code.length !== 5) {
+      toast.error("Please enter a 5-digit code");
+      return;
+    }
+
+    setVerifying(true);
+    try {
+      const response = await axiosClient.patch(
+        `/v1/vendor/order/pickup/${selectedOrderId}?order_code=${code}`
+      );
+
+      if (response.status === 200) {
+        toast.success("Order code verified successfully");
+        setVerifyModalOpen(false);
+      }
+    } catch (error) {
+      toast.error("Failed to verify order code");
+      console.error(error);
+    } finally {
+      setVerifying(false);
+    }
+  };
 
   useEffect(() => {
     const fetchRecentOrders = async () => {
@@ -83,7 +130,7 @@ const RecentOrders = () => {
               <th className="pb-2 px-2 pt-4 text-center">Window End Time</th>
               <th className="pb-2 px-2 pt-4 text-center">Created At</th>
               <th className="pb-2 px-2 pt-4 text-center">Status</th>
-              <th className="pb-2 px-2 pt-4 text-center">Action</th>
+              <th className="pb-2  text-start pt-4">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -126,10 +173,18 @@ const RecentOrders = () => {
 
                       const getStatusColor = (status) => {
                         switch (status) {
+                          case "CREATED":
+                            return "bg-[#7e45ee]";
+                          case "WAITING_FOR_PICKUP":
+                            return "bg-indigo-500";
                           case "READY_FOR_PICKUP":
                             return "bg-yellow-500";
                           case "PICKED_UP":
                             return "bg-green-500";
+                          case "CANCELLED":
+                            return "bg-red-500";
+                          case "NOT_PICKED_UP":
+                            return "bg-orange-500";
                           default:
                             return "bg-blue-500";
                         }
@@ -151,9 +206,18 @@ const RecentOrders = () => {
                       );
                     })()}
                   </td>
-                  <td className="text-center px-2 text-sm whitespace-nowrap">
+
+                  <td className="text-center flex gap-2 px-2 text-sm whitespace-nowrap">
                     <button onClick={() => openModal(order.order_id)}>
                       <EyeIcon className="h-5 w-5 text-gray-600 hover:text-gray-900" />
+                    </button>
+                    <button
+                      onClick={() => {
+                        setSelectedOrderId(order.order_id);
+                        setVerifyModalOpen(true);
+                      }}
+                    >
+                      <ShieldCheckIcon className="h-5 w-5 text-gray-600 hover:text-gray-900" />
                     </button>
                   </td>
                 </tr>
@@ -237,6 +301,48 @@ const RecentOrders = () => {
                 className="rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
               >
                 Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {verifyModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+          <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-lg">
+            <div className="flex justify-between border-b pb-3">
+              <h2 className="text-lg font-semibold">Enter Order Code</h2>
+              <button onClick={() => setVerifyModalOpen(false)}>
+                <XMarkIcon className="h-6 w-6 text-gray-600 hover:text-gray-900" />
+              </button>
+            </div>
+
+            <div className="mt-6 flex justify-center gap-3">
+              {otp.map((digit, i) => (
+                <input
+                  key={i}
+                  type="text"
+                  inputMode="numeric"
+                  maxLength={1}
+                  value={digit}
+                  ref={(el) => (inputRefs.current[i] = el)}
+                  onChange={(e) => handleOtpChange(e.target.value, i)}
+                  className="w-10 h-10 border border-[#D0D5DD] text-center text-lg rounded focus:outline-adminPrimary"
+                />
+              ))}
+            </div>
+
+            <div className="mt-6 flex justify-end">
+              <button
+                onClick={handleVerifyCode}
+                disabled={verifying}
+                className={`rounded-md px-4 py-2 text-white ${
+                  verifying
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-primary hover:bg-hoverPrimary"
+                }`}
+              >
+                {verifying ? "Verifying..." : "Verify"}
               </button>
             </div>
           </div>

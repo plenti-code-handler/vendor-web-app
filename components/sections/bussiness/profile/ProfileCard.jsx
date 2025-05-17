@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import AddCategoryDrawer from "../../../drawers/AddCategoryDrawer";
 import axiosClient from "../../../../AxiosClient";
 import { PencilIcon } from "@heroicons/react/20/solid";
+import OnlineOfflineToggle from "./ToggleOnlineOffline";
 
 const ProfileCard = () => {
   const dispatch = useDispatch();
@@ -153,7 +154,7 @@ const ProfileCard = () => {
           </div>
 
           {/* Profile & Name Section */}
-          <div className="relative bg-white px-4 pt-16 pb-6">
+          <div className="relative bg-white px-4 pt-16 ">
             {/* Profile Image Container */}
             <div className="absolute -top-16 left-4 w-32 h-32">
               <input
@@ -183,6 +184,9 @@ const ProfileCard = () => {
                 </div>
               </label>
             </div>
+          </div>
+          <div className="w-full flex justify-end">
+            <OnlineOfflineToggle />
           </div>
         </div>
 
