@@ -125,12 +125,12 @@ const RecentOrders = () => {
         <table className="w-full min-w-[800px] table-auto bg-white">
           <thead>
             <tr className="border-b text-sm font-semibold text-gray-500">
+              <th className="pb-2 px-2 pt-4 text-center">User Name</th>
+              <th className="pb-2 px-2 pt-4 text-center">Phone Number</th>
               <th className="pb-2 px-2 pt-4 text-center">Transaction amount</th>
-              <th className="pb-2 px-2 pt-4 text-center">Window Start Time</th>
-              <th className="pb-2 px-2 pt-4 text-center">Window End Time</th>
               <th className="pb-2 px-2 pt-4 text-center">Created At</th>
               <th className="pb-2 px-2 pt-4 text-center">Status</th>
-              <th className="pb-2  text-start pt-4">Action</th>
+              <th className="pb-2 text-start pt-4">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -144,13 +144,15 @@ const RecentOrders = () => {
               filteredOrders.map((order, index) => (
                 <tr key={index} className="border-b hover:bg-gray-100">
                   <td className="text-center px-2 text-sm whitespace-nowrap">
+                    {order.user_name ?? "Not provided"}
+                  </td>
+                  <td className="text-center px-2 text-sm whitespace-nowrap">
+                    {order.user_phone_number
+                      ? order.user_phone_number.slice(0, -3) + "***"
+                      : "Not provided"}
+                  </td>
+                  <td className="text-center px-2 text-sm whitespace-nowrap">
                     {order.transaction_amount}
-                  </td>
-                  <td className="text-center px-2 text-sm whitespace-nowrap">
-                    {formatTime(order.window_start_time)}
-                  </td>
-                  <td className="text-center px-2 text-sm whitespace-nowrap">
-                    {formatTime(order.window_end_time)}
                   </td>
                   <td className="text-center px-2 text-sm whitespace-nowrap">
                     {formatTimestamp(order.created_at)}
@@ -206,7 +208,6 @@ const RecentOrders = () => {
                       );
                     })()}
                   </td>
-
                   <td className="text-center flex gap-2 px-2 text-sm whitespace-nowrap">
                     <button onClick={() => openModal(order.order_id)}>
                       <EyeIcon className="h-5 w-5 text-gray-600 hover:text-gray-900" />
