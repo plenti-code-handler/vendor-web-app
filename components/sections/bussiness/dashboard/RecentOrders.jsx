@@ -212,14 +212,17 @@ const RecentOrders = () => {
                     <button onClick={() => openModal(order.order_id)}>
                       <EyeIcon className="h-5 w-5 text-gray-600 hover:text-gray-900" />
                     </button>
-                    <button
-                      onClick={() => {
-                        setSelectedOrderId(order.order_id);
-                        setVerifyModalOpen(true);
-                      }}
-                    >
-                      <ShieldCheckIcon className="h-5 w-5 text-gray-600 hover:text-gray-900" />
-                    </button>
+
+                    {order.current_status === "READY_FOR_PICKUP" && (
+                      <button
+                        onClick={() => {
+                          setSelectedOrderId(order.order_id);
+                          setVerifyModalOpen(true);
+                        }}
+                      >
+                        <ShieldCheckIcon className="h-5 w-5 text-gray-600 hover:text-gray-900" />
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))
