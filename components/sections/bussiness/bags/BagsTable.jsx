@@ -168,7 +168,7 @@ const BagsTable = () => {
                     {formatTime(item.window_end_time)}
                   </td>
                   <td className="py-2 px-2 w-1/6">{item.quantity}</td>
-                  <td className="py-2 px-2 w-1/6">${item.price}</td>
+                  <td className="py-2 px-2 w-1/6">{item.price} ₹</td>
                   <td className="py-2 px-2 w-1/6 text-center">
                     <div className="flex items-center justify-center space-x-2">
                       <button onClick={() => openModal(item)}>
