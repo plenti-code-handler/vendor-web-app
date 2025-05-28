@@ -41,11 +41,10 @@ function Page() {
 
     const initializeAutocomplete = () => {
       if (!autoCompleteRef.current) return;
-      const autocomplete =
-        new window.google.maps.places.PlaceAutocompleteElement(
-          autoCompleteRef.current,
-          { types: ["geocode"] }
-        );
+      const autocomplete = new window.google.maps.places.Autocomplete(
+        autoCompleteRef.current,
+        { types: ["geocode"] }
+      );
 
       autocomplete.addListener("place_changed", () => {
         const place = autocomplete.getPlace();
