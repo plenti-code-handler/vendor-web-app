@@ -5,13 +5,24 @@ import { store } from "./store";
 import { usePathname } from "next/navigation";
 import {
   PublicLayout,
-  AdminLayout,
   BusinessLayout,
   LandingLayout,
 } from "../components/layouts/AllLayouts";
 
+import { useRouter } from "next/navigation";
+import { useEffect, useState} from "react";
+
+
 const Providers = ({ children }) => {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const [ isClient, setIsClient ] = useState(false);
+
+  // Ensure we're on client-side before checking localStorage
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   if (
     pathname === "/login" ||
@@ -30,34 +41,18 @@ const Providers = ({ children }) => {
       </Provider>
     );
   } else if (
-    pathname === "/" ||
-    pathname === "/about_app" ||
-    pathname === "/faqs" ||
-    pathname === "/privacy" ||
-    pathname === "/terms" ||
-    pathname === "/contact_us" ||
-    pathname === "/surprise" ||
-    pathname === "/small_medium_bags" ||
-    pathname === "/cookie_policy" ||
-    pathname === "/deliever_return_policy" ||
-    pathname === "/payment_terms" ||
-    pathname === "/ugc_policy" ||
-    pathname === "/security_policy" ||
-    pathname === "/accessibility_policy" ||
-    pathname === "/ethical_policy"
+    pathname === "/"
   ) {
     return (
       <Provider store={store}>
         <LandingLayout>{children}</LandingLayout>
       </Provider>
     );
-  } else if (pathname.startsWith("/admin")) {
-    return (
-      <Provider store={store}>
-        <AdminLayout>{children}</AdminLayout>
-      </Provider>
-    );
   } else if (pathname.startsWith("/business")) {
+    if ( isClient && !localStorage.getItem("token") ) {
+      router.push("/");
+      return null;
+    }
     return (
       <Provider store={store}>
         <BusinessLayout>{children}</BusinessLayout>
