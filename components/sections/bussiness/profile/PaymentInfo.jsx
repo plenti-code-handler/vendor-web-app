@@ -22,7 +22,7 @@ const PaymentInfo = () => {
         const data = response?.data;
 
         if (data?.account_number) {
-          setAccountNumber(data.account_number);
+          setAccountNumber('******* ' + data.account_number);
           setIfscCode(data.ifsc_code);
           setBankName(data.bank_name);
           setAccountHolder(data.account_holder_name);
