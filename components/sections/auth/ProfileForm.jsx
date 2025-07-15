@@ -163,14 +163,12 @@ const ProfileForm = () => {
   useEffect(() => {
     if (!isLoaded || loadError) return;
 
-    const options = {
-      fields: ["address_components", "geometry"],
-    };
-
-    const autocomplete = new google.maps.places.Autocomplete(
-      inputRef.current,
-      options
-    );
+    // Use the new PlaceAutocompleteElement instead of deprecated Autocomplete
+    const autocomplete = new google.maps.places.PlaceAutocompleteElement({
+      inputElement: inputRef.current,
+      fields: ["address_components", "geometry"]
+    });
+    
     autocomplete.addListener("place_changed", () =>
       handlePlaceChanged(autocomplete)
     );
