@@ -1,7 +1,6 @@
+// app/(auth)/layout.jsx
 import { Inter } from "next/font/google";
 import "../globals.css";
-import Providers from "../../redux/provider";
-import { Toaster } from "sonner";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -12,12 +11,8 @@ export const metadata = {
 
 export default function AuthLayout({ children }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <Toaster richColors position="top-center" />
-
-        <Providers>{children}</Providers>
-      </body>
-    </html>
+    <div className={inter.className}>
+      {children}
+    </div>
   );
 }

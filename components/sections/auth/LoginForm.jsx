@@ -10,11 +10,12 @@ import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { whiteLoader } from "../../../svgs";
 import axiosClient from "../../../AxiosClient";
+import { loginUser } from "../../../redux/slices/loggedInUserSlice";
 
 const LoginForm = () => {
   const dispatch = useDispatch();
   const router = useRouter();
-  const { isLoading, error } = useSelector((state) => state.loggedInUser);
+  const { user: stateUser } = useSelector((state) => state.loggedInUser);
 
   const [loading, setLoading] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
@@ -42,10 +43,12 @@ const LoginForm = () => {
       if (response.status === 200) {
         console.log("Success message ");
         localStorage.setItem("token", response.data.access_token);
+        await dispatch(loginUser(response.data.access_token)).unwrap();
+        // console.log("logged in user", stateUser);
         router.push("/business");
       }
 
-      router.push("/business");
+      // router.push("/business");
     } catch (error) {
       setShowAlert(true);
 

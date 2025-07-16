@@ -14,17 +14,6 @@ export const PublicLayout = ({ children }) => {
   return <AuthMain>{children}</AuthMain>;
 };
 
-export const AdminLayout = ({ children }) => {
-  useProtectedRoute(["admin"]);
-
-  return (
-    <AdminProvider>
-      <Header />
-      <AdminMain>{children}</AdminMain>
-    </AdminProvider>
-  );
-};
-
 export const BusinessLayout = ({ children }) => {
   useProtectedRoute(["vendor"]);
 
