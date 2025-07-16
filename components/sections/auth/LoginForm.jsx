@@ -43,12 +43,11 @@ const LoginForm = () => {
       if (response.status === 200) {
         console.log("Success message ");
         localStorage.setItem("token", response.data.access_token);
-        await dispatch(loginUser(response.data.access_token)).unwrap();
         // console.log("logged in user", stateUser);
         router.push("/business");
       }
 
-      // router.push("/business");
+      router.push("/business");
     } catch (error) {
       setShowAlert(true);
 
