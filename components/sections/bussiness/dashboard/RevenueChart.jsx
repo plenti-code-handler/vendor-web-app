@@ -64,6 +64,7 @@ const RevenueChart = () => {
         const response = await axiosClient.get("/v1/vendor/stats/");
         if (response.status === 200) {
           toast.success("Stats fetched successfully!");
+          console.log(response.data);
           const {
             daily_revenue,
             monthly_revenue,
@@ -71,6 +72,9 @@ const RevenueChart = () => {
             total_revenue,
             total_packs_created,
             total_orders,
+            daily_orders,
+            monthly_orders,
+            yearly_orders,
           } = response.data;
 
           console.log(response.data);
@@ -85,37 +89,37 @@ const RevenueChart = () => {
             Daily: {
               revenue: {
                 name: "Daily Revenue",
-                data: daily_revenue.map((item) => item.revenue),
+                data: daily_revenue.map((item) => item.value),
                 categories: daily_revenue.map((item) => item.date),
               },
               orders: {
                 name: "Daily Orders",
-                data: daily_revenue.map((item) => item.orders || 0), // Assuming orders data exists
-                categories: daily_revenue.map((item) => item.date),
+                data: daily_orders.map((item) => item.value), // Assuming orders data exists
+                categories: daily_orders.map((item) => item.date),
               },
             },
             Monthly: {
               revenue: {
                 name: "Monthly Revenue",
-                data: monthly_revenue.map((item) => item.revenue),
+                data: monthly_revenue.map((item) => item.value),
                 categories: monthly_revenue.map((item) => item.date),
               },
               orders: {
                 name: "Monthly Orders",
-                data: monthly_revenue.map((item) => item.orders || 0),
-                categories: monthly_revenue.map((item) => item.date),
+                data: monthly_orders.map((item) => item.value || 0),
+                categories: monthly_orders.map((item) => item.date),
               },
             },
             Yearly: {
               revenue: {
                 name: "Yearly Revenue",
-                data: yearly_revenue.map((item) => item.revenue),
+                data: yearly_revenue.map((item) => item.value),
                 categories: yearly_revenue.map((item) => item.date),
               },
               orders: {
                 name: "Yearly Orders",
-                data: yearly_revenue.map((item) => item.orders || 0),
-                categories: yearly_revenue.map((item) => item.date),
+                data: yearly_orders.map((item) => item.value || 0),
+                categories: yearly_orders.map((item) => item.date),
               },
             },
           };
