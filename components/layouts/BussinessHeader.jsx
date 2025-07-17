@@ -125,19 +125,13 @@ const BussinessHeader = () => {
               className="w-36 h-auto cursor-pointer"
             />
           </div>
-          <div className="flex lg:hidden gap-3 items-center">
+          <div className="flex lg:hidden gap-3 items-center mr-3">
+            <ProfileDropdown />
             <button
               onClick={toggleMenu}
               className="text-gray-900 hover:text-gray-700 focus:outline-none"
             >
               {isMenuOpen ? closeSvg : hamburgerIcon}
-            </button>
-            <button
-              className="text-sm font-semibold leading-6 text-gray-900 p-3 transition-colors duration-200 ease-in-out hover:bg-mainLight hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-mainLight focus:ring-offset-2 rounded-lg"
-              title="Logout"
-              onClick={handleLogout}
-            >
-              {logoutIconSvg}
             </button>
           </div>
           <nav
@@ -177,13 +171,6 @@ const BussinessHeader = () => {
           </nav>
           <div className="hidden lg:flex items-center gap-5">
             <ProfileDropdown />
-            <button
-              className="text-sm font-semibold leading-6 text-gray-900 p-3 transition-colors duration-200 ease-in-out hover:bg-hoverPrimary hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-hoverPrimary focus:ring-offset-2 rounded-lg"
-              title="Logout"
-              onClick={handleLogout}
-            >
-              {logoutIconSvg}
-            </button>
           </div>
         </div>
       </header>
