@@ -32,6 +32,10 @@ export const RouteLayout = ({ children }) => {
       ) {
     return <PublicLayout>{children}</PublicLayout>;
     } else if (pathname === "/") {
+        if (isClient && localStorage.getItem("token")) {
+            router.push("/business");
+            return null;
+        }
         return <LandingLayout>{children}</LandingLayout>;
     } else if (pathname.startsWith("/business")) {
         if (isClient && !localStorage.getItem("token")) {
