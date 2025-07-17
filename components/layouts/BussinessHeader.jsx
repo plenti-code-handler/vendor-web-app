@@ -1,4 +1,5 @@
 "use client";
+import axiosClient from "../../AxiosClient";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { logoutIconSvg } from "../../svgs";
@@ -18,10 +19,47 @@ const BussinessHeader = () => {
   const activePage = useSelector((state) => state.header.activePage);
   const dispatch = useDispatch();
   const [isSmallDevice, setIsSmallDevice] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
 
   const router = useRouter();
 
   const [isMobile, setIsMobile] = useState(false);
+
+  // load user info profile image to local storage
+  // Load user info profile image to local storage
+  useEffect(() => {
+    const loadUserInfo = async () => {
+      try {
+        setIsLoading(true);
+        const token = localStorage.getItem("token");
+        
+        if (!token) {
+          console.log("No token found");
+          return;
+        }
+
+        const response = await axiosClient.get("/v1/vendor/me/get", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.status === 200) {
+          localStorage.setItem("user", JSON.stringify(response.data));
+          localStorage.setItem("logo", response.data.logo_url);
+          console.log("User info loaded successfully");
+        }
+      } catch (error) {
+        console.error("Error loading user info:", error);
+        toast.error("Failed to load user information");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadUserInfo();
+  }, []);
 
   useEffect(() => {
     const checkIsMobile = () => {

@@ -6,17 +6,20 @@ import "slick-carousel/slick/slick-theme.css";
 import Card from "./Card";
 import { getUserLocal } from "../../../../redux/slices/loggedInUserSlice";
 import { collection, getDocs, query, where } from "firebase/firestore";
-// import { db } from "../../../../app/firebase/config";
 
 const StatSlider = () => {
   const [current, setCurrent] = useState(0);
 
   const [user, setUser] = useState({});
-  const [bagToday, setBagToday] = useState("");
-  const [totalBags, setTotalBags] = useState("");
 
+  const [totalBags, setTotalBags] = useState("");
+  const [totalOrders, setTotalOrders] = useState("");
   useEffect(() => {
     const localUser = getUserLocal();
+    const storedBags = localStorage.getItem("Totalbags");
+    const storedOrders = localStorage.getItem("Totalorders");
+    if (storedBags) setTotalBags(parseInt(storedBags, 0));
+    if (storedOrders) setTotalOrders(parseInt(storedOrders, 0));
     setUser(localUser);
   }, []);
 
@@ -112,44 +115,17 @@ const StatSlider = () => {
     }
   }, [user]);
 
-  useEffect(() => {
-    if (totalBags.length > 0) {
-      const today = new Date();
-      const todayStart = new Date(today.setHours(0, 0, 0, 0)); // Start of the day
-      const todayEnd = new Date(today.setHours(23, 59, 59, 999)); // End of the day
-
-      let count = 0;
-
-      totalBags.forEach((bag) => {
-        if (bag.date && Array.isArray(bag.date)) {
-          bag.date.forEach((dateObj) => {
-            const bagDate = dateObj.date.toDate(); // Convert Firebase Timestamp to JS Date
-            if (bagDate >= todayStart && bagDate <= todayEnd) {
-              count++;
-            }
-          });
-        }
-      });
-
-      setBagToday(count); // Update the count of bags for today
-    }
-  }, [totalBags]);
-
   return (
     <Slider {...settings}>
       <div className="px-4">
         <Card
-          title={
-            totalBags.length === 0
-              ? 0
-              : totalBags.length.toLocaleString("en-US")
-          }
+          title={Number(totalBags).toLocaleString("en-US")}
           content={`Total Bag Made`}
         />
       </div>
       <div className="px-4">
         <Card
-          title={Number(bagToday).toLocaleString("en-US")}
+          title={Number(totalOrders).toLocaleString("en-US")}
           content={`Total Orders`}
         />
       </div>
