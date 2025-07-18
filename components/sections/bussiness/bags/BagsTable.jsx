@@ -15,7 +15,6 @@ import {
   setOpenDrawer,
 } from "../../../../redux/slices/editBagSlice";
 import { fetchAllBags } from "../../../../redux/slices/bagsSlice";
-
 const BagsTable = () => {
   const dispatch = useDispatch();
   const { items: bags, loading } = useSelector((state) => state.bags);
@@ -33,6 +32,7 @@ const BagsTable = () => {
   };
 
   useEffect(() => {
+    console.log("Fetching all bags and coupons");
     dispatch(fetchAllBags());
   }, [dispatch]);
 
@@ -71,6 +71,7 @@ const BagsTable = () => {
 
   const handleLoadMore = () => {
     setVisibleItems((prev) => Math.min(prev + 5, filteredItems.length));
+    console.log(filteredItems.length, "filteredItems.length");
   };
 
   const openModal = (item) => {

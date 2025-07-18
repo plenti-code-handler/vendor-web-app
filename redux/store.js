@@ -13,6 +13,8 @@ import balanceReducer from "./slices/blanceSlice";
 // import contactUserReducer from "./slices/contactUserSlice";
 import selectedBusinessReducer from "./slices/selectedBusinessSlice";
 import bagsReducer from "./slices/bagsSlice";
+import couponReducer from "./slices/couponSlice";
+import addCouponReducer from "./slices/addCouponSlice";
 
 export const store = configureStore({
   reducer: {
@@ -30,6 +32,8 @@ export const store = configureStore({
     selectBusiness: selectedBusinessReducer,
     bags: bagsReducer,
     balance: balanceReducer,
+    coupons: couponReducer,
+    addCoupon: addCouponReducer,
   },
   devTools: process.env.NODE_ENV !== "production",
 });
