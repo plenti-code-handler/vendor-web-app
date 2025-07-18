@@ -1,7 +1,7 @@
 // vendor-web-app/components/sections/bussiness/coupons/CouponModal.jsx
 import React from "react";
 import { XMarkIcon, CalendarIcon, TagIcon, CurrencyDollarIcon, ClockIcon } from "@heroicons/react/24/outline";
-import { formatTime } from "../../../../utility/FormateTime";
+import { formatTimestamp } from "../../../../utility/FormateTime";
 
 const CouponModal = ({ isOpen, onClose, item }) => {
   if (!isOpen || !item) return null;
@@ -92,11 +92,11 @@ const CouponModal = ({ isOpen, onClose, item }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <div className="text-sm text-gray-600 mb-1">Valid From</div>
-                <div className="text-sm font-medium text-gray-900">{formatTime(item.valid_from)}</div>
+                <div className="text-sm font-medium text-gray-900">{formatTimestamp(item.valid_from)}</div>
               </div>
               <div>
                 <div className="text-sm text-gray-600 mb-1">Valid Till</div>
-                <div className="text-sm font-medium text-gray-900">{formatTime(item.valid_until)}</div>
+                <div className="text-sm font-medium text-gray-900">{formatTimestamp(item.valid_until)}</div>
               </div>
             </div>
           </DetailSection>
@@ -105,7 +105,7 @@ const CouponModal = ({ isOpen, onClose, item }) => {
           <DetailSection icon={TagIcon} title="Additional Details" iconColor="text-gray-600">
             <div className="space-y-2">
               <DetailRow label="Coupon Type" value={item.coupon_type?.replace(/_/g, " ") || "N/A"} />
-              <DetailRow label="Created At" value={formatTime(item.created_at)} />
+              <DetailRow label="Created At" value={formatTimestamp(item.created_at)} />
             </div>
           </DetailSection>
         </div>
