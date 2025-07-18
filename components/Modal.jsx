@@ -46,11 +46,11 @@ const Modal = ({ isOpen, onClose, item }) => {
           </div>
           <div>
             <span className="font-medium mr-1">Window Start Time:</span>
-            {formatTime(item.window_start_time) || "N/A"}
+            {formatTimestamp(item.window_start_time) || "N/A"}
           </div>
           <div>
             <span className="font-medium mr-1">Window End Time:</span>
-            {formatTime(item.window_end_time) || "N/A"}
+            {formatTimestamp(item.window_end_time) || "N/A"}
           </div>
           <div>
             <span className="font-medium mr-1">Created At:</span>
