@@ -107,7 +107,7 @@ const LoginForm = () => {
         onSubmit={handleSubmit(handleLogin)}
         className="flex flex-col w-full space-y-5"
       >
-        <div className="flex flex-col space-y-3">
+        <div className="flex flex-col space-y-3 mt-10">
           <p className="text-black font-semibold text-[28px]">
             Login to your account
           </p>

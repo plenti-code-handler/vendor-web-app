@@ -4,6 +4,10 @@ import { usePathname, useRouter } from "next/navigation";
 import { addUserSvg, backButtonSvg } from "../../svgs";
 import { useDispatch } from "react-redux";
 import { setOpenDrawer } from "../../redux/slices/addBagSlice";
+import { SunIcon, CloudIcon, MoonIcon } from "@heroicons/react/24/outline";
+
+import GreetingBanner from '../sections/bussiness/more/GreetingsBanner';
+
 
 const decidePath = (pathname) => {
   if (pathname.match(/\/admin\/users\/business\/[a-zA-Z0-9]+/)) {
@@ -70,23 +74,33 @@ const Breadcrumb = () => {
     </div>
   );
 
-  const DefaultContent = () => (
-    <div className="flex justify-between items-center lg:mr-auto lg:mt-4 lg:mb-4 lg:py-2 lg:w-[99%]">
-      <p className="m-4 text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-one">
-        {currentPath === "Manage Bags" ? "Manage Bags" : currentPath}
-      </p>
-
-      {currentPath === "Manage Bags" && (
-        <button
-          onClick={handleOpenDrawer}
-          className="mr-3 mt-2 lg:m-0 flex items-center text-center justify-center bg-blueBgDark text-white font-semibold py-2 px-4 rounded-[6px] hover:bg-blueBgDarkHover2"
-        >
-          <span className="mr-3 ml-2 font-semibold">Add New Bags</span>
-          <span>{addUserSvg}</span>
-        </button>
-      )}
-    </div>
-  );
+  const DefaultContent = () => {
+    return (
+      <div className="flex justify-between items-center lg:mr-auto lg:mt-4 lg:mb-4 lg:py-2 lg:w-[99%]">
+        {/* Dashboard Title */}
+        <p className="m-4 text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-one">
+          {currentPath === "Manage Bags" ? "Manage Bags" : currentPath}
+        </p>
+  
+        {/* Right side container */}
+        <div className="flex items-center space-x-4">
+          {/* ✅ Reusable Greeting Banner */}
+          <GreetingBanner variant="default" />
+  
+          {/* Existing button */}
+          {currentPath === "Manage Bags" && (
+            <button
+              onClick={handleOpenDrawer}
+              className="mr-3 mt-2 lg:m-0 flex items-center text-center justify-center bg-blueBgDark text-white font-semibold py-2 px-4 rounded-[6px] hover:bg-blueBgDarkHover2"
+            >
+              <span className="mr-3 ml-2 font-semibold">Add New Bags</span>
+              <span>{addUserSvg}</span>
+            </button>
+          )}
+        </div>
+      </div>
+    );
+  };
 
   const ApprovalsContent = () => (
     <div className="flex items-center m-4 lg:mr-auto lg:mt-4 lg:mb-4 lg:w-[99%] gap-2">
