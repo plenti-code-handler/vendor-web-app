@@ -5,6 +5,7 @@ import Rating from "./Rating";
 import Account from "./Account";
 import PaymentInfo from "./PaymentInfo";
 import AddBagImages from "./AddBagImages";
+import Pricing from "./Pricing";
 
 const tabs = [
   {
@@ -22,6 +23,10 @@ const tabs = [
   {
     name: "Add Bag Images",
     component: <AddBagImages />,
+  },
+  {
+    name: "Pricing",
+    component: <Pricing />,
   },
 ];
 

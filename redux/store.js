@@ -15,6 +15,7 @@ import selectedBusinessReducer from "./slices/selectedBusinessSlice";
 import bagsReducer from "./slices/bagsSlice";
 import couponReducer from "./slices/couponSlice";
 import addCouponReducer from "./slices/addCouponSlice";
+import catalogueReducer from "./slices/catalogueSlice";
 
 export const store = configureStore({
   reducer: {
@@ -34,6 +35,7 @@ export const store = configureStore({
     balance: balanceReducer,
     coupons: couponReducer,
     addCoupon: addCouponReducer,
+    catalogue: catalogueReducer,
   },
   devTools: process.env.NODE_ENV !== "production",
 });
