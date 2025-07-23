@@ -3,9 +3,7 @@ import Link from "next/link";
 import AuthPasswordField from "../../fields/AuthPasswordField";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
 import { useRouter } from "next/navigation";
-
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { whiteLoader } from "../../../svgs";
@@ -37,22 +35,64 @@ const LoginForm = () => {
     };
 
     try {
+      // Step 1: Login and get token
       const response = await axiosClient.post("/v1/vendor/me/login", loginData);
 
       console.log(response);
       if (response.status === 200) {
         console.log("Success message ");
-        localStorage.setItem("token", response.data.access_token);
-        // console.log("logged in user", stateUser);
-        router.push("/business");
-      }
+        const { access_token } = response.data;
+        localStorage.setItem("token", access_token);
 
-      router.push("/business");
+        // Step 2: Get vendor details to check is_active
+        try {
+          const vendorResponse = await axiosClient.get("/v1/vendor/me/get", {
+            headers: {
+              Authorization: `Bearer ${access_token}`,
+            },
+          });
+
+          const vendorData = vendorResponse.data;
+          console.log("Vendor data:", vendorData);
+
+          // Step 3: Check is_active and route accordingly
+          if (!vendorData.is_active) {
+            console.log("Vendor account is not active, redirecting to processing page");
+            toast.info("Your account is under review. You'll be notified once approved.");
+            router.push("/accountProcessing");
+            return;
+          }
+
+          // Step 4: Store user data and redirect to business dashboard
+          localStorage.setItem("user", JSON.stringify(vendorData));
+          localStorage.setItem("logo", vendorData.logo_url);
+          
+          // Update Redux state if needed
+          dispatch(loginUser(vendorData));
+          
+          toast.success("Login successful!");
+          router.push("/business");
+        } catch (vendorError) {
+          console.error("Error fetching vendor details:", vendorError);
+          toast.error("Failed to verify account status. Please try again.");
+        }
+      }
     } catch (error) {
       setShowAlert(true);
-
-      toast.error("Invalid email or password");
+      
       console.log(error);
+      
+      // Better error handling
+      if (error.response?.status === 401) {
+        toast.error("Invalid email or password");
+      } else if (error.response?.status === 403) {
+        toast.error("Account is deactivated. Please contact support.");
+      } else if (error.response?.status === 422) {
+        toast.error("Invalid credentials. Please check your email and password.");
+      } else {
+        toast.error("Login failed. Please try again.");
+      }
+      
       setTimeout(() => {
         setShowAlert(false);
       }, 2000);
@@ -126,7 +166,7 @@ const LoginForm = () => {
         <div className="fixed top-0 left-0 w-full flex justify-center z-50 animate-slide-down">
           <div className="bg-red-400 border border-gray-300 shadow-lg rounded-md mt-4 p-4 w-[90%] max-w-sm">
             <p className="text-white  font-medium text-center">
-              Invaild email or password
+              Invalid email or password
             </p>
           </div>
         </div>

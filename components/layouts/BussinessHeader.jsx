@@ -1,3 +1,4 @@
+// vendor-web-app/components/layouts/BussinessHeader.jsx
 "use client";
 import axiosClient from "../../AxiosClient";
 import React, { useEffect, useState } from "react";
@@ -6,12 +7,12 @@ import { logoutIconSvg } from "../../svgs";
 import Link from "next/link";
 import LanguageDropdown from "../dropdowns/LanguageDropdown";
 import ProfileDropdown from "../dropdowns/ProfileDropdown";
+// ✅ Remove the import - no longer needed
 import { setActivePage } from "../../redux/slices/headerSlice";
 import { appLogoUrl } from "../../lib/constant_data";
 import { menuItemsData } from "../../lib/business_menu";
 import { logoutUser } from "../../redux/slices/loggedInUserSlice";
 import { useRouter } from "next/navigation";
-// import { auth } from "../../app/firebase/config";
 import { toast } from "sonner";
 
 const BussinessHeader = () => {
@@ -20,14 +21,10 @@ const BussinessHeader = () => {
   const dispatch = useDispatch();
   const [isSmallDevice, setIsSmallDevice] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
-
   const router = useRouter();
-
   const [isMobile, setIsMobile] = useState(false);
 
-  // load user info profile image to local storage
-  // Load user info profile image to local storage
+  // ✅ Fixed - Load user info with proper redirect logic
   useEffect(() => {
     const loadUserInfo = async () => {
       try {
@@ -36,6 +33,7 @@ const BussinessHeader = () => {
         
         if (!token) {
           console.log("No token found");
+          router.push("/vendor/login");
           return;
         }
 
@@ -45,13 +43,28 @@ const BussinessHeader = () => {
           },
         });
 
+        console.log(response.data, "response.data");
+        
         if (response.status === 200) {
+          console.log(response.data.is_active, "is_active");
+          
+          // ✅ Correct - Check if vendor is inactive and redirect
+          if (!response.data.is_active) {
+            console.log("Vendor account is not active, redirecting to processing page");
+            router.push("/accountProcessing");
+            return;
+          }
+          
           localStorage.setItem("user", JSON.stringify(response.data));
           localStorage.setItem("logo", response.data.logo_url);
           console.log("User info loaded successfully");
         }
       } catch (error) {
         console.error("Error loading user info:", error);
+        if (error.response?.status === 401) {
+          localStorage.removeItem("token");
+          router.push("/vendor/login");
+        }
         toast.error("Failed to load user information");
       } finally {
         setIsLoading(false);
@@ -59,7 +72,7 @@ const BussinessHeader = () => {
     };
 
     loadUserInfo();
-  }, []);
+  }, [router]);
 
   useEffect(() => {
     const checkIsMobile = () => {

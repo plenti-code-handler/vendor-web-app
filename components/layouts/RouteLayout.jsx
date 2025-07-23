@@ -19,6 +19,11 @@ export const RouteLayout = ({ children }) => {
         setIsClient(true);
     }, []);
 
+    // ✅ Fix: Use PublicLayout for account processing
+    if (pathname === "/accountProcessing") {
+        return <LandingLayout>{children}</LandingLayout>;
+    }
+
     if (
         pathname === "/login" ||
         pathname === "/register" ||
