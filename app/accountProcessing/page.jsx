@@ -1,23 +1,26 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useSelector } from 'react-redux';
 import { 
   CheckCircleIcon, 
   ClockIcon, 
   ArrowLeftIcon,
-  EnvelopeIcon 
+  EnvelopeIcon,
+  CurrencyDollarIcon
 } from '@heroicons/react/24/outline';
-
-// ✅ Add this to ensure CSS loads properly
-// import 'tailwindcss/tailwind.css';
 
 const AccountProcessingPage = () => {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
-  const [isMounted, setIsMounted] = useState(false); // ✅ Add mounting state
+  const [isMounted, setIsMounted] = useState(false);
+  
+  // Check if catalogue data exists
+  const { items } = useSelector((state) => state.catalogue);
+  const hasPricing = items && Object.keys(items).length > 0;
 
   useEffect(() => {
-    setIsMounted(true); // ✅ Set mounted state
+    setIsMounted(true);
     
     // Simulate progress animation
     const timer = setTimeout(() => {
@@ -27,7 +30,6 @@ const AccountProcessingPage = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // ✅ Prevent hydration mismatch
   if (!isMounted) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-100 flex items-center justify-center">
@@ -39,6 +41,10 @@ const AccountProcessingPage = () => {
   const handleGoBack = () => {
     router.push('/');
     localStorage.clear();
+  };
+
+  const handleSetPricing = () => {
+    router.push('/price-decision');
   };
 
   const steps = [
@@ -120,10 +126,21 @@ const AccountProcessingPage = () => {
               </p>
             </div>
 
+            {/* Set Pricing Button - Only show if pricing is missing */}
+            {!hasPricing && (
+              <button
+                onClick={handleSetPricing}
+                className="w-full bg-[#5F22D9] text-white py-3 px-6 rounded-xl font-medium hover:bg-[#4A1BB8] transition-all duration-200 flex items-center justify-center space-x-2 hover:scale-105 mb-4"
+              >
+                <CurrencyDollarIcon className="w-5 h-5" />
+                <span>Set pricing to complete the activation</span>
+              </button>
+            )}
+
             {/* Action Button */}
             <button
               onClick={handleGoBack}
-              className="w-full bg-[#5F22D9] text-white py-3 px-6 rounded-xl font-medium hover:bg-[#4A1BB8] transition-all duration-200 flex items-center justify-center space-x-2 hover:scale-105"
+              className="w-full bg-gray-500 text-white py-3 px-6 rounded-xl font-medium hover:bg-gray-600 transition-all duration-200 flex items-center justify-center space-x-2 hover:scale-105"
             >
               <ArrowLeftIcon className="w-5 h-5" />
               <span>Back to Login</span>

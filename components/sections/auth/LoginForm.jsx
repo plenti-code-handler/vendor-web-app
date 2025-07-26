@@ -9,6 +9,13 @@ import { useForm } from "react-hook-form";
 import { whiteLoader } from "../../../svgs";
 import axiosClient from "../../../AxiosClient";
 import { loginUser } from "../../../redux/slices/loggedInUserSlice";
+import { 
+  EnvelopeIcon, 
+  LockClosedIcon, 
+  ArrowRightIcon,
+  EyeIcon,
+  EyeSlashIcon
+} from "@heroicons/react/24/outline";
 
 const LoginForm = () => {
   const dispatch = useDispatch();
@@ -17,12 +24,18 @@ const LoginForm = () => {
 
   const [loading, setLoading] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [focusedField, setFocusedField] = useState(null);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    watch,
   } = useForm();
+
+  const email = watch("email");
+  const password = watch("password");
 
   const handleLogin = async (data, event) => {
     console.log("Inside handle login");
@@ -105,80 +118,195 @@ const LoginForm = () => {
     <>
       <form
         onSubmit={handleSubmit(handleLogin)}
-        className="flex flex-col w-full space-y-5"
+        className="flex flex-col w-full space-y-6 mt-10"
       >
-        <div className="flex flex-col space-y-3 mt-10">
-          <p className="text-black font-semibold text-[28px]">
-            Login to your account
-          </p>
-          <p className="text-[#404146] text-sm font-medium">
-            Want to register your business?{" "}
-            <span className="font-bold underline hover:text-black cursor-pointer">
-              <Link href={"/verify_email"}>Register</Link>
-            </span>
-          </p>
+        {/* Header Section */}
+        <div className="space-y-3">
+          <div className="space-y-2">
+            <h1 className="text-2xl font-bold text-gray-900">
+              Welcome back
+            </h1>
+            <p className="text-gray-600 text-sm">
+              Sign in to your business account
+            </p>
+          </div>
+          
+          <div className="flex items-center space-x-2 text-sm">
+            <span className="text-gray-500">New to Plenti?</span>
+            <Link 
+              href="/verify_email"
+              className="text-[#5F22D9] font-medium hover:text-[#4A1BB8] transition-colors duration-200 underline-offset-4 hover:underline"
+            >
+              Create account
+            </Link>
+          </div>
         </div>
-        <input
-          className="placeholder:font-bold rounded-md border border-gray-200 py-3 px-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
-          placeholder="Email"
-          {...register("email", {
-            required: "Email is required",
-            pattern: {
-              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-              message: "Please enter a valid email address",
-            },
-          })}
-        />
-        {errors.email && (
-          <p className="text-red-500 text-sm">{errors.email.message}</p>
-        )}
-        <AuthPasswordField
-          name="password"
-          register={register}
-          placeholder="Password"
-        />
-        {errors.password && (
-          <p className="text-red-500 text-sm">{errors.password.message}</p>
-        )}
+
+        {/* Email Input */}
+        <div className="space-y-2">
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <EnvelopeIcon className={`h-5 w-5 transition-colors duration-200 ${
+                focusedField === 'email' ? 'text-[#5F22D9]' : 'text-gray-400'
+              }`} />
+            </div>
+            <input
+              className={`w-full pl-10 pr-4 py-3 border rounded-xl text-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#5F22D9]/20 focus:border-[#5F22D9] ${
+                errors.email 
+                  ? 'border-red-300 bg-red-50' 
+                  : focusedField === 'email'
+                  ? 'border-[#5F22D9] bg-white'
+                  : 'border-gray-200 bg-gray-50 hover:bg-white hover:border-gray-300'
+              }`}
+              placeholder="Enter your email"
+              onFocus={() => setFocusedField('email')}
+              onBlur={() => setFocusedField(null)}
+              {...register("email", {
+                required: "Email is required",
+                pattern: {
+                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                  message: "Please enter a valid email address",
+                },
+              })}
+            />
+            {email && !errors.email && (
+              <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+              </div>
+            )}
+          </div>
+          {errors.email && (
+            <p className="text-red-500 text-xs flex items-center space-x-1">
+              <span>⚠</span>
+              <span>{errors.email.message}</span>
+            </p>
+          )}
+        </div>
+
+        {/* Password Input */}
+        <div className="space-y-2">
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <LockClosedIcon className={`h-5 w-5 transition-colors duration-200 ${
+                focusedField === 'password' ? 'text-[#5F22D9]' : 'text-gray-400'
+              }`} />
+            </div>
+            <input
+              type={showPassword ? "text" : "password"}
+              className={`w-full pl-10 pr-12 py-3 border rounded-xl text-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#5F22D9]/20 focus:border-[#5F22D9] ${
+                errors.password 
+                  ? 'border-red-300 bg-red-50' 
+                  : focusedField === 'password'
+                  ? 'border-[#5F22D9] bg-white'
+                  : 'border-gray-200 bg-gray-50 hover:bg-white hover:border-gray-300'
+              }`}
+              placeholder="Enter your password"
+              onFocus={() => setFocusedField('password')}
+              onBlur={() => setFocusedField(null)}
+              {...register("password", {
+                required: "Password is required",
+              })}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition-colors duration-200"
+            >
+              {showPassword ? (
+                <EyeSlashIcon className="h-5 w-5" />
+              ) : (
+                <EyeIcon className="h-5 w-5" />
+              )}
+            </button>
+          </div>
+          {errors.password && (
+            <p className="text-red-500 text-xs flex items-center space-x-1">
+              <span>⚠</span>
+              <span>{errors.password.message}</span>
+            </p>
+          )}
+        </div>
+
+        {/* Forgot Password Link */}
+        <div className="flex justify-end">
+          <Link
+            href="/forgetPassword"
+            className="text-sm text-[#5F22D9] hover:text-[#4A1BB8] transition-colors duration-200 underline-offset-4 hover:underline"
+          >
+            Forgot password?
+          </Link>
+        </div>
+
+        {/* Submit Button */}
         <button
           type="submit"
           disabled={loading}
-          className={`flex justify-center bg-primary hover:bg-hoverPrimary  text-white font-semibold py-2 rounded gap-2 lg:w-[100%] ${
-            loading ? "opacity-50 cursor-not-allowed" : ""
+          className={`group relative w-full flex items-center justify-center px-6 py-3 border border-transparent text-sm font-medium rounded-xl text-white transition-all duration-300 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5F22D9] ${
+            loading 
+              ? 'bg-gray-400 cursor-not-allowed' 
+              : 'bg-[#5F22D9] hover:bg-[#4A1BB8] shadow-lg hover:shadow-xl'
           }`}
         >
-          {loading && (
-            <div className="animate-spin flex items-center justify-center">
-              {whiteLoader}
+          {loading ? (
+            <div className="flex items-center space-x-2">
+              <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+              <span>Signing in...</span>
+            </div>
+          ) : (
+            <div className="flex items-center space-x-2">
+              <span>Sign in</span>
+              <ArrowRightIcon className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
             </div>
           )}
-          {loading ? "Logging in.." : "Login"}
         </button>
 
-        <Link
-          href={"/forgetPassword"}
-          className="text-[#A1A5B7] text-sm font-medium text-center transition-colors hover:text-gray-500 hover:underline underline-offset-4 cursor-pointer"
-        >
-          Forget Password
-        </Link>
+        {/* Divider */}
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-gray-200"></div>
+          </div>
+          <div className="relative flex justify-center text-xs">
+            <span className="px-2 bg-white text-gray-500">or</span>
+          </div>
+        </div>
+
+        {/* Alternative Actions */}
+        <div className="text-center space-y-2">
+          <p className="text-xs text-gray-500">
+            Need help?{" "}
+            <Link 
+              href="/contact" 
+              className="text-[#5F22D9] hover:text-[#4A1BB8] transition-colors duration-200 underline-offset-4 hover:underline"
+            >
+              Contact support
+            </Link>
+          </p>
+        </div>
       </form>
+
+      {/* Alert Toast */}
       {showAlert && (
-        <div className="fixed top-0 left-0 w-full flex justify-center z-50 animate-slide-down">
-          <div className="bg-red-400 border border-gray-300 shadow-lg rounded-md mt-4 p-4 w-[90%] max-w-sm">
-            <p className="text-white  font-medium text-center">
-              Invalid email or password
-            </p>
+        <div className="fixed top-4 right-4 z-50 animate-slide-in">
+          <div className="bg-red-500 text-white px-4 py-3 rounded-lg shadow-lg flex items-center space-x-2">
+            <span>⚠</span>
+            <span className="text-sm font-medium">Invalid email or password</span>
           </div>
         </div>
       )}
 
       <style>{`
-        @keyframes slideDown {
-          from { transform: translateY(-100%); opacity: 0; }
-          to { transform: translateY(0); opacity: 1; }
+        @keyframes slideIn {
+          from { 
+            transform: translateX(100%); 
+            opacity: 0; 
+          }
+          to { 
+            transform: translateX(0); 
+            opacity: 1; 
+          }
         }
-        .animate-slide-down {
-          animation: slideDown 0.3s ease-out;
+        .animate-slide-in {
+          animation: slideIn 0.3s ease-out;
         }
       `}</style>
     </>

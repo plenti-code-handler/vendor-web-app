@@ -25,17 +25,12 @@ export const RouteLayout = ({ children }) => {
     }
 
     if (
-        pathname === "/login" ||
-        pathname === "/register" ||
-        pathname === "/forget_password" ||
-        pathname === "/verify" ||
-        pathname === "/setup_password" ||
-        pathname === "/setup_profile" ||
-        pathname === "/awaiting" ||
-        pathname === "/reset_password" ||
-        pathname === "/verify_phone"
-      ) {
-    return <PublicLayout>{children}</PublicLayout>;
+        pathname === "/verify_email" || 
+        pathname === "/verify_otp" ||
+        pathname === "/complete_profile" ||
+        pathname === "/price-decision"
+    ) {
+        return <LandingLayout>{children}</LandingLayout>;
     } else if (pathname === "/") {
         if (isClient && localStorage.getItem("token")) {
             router.push("/business");
