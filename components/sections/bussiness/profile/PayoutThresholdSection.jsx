@@ -12,8 +12,8 @@ const PayoutThresholdSection = ({ tier, smallBagPrice }) => {
       <div className="max-w-xl w-full bg-gradient-to-r from-[#5F22D9]/10 to-[#5F22D9]/5 border border-[#5F22D9]/20 rounded-2xl p-6 shadow-lg animate-fade-in">
         <div className="flex items-center space-x-3 mb-2">
           <HandRaisedIcon className="w-6 h-6 text-[#5F22D9]" />
-          <h3 className="font-bold text-[#5F22D9] text-lg">
-            Payout Threshold for {tier} Vendors
+          <h3 className="flex items-center text-[#5F22D9] text-lg">
+            Minimum balance for <span className="font-bold inline text-green-500"> Unlimited Withdrawals</span>
           </h3>
         </div>
         <div className="text-gray-700 text-base mb-2">
@@ -21,9 +21,6 @@ const PayoutThresholdSection = ({ tier, smallBagPrice }) => {
           <span className="text-[#5F22D9] font-bold text-xl">₹{threshold}</span>
         </div>
         <div className="text-xs text-gray-500">
-          <span>
-            Calculated as <span className="font-mono">MROUND(25 × small bag price, 500)</span>
-          </span>
           <br />
           <span>
             Maintain this balance for unlimited withdrawal requests.

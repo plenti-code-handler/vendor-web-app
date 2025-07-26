@@ -6,13 +6,14 @@ import {
   ArrowLeftIcon,
   CurrencyDollarIcon,
   CalculatorIcon,
-  SparklesIcon
+  SparklesIcon,
+  CurrencyRupeeIcon
 } from '@heroicons/react/24/outline';
 import { calculatePrices, getTierInfo } from '../../../../utility/priceCalculations';
 import PriceCard from './PriceCard';
 import PayoutThresholdSection from './PayoutThresholdSection';
 import CategorySelection from './CategorySelection';
-
+import { SmallBagIcon, MediumBagIcon, LargeBagIcon } from '../../../../svgs';
 const PriceDecision = () => {
   const [step, setStep] = useState(1);
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -105,7 +106,7 @@ const PriceDecision = () => {
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <CurrencyDollarIcon className="h-5 w-5 text-gray-400" />
+                    <CurrencyRupeeIcon className="h-5 w-5 text-gray-400" />
                     </div>
                     <input
                       type="number"
@@ -162,6 +163,7 @@ const PriceDecision = () => {
             </div>
           </div>
 
+          {/* Price Cards Section */}
           {averagePrice && prices ? (
             <>
               <div className="space-y-8">
@@ -188,9 +190,10 @@ const PriceDecision = () => {
                 </div>
               </div>
 
+              {/* --- Independent Payout Threshold Section BELOW the cards --- */}
               <PayoutThresholdSection 
                 tier={tierInfo.name}
-                smallBagPrice={prices.small.price}
+                smallBagPrice={calculatePrices(averagePrice, 'MEAL')?.small.price}
               />
             </>
           ) : (
