@@ -7,9 +7,11 @@ import BackButton from "../../../components/sections/auth/BackButton";
 import { useForm } from "react-hook-form";
 import axiosClient from "../../../AxiosClient";
 import Link from "next/link";
+import { useLoadScript } from "@react-google-maps/api";
+import { toast } from "sonner";
 
-// const GOOGLE_MAPS_API_KEY = "AIzaSyDOVLieRAacqoM0mB-49sRQnIfN3aCWC38";
 const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+const libraries = ["places"];
 
 function Page() {
   const {
@@ -21,59 +23,92 @@ function Page() {
   const [loading, setLoading] = useState(false);
   const [address, setAddress] = useState("");
   const [coordinates, setCoordinates] = useState({ lat: null, lng: null });
-  const mapRef = useRef(null);
-
+  const [mapUrl, setMapUrl] = useState("");
+  
   const router = useRouter();
   const autoCompleteRef = useRef(null);
+  const autocompleteInstanceRef = useRef(null);
 
+  const { isLoaded, loadError } = useLoadScript({
+    googleMapsApiKey: apiKey,
+    libraries: libraries,
+  });
+
+  // Debug Google Maps loading
   useEffect(() => {
-    const loadGoogleMapsScript = () => {
-      if (!window.google) {
-        const script = document.createElement("script");
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
-        script.async = true;
-        script.onload = initializeAutocomplete;
-        document.body.appendChild(script);
-      } else {
-        initializeAutocomplete();
-      }
-    };
+    console.log("Google Maps API Status:", {
+      isLoaded,
+      loadError,
+      apiKey: apiKey ? "Present" : "Missing",
+      libraries
+    });
+    
+    if (loadError) {
+      console.error("Google Maps API Error:", loadError);
+      toast.error("Failed to load Google Maps API");
+    }
+  }, [isLoaded, loadError, apiKey]);
 
-    const initializeAutocomplete = () => {
-      if (!autoCompleteRef.current) return;
-      const autocomplete = new window.google.maps.places.Autocomplete(
+  // Initialize Google Places Autocomplete
+  useEffect(() => {
+    console.log("isLoaded", isLoaded);
+    if (!isLoaded || !autoCompleteRef.current) return;
+
+    try {
+      // Clean up previous instance
+      if (autocompleteInstanceRef.current) {
+        window.google.maps.event.clearInstanceListeners(autocompleteInstanceRef.current);
+      }
+
+      // Create new autocomplete instance
+      autocompleteInstanceRef.current = new window.google.maps.places.Autocomplete(
         autoCompleteRef.current,
-        { types: ["geocode"] }
+        { 
+          types: ["geocode", "establishment"],
+          componentRestrictions: { country: "IN" }, // Restrict to India
+          fields: ["formatted_address", "geometry", "place_id", "name"]
+        }
       );
 
-      autocomplete.addListener("place_changed", () => {
-        const place = autocomplete.getPlace();
-        if (place.geometry) {
+      console.log("Autocomplete initialized:", autocompleteInstanceRef.current);
+
+      // Add place_changed listener
+      autocompleteInstanceRef.current.addListener("place_changed", () => {
+        const place = autocompleteInstanceRef.current.getPlace();
+        console.log("Selected place:", place);
+        
+        if (place.geometry && place.formatted_address) {
           const formattedAddress = place.formatted_address;
           const latitude = place.geometry.location.lat();
           const longitude = place.geometry.location.lng();
+          
           setAddress(formattedAddress);
           setCoordinates({ lat: latitude, lng: longitude });
           setValue("addressUrl", formattedAddress);
+
+          setMapUrl(
+            `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${latitude},${longitude}&zoom=15`
+          );
+          
+          toast.success("Address selected successfully!");
+        } else {
+          toast.error("Please select a valid address from the suggestions");
         }
       });
-    };
 
-    loadGoogleMapsScript();
-  }, [setValue]);
-
-  useEffect(() => {
-    if (coordinates.lat && coordinates.lng && window.google) {
-      const map = new window.google.maps.Map(mapRef.current, {
-        center: { lat: coordinates.lat, lng: coordinates.lng },
-        zoom: 14,
-      });
-      new window.google.maps.Marker({
-        position: { lat: coordinates.lat, lng: coordinates.lng },
-        map: map,
-      });
+    } catch (error) {
+      console.error("Error initializing autocomplete:", error);
+      toast.error("Failed to initialize address autocomplete");
     }
-  }, [coordinates]);
+
+    // Cleanup function
+    return () => {
+      if (autocompleteInstanceRef.current) {
+        window.google.maps.event.clearInstanceListeners(autocompleteInstanceRef.current);
+        autocompleteInstanceRef.current = null;
+      }
+    };
+  }, [isLoaded, setValue]);
 
   const onSubmit = async (data) => {
     try {
@@ -316,15 +351,29 @@ function Page() {
               <label className="text-sm font-medium text-gray-600">
                 Address
               </label>
-              <input
-                {...register("adressurl", {})}
-                type="text"
-                ref={autoCompleteRef}
-                className="rounded-md border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
-                placeholder="Search your business address"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-              />
+              <div className="relative">
+                <input
+                  {...register("adressurl", {})}
+                  type="text"
+                  ref={autoCompleteRef}
+                  className="rounded-md border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black w-full"
+                  placeholder={isLoaded ? "Search your business address" : "Loading address search..."}
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  disabled={!isLoaded}
+                />
+                {!isLoaded && (
+                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600"></div>
+                  </div>
+                )}
+              </div>
+              {!isLoaded && (
+                <p className="text-xs text-gray-500 mt-1">Loading Google Places API...</p>
+              )}
+              {isLoaded && (
+                <p className="text-xs text-gray-500 mt-1">Start typing to see address suggestions</p>
+              )}
               {errors.adressurl && (
                 <p className="text-red-500 text-sm">
                   {errors.adressurl.message}
@@ -332,10 +381,17 @@ function Page() {
               )}
             </div>
 
-            <div
-              ref={mapRef}
-              className="w-full h-64 rounded-md border mt-4"
-            ></div>
+            {mapUrl && (
+              <iframe
+                src={mapUrl}  
+                width="450"
+                height="250"
+                className="w-full rounded-lg"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+              />
+            )}
 
             <div className="mt-6">
               <button

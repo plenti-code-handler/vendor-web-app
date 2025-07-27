@@ -28,7 +28,9 @@ export const RouteLayout = ({ children }) => {
         pathname === "/verify_email" || 
         pathname === "/verify_otp" ||
         pathname === "/complete_profile" ||
-        pathname === "/price-decision"
+        pathname === "/price-decision" ||
+        pathname === "/terms" ||
+        pathname === "/privacy"
     ) {
         return <LandingLayout>{children}</LandingLayout>;
     } else if (pathname === "/") {
