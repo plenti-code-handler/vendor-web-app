@@ -15,6 +15,7 @@ import {
   setOpenDrawer,
 } from "../../../../redux/slices/editBagSlice";
 import { fetchAllBags } from "../../../../redux/slices/bagsSlice";
+
 const BagsTable = () => {
   const dispatch = useDispatch();
   const { items: bags, loading } = useSelector((state) => state.bags);
@@ -24,7 +25,6 @@ const BagsTable = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState("");
   const [itemToDelete, setItemToDelete] = useState(null);
-
   const [showAlert, setShowAlert] = useState(false);
 
   const handleDelete = () => {
@@ -41,18 +41,6 @@ const BagsTable = () => {
     dispatch(setOpenDrawer(true));
   };
 
-  // const handleDelete = async (item_id, vendor_id) => {
-  //   try {
-  //     await axiosClient.delete(
-  //       `/v1/vendor/item/items/delete?item_id=${item_id}&vendor_id=${vendor_id}`
-  //     );
-  //     toast.success("Item deleted successfully");
-  //     dispatch(fetchAllBags());
-  //   } catch (error) {
-  //     toast.error("Failed to delete item");
-  //   }
-  // };
-
   const handleFilterChange = (filter) => {
     console.log("Inside handle change filter");
     console.log(filter);
@@ -63,9 +51,9 @@ const BagsTable = () => {
     ? bags.filter((item) => {
         const formattedItemType = item.item_type
           .replace(/_/g, " ")
-          .toLowerCase(); // Make sure formatting is consistent (lowercase + spaces instead of underscores)
-        const formattedFilter = selectedFilter.toLowerCase(); // Ensure case-insensitive comparison
-        return formattedItemType.includes(formattedFilter); // Change equality check to 'includes' to allow partial matches
+          .toLowerCase();
+        const formattedFilter = selectedFilter.toLowerCase();
+        return formattedItemType.includes(formattedFilter);
       })
     : bags;
 
@@ -101,6 +89,19 @@ const BagsTable = () => {
     }
   };
 
+  // Helper function to get servings display
+  const getServingsDisplay = (item) => {
+    const vegServings = item.veg_servings_current || 0;
+    const nonVegServings = item.non_veg_servings_current || 0;
+    
+    return {
+      veg: vegServings,
+      nonVeg: nonVegServings,
+      hasVeg: item.veg || false,
+      hasNonVeg: item.non_veg || false
+    };
+  };
+
   return (
     <div className="no-scrollbar w-full overflow-y-hidden">
       <TableUpper
@@ -125,10 +126,10 @@ const BagsTable = () => {
                 End Time
               </th>
               <th className="pb-[8px] px-2 pt-[18px] text-center w-1/6">
-                Stock
+                Veg Servings Left
               </th>
               <th className="pb-[8px] px-2 pt-[18px] text-center w-1/6">
-                Price
+                Non-Veg Servings Left
               </th>
               <th className="pb-[8px] px-2 pt-[18px] text-center w-1/6">
                 Actions
@@ -144,52 +145,80 @@ const BagsTable = () => {
                 </td>
               </tr>
             ) : (
-              filteredItems.slice(0, visibleItems).map((item) => (
-                <tr
-                  key={item.id}
-                  className="border-b border-gray-200 text-center"
-                >
-                  <td className="py-2 px-2 text-left">
-                    <div className="w-[48px] h-[48px]">
-                      <img
-                        src={item.image_url}
-                        alt="Item"
-                        className="h-full w-full object-cover rounded"
-                      />
-                    </div>
-                  </td>
+              filteredItems.slice(0, visibleItems).map((item) => {
+                const servings = getServingsDisplay(item);
+                
+                return (
+                  <tr
+                    key={item.id}
+                    className="border-b border-gray-200 text-center"
+                  >
+                    <td className="py-2 px-2 text-left">
+                      <div className="w-[48px] h-[48px]">
+                        <img
+                          src={item.image_url}
+                          alt="Item"
+                          className="h-full w-full object-cover rounded"
+                        />
+                      </div>
+                    </td>
 
-                  <td className="py-2 px-2 text-left w-1/6">
-                    {item.item_type.replace(/_/g, " ")}
-                  </td>
-                  <td className="py-2 px-2 w-1/6 whitespace-nowrap">
-                    {formatTime(item.window_start_time)}
-                  </td>
-                  <td className="py-2 px-2 w-1/6 whitespace-nowrap">
-                    {formatTime(item.window_end_time)}
-                  </td>
-                  <td className="py-2 px-2 w-1/6">{item.quantity}</td>
-                  <td className="py-2 px-2 w-1/6">{item.price} ₹</td>
-                  <td className="py-2 px-2 w-1/6 text-center">
-                    <div className="flex items-center justify-center space-x-2">
-                      <button onClick={() => openModal(item)}>
-                        <EyeIcon className="h-5 w-5 text-gray-600 hover:text-gray-900" />
-                      </button>
-                      <button onClick={() => handleEdit(item)}>
-                        <PencilIcon className="h-5 w-5 text-blue-600 hover:text-blue-900" />
-                      </button>
-                      <button
-                        onClick={() => {
-                          setItemToDelete(item);
-                          setShowAlert(true);
-                        }}
-                      >
-                        <TrashIcon className="h-5 w-5 text-red-600 hover:text-red-900" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))
+                    <td className="py-2 px-2 text-left w-1/6">
+                      {item.item_type.replace(/_/g, " ")}
+                    </td>
+                    <td className="py-2 px-2 w-1/6 whitespace-nowrap">
+                      {formatTime(item.window_start_time)}
+                    </td>
+                    <td className="py-2 px-2 w-1/6 whitespace-nowrap">
+                      {formatTime(item.window_end_time)}
+                    </td>
+                    <td className="py-2 px-2 w-1/6">
+                      {servings.hasVeg ? (
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          servings.veg > 0 
+                            ? 'bg-green-100 text-green-800' 
+                            : 'bg-red-100 text-red-800'
+                        }`}>
+                          {servings.veg}
+                        </span>
+                      ) : (
+                        <span className="text-gray-400 text-xs">N/A</span>
+                      )}
+                    </td>
+                    <td className="py-2 px-2 w-1/6">
+                      {servings.hasNonVeg ? (
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          servings.nonVeg > 0 
+                            ? 'bg-green-100 text-green-800' 
+                            : 'bg-red-100 text-red-800'
+                        }`}>
+                          {servings.nonVeg}
+                        </span>
+                      ) : (
+                        <span className="text-gray-400 text-xs">N/A</span>
+                      )}
+                    </td>
+                    <td className="py-2 px-2 w-1/6 text-center">
+                      <div className="flex items-center justify-center space-x-2">
+                        <button onClick={() => openModal(item)}>
+                          <EyeIcon className="h-5 w-5 text-gray-600 hover:text-gray-900" />
+                        </button>
+                        <button onClick={() => handleEdit(item)}>
+                          <PencilIcon className="h-5 w-5 text-blue-600 hover:text-blue-900" />
+                        </button>
+                        <button
+                          onClick={() => {
+                            setItemToDelete(item);
+                            setShowAlert(true);
+                          }}
+                        >
+                          <TrashIcon className="h-5 w-5 text-red-600 hover:text-red-900" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })
             )}
           </tbody>
         </table>
