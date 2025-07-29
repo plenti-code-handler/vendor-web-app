@@ -8,35 +8,47 @@ import {
 } from "@headlessui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { setOpenDrawer } from "../../redux/slices/addBagSlice";
-import BagsPerDay from "./components/BagsPerDay";
-import BagPricing from "./components/BagPricing";
 import ItemTypeFilter from "../dropdowns/ItemTypeFilter";
 import ItemTagsFilter from "../dropdowns/ItemTagsFilter";
 import { useEffect, useState } from "react";
 import axiosClient from "../../AxiosClient";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-
 import { toast } from "sonner";
 import { whiteLoader } from "../../svgs";
 import { fetchAllBags } from "../../redux/slices/bagsSlice";
 
 const AddBagDrawer = () => {
   const [selectedBag, setSelectedBag] = useState("MEAL");
-
   const [selectedTags, setSelectedTags] = useState([]);
   const [isVeg, setIsVeg] = useState(true);
+  const [isNonVeg, setIsNonVeg] = useState(false);
   const [description, setDescription] = useState("");
-  const [numberOfBags, setNumberOfBags] = useState(0);
-  const [pricing, setPricing] = useState("");
-  const [originalPrice, setOriginalPrice] = useState("");
+  const [vegServings, setVegServings] = useState(0);
+  const [nonVegServings, setNonVegServings] = useState(0);
   const [loading, setLoading] = useState(false);
   const [windowStartTime, setWindowStartTime] = useState(new Date());
   const [windowEndTime, setWindowEndTime] = useState(new Date());
+  const [showCustomDescription, setShowCustomDescription] = useState(false);
+  const [availableDescriptions, setAvailableDescriptions] = useState([]);
+
+  // Get available descriptions from localStorage
+  useEffect(() => {
+    const userData = localStorage.getItem("user");
+    if (userData) {
+      try {
+        const user = JSON.parse(userData);
+        if (user.item_descriptions && Array.isArray(user.item_descriptions)) {
+          setAvailableDescriptions(user.item_descriptions);
+        }
+      } catch (error) {
+        console.error("Error parsing user data:", error);
+      }
+    }
+  }, []);
 
   const handleStartTimeChange = (date) => {
     setWindowStartTime(date);
-
     const newEndTime = new Date(date.getTime() + 30 * 60000);
     setWindowEndTime(newEndTime);
   };
@@ -61,15 +73,16 @@ const AddBagDrawer = () => {
   }, []);
 
   const resetForm = () => {
-    setSelectedBag({});
+    setSelectedBag("MEAL");
     setSelectedTags([]);
     setDescription("");
-    setNumberOfBags(0);
+    setVegServings(0);
+    setNonVegServings(0);
     setWindowStartTime(new Date());
     setWindowEndTime(new Date());
-    setPricing("");
-    setOriginalPrice("");
     setIsVeg(true);
+    setIsNonVeg(false);
+    setShowCustomDescription(false);
   };
 
   const handleSubmitBag = async () => {
@@ -82,6 +95,7 @@ const AddBagDrawer = () => {
         return;
       }
 
+      // Validation
       const requiredFields = [
         {
           field: selectedBag,
@@ -102,28 +116,16 @@ const AddBagDrawer = () => {
           validate: (field) => field && field.trim() !== "",
         },
         {
-          field: numberOfBags,
-          name: "numberOfBags",
-          message: "Please fill the number of items.",
+          field: isVeg || isNonVeg,
+          name: "diet",
+          message: "Please select at least one diet option (Veg/Non-Veg).",
+          validate: (field) => field === true,
+        },
+        {
+          field: vegServings + nonVegServings,
+          name: "servings",
+          message: "Please provide at least one serving count.",
           validate: (field) => field > 0,
-        },
-        {
-          field: pricing,
-          name: "pricing",
-          message: "Please provide the pricing information.",
-          validate: (field) => field && field.trim() !== "",
-        },
-        {
-          field: originalPrice,
-          name: "originalPrice",
-          message: "Please provide the original price.",
-          validate: (field) => field && field.trim() !== "",
-        },
-        {
-          field: isVeg,
-          name: "isVeg",
-          message: "Please select a meal option (Veg/Non-Veg).",
-          validate: (field) => typeof field === "boolean",
         },
       ];
 
@@ -138,14 +140,14 @@ const AddBagDrawer = () => {
 
       const newItem = {
         item_type: selectedBag,
-        tags: selectedTags,
-        description: description,
-        veg: isVeg,
-        price: pricing,
-        actual_price: originalPrice,
-        quantity: numberOfBags,
         window_start_time: Math.floor(windowStartTime.getTime() / 1000),
         window_end_time: Math.floor(windowEndTime.getTime() / 1000),
+        description: description,
+        veg: isVeg,
+        non_veg: isNonVeg,
+        veg_servings_start: vegServings,
+        non_veg_servings_start: nonVegServings,
+        tags: selectedTags,
       };
 
       const response = await axiosClient.post(
@@ -223,6 +225,7 @@ const AddBagDrawer = () => {
                     onFilterChange={setSelectedTags}
                   />
 
+                  {/* Window Time Section */}
                   <div>
                     <div className="flex flex-col pb-5 mt-5">
                       <p className="text-black font-bold text-xl">
@@ -257,72 +260,152 @@ const AddBagDrawer = () => {
                     </div>
                   </div>
 
-                  <div className="flex flex-col pb-5 mt-5 ">
+                  {/* Description Section */}
+                  <div className="flex flex-col pb-5 mt-5">
                     <p className="text-black font-bold text-xl">
                       Item Description
                     </p>
+                    
+                    {!showCustomDescription && availableDescriptions.length > 0 && (
+                      <div className="mb-4">
+                        <p className="text-sm text-gray-600 mb-2">Choose from existing descriptions:</p>
+                        <div className="space-y-2">
+                          {availableDescriptions.map((desc, index) => (
+                            <button
+                              key={index}
+                              onClick={() => setDescription(desc)}
+                              className={`w-full text-left p-3 rounded-lg border transition-colors ${
+                                description === desc
+                                  ? 'border-[#5F22D9] bg-[#5F22D9]/5'
+                                  : 'border-gray-200 hover:border-gray-300'
+                              }`}
+                            >
+                              <p className="text-sm text-gray-700">{desc}</p>
+                            </button>
+                          ))}
+                        </div>
+                        <button
+                          onClick={() => setShowCustomDescription(true)}
+                          className="mt-3 text-[#5F22D9] text-sm font-medium hover:underline"
+                        >
+                          + Add custom description
+                        </button>
+                      </div>
+                    )}
+
+                    {showCustomDescription && (
+                      <div>
+                        <Textarea
+                          className="block w-full placeholder:font-bold resize-none rounded-lg border border-gray-300 py-3 px-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#5F22D9]"
+                          rows={4}
+                          placeholder="Enter your custom description..."
+                          value={description}
+                          onChange={(e) => setDescription(e.target.value)}
+                        />
+                        {availableDescriptions.length > 0 && (
+                          <button
+                            onClick={() => setShowCustomDescription(false)}
+                            className="mt-2 text-[#5F22D9] text-sm font-medium hover:underline"
+                          >
+                            ← Choose from existing descriptions
+                          </button>
+                        )}
+                      </div>
+                    )}
+
+                    {availableDescriptions.length === 0 && (
+                      <Textarea
+                        className="block w-full placeholder:font-bold resize-none rounded-lg border border-gray-300 py-3 px-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#5F22D9]"
+                        rows={4}
+                        placeholder="Enter item description..."
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                      />
+                    )}
                   </div>
-                  <Textarea
-                    className="block w-full  placeholder:font-bold resize-none rounded-lg border border-gray-300 py-3 px-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
-                    rows={6}
-                    placeholder="Description..."
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                  />
+
+                  {/* Diet Selection */}
                   <div className="flex justify-between items-center mt-4 w-full">
-                    <span className="text-lg font-semibold min-w-36 ">
-                      Select Type:
+                    <span className="text-lg font-semibold min-w-36">
+                      Diet Options:
                     </span>
                     <div className="flex w-full justify-end items-center gap-6">
                       <label className="flex items-center gap-2 cursor-pointer">
                         <input
                           type="checkbox"
-                          value="non-veg"
-                          checked={!isVeg}
-                          onChange={() => setIsVeg(false)}
-                          className="w-5 h-5 text-gray-600 bg-gray-200 border-gray-400 rounded focus:ring-gray-600"
-                        />
-                        <span className="text-sm font-medium text-gray-700">
-                          Non-Veg
-                        </span>
-                      </label>
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          value="veg"
                           checked={isVeg}
-                          onChange={() => setIsVeg(true)}
-                          className="w-5 h-5 text-gray-600 bg-gray-200 border-gray-400 rounded focus:ring-gray-600"
+                          onChange={() => setIsVeg(!isVeg)}
+                          className="w-5 h-5 text-[#5F22D9] bg-gray-200 border-gray-400 rounded focus:ring-[#5F22D9]"
                         />
                         <span className="text-sm font-medium text-gray-700">
                           Veg
                         </span>
                       </label>
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={isNonVeg}
+                          onChange={() => setIsNonVeg(!isNonVeg)}
+                          className="w-5 h-5 text-[#5F22D9] bg-gray-200 border-gray-400 rounded focus:ring-[#5F22D9]"
+                        />
+                        <span className="text-sm font-medium text-gray-700">
+                          Non-Veg
+                        </span>
+                      </label>
                     </div>
                   </div>
 
-                  <BagsPerDay
-                    numberOfBags={numberOfBags}
-                    setNumberOfBags={setNumberOfBags}
-                  />
+                  {/* Servings Section */}
+                  <div className="mt-6 space-y-4">
+                    <p className="text-black font-bold text-xl">
+                      Servings Left
+                    </p>
+                    
+                    {isVeg && (
+                      <div className="flex flex-col">
+                        <label className="text-sm font-medium text-gray-700 mb-2">
+                          Veg Servings
+                        </label>
+                        <input
+                          type="number"
+                          min="0"
+                          value={vegServings}
+                          onChange={(e) => setVegServings(parseInt(e.target.value) || 0)}
+                          className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#5F22D9]"
+                          placeholder="Enter veg servings count"
+                        />
+                      </div>
+                    )}
 
-                  <div className="flex flex-col gap-3">
-                    <BagPricing
-                      originalPrice={originalPrice}
-                      setOriginalPrice={setOriginalPrice}
-                      pricing={pricing}
-                      setPricing={setPricing}
-                    />
+                    {isNonVeg && (
+                      <div className="flex flex-col">
+                        <label className="text-sm font-medium text-gray-700 mb-2">
+                          Non-Veg Servings
+                        </label>
+                        <input
+                          type="number"
+                          min="0"
+                          value={nonVegServings}
+                          onChange={(e) => setNonVegServings(parseInt(e.target.value) || 0)}
+                          className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#5F22D9]"
+                          placeholder="Enter non-veg servings count"
+                        />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Submit Button */}
+                  <div className="mt-6">
                     <button
                       onClick={handleSubmitBag}
-                      className="flex justify-center bg-blueBgDark text-white font-semibold py-2  rounded hover:bg-blueBgDarkHover2 gap-2 lg:w-[100%]"
+                      className="flex justify-center bg-[#5F22D9] text-white font-semibold py-3 rounded-lg hover:bg-[#4A1BB8] gap-2 w-full transition-colors"
                     >
                       {loading && (
                         <div className="animate-spin flex items-center justify-center">
                           {whiteLoader}
                         </div>
                       )}
-                      {loading ? "Adding..." : "Add Bag"}
+                      {loading ? "Adding..." : "Add Item"}
                     </button>
                   </div>
                 </div>
