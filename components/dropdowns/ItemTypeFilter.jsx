@@ -1,32 +1,19 @@
-import { useEffect, useState } from "react";
-import { arrowDownGray } from "../../svgs";
+import React from "react";
+import { ALL_ITEM_TYPES, ITEM_TYPE_DISPLAY_NAMES } from "../../constants/itemTypes";
 
 const ItemTypeFilter = ({ selectedFilter, onFilterChange }) => {
   return (
-    <form className="w-full">
-      <div className="relative">
-        <select
-          id="bags"
-          className="bg-grayFive text-grayThree text-sm font-semibold rounded-lg focus:ring-grayTwo focus:border-grayTwo block w-full p-2.5 appearance-none"
-          value={selectedFilter || "MEAL"}
-          onChange={(e) => onFilterChange(e.target.value)}
-        >
-          <option value="MEAL" className="text-base">
-            {`Meal`}
-          </option>
-          <option value="BAKED_GOODS" className="text-base">
-            {`Baked Goods`}
-          </option>
-          <option value="SNACKS_AND_DESSERT" className="text-base">
-            {`Snacks and desserts`}
-          </option>
-        </select>
-
-        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-          {arrowDownGray}
-        </div>
-      </div>
-    </form>
+    <select
+      value={selectedFilter || ALL_ITEM_TYPES[0]}
+      onChange={(e) => onFilterChange(e.target.value)}
+      className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#5F22D9] focus:border-transparent"
+    >
+      {ALL_ITEM_TYPES.map((itemType) => (
+        <option key={itemType} value={itemType} className="text-base">
+          {ITEM_TYPE_DISPLAY_NAMES[itemType]}
+        </option>
+      ))}
+    </select>
   );
 };
 

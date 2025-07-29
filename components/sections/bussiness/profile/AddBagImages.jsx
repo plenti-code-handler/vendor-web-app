@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import { PhotoIcon, ChevronDownIcon } from "@heroicons/react/24/solid";
 import { toast } from "sonner";
 import axiosClient from "../../../../AxiosClient";
+import { ALL_ITEM_TYPES, ITEM_TYPE_DISPLAY_NAMES } from "../../../../constants/itemTypes";
 
 const AddBagImages = () => {
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
-  const [itemType, setItemType] = useState("MEAL");
+  const [itemType, setItemType] = useState(ALL_ITEM_TYPES[0]);
   const [loading, setLoading] = useState(false);
 
   const handleImageChange = (e) => {
@@ -71,13 +72,15 @@ const AddBagImages = () => {
       </label>
       <div className="relative">
         <select
-          className="bg-gray-100 text-gray-700 text-sm font-semibold rounded-lg focus:ring-gray-300 focus:border-gray-300 block w-full p-2.5 appearance-none"
           value={itemType}
           onChange={(e) => setItemType(e.target.value)}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#5F22D9] focus:border-transparent"
         >
-          <option value="BAKED_GOODS">Baked</option>
-          <option value="SNACKS_AND_DESSERT">Snacks and Desserts</option>
-          <option value="MEAL">Meal</option>
+          {ALL_ITEM_TYPES.map((type) => (
+            <option key={type} value={type}>
+              {ITEM_TYPE_DISPLAY_NAMES[type]}
+            </option>
+          ))}
         </select>
         <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center">
           <ChevronDownIcon className="h-5 w-5 text-gray-500" />
