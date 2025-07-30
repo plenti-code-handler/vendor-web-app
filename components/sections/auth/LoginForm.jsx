@@ -16,7 +16,7 @@ import {
   EyeIcon,
   EyeSlashIcon
 } from "@heroicons/react/24/outline";
-
+import { fetchCatalogue } from "../../../redux/slices/catalogueSlice";
 const LoginForm = () => {
   const dispatch = useDispatch();
   const router = useRouter();
@@ -56,6 +56,7 @@ const LoginForm = () => {
         console.log("Success message ");
         const { access_token } = response.data;
         localStorage.setItem("token", access_token);
+        dispatch(fetchCatalogue());
 
         // Step 2: Get vendor details to check is_active
         try {
