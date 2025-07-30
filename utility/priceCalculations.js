@@ -16,9 +16,9 @@ export const calculatePrices = (asp, category) => {
   
   if (category === 'SNACKS_AND_DESSERT') {
     return {
-      small: { price: 29, cut: 5, serves: '1 person' },
-      medium: { price: 49, cut: 10, serves: '2-3 people' },
-      large: { price: 59, cut: 15, serves: '3-5 people' }
+      small: { price: 39, cut: 5, serves: '1 person' },
+      medium: { price: 59, cut: 10, serves: '2-3 people' },
+      large: { price: 89, cut: 15, serves: '3-5 people' }
     };
   }
 
