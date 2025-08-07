@@ -17,6 +17,7 @@ import { toast } from "sonner";
 import { whiteLoader } from "../../svgs";
 import { setOpenDrawer } from "../../redux/slices/editBagSlice";
 import { fetchAllBags } from "../../redux/slices/bagsSlice";
+import { ALL_ITEM_TYPES, ITEM_TYPE_DISPLAY_NAMES, ITEM_TYPE_ICONS, ITEM_TYPE_DESCRIPTIONS } from '../../constants/itemTypes';
 
 const EditBagDrawer = () => {
   const [selectedBag, setSelectedBag] = useState();
@@ -33,6 +34,7 @@ const EditBagDrawer = () => {
   const [showCustomDescription, setShowCustomDescription] = useState(false);
   const [availableDescriptions, setAvailableDescriptions] = useState([]);
   const { bagToEdit } = useSelector((state) => state.editBag);
+  const { itemTypes } = useSelector((state) => state.catalogue);
 
   // Get available descriptions from localStorage
   useEffect(() => {
@@ -64,6 +66,16 @@ const EditBagDrawer = () => {
       setIsNonVeg(bagToEdit.non_veg || false);
     }
   }, [bagToEdit]);
+
+  const getAvailableCategories = () => {
+    return ALL_ITEM_TYPES.filter(itemType => {
+      const catalogueItem = itemTypes[itemType];
+      console.log(catalogueItem);
+      return catalogueItem && catalogueItem.bags && Object.keys(catalogueItem.bags).length > 0;
+    });
+  };
+
+  const availableCategories = getAvailableCategories();
 
   const handleStartTimeChange = (date) => {
     setWindowStartTime(date);
@@ -401,8 +413,10 @@ const EditBagDrawer = () => {
                   {/* Submit Button */}
                   <div className="mt-6">
                     <button
+                      disabled={availableCategories.length === 0}
                       onClick={handleEditBag}
-                      className="flex justify-center bg-[#5F22D9] text-white font-semibold py-3 rounded-lg hover:bg-[#4A1BB8] gap-2 w-full transition-colors"
+                      className={`flex justify-center bg-[#5F22D9] text-white font-semibold py-3 rounded-lg hover:bg-[#4A1BB8] gap-2 w-full transition-colors 
+                        ${availableCategories.length === 0 ? "opacity-50 cursor-not-allowed" : "opacity-100 cursor-pointer"}`}
                     >
                       {loading && (
                         <div className="animate-spin flex items-center justify-center">
