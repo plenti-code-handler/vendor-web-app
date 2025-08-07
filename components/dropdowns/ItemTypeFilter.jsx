@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { ALL_ITEM_TYPES, ITEM_TYPE_DISPLAY_NAMES, ITEM_TYPE_ICONS, ITEM_TYPE_DESCRIPTIONS } from '../../constants/itemTypes';
 import { fetchCatalogue } from '../../redux/slices/catalogueSlice';
+import { useRouter } from 'next/navigation';
+import { setOpenDrawer } from '../../redux/slices/addBagSlice'; 
 
 const ItemTypeFilter = ({ selectedFilter, onFilterChange }) => {
   const dispatch = useDispatch();
@@ -11,12 +13,9 @@ const ItemTypeFilter = ({ selectedFilter, onFilterChange }) => {
   }, [dispatch]);
 
   const { itemTypes } = useSelector((state) => state.catalogue);
+  const router = useRouter();
 
   const getAvailableCategories = () => {
-    console.log(itemTypes);
-    if (!itemTypes || Object.keys(itemTypes).length === 0) {
-      return ALL_ITEM_TYPES;
-    }
 
     return ALL_ITEM_TYPES.filter(itemType => {
       const catalogueItem = itemTypes[itemType];
@@ -30,7 +29,26 @@ const ItemTypeFilter = ({ selectedFilter, onFilterChange }) => {
   if (availableCategories.length === 0) {
     return (
       <div className="text-center py-8">
-        <p className="text-sm text-gray-500">No categories available</p>
+        {/* Subtle Oops Logo */}
+        <div className="mb-4">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-3">
+            <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.34 0-4.47-.881-6.08-2.33" />
+            </svg>
+          </div>
+          <p className="text-xs text-gray-400 font-medium">Oops!</p>
+        </div>
+        
+        <p className="text-sm mb-4 text-gray-500">There are no categories activated for you. You can set pricing here to activate categories.</p>
+        <button 
+          className="bg-gradient-to-br from-[#5F22D9] to-[#7C3AED] text-white font-semibold py-2 px-4 rounded-lg hover:bg-[#4A1BB8] gap-2 w-full transition-colors"
+          onClick={() => {
+            dispatch(setOpenDrawer(false));
+            router.push('/price-decision');
+          }}
+        >
+          Set Pricing
+        </button>
       </div>
     );
   }
@@ -54,7 +72,7 @@ const ItemTypeFilter = ({ selectedFilter, onFilterChange }) => {
               {/* Retro Lifted Button Design */}
               <div className={`relative rounded-2xl border-2 transition-all duration-200 ${
                 isSelected
-                  ? 'border-[#5F22D9] bg-gradient-to-br from-[#5F22D9] to-[#7C3AED] text-white shadow-[0_6px_0_#4C1D95]'
+                  ? 'border-[#5F22D9] bg-gradient-to-br from-[#722BFF] to-[#722BFF]  shadow-[0_6px_0_#4C1D95]'
                   : 'border-gray-300 bg-gradient-to-br from-gray-50 to-white text-gray-700 shadow-[0_6px_0_#D1D5DB] hover:shadow-[0_8px_0_#9CA3AF] hover:border-gray-400'
               }`}>
                 
