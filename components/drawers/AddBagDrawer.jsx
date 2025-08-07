@@ -210,10 +210,18 @@ const AddBagDrawer = () => {
             >
               <div className="flex h-full flex-col overflow-y-scroll bg-white py-5 shadow-xl">
                 <div className="relative mt-3 pb-3 flex-1 px-4 sm:px-6">
-                  <div className="flex flex-col pb-5">
+                  <div className="flex flex-row justify-between pb-5">
                     <p className="text-black font-bold text-xl">
                       Choose Item Type
                     </p>
+                    <button
+                    onClick={handleClose}
+                    className="p-2 hover:bg-gray-100 rounded-lg transition-all duration-200 hover:scale-105"
+                  >
+                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
                   </div>
                   <ItemTypeFilter
                     selectedFilter={selectedBag}
