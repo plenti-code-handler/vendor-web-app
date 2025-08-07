@@ -17,8 +17,12 @@ import "react-datepicker/dist/react-datepicker.css";
 import { toast } from "sonner";
 import { whiteLoader } from "../../svgs";
 import { fetchAllBags } from "../../redux/slices/bagsSlice";
+import { fetchCatalogue } from "../../redux/slices/catalogueSlice";
+import { ALL_ITEM_TYPES, ITEM_TYPE_DISPLAY_NAMES, ITEM_TYPE_ICONS, ITEM_TYPE_DESCRIPTIONS } from '../../constants/itemTypes';
+
 
 const AddBagDrawer = () => {
+  const dispatch = useDispatch();
   const [selectedBag, setSelectedBag] = useState("MEAL");
   const [selectedTags, setSelectedTags] = useState([]);
   const [isVeg, setIsVeg] = useState(true);
@@ -32,15 +36,19 @@ const AddBagDrawer = () => {
   const [showCustomDescription, setShowCustomDescription] = useState(false);
   const [availableDescriptions, setAvailableDescriptions] = useState([]);
 
+
   // Get available descriptions from localStorage
   useEffect(() => {
     const userData = localStorage.getItem("user");
+    console.log(userData);
     if (userData) {
       try {
         const user = JSON.parse(userData);
         if (user.item_descriptions && Array.isArray(user.item_descriptions)) {
           setAvailableDescriptions(user.item_descriptions);
         }
+        dispatch(fetchCatalogue());
+
       } catch (error) {
         console.error("Error parsing user data:", error);
       }
@@ -52,6 +60,20 @@ const AddBagDrawer = () => {
     const newEndTime = new Date(date.getTime() + 30 * 60000);
     setWindowEndTime(newEndTime);
   };
+
+  const { itemTypes } = useSelector((state) => state.catalogue);
+
+  const getAvailableCategories = () => {
+
+    return ALL_ITEM_TYPES.filter(itemType => {
+      const catalogueItem = itemTypes[itemType];
+      console.log(catalogueItem);
+      return catalogueItem && catalogueItem.bags && Object.keys(catalogueItem.bags).length > 0;
+    });
+  };
+
+  const availableCategories = getAvailableCategories();
+  console.log(availableCategories);
 
   const handleEndTimeChange = (date) => {
     if (date < new Date()) {
@@ -187,7 +209,6 @@ const AddBagDrawer = () => {
     }
   };
 
-  const dispatch = useDispatch();
   const open = useSelector((state) => state.addBag.drawerOpen);
 
   const handleClose = () => {
@@ -405,8 +426,10 @@ const AddBagDrawer = () => {
                   {/* Submit Button */}
                   <div className="mt-6">
                     <button
+                      disabled={availableCategories.length === 0}
                       onClick={handleSubmitBag}
-                      className="flex justify-center bg-[#5F22D9] text-white font-semibold py-3 rounded-lg hover:bg-[#4A1BB8] gap-2 w-full transition-colors"
+                      className={`flex justify-center bg-[#5F22D9] text-white font-semibold py-3 rounded-lg hover:bg-[#4A1BB8] gap-2 w-full transition-colors 
+                        ${availableCategories.length === 0 ? "opacity-50 cursor-not-allowed" : "opacity-100 cursor-pointer"}`}
                     >
                       {loading && (
                         <div className="animate-spin flex items-center justify-center">

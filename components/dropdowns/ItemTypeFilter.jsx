@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { ALL_ITEM_TYPES, ITEM_TYPE_DISPLAY_NAMES, ITEM_TYPE_ICONS, ITEM_TYPE_DESCRIPTIONS } from '../../constants/itemTypes';
 import { fetchCatalogue } from '../../redux/slices/catalogueSlice';
 import { useRouter } from 'next/navigation';
-import { setOpenDrawer } from '../../redux/slices/addBagSlice'; 
 
 const ItemTypeFilter = ({ selectedFilter, onFilterChange }) => {
   const dispatch = useDispatch();
@@ -39,16 +38,7 @@ const ItemTypeFilter = ({ selectedFilter, onFilterChange }) => {
           <p className="text-xs text-gray-400 font-medium">Oops!</p>
         </div>
         
-        <p className="text-sm mb-4 text-gray-500">There are no categories activated for you. You can set pricing here to activate categories.</p>
-        <button 
-          className="bg-gradient-to-br from-[#5F22D9] to-[#7C3AED] text-white font-semibold py-2 px-4 rounded-lg hover:bg-[#4A1BB8] gap-2 w-full transition-colors"
-          onClick={() => {
-            dispatch(setOpenDrawer(false));
-            router.push('/price-decision');
-          }}
-        >
-          Set Pricing
-        </button>
+        <p className="text-sm mb-4 text-gray-500">There are no categories activated for you.</p>
       </div>
     );
   }
