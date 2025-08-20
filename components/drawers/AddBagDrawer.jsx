@@ -19,6 +19,8 @@ import { whiteLoader } from "../../svgs";
 import { fetchAllBags } from "../../redux/slices/bagsSlice";
 import { fetchCatalogue } from "../../redux/slices/catalogueSlice";
 import { ALL_ITEM_TYPES, ITEM_TYPE_DISPLAY_NAMES, ITEM_TYPE_ICONS, ITEM_TYPE_DESCRIPTIONS } from '../../constants/itemTypes';
+import InfoIcon from '../common/InfoIcon';
+import { selectVendorData } from '../../redux/slices/vendorSlice';
 
 
 const AddBagDrawer = () => {
@@ -33,32 +35,26 @@ const AddBagDrawer = () => {
   const [loading, setLoading] = useState(false);
   const [windowStartTime, setWindowStartTime] = useState(new Date());
   const [windowEndTime, setWindowEndTime] = useState(new Date());
+  const [bestBeforeTime, setBestBeforeTime] = useState(new Date());
   const [showCustomDescription, setShowCustomDescription] = useState(false);
-  const [availableDescriptions, setAvailableDescriptions] = useState([]);
+  const [currentStep, setCurrentStep] = useState(1);
+  
+  const vendorData = useSelector(selectVendorData);
+  const availableDescriptions = vendorData?.item_descriptions || [];
 
 
-  // Get available descriptions from localStorage
+  // Fetch catalogue data
   useEffect(() => {
-    const userData = localStorage.getItem("user");
-    console.log(userData);
-    if (userData) {
-      try {
-        const user = JSON.parse(userData);
-        if (user.item_descriptions && Array.isArray(user.item_descriptions)) {
-          setAvailableDescriptions(user.item_descriptions);
-        }
-        dispatch(fetchCatalogue());
-
-      } catch (error) {
-        console.error("Error parsing user data:", error);
-      }
-    }
-  }, []);
+    dispatch(fetchCatalogue());
+  }, [dispatch]);
 
   const handleStartTimeChange = (date) => {
     setWindowStartTime(date);
     const newEndTime = new Date(date.getTime() + 30 * 60000);
     setWindowEndTime(newEndTime);
+    // Set best before time to 1 hour after window end time
+    const newBestBeforeTime = new Date(newEndTime.getTime() + 60 * 60000);
+    setBestBeforeTime(newBestBeforeTime);
   };
 
   const { itemTypes } = useSelector((state) => state.catalogue);
@@ -87,11 +83,30 @@ const AddBagDrawer = () => {
     }
 
     setWindowEndTime(date);
+    // Update best before time to 1 hour after new end time
+    const newBestBeforeTime = new Date(date.getTime() + 60 * 60000);
+    setBestBeforeTime(newBestBeforeTime);
+  };
+
+  const handleBestBeforeTimeChange = (date) => {
+    if (date < new Date()) {
+      toast.error("Best before time cannot be in the past!");
+      return;
+    }
+
+    if (date < windowEndTime) {
+      toast.error("Best before time cannot be before window end time!");
+      return;
+    }
+
+    setBestBeforeTime(date);
   };
 
   useEffect(() => {
     const initialEndTime = new Date(windowStartTime.getTime() + 30 * 60000);
     setWindowEndTime(initialEndTime);
+    const initialBestBeforeTime = new Date(initialEndTime.getTime() + 60 * 60000);
+    setBestBeforeTime(initialBestBeforeTime);
   }, []);
 
   const resetForm = () => {
@@ -102,9 +117,11 @@ const AddBagDrawer = () => {
     setNonVegServings(0);
     setWindowStartTime(new Date());
     setWindowEndTime(new Date());
+    setBestBeforeTime(new Date());
     setIsVeg(true);
     setIsNonVeg(false);
     setShowCustomDescription(false);
+    setCurrentStep(1);
   };
 
   const handleSubmitBag = async () => {
@@ -164,6 +181,7 @@ const AddBagDrawer = () => {
         item_type: selectedBag,
         window_start_time: Math.floor(windowStartTime.getTime() / 1000),
         window_end_time: Math.floor(windowEndTime.getTime() / 1000),
+        best_before_time: Math.floor(bestBeforeTime.getTime() / 1000),
         description: description,
         veg: isVeg,
         non_veg: isNonVeg,
@@ -229,215 +247,263 @@ const AddBagDrawer = () => {
               transition
               className="pointer-events-auto relative lg:w-screen max-w-[29rem] transform transition duration-500 ease-in-out data-[closed]:translate-x-full sm:duration-700"
             >
-              <div className="flex h-full flex-col overflow-y-scroll bg-white py-5 shadow-xl">
-                <div className="relative mt-3 pb-3 flex-1 px-4 sm:px-6">
-                  <div className="flex flex-row justify-between pb-5">
-                    <p className="text-black font-bold text-xl">
-                      Choose Item Type
-                    </p>
+              <div className="flex h-full flex-col overflow-y-scroll bg-gradient-to-br from-gray-50 to-white py-6 shadow-2xl">
+                <div className="relative flex-1 px-6">
+                  {/* Header */}
+                  <div className="flex items-center justify-between mb-8">
+                    <div>
+                      <h2 className="text-2xl font-bold text-gray-900">Add New Item</h2>
+                      <p className="text-sm text-gray-500 mt-1">Create a new food item for your customers</p>
+                    </div>
                     <button
-                    onClick={handleClose}
-                    className="p-2 hover:bg-gray-100 rounded-lg transition-all duration-200 hover:scale-105"
-                  >
-                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
+                      onClick={handleClose}
+                      className="p-2 hover:bg-gray-100 rounded-full transition-all duration-200 hover:scale-110"
+                    >
+                      <svg className="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
                   </div>
-                  <ItemTypeFilter
-                    selectedFilter={selectedBag}
-                    onFilterChange={setSelectedBag}
-                  />
 
-                  <ItemTagsFilter
-                    selectedFilter={selectedTags}
-                    onFilterChange={setSelectedTags}
-                  />
 
-                  {/* Window Time Section */}
-                  <div>
-                    <div className="flex flex-col pb-5 mt-5">
-                      <p className="text-black font-bold text-xl">
-                        Window Start Time
-                      </p>
-                      <DatePicker
-                        selected={windowStartTime}
-                        onChange={handleStartTimeChange}
-                        showTimeSelect
-                        timeFormat="HH:mm"
-                        timeIntervals={15}
-                        dateFormat="MMMM d, yyyy h:mm aa"
-                        minDate={new Date()}
-                        className="border border-gray-300 w-full p-2 rounded"
+                  {/* Item Type Section */}
+                  <div className="mb-8">
+                    <div className="flex items-center gap-2 mb-4">
+                      <h3 className="text-lg font-semibold text-gray-900">Choose Item Type</h3>
+                      <InfoIcon content="Select the category of food item you're creating" />
+                    </div>
+                    <div className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm hover:shadow-md transition-shadow duration-200">
+                      <ItemTypeFilter
+                        selectedFilter={selectedBag}
+                        onFilterChange={setSelectedBag}
                       />
                     </div>
+                  </div>
 
-                    <div className="flex flex-col pb-5 mt-5">
-                      <p className="text-black font-bold text-xl">
-                        Window End Time
-                      </p>
-                      <DatePicker
-                        selected={windowEndTime}
-                        onChange={handleEndTimeChange}
-                        showTimeSelect
-                        timeFormat="HH:mm"
-                        timeIntervals={15}
-                        dateFormat="MMMM d, yyyy h:mm aa"
-                        minDate={windowStartTime}
-                        className="border border-gray-300 w-full p-2 rounded"
+                  {/* Tags Section */}
+                  <div className="mb-8">
+                    <div className="flex items-center gap-2 mb-4">
+                      <h3 className="text-lg font-semibold text-gray-900">Item Tags</h3>
+                      <InfoIcon content="Add relevant tags to help customers find your item" />
+                    </div>
+                    <div className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm hover:shadow-md transition-shadow duration-200">
+                      <ItemTagsFilter
+                        selectedFilter={selectedTags}
+                        onFilterChange={setSelectedTags}
                       />
+                    </div>
+                  </div>
+
+                  {/* Timing Section */}
+                  <div className="mb-8">
+                    <div className="flex items-center gap-2 mb-4">
+                      <h3 className="text-lg font-semibold text-gray-900">Timing & Availability</h3>
+                      <InfoIcon content="Set when customers can pick up and when food expires" />
+                    </div>
+                    <div className="space-y-4">
+                      <div className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm hover:shadow-md transition-shadow duration-200">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Window Start Time</label>
+                        <DatePicker
+                          selected={windowStartTime}
+                          onChange={handleStartTimeChange}
+                          showTimeSelect
+                          timeFormat="HH:mm"
+                          timeIntervals={15}
+                          dateFormat="MMM d, yyyy h:mm aa"
+                          minDate={new Date()}
+                          className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#5F22D9] focus:border-transparent transition-all duration-200"
+                        />
+                      </div>
+
+                      <div className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm hover:shadow-md transition-shadow duration-200">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Window End Time</label>
+                        <DatePicker
+                          selected={windowEndTime}
+                          onChange={handleEndTimeChange}
+                          showTimeSelect
+                          timeFormat="HH:mm"
+                          timeIntervals={15}
+                          dateFormat="MMM d, yyyy h:mm aa"
+                          minDate={windowStartTime}
+                          className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#5F22D9] focus:border-transparent transition-all duration-200"
+                        />
+                      </div>
+
+                      <div className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm hover:shadow-md transition-shadow duration-200">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Best Before Time</label>
+                        <DatePicker
+                          selected={bestBeforeTime}
+                          onChange={handleBestBeforeTimeChange}
+                          showTimeSelect
+                          timeFormat="HH:mm"
+                          timeIntervals={15}
+                          dateFormat="MMM d, yyyy h:mm aa"
+                          minDate={windowEndTime}
+                          className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#5F22D9] focus:border-transparent transition-all duration-200"
+                        />
+                      </div>
                     </div>
                   </div>
 
                   {/* Description Section */}
-                  <div className="flex flex-col pb-5 mt-5">
-                    <p className="text-black font-bold text-xl">
-                      Item Description
-                    </p>
-                    
-                    {!showCustomDescription && availableDescriptions.length > 0 && (
-                      <div className="mb-4">
-                        <p className="text-sm text-gray-600 mb-2">Choose from existing descriptions:</p>
-                        <div className="space-y-2">
-                          {availableDescriptions.map((desc, index) => (
-                            <button
-                              key={index}
-                              onClick={() => setDescription(desc)}
-                              className={`w-full text-left p-3 rounded-lg border transition-colors ${
-                                description === desc
-                                  ? 'border-[#5F22D9] bg-[#5F22D9]/5'
-                                  : 'border-gray-200 hover:border-gray-300'
-                              }`}
-                            >
-                              <p className="text-sm text-gray-700">{desc}</p>
-                            </button>
-                          ))}
+                  <div className="mb-8">
+                    <div className="flex items-center gap-2 mb-4">
+                      <h3 className="text-lg font-semibold text-gray-900">Item Description</h3>
+                      <InfoIcon content="Describe your item to attract customers" />
+                    </div>
+                    <div className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm hover:shadow-md transition-shadow duration-200">
+                      {!showCustomDescription && availableDescriptions.length > 0 && (
+                        <div>
+                          <p className="text-sm text-gray-600 mb-3">Choose from existing descriptions:</p>
+                          <div className="space-y-2 mb-4">
+                            {availableDescriptions.map((desc, index) => (
+                              <button
+                                key={index}
+                                onClick={() => setDescription(desc)}
+                                className={`w-full text-left p-3 rounded-lg border transition-all duration-200 ${
+                                  description === desc
+                                    ? 'border-[#5F22D9] bg-[#5F22D9]/5 shadow-sm'
+                                    : 'border-gray-200 hover:border-gray-300 hover:shadow-sm'
+                                }`}
+                              >
+                                <p className="text-sm text-gray-700">{desc}</p>
+                              </button>
+                            ))}
+                          </div>
+                          <button
+                            onClick={() => setShowCustomDescription(true)}
+                            className="text-[#5F22D9] text-sm font-medium hover:underline transition-colors duration-200"
+                          >
+                            + Add custom description
+                          </button>
                         </div>
-                        <button
-                          onClick={() => setShowCustomDescription(true)}
-                          className="mt-3 text-[#5F22D9] text-sm font-medium hover:underline"
-                        >
-                          + Add custom description
-                        </button>
-                      </div>
-                    )}
+                      )}
 
-                    {showCustomDescription && (
-                      <div>
+                      {showCustomDescription && (
+                        <div>
+                          <Textarea
+                            className="block w-full resize-none rounded-lg border border-gray-200 py-3 px-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#5F22D9] focus:border-transparent transition-all duration-200"
+                            rows={4}
+                            placeholder="Enter your custom description..."
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                          />
+                          {availableDescriptions.length > 0 && (
+                            <button
+                              onClick={() => setShowCustomDescription(false)}
+                              className="mt-3 text-[#5F22D9] text-sm font-medium hover:underline transition-colors duration-200"
+                            >
+                              ← Choose from existing descriptions
+                            </button>
+                          )}
+                        </div>
+                      )}
+
+                      {availableDescriptions.length === 0 && (
                         <Textarea
-                          className="block w-full placeholder:font-bold resize-none rounded-lg border border-gray-300 py-3 px-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#5F22D9]"
+                          className="block w-full resize-none rounded-lg border border-gray-200 py-3 px-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#5F22D9] focus:border-transparent transition-all duration-200"
                           rows={4}
-                          placeholder="Enter your custom description..."
+                          placeholder="Enter item description..."
                           value={description}
                           onChange={(e) => setDescription(e.target.value)}
                         />
-                        {availableDescriptions.length > 0 && (
-                          <button
-                            onClick={() => setShowCustomDescription(false)}
-                            className="mt-2 text-[#5F22D9] text-sm font-medium hover:underline"
-                          >
-                            ← Choose from existing descriptions
-                          </button>
-                        )}
-                      </div>
-                    )}
-
-                    {availableDescriptions.length === 0 && (
-                      <Textarea
-                        className="block w-full placeholder:font-bold resize-none rounded-lg border border-gray-300 py-3 px-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#5F22D9]"
-                        rows={4}
-                        placeholder="Enter item description..."
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                      />
-                    )}
+                      )}
+                    </div>
                   </div>
 
                   {/* Diet Selection */}
-                  <div className="flex justify-between items-center mt-4 w-full">
-                    <span className="text-lg font-semibold min-w-36">
-                      Diet Options:
-                    </span>
-                    <div className="flex w-full justify-end items-center gap-6">
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={isVeg}
-                          onChange={() => setIsVeg(!isVeg)}
-                          className="w-5 h-5 text-[#5F22D9] bg-gray-200 border-gray-400 rounded focus:ring-[#5F22D9]"
-                        />
-                        <span className="text-sm font-medium text-gray-700">
-                          Veg
-                        </span>
-                      </label>
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={isNonVeg}
-                          onChange={() => setIsNonVeg(!isNonVeg)}
-                          className="w-5 h-5 text-[#5F22D9] bg-gray-200 border-gray-400 rounded focus:ring-[#5F22D9]"
-                        />
-                        <span className="text-sm font-medium text-gray-700">
-                          Non-Veg
-                        </span>
-                      </label>
+                  <div className="mb-8">
+                    <div className="flex items-center gap-2 mb-4">
+                      <h3 className="text-lg font-semibold text-gray-900">Diet Options</h3>
+                      <InfoIcon content="Choose dietary preferences for your item" />
+                    </div>
+                    <div className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm hover:shadow-md transition-shadow duration-200">
+                      <div className="flex items-center space-x-8">
+                        <label className="flex items-center gap-3 cursor-pointer group">
+                          <input
+                            type="checkbox"
+                            checked={isVeg}
+                            onChange={() => setIsVeg(!isVeg)}
+                            className="w-5 h-5 text-[#5F22D9] bg-gray-100 border-gray-300 rounded focus:ring-[#5F22D9] focus:ring-2"
+                          />
+                          <span className="text-sm font-medium text-gray-700">Vegetarian</span>
+                        </label>
+                        <label className="flex items-center gap-3 cursor-pointer group">
+                          <input
+                            type="checkbox"
+                            checked={isNonVeg}
+                            onChange={() => setIsNonVeg(!isNonVeg)}
+                            className="w-5 h-5 text-[#5F22D9] bg-gray-100 border-gray-300 rounded focus:ring-[#5F22D9] focus:ring-2"
+                          />
+                          <span className="text-sm font-medium text-gray-700">Non-Vegetarian</span>
+                        </label>
+                      </div>
                     </div>
                   </div>
 
                   {/* Servings Section */}
-                  <div className="mt-6 space-y-4">
-                    <p className="text-black font-bold text-xl">
-                      Servings Left
-                    </p>
-                    
-                    {isVeg && (
-                      <div className="flex flex-col">
-                        <label className="text-sm font-medium text-gray-700 mb-2">
-                          Veg Servings
-                        </label>
-                        <input
-                          type="number"
-                          min="0"
-                          value={vegServings}
-                          onChange={(e) => setVegServings(parseInt(e.target.value) || 0)}
-                          className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#5F22D9]"
-                          placeholder="Enter veg servings count"
-                        />
-                      </div>
-                    )}
+                  <div className="mb-8">
+                    <div className="flex items-center gap-2 mb-4">
+                      <h3 className="text-lg font-semibold text-gray-900">Servings Available</h3>
+                      <InfoIcon content="Set the number of servings available for each diet type" />
+                    </div>
+                    <div className="space-y-4">
+                      {isVeg && (
+                        <div className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm hover:shadow-md transition-shadow duration-200">
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Vegetarian Servings
+                          </label>
+                          <input
+                            type="number"
+                            min="0"
+                            value={vegServings}
+                            onChange={(e) => setVegServings(parseInt(e.target.value) || 0)}
+                            className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#5F22D9] focus:border-transparent transition-all duration-200"
+                            placeholder="Enter number of vegetarian servings"
+                          />
+                        </div>
+                      )}
 
-                    {isNonVeg && (
-                      <div className="flex flex-col">
-                        <label className="text-sm font-medium text-gray-700 mb-2">
-                          Non-Veg Servings
-                        </label>
-                        <input
-                          type="number"
-                          min="0"
-                          value={nonVegServings}
-                          onChange={(e) => setNonVegServings(parseInt(e.target.value) || 0)}
-                          className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#5F22D9]"
-                          placeholder="Enter non-veg servings count"
-                        />
-                      </div>
-                    )}
+                      {isNonVeg && (
+                        <div className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm hover:shadow-md transition-shadow duration-200">
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Non-Vegetarian Servings
+                          </label>
+                          <input
+                            type="number"
+                            min="0"
+                            value={nonVegServings}
+                            onChange={(e) => setNonVegServings(parseInt(e.target.value) || 0)}
+                            className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#5F22D9] focus:border-transparent transition-all duration-200"
+                            placeholder="Enter number of non-vegetarian servings"
+                          />
+                        </div>
+                      )}
+                    </div>
                   </div>
 
                   {/* Submit Button */}
-                  <div className="mt-6">
+                  <div className="mt-8 mb-6">
                     <button
-                      disabled={availableCategories.length === 0}
+                      disabled={availableCategories.length === 0 || loading}
                       onClick={handleSubmitBag}
-                      className={`flex justify-center bg-[#5F22D9] text-white font-semibold py-3 rounded-lg hover:bg-[#4A1BB8] gap-2 w-full transition-colors 
-                        ${availableCategories.length === 0 ? "opacity-50 cursor-not-allowed" : "opacity-100 cursor-pointer"}`}
+                      className={`flex justify-center items-center bg-gradient-to-r from-[#5F22D9] to-[#7C3AED] text-white font-semibold py-4 rounded-xl hover:from-[#4A1BB8] hover:to-[#6B21A8] gap-3 w-full transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl ${
+                        availableCategories.length === 0 || loading ? "opacity-50 cursor-not-allowed" : "opacity-100 cursor-pointer"
+                      }`}
                     >
                       {loading && (
                         <div className="animate-spin flex items-center justify-center">
                           {whiteLoader}
                         </div>
                       )}
-                      {loading ? "Adding..." : "Add Item"}
+                      {loading ? "Creating Item..." : "Create Item"}
                     </button>
+                    
+                    {availableCategories.length === 0 && (
+                      <p className="text-center text-sm text-gray-500 mt-3">
+                        No item types available. Please contact support.
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>

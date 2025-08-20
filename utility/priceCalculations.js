@@ -25,47 +25,35 @@ export const calculatePrices = (asp, category) => {
   // For meals and baked goods, both use their own ASP
   if (!aspNum || aspNum <= 0) return null;
 
-  let basePrice, mediumMultiplier, largeMultiplier;
+  // Common calculation for both MEALS and BAKED_GOODS
+  // SMALL: MROUND( ROUND(ASP/3, 0), 10 ) - 1
+  const smallPrice = mround(Math.round(aspNum / 3), 10) - 1;
   
-  if (category === 'BAKED_GOODS') {
-    // For baked goods, use the same calculation as meals but with their own ASP
-    basePrice = mround(Math.round(aspNum / 3), 10) - 1;
-    mediumMultiplier = 1.35;
-    largeMultiplier = 1.35 * 1.4;
-    
-    const mediumPrice = mround(Math.round(basePrice * mediumMultiplier), 10) - 1;
-    const largePrice = mround(Math.round(basePrice * largeMultiplier), 10) - 1;
+  // MEDIUM: MROUND( ROUND(ASP/3 * 1.35, 0), 10 ) - 1
+  const mediumPrice = mround(Math.round((aspNum / 3) * 1.35), 10) - 1;
+  
+  // LARGE: MROUND( ROUND(ASP/3 * 1.35 * 1.4, 0), 10 ) - 1
+  const largePrice = mround(Math.round((aspNum / 3) * 1.35 * 1.4), 10) - 1;
 
-    // Calculate cuts
-    const smallCut = ceiling(basePrice * 0.2, 5);
-    const mediumCut = Math.max(ceiling(mediumPrice * 0.2, 5), smallCut + 5);
-    const largeCut = Math.max(ceiling(largePrice * 0.2, 5), mediumCut + 5);
+  // SMALLCUT: Round down to nearest lower multiple of 2
+  const smallCutRaw = Math.floor((smallPrice * 0.2) * 100) / 100;
+  const smallCut = Math.floor(smallCutRaw / 2) * 2;
+  
+  // MEDIUMCUT: Round down to nearest lower multiple of 2, with minimum increment
+  const mediumCutRaw = Math.floor((mediumPrice * 0.2) * 100) / 100;
+  const mediumCutRounded = Math.floor(mediumCutRaw / 2) * 2;
+  const mediumCut = Math.max(mediumCutRounded, smallCut + 5);
+  
+  // LARGECUT: Round down to nearest lower multiple of 2, with minimum increment
+  const largeCutRaw = Math.floor((largePrice * 0.2) * 100) / 100;
+  const largeCutRounded = Math.floor(largeCutRaw / 2) * 2;
+  const largeCut = Math.max(largeCutRounded, mediumCut + 5);
 
-    return {
-      small: { price: basePrice, cut: smallCut, serves: '1 person' },
-      medium: { price: mediumPrice, cut: mediumCut, serves: '2-3 people' },
-      large: { price: largePrice, cut: largeCut, serves: '3-5 people' }
-    };
-  } else {
-    // For meals, use the original calculation
-    basePrice = mround(Math.round(aspNum / 3), 10) - 1;
-    mediumMultiplier = 1.35;
-    largeMultiplier = 1.35 * 1.4;
-    
-    const mediumPrice = mround(Math.round(basePrice * mediumMultiplier), 10) - 1;
-    const largePrice = mround(Math.round(basePrice * largeMultiplier), 10) - 1;
-
-    // Calculate cuts
-    const smallCut = ceiling(basePrice * 0.2, 5);
-    const mediumCut = Math.max(ceiling(mediumPrice * 0.2, 5), smallCut + 5);
-    const largeCut = Math.max(ceiling(largePrice * 0.2, 5), mediumCut + 5);
-
-    return {
-      small: { price: basePrice, cut: smallCut, serves: '1 person' },
-      medium: { price: mediumPrice, cut: mediumCut, serves: '2-3 people' },
-      large: { price: largePrice, cut: largeCut, serves: '3-5 people' }
-    };
-  }
+  return {
+    small: { price: smallPrice, cut: smallCut, serves: '1 person' },
+    medium: { price: mediumPrice, cut: mediumCut, serves: '2-3 people' },
+    large: { price: largePrice, cut: largeCut, serves: '3-5 people' }
+  };
 };
 
 export const getTierInfo = (asp) => {

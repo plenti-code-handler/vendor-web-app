@@ -16,6 +16,7 @@ import bagsReducer from "./slices/bagsSlice";
 import couponReducer from "./slices/couponSlice";
 import addCouponReducer from "./slices/addCouponSlice";
 import catalogueReducer from "./slices/catalogueSlice";
+import vendorReducer from "./slices/vendorSlice";
 
 export const store = configureStore({
   reducer: {
@@ -36,6 +37,7 @@ export const store = configureStore({
     coupons: couponReducer,
     addCoupon: addCouponReducer,
     catalogue: catalogueReducer,
+    vendor: vendorReducer,
   },
   devTools: process.env.NODE_ENV !== "production",
 });

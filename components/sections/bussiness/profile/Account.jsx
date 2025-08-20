@@ -1,23 +1,35 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import TextField from "../../../fields/TextField";
 import { tickSvg } from "../../../../svgs";
 import { Textarea } from "@headlessui/react";
 import { useLoadScript } from "@react-google-maps/api";
-import axiosClient from "../../../../AxiosClient";
-
 import { removeDuplicateWords } from "../../../../utility/removeDuplicate";
 import { toast } from "sonner";
+import { 
+  selectVendorData, 
+  selectVendorLoading, 
+  selectVendorError,
+  fetchVendorDetails,
+  updateVendorDetails 
+} from "../../../../redux/slices/vendorSlice";
 
 const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 const libraries = ["places"]; // Define as constant outside component
 
 const Account = () => {
-  const [vendorData, setVendorData] = useState(null);
+  const dispatch = useDispatch();
+  const vendorData = useSelector(selectVendorData);
+  const loading = useSelector(selectVendorLoading);
+  const error = useSelector(selectVendorError);
+  
   const [originalData, setOriginalData] = useState(null); // Store original data for discard
   const [formData, setFormData] = useState({
     store_manager_name: "",
     vendor_type: "",
     gst_number: "",
+    fssai_number: "",
+    pan_number: "",
     description: "",
     latitude: null,
     longitude: null,
@@ -26,56 +38,45 @@ const Account = () => {
     phone_number: "",
   });
 
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [mapUrl, setMapUrl] = useState("");
 
   const autoCompleteRef = useRef(null);
   const autocompleteInstanceRef = useRef(null);
 
-  // Fetch vendor data
+  // Fetch vendor data if not already loaded
   useEffect(() => {
-    const fetchVendorData = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await axiosClient.get("/v1/vendor/me/get", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+    if (!vendorData) {
+      dispatch(fetchVendorDetails());
+    }
+  }, [dispatch, vendorData]);
 
-        const vendor = response.data;
-        console.log("Vendor details");
-        console.log(vendor);
-        setVendorData(vendor);
-        setOriginalData(vendor);
-        setFormData({
-          store_manager_name: vendor.vendor_name || "",
-          vendor_type: vendor.vendor_type || "",
-          gst_number: vendor.gst_number || "",
-          description: vendor.description || "",
-          latitude: vendor.latitude || null,
-          longitude: vendor.longitude || null,
-          address_url: removeDuplicateWords(vendor.address_url) || "",
-          pincode: vendor.pincode || "",
-          phone_number: vendor.phone_number || "",
-        });
+  // Update form data when vendor data is loaded
+  useEffect(() => {
+    if (vendorData) {
+      console.log("Vendor details");
+      console.log(vendorData);
+      setOriginalData(vendorData);
+      setFormData({
+        store_manager_name: vendorData.vendor_name || "",
+        vendor_type: vendorData.vendor_type || "",
+        gst_number: vendorData.gst_number || "",
+        fssai_number: vendorData.fssai_number || "",
+        pan_number: vendorData.pan_number || "",
+        description: vendorData.description || "",
+        latitude: vendorData.latitude || null,
+        longitude: vendorData.longitude || null,
+        address_url: removeDuplicateWords(vendorData.address_url) || "",
+        pincode: vendorData.pincode || "",
+        phone_number: vendorData.phone_number || "",
+      });
 
-        if (vendor.latitude && vendor.longitude) {
-          setMapUrl(
-            `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${vendor.latitude},${vendor.longitude}&zoom=14`
-          );
-        }
-      } catch (err) {
-        console.error("Error fetching vendor data:", err);
-        setError(err.response?.data || "Something went wrong.");
-      } finally {
-        setLoading(false);
+      if (vendorData.latitude && vendorData.longitude) {
+        setMapUrl(
+          `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${vendorData.latitude},${vendorData.longitude}&zoom=14`
+        );
       }
-    };
-
-    fetchVendorData();
-  }, []);
+    }
+  }, [vendorData]);
 
   // Handle input change
   const handleChange = (e) => {
@@ -169,6 +170,8 @@ const Account = () => {
       store_manager_name: originalData.vendor_name || "",
       vendor_type: originalData.vendor_type || "",
       gst_number: originalData.gst_number || "",
+      fssai_number: originalData.fssai_number || "",
+      pan_number: originalData.pan_number || "",
       description: originalData.description || "",
       latitude: originalData.latitude || null,
       longitude: originalData.longitude || null,
@@ -181,16 +184,9 @@ const Account = () => {
   // Update API call
   const handleUpdate = async () => {
     try {
-      const token = localStorage.getItem("token");
-      const response = await axiosClient.put("/v1/vendor/me/update", formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      console.log("Profileupdate console");
-      console.log(response);
-
+      const result = await dispatch(updateVendorDetails(formData)).unwrap();
+      console.log("Profile update console");
+      console.log(result);
       toast.success("Profile updated successfully!");
       setOriginalData(formData);
     } catch (err) {
@@ -245,6 +241,24 @@ const Account = () => {
           placeholder="GST Number"
           name="gst_number"
           value={formData.gst_number}
+          onChange={handleChange}
+        />
+      </div>
+      <div>
+        <h3 className="font-medium ml-1 mb-1">FSSAI Number</h3>
+        <TextField
+          placeholder="FSSAI Number"
+          name="fssai_number"
+          value={formData.fssai_number}
+          onChange={handleChange}
+        />
+      </div>
+      <div>
+        <h3 className="font-medium ml-1 mb-1">PAN Number</h3>
+        <TextField
+          placeholder="PAN Number"
+          name="pan_number"
+          value={formData.pan_number}
           onChange={handleChange}
         />
       </div>

@@ -97,8 +97,8 @@ const BagsTable = () => {
     return {
       veg: vegServings,
       nonVeg: nonVegServings,
-      hasVeg: item.veg || false,
-      hasNonVeg: item.non_veg || false
+      hasVeg: vegServings > 0 ,
+      hasNonVeg: nonVegServings > 0
     };
   };
 

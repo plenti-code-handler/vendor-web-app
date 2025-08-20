@@ -33,23 +33,25 @@ const CategorySelection = ({ categories, selectedCategories, onCategoryToggle, o
               <button
                 key={category.id}
                 onClick={() => onCategoryToggle(category.id)}
-                className={`aspect-square p-6 rounded-3xl border-2 transition-all duration-300 transform hover:scale-[1.02] flex flex-col items-center justify-center space-y-3 relative ${
+                className={`w-full aspect-square p-6 rounded-3xl border-2 transition-all duration-300 transform hover:scale-[1.02] flex flex-col items-center justify-center relative ${
                   selectedCategories.includes(category.id)
                     ? 'border-[#5F22D9] bg-[#5F22D9]/5 '
                     : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-md'
                 }`}
               >
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl transition-all duration-300 ${
-                  selectedCategories.includes(category.id)
-                    ? 'bg-[#5F22D9] text-white shadow-lg'
-                    : 'bg-gray-100 text-gray-600'
-                }`}>
-                  {category.icon}
-                </div>
-                
-                <div className="text-center space-y-2">
-                  <h3 className="font-semibold text-base text-gray-900">{category.name}</h3>
-                  <p className="text-xs text-gray-600 leading-relaxed">{category.description}</p>
+                <div className="flex flex-col items-center justify-center h-full space-y-4">
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl transition-all duration-300 ${
+                    selectedCategories.includes(category.id)
+                      ? 'bg-[#5F22D9] text-white shadow-lg'
+                      : 'bg-gray-100 text-gray-600'
+                  }`}>
+                    {category.icon}
+                  </div>
+                  
+                  <div className="text-center space-y-2 flex-1 flex flex-col justify-center">
+                    <h3 className="font-semibold text-base text-gray-900 leading-tight">{category.name}</h3>
+                    <p className="text-xs text-gray-600 leading-relaxed px-2">{category.description}</p>
+                  </div>
                 </div>
                 
                 {selectedCategories.includes(category.id) && (

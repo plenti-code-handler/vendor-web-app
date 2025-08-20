@@ -156,7 +156,7 @@ const BussinessHeader = () => {
               zIndex: isSmallDevice ? 1000 : 0,
             }}
           >
-            <div className="flex flex-col  justify-center items-start lg:flex-row p-6 lg:p-0 gap-2">
+            <div className="flex flex-col  justify-center items-start lg:flex-row lg:p-0 gap-2">
               {menuItemsData.map(({ name, href }) => (
                 <Link
                   key={name}

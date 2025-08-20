@@ -105,7 +105,7 @@ const RegisterForm = () => {
           <div className="flex items-center space-x-2 text-sm">
             <span className="text-gray-500">Already have an account?</span>
             <Link 
-              href="/login"
+              href="/"
               className="text-[#5F22D9] font-medium hover:text-[#4A1BB8] transition-colors duration-200 underline-offset-4 hover:underline"
             >
               Sign in
