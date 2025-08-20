@@ -8,13 +8,13 @@ export const ITEM_TYPES_CONFIG = {
   },
   BAKED_GOODS: {
     value: 'BAKED_GOODS',
-    displayName: 'Baked Goods',
+    displayName: 'Bakery',
     icon: '🧁',
     description: 'Bread, pastries, and baked items'
   },
   SNACKS_AND_DESSERT: {
     value: 'SNACKS_AND_DESSERT',
-    displayName: 'Snacks & Desserts',
+    displayName: 'Pantry',
     icon: '🍟',
     description: 'Snacks, desserts, and treats'
   }

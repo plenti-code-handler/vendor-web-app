@@ -1,8 +1,11 @@
 import React from "react";
 import RenderStats from "../../../components/sections/bussiness/dashboard/RenderStats";
 import RecentOrders from "../../../components/sections/bussiness/dashboard/RecentOrders";
+import { fetchVendorDetails } from "../../../redux/slices/vendorSlice";
 
 const Page = () => {
+
+
   return (
     <div className="flex flex-col ">
       <div className="flex flex-col lg:flex-row lg:space-x-4 space-y-4 lg:space-y-0">

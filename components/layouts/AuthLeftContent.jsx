@@ -3,23 +3,44 @@ import React from "react";
 
 const AuthLeftContent = () => {
   return (
-    <div className="flex  lg:w-[45%] items-center text-center mb-[5%] lg:mb-[0%] justify-center w-full lg:h-screen">
-      <div className="flex ">
+    <div className="relative lg:w-[45%] w-full lg:h-screen flex flex-col">
+      {/* Logo positioned at top left */}
+      <div className="absolute top-8 left-8 z-10">
         <Link href="/">
           <img
             alt="Plenti Logo"
             src={"/splash-logo.png"}
-            className="max-w-[180px] md:max-w-[240px] cursor-pointer"
+            className="max-w-[100px] md:max-w-[100px] cursor-pointer"
           />
         </Link>
-        <div className="bg-white w-1 h-20 mt-2"></div>
-        <div className="flex flex-col gap-2">
-          <h2 className="text-2xl text-white text-start ml-5 mt-2">
-            India'a first
-          </h2>
-          <h3 className="text-2xl text-white text-start ml-5">
-            surplus Food Marketspace
-          </h3>
+      </div>
+      
+      {/* Main content centered */}
+      <div className="flex-1 flex items-center justify-center px-8">
+        <div className="text-left relative">
+          {/* Background gradient overlay for text enhancement */}
+          <div className="absolute inset-0 bg-gradient-to-r from-purple-900/20 to-transparent rounded-lg"></div>
+          
+          {/* Main heading with enhanced styling */}
+          <h1 className="relative z-10 text-4xl md:text-5xl lg:text-10xl text-white font-black leading-none tracking-tight drop-shadow-2xl">
+            <span className="bg-gradient-to-r from-[#EFE5FF] via-white to-[#DAC4FF] bg-clip-text text-transparent">
+              join hands to
+            </span>
+          </h1>
+          
+          {/* Sub heading with dramatic styling */}
+          <h1 className="relative z-10 text-4xl md:text-5xl lg:text-9xl text-white font-black leading-none tracking-tight mt-4 drop-shadow-2xl">
+            <span className="bg-gradient-to-r from-[#DAC4FF] via-white to-[#EFE5FF] bg-clip-text text-transparent">
+              zero food wastage.
+            </span>
+          </h1>
+          
+          {/* Decorative underline */}
+          {/* <div className="relative z-10 mt-6 w-24 h-1 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full shadow-lg"></div> */}
+          
+          {/* Floating accent elements */}
+          <div className="absolute -top-4 -right-4 w-8 h-8 bg-[#EFE5FF]/40 rounded-full blur-sm"></div>
+          <div className="absolute -bottom-4 -left-4 w-6 h-6 bg-[#DAC4FF]/40 rounded-full blur-sm"></div>
         </div>
       </div>
     </div>

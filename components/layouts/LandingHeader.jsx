@@ -274,7 +274,7 @@ const LandingHeader = () => {
                 /> */}
 
                 <Link
-                  href={"/login"}
+                  href={"/"}
                   className="mr-3 mt-2 lg:m-0 flex items-center w-full px-[10px] py-[10px] text-center justify-center bg-blueBgDark text-white font-semibold rounded-[6px] hover:bg-mainLight"
                 >
                   <span className="mr-3 ml-2 font-semibold">Login</span>
@@ -291,7 +291,7 @@ const LandingHeader = () => {
             /> */}
 
             <Link
-              href={"/login"}
+              href={"/"}
               className="mr-3 mt-2 lg:m-0 flex items-center min-w-[87px] bg-blueBgDark text-white px-[10px] py-[10px] text-center justify-center font-semibold rounded-[8px]"
             >
               <span className="mr-3 ml-2 font-semibold">Login</span>

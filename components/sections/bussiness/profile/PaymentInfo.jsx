@@ -1,47 +1,107 @@
 import React, { useEffect, useState } from "react";
-import axiosClient from "../../../../AxiosClient";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import { PencilIcon } from "@heroicons/react/20/solid";
 import Loader from "../../../loader/loader";
+import { 
+  selectBankAccountDetails, 
+  selectBankAccountLoading, 
+  selectBankAccountError,
+  fetchBankAccountDetails,
+  updateBankAccountDetails 
+} from "../../../../redux/slices/vendorSlice";
+
+// Status tag component
+const StatusTag = ({ status }) => {
+  const getStatusConfig = (status) => {
+    switch (status?.toUpperCase()) {
+      case 'ACTIVE':
+        return {
+          bgColor: 'bg-green-100',
+          textColor: 'text-green-800',
+          borderColor: 'border-green-200',
+          icon: '✓',
+          label: 'Active'
+        };
+      case 'PENDING':
+        return {
+          bgColor: 'bg-yellow-100',
+          textColor: 'text-yellow-800',
+          borderColor: 'border-yellow-200',
+          icon: '⏳',
+          label: 'Pending'
+        };
+      case 'INACTIVE':
+        return {
+          bgColor: 'bg-red-100',
+          textColor: 'text-red-800',
+          borderColor: 'border-red-200',
+          icon: '✗',
+          label: 'Inactive'
+        };
+      default:
+        return {
+          bgColor: 'bg-gray-100',
+          textColor: 'text-gray-800',
+          borderColor: 'border-gray-200',
+          icon: '?',
+          label: 'Unknown'
+        };
+    }
+  };
+
+  const config = getStatusConfig(status);
+
+  return (
+    <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full border ${config.bgColor} ${config.borderColor}`}>
+      <span className={`text-sm font-medium ${config.textColor}`}>
+        {config.icon}
+      </span>
+      <span className={`text-sm font-medium ${config.textColor}`}>
+        {config.label}
+      </span>
+    </div>
+  );
+};
 
 const PaymentInfo = () => {
+  const dispatch = useDispatch();
+  const bankAccountDetails = useSelector(selectBankAccountDetails);
+  const bankAccountLoading = useSelector(selectBankAccountLoading);
+  const bankAccountError = useSelector(selectBankAccountError);
+  
   const [view, setView] = useState("initial");
   const [accountHolder, setAccountHolder] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
   const [ifscCode, setIfscCode] = useState("");
   const [bankName, setBankName] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState("");
   const [fetchedOnce, setFetchedOnce] = useState(false);
 
   useEffect(() => {
-    const fetchBankDetails = async () => {
-      try {
-        const response = await axiosClient.get(
-          "/v1/vendor/me/account-details/get"
-        );
-        const data = response?.data;
+    if (!bankAccountDetails && !fetchedOnce) {
+      dispatch(fetchBankAccountDetails());
+      setFetchedOnce(true);
+    }
+  }, [dispatch, bankAccountDetails, fetchedOnce]);
 
-        if (data?.account_number) {
-          setAccountNumber('******* ' + data.account_number);
-          setIfscCode(data.ifsc_code);
-          setBankName(data.bank_name);
-          setAccountHolder(data.account_holder_name);
-          setView("linkedBank");
-        } else {
-          setView("initial");
-        }
-
-        setFetchedOnce(true);
-      } catch (error) {
-        console.log("inside fetach account details error");
-        console.error("Error fetching bank details:", error);
+  // Update local state when bank account details are loaded
+  useEffect(() => {
+    if (bankAccountDetails) {
+      console.log("bank account data", bankAccountDetails);
+      
+      if (bankAccountDetails?.account_number) {
+        setAccountNumber('******* ' + bankAccountDetails.account_number);
+        setIfscCode(bankAccountDetails.ifsc_code);
+        setBankName(bankAccountDetails.bank_name);
+        setAccountHolder(bankAccountDetails.account_holder_name);
+        setStatus(bankAccountDetails.status || "");
+        setView("linkedBank");
+      } else {
         setView("initial");
-        setFetchedOnce(true);
       }
-    };
-
-    fetchBankDetails();
-  }, []);
+    }
+  }, [bankAccountDetails]);
 
   // Submit bank details
   const handleAddBankClick = async () => {
@@ -50,21 +110,17 @@ const PaymentInfo = () => {
       return;
     }
 
-    setLoading(true);
     try {
-      const response = await axiosClient.post(
-        "/v1/vendor/me/add-account-details",
-        {
-          account_number: accountNumber,
-          ifsc_code: ifscCode,
-          bank_name: bankName,
-          account_holder_name: accountHolder,
-        },
-        {
-          headers: { Accept: "application/json" },
-        }
-      );
+      const bankData = {
+        account_number: accountNumber,
+        ifsc_code: ifscCode,
+        bank_name: bankName,
+        account_holder_name: accountHolder,
+      };
 
+      const result = await dispatch(updateBankAccountDetails(bankData)).unwrap();
+      console.log("Bank details update result:", result);
+      
       toast.success("Bank details saved successfully!");
       setView("linkedBank");
     } catch (error) {
@@ -72,14 +128,12 @@ const PaymentInfo = () => {
       console.log(error);
       toast.error("Failed to save bank details. Please try again.");
       console.error("Error saving bank details:", error);
-    } finally {
-      setLoading(false);
     }
   };
 
   return (
     <div className="flex flex-col justify-center p-6 w-full ">
-      {!fetchedOnce ? (
+      {bankAccountLoading && !fetchedOnce ? (
         <Loader />
       ) : (
         <>
@@ -98,16 +152,22 @@ const PaymentInfo = () => {
           )}
 
           {view === "linkedBank" && (
-            <div className="relative w-full bg-white border p-6 rounded-lg shadow">
-              <div
-                className="absolute top-4 right-4 cursor-pointer"
-                onClick={() => setView("addCard")}
-              >
-                <PencilIcon className="w-6 h-6 text-[#7a48e3] bg-white p-1 rounded-full shadow" />
+            <div className="w-full bg-white border p-6 rounded-lg shadow">
+              <div className="flex justify-between items-start mb-4">
+                <h2 className="text-xl font-semibold">
+                  Linked Bank Details
+                </h2>
+                <div className="flex items-center gap-3">
+                  <StatusTag status={status} />
+                  <button
+                    onClick={() => setView("addCard")}
+                    className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-full hover:bg-[#7e45ee] transition-colors"
+                  >
+                    <PencilIcon className="w-4 h-4" />
+                    <span className="text-sm font-medium">Edit</span>
+                  </button>
+                </div>
               </div>
-              <h2 className="text-xl font-semibold mb-4">
-                Linked Bank Details
-              </h2>
 
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -148,7 +208,7 @@ const PaymentInfo = () => {
           )}
 
           {view === "addCard" && (
-            <div className="bg-white p-6 w-full border rounded-lg shadow">
+            <div className="bg-white p-6 w-full border rounded-full shadow">
               <h2 className="text-xl font-semibold mb-4">
                 Add / Edit Bank Details
               </h2>
@@ -209,9 +269,9 @@ const PaymentInfo = () => {
                 <button
                   onClick={handleAddBankClick}
                   className="w-full bg-primary text-white px-4 py-2 rounded-lg hover:bg-[#7e45ee] transition"
-                  disabled={loading}
+                  disabled={bankAccountLoading}
                 >
-                  {loading ? "Saving..." : "Save"}
+                  {bankAccountLoading ? "Saving..." : "Save"}
                 </button>
               </div>
             </div>

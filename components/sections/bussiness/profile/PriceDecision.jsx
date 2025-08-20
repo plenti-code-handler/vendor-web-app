@@ -62,13 +62,8 @@ const PriceDecision = () => {
       // Check if token exists
       const token = localStorage.getItem("token");
       if (!token) {
-        toast.success('Price decision submitted successfully!');
-        setStep(1);
-        setSelectedCategories([]);
-        setAveragePrices({});
-        setActiveTab(ITEM_TYPES.MEAL);
-        setShowCards(false);
-        setShowSnacksInfo(false);
+        // No token available - navigate to partner verification page
+        window.location.href = 'https://partner.plenti.co.in/verify_email';
         return;
       }
 
@@ -112,12 +107,8 @@ const PriceDecision = () => {
       
       if (response.status === 200) {
         toast.success('Price decision submitted successfully!');
-        setStep(1);
-        setSelectedCategories([]);
-        setAveragePrices({});
-        setActiveTab(ITEM_TYPES.MEAL);
-        setShowCards(false);
-        setShowSnacksInfo(false);
+        // Navigate to home page after successful submission
+        router.push('/');
       } else {
         toast.error('Failed to submit price decision');
       }

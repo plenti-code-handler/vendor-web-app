@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import axiosClient from "../../../../AxiosClient";
 import { toast } from "sonner";
 import OrdersFilter from "../../../dropdowns/OrdersFilter";
-import { formatTimestamp } from "../../../../utility/FormateTime";
+import { formatTimestamp, formatTime } from "../../../../utility/FormateTime";
 import { EyeIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { ShieldCheckIcon } from "@heroicons/react/20/solid";
 
@@ -72,6 +72,7 @@ const RecentOrders = () => {
       );
       if (response.status === 200) {
         setSelectedItem({ id: orderId, items: response.data });
+        console.log(response.data, "response.data")
         setModalOpen(true);
       } else {
         toast.error("Failed to fetch order details");
@@ -94,42 +95,65 @@ const RecentOrders = () => {
       </div>
 
       <div className="w-full overflow-x-auto">
-        <table className="w-full min-w-[800px] table-auto">
+        <table className="w-full min-w-[800px] table-fixed">
           <thead>
             <tr className="border-b text-xs font-semibold text-gray-500 uppercase">
-              <th className="pb-2 px-2 pt-4 text-center">User Name</th>
-              <th className="pb-2 px-2 pt-4 text-center">Phone</th>
-              <th className="pb-2 px-2 pt-4 text-center">Amount</th>
-              <th className="pb-2 px-2 pt-4 text-center">Created At</th>
-              <th className="pb-2 px-2 pt-4 text-center">Status</th>
-              <th className="pb-2 text-center pt-4">Action</th>
+              <th className="pb-2 px-2 pt-4 text-center w-1/7">User Name</th>
+              <th className="pb-2 px-2 pt-4 text-center w-1/7">Phone</th>
+              <th className="pb-2 px-2 pt-4 text-center w-1/7">Amount</th>
+              <th className="pb-2 px-2 pt-4 text-center w-1/7">Allergens</th>
+              <th className="pb-2 px-2 pt-4 text-center w-1/7">Created At</th>
+              <th className="pb-2 px-2 pt-4 text-center w-1/7">Status</th>
+              <th className="pb-2 text-center pt-4 w-1/7">Action</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan="6" className="text-center py-8 text-gray-400">
+                <td colSpan="7" className="text-center py-8 text-gray-400">
                   Loading...
                 </td>
               </tr>
             ) : filteredOrders.length > 0 ? (
               filteredOrders.map((order, index) => (
                 <tr key={index} className="border-b hover:bg-gray-50 transition">
-                  <td className="text-center px-2 text-sm py-3 whitespace-nowrap">
-                    {order.user_name ?? <span className="text-gray-400">Not provided</span>}
+                  <td className="text-center px-2 text-sm py-3">
+                    <div className="truncate" title={order.user_name || "Not provided"}>
+                      {order.user_name ?? <span className="text-gray-400">Not provided</span>}
+                    </div>
                   </td>
-                  <td className="text-center px-2 text-sm whitespace-nowrap">
-                    {order.user_phone_number
-                      ? order.user_phone_number.slice(0, -3) + "***"
-                      : <span className="text-gray-400">Not provided</span>}
+                  <td className="text-center px-2 text-sm">
+                    <div className="truncate" title={order.user_phone_number || "Not provided"}>
+                      {order.user_phone_number
+                        ? order.user_phone_number.slice(0, -3) + "***"
+                        : <span className="text-gray-400">Not provided</span>}
+                    </div>
                   </td>
-                  <td className="text-center px-2 text-sm whitespace-nowrap font-semibold text-blue-700">
+                  <td className="text-center px-2 text-sm font-semibold text-blue-700">
                     ₹ {order.transaction_amount}
                   </td>
-                  <td className="text-center px-2 text-xs whitespace-nowrap text-gray-500">
-                    {formatTimestamp(order.created_at)}
+                  <td className="text-center px-2 text-xs py-2">
+                    {order.allergens && order.allergens.length > 0 ? (
+                      <div className="flex flex-wrap gap-1 justify-center">
+                        {order.allergens.map((allergen, idx) => (
+                          <span
+                            key={idx}
+                            className="inline-block px-2 py-1 rounded-full bg-red-100 text-red-700 text-xs font-medium"
+                          >
+                            {allergen.charAt(0).toUpperCase() + allergen.slice(1).toLowerCase()}
+                          </span>
+                        ))}
+                      </div>
+                    ) : (
+                      <span className="text-gray-400 text-xs">None</span>
+                    )}
                   </td>
-                  <td className="text-center px-2 text-xs whitespace-nowrap">
+                  <td className="text-center px-2 text-xs text-gray-500">
+                    <div className="truncate" title={formatTime(order.created_at)}>
+                      {formatTime(order.created_at)}
+                    </div>
+                  </td>
+                  <td className="text-center px-2 text-xs">
                     {(() => {
                       const rawStatus = order.current_status;
                       if (!rawStatus) {
@@ -157,14 +181,14 @@ const RecentOrders = () => {
                         .replace(/\b\w/g, (l) => l.toUpperCase());
                       return (
                         <span
-                          className={`inline-block px-2 py-1 rounded text-white text-xs font-semibold whitespace-nowrap ${getStatusColor(status)}`}
+                          className={`inline-block px-2 py-1 rounded text-white text-xs font-semibold ${getStatusColor(status)}`}
                         >
                           {formattedText}
                         </span>
                       );
                     })()}
                   </td>
-                  <td className="text-center px-2 py-2 whitespace-nowrap">
+                  <td className="text-center px-2 py-2">
                     <div className="flex items-center justify-center gap-2">
                       <button
                         onClick={() => openModal(order.order_id)}
@@ -191,7 +215,7 @@ const RecentOrders = () => {
               ))
             ) : (
               <tr>
-                <td colSpan="6" className="text-center py-8 text-gray-400">
+                <td colSpan="7" className="text-center py-8 text-gray-400">
                   No orders found.
                 </td>
               </tr>
@@ -251,12 +275,38 @@ const RecentOrders = () => {
                       <span className="text-gray-900">₹{item.price}</span>
                     </div>
                     <div>
+                      <span className="font-medium text-gray-700">Bag Size:</span>{" "}
+                      <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-semibold ${
+                        item.bag_size === 'SMALL' 
+                          ? 'bg-blue-100 text-blue-700' 
+                          : item.bag_size === 'MEDIUM' 
+                          ? 'bg-yellow-100 text-yellow-700' 
+                          : 'bg-green-100 text-green-700'
+                      }`}>
+                        {item.bag_size === 'SMALL' && '👜'}
+                        {item.bag_size === 'MEDIUM' && '🛍️'}
+                        {item.bag_size === 'LARGE' && '🛒'}
+                        {' '}{item.bag_size}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="font-medium text-gray-700">Best Before:</span>{" "}
+                      <span className="inline-block px-3 py-1 rounded-lg text-gray-900 font-medium" style={{
+                        background: 'linear-gradient(135deg, #EFE5FF 0%, #DAC4FF 100%)'
+                      }}>
+                        {item.best_before_time 
+                          ? formatTime(item.best_before_time)
+                          : formatTime(item.window_end_time + 3600) // Add 1 hour (3600 seconds)
+                        }
+                      </span>
+                    </div>
+                    <div>
                       <span className="font-medium text-gray-700">Window Start:</span>{" "}
-                      <span className="text-gray-900">{formatTimestamp(item.window_start_time)}</span>
+                      <span className="text-gray-900">{formatTime(item.window_start_time)}</span>
                     </div>
                     <div>
                       <span className="font-medium text-gray-700">Window End:</span>{" "}
-                      <span className="text-gray-900">{formatTimestamp(item.window_end_time)}</span>
+                      <span className="text-gray-900">{formatTime(item.window_end_time)}</span>
                     </div>
                   </div>
                 </div>
