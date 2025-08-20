@@ -5,12 +5,12 @@ const AuthLeftContent = () => {
   return (
     <div className="relative lg:w-[45%] w-full lg:h-screen flex flex-col">
       {/* Logo positioned at top left */}
-      <div className="absolute top-8 left-8 z-10">
+      <div className="absolute top-4 left-4 sm:top-6 sm:left-6 md:top-8 md:left-8 z-10">
         <Link href="/">
           <img
             alt="Plenti Logo"
             src={"/splash-logo.png"}
-            className="max-w-[100px] md:max-w-[100px] cursor-pointer"
+            className="max-w-[60px] sm:max-w-[80px] md:max-w-[100px] cursor-pointer"
           />
         </Link>
       </div>
