@@ -15,9 +15,9 @@ const AuthLeftContent = () => {
         </Link>
       </div>
       
-      {/* Main content centered */}
-      <div className="flex-1 flex items-center justify-center px-8">
-        <div className="text-left relative">
+      {/* Main content - right aligned on mobile, centered on desktop */}
+      <div className="flex-1 flex items-center justify-end md:justify-center px-4 md:px-8">
+        <div className="text-right md:text-left relative">
           {/* Background gradient overlay for text enhancement */}
           <div className="absolute inset-0 bg-gradient-to-r from-purple-900/20 to-transparent rounded-lg"></div>
           
