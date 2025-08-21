@@ -1,5 +1,7 @@
 import Link from "next/link";
 import React from "react";
+import { IoSparklesSharp } from "react-icons/io5";
+
 
 const AuthLeftContent = () => {
   return (
@@ -33,6 +35,7 @@ const AuthLeftContent = () => {
             <span className="bg-gradient-to-r from-[#DAC4FF] via-white to-[#EFE5FF] bg-clip-text text-transparent">
               zero food wastage.
             </span>
+            <IoSparklesSharp className="absolute -top-2 -right-2 text-white text-4xl md:text-xl lg:text-2xl drop-shadow-lg" />
           </h1>
           
           {/* Decorative underline */}
