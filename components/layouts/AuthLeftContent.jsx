@@ -3,6 +3,7 @@ import React from "react";
 import { IoSparklesSharp } from "react-icons/io5";
 
 
+
 const AuthLeftContent = () => {
   return (
     <div className="relative lg:w-[45%] w-full lg:h-screen flex flex-col">
