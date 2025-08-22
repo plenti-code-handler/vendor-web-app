@@ -21,7 +21,7 @@ function ResetPasswordPage() {
   } = useForm();
 
   const handlePasswordReset = async (data) => {
-    router.push("/login");
+    router.push("/");
   };
 
   return (

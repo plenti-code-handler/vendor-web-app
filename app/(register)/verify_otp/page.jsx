@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { baseUrl } from "../../../utility/BaseURL";
 import axiosClient from "../../../AxiosClient";
 import Link from "next/link";
+import AuthLeftContent from "../../../components/layouts/AuthLeftContent";
 
 const VerifyAccountForm = () => {
   const [otp, setOtp] = useState(new Array(6).fill(""));
@@ -134,83 +135,66 @@ const VerifyAccountForm = () => {
 
   return (
     <div
-      className="flex flex-col md:flex-row justify-between items-center min-h-screen px-6 lg:px-20 bg-cover bg-center bg-no-repeat"
+      className="min-h-screen bg-cover bg-center bg-no-repeat"
       style={{ backgroundImage: "url('/Background.png')" }}
     >
-      <div className="flex lg:w-[45%] items-center justify-center text-center h-full">
-        <div className="flex">
-          <Link href="/">
-            <img
-              alt="Plenti Logo"
-              src={"/splash-logo.png"}
-              className="max-w-[180px] md:max-w-[240px] cursor-pointer"
-            />
-          </Link>
-          <div className="bg-white w-1 h-20 mt-2"></div>
-          <div className="flex flex-col gap-2">
-            <h2 className="text-2xl text-white text-start ml-5 mt-2">
-              India'a first
-            </h2>
-            <h3 className="text-2xl text-white text-start ml-5">
-              surplus Food Marketspace
-            </h3>
-          </div>
-        </div>
-      </div>
+      <div className="flex flex-col lg:flex-row pt-5 pb-5 justify-between px-10">
+        <AuthLeftContent />
 
-      <div className="flex flex-col w-full md:w-[80%] mt-10 lg:w-[40%] bg-white h-[90vh] max-h-[800px] rounded-[24px] shadow-lg overflow-hidden">
-        <div className="ml-10 mt-10">
-          <BackButton />
-        </div>
-
-        <div className="flex flex-col flex-grow items-center justify-center px-5">
-          <p className="text-black font-semibold text-[28px]">Verify Account</p>
-          <p className="text-base">Enter the code to verify your account</p>
-
-          <div className="flex items-center justify-center gap-2 xl:gap-3 mt-4 w-[240px] md:w-[300px]">
-            {otp.map((value, index) => (
-              <input
-                key={index}
-                ref={(el) => (inputRefs.current[index] = el)}
-                type="text"
-                value={value}
-                onChange={(e) => handleChange(e, index)}
-                onKeyDown={(e) => handleKeyDown(e, index)}
-                maxLength="1"
-                className="rounded-[10px] border text-center font-bold text-2xl w-[30px] h-[30px] md:w-[55px] md:h-[55px]"
-              />
-            ))}
-          </div>
-          <div className="flex items-center justify-center mt-5">
-            <p className="text-[#494949] text-[12px] font-medium">
-              Didn't Receive Code?{" "}
-              <span
-                className={`underline ${
-                  isResendDisabled
-                    ? "text-gray-400"
-                    : "text-pinkBgDark cursor-pointer underline-offset-2 hover:text-pinkBgDarkHover2"
-                }`}
-                onClick={handleResend} // Enable resend logic
-              >
-                Resend Code
-              </span>
-              <br />
-              <span className="block text-center mt-2">
-                Resend Code in{" "}
-                {`00:${timeLeft < 10 ? `0${timeLeft}` : timeLeft}`}
-              </span>
-            </p>
+        <div className="flex flex-col w-full lg:w-[40%] bg-white lg:h-[95vh] max-h-[800px] rounded-[24px] shadow-lg overflow-hidden mt-20">
+          <div className="ml-10 mt-10">
+            <BackButton />
           </div>
 
-          <button
-            onClick={handleVerify}
-            className={`mt-5 bg-primary text-white font-semibold py-2 rounded w-[240px] md:w-[300px] ${
-              loading ? "opacity-50 cursor-not-allowed" : ""
-            }`}
-            disabled={loading}
-          >
-            {loading ? "Processing..." : "Verify"}
-          </button>
+          <div className="flex flex-col flex-grow items-center justify-center px-5">
+            <p className="text-black font-semibold text-[28px]">Verify Account</p>
+            <p className="text-base">Enter the code to verify your account</p>
+
+            <div className="flex items-center justify-center gap-2 xl:gap-3 mt-4 w-[240px] md:w-[300px]">
+              {otp.map((value, index) => (
+                <input
+                  key={index}
+                  ref={(el) => (inputRefs.current[index] = el)}
+                  type="text"
+                  value={value}
+                  onChange={(e) => handleChange(e, index)}
+                  onKeyDown={(e) => handleKeyDown(e, index)}
+                  maxLength="1"
+                  className="rounded-[10px] border text-center font-bold text-2xl w-[30px] h-[30px] md:w-[55px] md:h-[55px]"
+                />
+              ))}
+            </div>
+            <div className="flex items-center justify-center mt-5">
+              <p className="text-[#494949] text-[12px] font-medium">
+                Didn't Receive Code?{" "}
+                <span
+                  className={`underline ${
+                    isResendDisabled
+                      ? "text-gray-400"
+                      : "text-pinkBgDark cursor-pointer underline-offset-2 hover:text-pinkBgDarkHover2"
+                  }`}
+                  onClick={handleResend} // Enable resend logic
+                >
+                  Resend Code
+                </span>
+                <br />
+                <span className="block text-center mt-2">
+                  Resend Code in{" "}
+                  {`00:${timeLeft < 10 ? `0${timeLeft}` : timeLeft}`}
+                </span>
+              </p>
+            </div>
+
+            <button
+              onClick={handleVerify}
+              className={`mt-5 bg-primary text-white font-semibold py-2 rounded w-[240px] md:w-[300px] ${
+                loading ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+              disabled={loading}
+            >
+              {loading ? "Processing..." : "Verify"}
+            </button>
+          </div>
         </div>
       </div>
     </div>
