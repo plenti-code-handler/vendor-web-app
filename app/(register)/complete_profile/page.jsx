@@ -272,7 +272,7 @@ function Page() {
                   GST Number
                 </label>
                 <input
-                  type="number"
+                  type="text"
                   {...register("gstnumber", {
                     required: "GST Number is required",
                   })}
