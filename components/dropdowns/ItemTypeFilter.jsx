@@ -18,7 +18,6 @@ const ItemTypeFilter = ({ selectedFilter, onFilterChange }) => {
 
     return ALL_ITEM_TYPES.filter(itemType => {
       const catalogueItem = itemTypes[itemType];
-      console.log(catalogueItem);
       return catalogueItem && catalogueItem.bags && Object.keys(catalogueItem.bags).length > 0;
     });
   };

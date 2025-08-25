@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import AuthPasswordField from "../../components/fields/AuthPasswordField";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { baseUrl } from "../../utility/BaseURL";
 
 function ForgetpasswordScreen() {
   const [step, setStep] = useState("email");
@@ -39,7 +40,7 @@ function ForgetpasswordScreen() {
     setLoading(true);
     try {
       const response = await axios.post(
-        `https://api.plenti.co.in/v1/vendor/me/reset-password/send-otp?email=${data.email}`
+        `${baseUrl}/v1/vendor/me/reset-password/send-otp?email=${data.email}`
       );
       toast.success(response.data.message);
       setEmail(data.email);
@@ -61,7 +62,7 @@ function ForgetpasswordScreen() {
       setLoading(true);
       try {
         const response = await axios.post(
-          `https://api.plenti.co.in/v1/vendor/me/email/verify-otp?email=${email}&otp=${formateOTP}`
+          `${baseUrl}/v1/vendor/me/email/verify-otp?email=${email}&otp=${formateOTP}`
         );
         setToken(response.data.access_token);
         setStep("password");
@@ -88,7 +89,7 @@ function ForgetpasswordScreen() {
     setLoading(true);
     try {
       await axios.post(
-        `https://api.plenti.co.in/v1/vendor/me/reset-password/update?password=${data.password}&token=${token}`
+        `${baseUrl}/v1/vendor/me/reset-password/update?password=${data.password}&token=${token}`
       );
       toast.success("Password reset successful!");
       reset();

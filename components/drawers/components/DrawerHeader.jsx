@@ -1,22 +1,21 @@
-import React from "react";
+import React from 'react';
 
-const DrawerHeader = ({ dealTitle, setDealTitle, onAddClick }) => {
+const DrawerHeader = ({ title, subtitle, onClose }) => {
   return (
-    <>
-      <input
-        type="text"
-        value={dealTitle}
-        onChange={(e) => setDealTitle(e.target.value)}
-        placeholder="Bag Deal Title"
-        className="placeholder-grayThree text-lg placeholder:font-bold focus:outline-none"
-      />
+    <div className="flex items-center justify-between mb-8">
+      <div>
+        <h2 className="text-2xl font-bold text-gray-900">{title}</h2>
+        <p className="text-sm text-gray-500 mt-1">{subtitle}</p>
+      </div>
       <button
-        onClick={onAddClick}
-        className="flex text-center justify-between bg-blueBgDark text-white font-semibold py-2 px-7 rounded hover:bg-blueBgDarkHover gap-2 lg:w-[25%]"
+        onClick={onClose}
+        className="p-2 hover:bg-gray-100 rounded-full transition-all duration-200 hover:scale-110"
       >
-        Add
+        <svg className="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+        </svg>
       </button>
-    </>
+    </div>
   );
 };
 
