@@ -100,7 +100,7 @@ const Modal = ({ isOpen, onClose, item }) => {
                 <div className="bg-gray-50 rounded-lg p-3 border border-gray-100">
                   <p className="text-xs text-gray-600 mb-1">Small</p>
                   <p className="text-lg font-semibold text-[#5F22D9]">
-                    ${prices.small}
+                  ₹{prices.small}
                   </p>
                 </div>
               </div>
@@ -108,7 +108,7 @@ const Modal = ({ isOpen, onClose, item }) => {
                 <div className="bg-gray-50 rounded-lg p-3 border border-gray-100">
                   <p className="text-xs text-gray-600 mb-1">Medium</p>
                   <p className="text-lg font-semibold text-[#5F22D9]">
-                    ${prices.medium}
+                  ₹{prices.medium}
                   </p>
                 </div>
               </div>
@@ -116,7 +116,7 @@ const Modal = ({ isOpen, onClose, item }) => {
                 <div className="bg-gray-50 rounded-lg p-3 border border-gray-100">
                   <p className="text-xs text-gray-600 mb-1">Large</p>
                   <p className="text-lg font-semibold text-[#5F22D9]">
-                    ${prices.large}
+                  ₹{prices.large}
                   </p>
                 </div>
               </div>
