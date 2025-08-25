@@ -12,6 +12,7 @@ export const fetchVendorDetails = createAsyncThunk(
           Authorization: `Bearer ${token}`,
         },
       });
+      console.log("venor details fetched ->", response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Failed to fetch vendor details');

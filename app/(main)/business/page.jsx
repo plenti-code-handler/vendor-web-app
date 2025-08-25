@@ -1,7 +1,6 @@
 import React from "react";
 import RenderStats from "../../../components/sections/bussiness/dashboard/RenderStats";
 import RecentOrders from "../../../components/sections/bussiness/dashboard/RecentOrders";
-import { fetchVendorDetails } from "../../../redux/slices/vendorSlice";
 
 const Page = () => {
 
