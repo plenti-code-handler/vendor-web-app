@@ -67,13 +67,13 @@ const PriceDecision = () => {
         return;
       }
 
-      // Curate the payload
+      // Curate the payload in the same format as Pricing.jsx
       const payload = {
+        item_types: {},
         payout: {
           tier: "MID",
           threshold: 1000
-        },
-        item_types: {}
+        }
       };
 
       // Process each selected category
@@ -93,16 +93,21 @@ const PriceDecision = () => {
           payload.item_types[categoryId] = {
             asp: asp,
             bags: {
-              LARGE: prices.large.price,
               SMALL: prices.small.price,
-              MEDIUM: prices.medium.price
+              MEDIUM: prices.medium.price,
+              LARGE: prices.large.price
+            },
+            cuts: {
+              SMALL: prices.small.cut,
+              MEDIUM: prices.medium.cut,
+              LARGE: prices.large.cut
             }
           };
         }
       });
 
       // Make API call
-      console.log(payload);
+      console.log(payload, "!!!!");
       const response = await axiosClient.post('/v1/vendor/catalogue/request', payload);
       
       if (response.status === 200) {
