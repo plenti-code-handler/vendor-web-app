@@ -25,6 +25,7 @@ function Page() {
   const [address, setAddress] = useState("");
   const [coordinates, setCoordinates] = useState({ lat: null, lng: null });
   const [mapUrl, setMapUrl] = useState("");
+  const [googleMapsUrl, setGoogleMapsUrl] = useState(""); // Add state for Google Maps URL
   
   const router = useRouter();
   const autoCompleteRef = useRef(null);
@@ -87,9 +88,16 @@ function Page() {
           setCoordinates({ lat: latitude, lng: longitude });
           setValue("addressUrl", formattedAddress);
 
-          setMapUrl(
-            `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${latitude},${longitude}&zoom=15`
-          );
+          // Generate embed URL for iframe
+          const embedUrl = `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${latitude},${longitude}&zoom=15`;
+          setMapUrl(embedUrl);
+
+          // Generate Google Maps URL for address_url
+          const googleMapsUrl = `https://www.google.com/maps/place/${encodeURIComponent(formattedAddress)}/@${latitude},${longitude},15z`;
+          setGoogleMapsUrl(googleMapsUrl);
+          
+          console.log("Google Maps URL:", googleMapsUrl);
+          console.log("Embed URL:", embedUrl);
           
           toast.success("Address selected successfully!");
         } else {
@@ -135,15 +143,19 @@ function Page() {
 
       const vendorData = {
         vendor_name: data.storeName,
-        store_manager_name: data.storeManagerName,
+        store_manager_name: data.storeManagerName || null,
+        owner_name: data.ownerName, 
         vendor_type: data.vendorType,
         gst_number: data.gstnumber,
         description: data.description,
         latitude: coordinates.lat,
         longitude: coordinates.lng,
-        address_url: address,
+        address_url: googleMapsUrl, 
+        address: address,
         pincode: data.pincode,
       };
+
+      console.log("Vendor data being sent:", vendorData);
 
       const uploadVendorDataResponse = await axiosClient.put(
         "/v1/vendor/me/update",
@@ -228,19 +240,35 @@ function Page() {
 
               <div className="flex flex-col space-y-1">
                 <label className="text-sm font-medium text-gray-600">
-                  Store Manager Name
+                  Store Manager Name(Optional)
                 </label>
                 <input
                   type="text"
-                  {...register("storeManagerName", {
-                    required: "Store Manager name is required",
-                  })}
+                  {...register("storeManagerName")}
                   className="rounded-md border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
                   placeholder="Enter store Manager name"
                 />
                 {errors.storeManagerName && (
                   <p className="text-red-500 text-sm">
                     {errors.storeManagerName.message}
+                  </p>
+                )}
+              </div>
+
+              {/* Add Owner Name field */}
+              <div className="flex flex-col space-y-1">
+                <label className="text-sm font-medium text-gray-600">
+                  Owner Name
+                </label>
+                <input
+                  type="text"
+                  {...register("ownerName")}
+                  className="rounded-md border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
+                  placeholder="Enter owner name (optional)"
+                />
+                {errors.ownerName && (
+                  <p className="text-red-500 text-sm">
+                    {errors.ownerName.message}
                   </p>
                 )}
               </div>
