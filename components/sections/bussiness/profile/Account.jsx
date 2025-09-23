@@ -24,6 +24,7 @@ const Account = () => {
   const error = useSelector(selectVendorError);
   
   const [originalData, setOriginalData] = useState(null); // Store original data for discard
+  const [isUpdating, setIsUpdating] = useState(false); // Add loading state for update button
   const [formData, setFormData] = useState({
     vendor_name: "",
     owner_name: "", 
@@ -74,7 +75,7 @@ const Account = () => {
         address_url: removeDuplicateWords(vendorData.address_url || ""), // Add fallback
         address: vendorData.address || "", // Add address
         pincode: vendorData.pincode || "",
-        phone_number: vendorData.phone_number || "",
+        phone_number: vendorData.phone_number || "", // Keep as string for form input
       });
 
       if (vendorData.latitude && vendorData.longitude) {
@@ -199,14 +200,33 @@ const Account = () => {
       address_url: removeDuplicateWords(originalData.address_url || ""), // Add fallback
       address: originalData.address || "", // Add address
       pincode: originalData.pincode || "",
-      phone_number: originalData.phone_number || "",
+      phone_number: originalData.phone_number || "", // Keep as string for form input
     });
   };
 
   // Update API call
   const handleUpdate = async () => {
     try {
-      const result = await dispatch(updateVendorDetails(formData)).unwrap();
+      setIsUpdating(true); // Start loading
+      
+      // Prepare data for API call - convert empty strings to null for phone_number
+      const apiData = {
+        ...formData,
+        phone_number: formData.phone_number.trim() === "" ? null : formData.phone_number.trim(),
+        // Also handle other fields that might need null conversion
+        owner_name: formData.owner_name.trim() === "" ? null : formData.owner_name.trim(),
+        store_manager_name: formData.store_manager_name.trim() === "" ? null : formData.store_manager_name.trim(),
+        gst_number: formData.gst_number.trim() === "" ? null : formData.gst_number.trim(),
+        fssai_number: formData.fssai_number.trim() === "" ? null : formData.fssai_number.trim(),
+        pan_number: formData.pan_number.trim() === "" ? null : formData.pan_number.trim(),
+        description: formData.description.trim() === "" ? null : formData.description.trim(),
+        pincode: formData.pincode.trim() === "" ? null : formData.pincode.trim(),
+      };
+
+      console.log("Form data", formData);
+      console.log("API data", apiData);
+      
+      const result = await dispatch(updateVendorDetails(apiData)).unwrap();
       console.log("Profile update console");
       console.log(result);
       toast.success("Profile updated successfully!");
@@ -214,6 +234,8 @@ const Account = () => {
     } catch (err) {
       console.error("Error updating vendor data:", err);
       toast.error("Failed to update profile.");
+    } finally {
+      setIsUpdating(false); // Stop loading
     }
   };
 
@@ -360,14 +382,27 @@ const Account = () => {
         <button
           className="flex justify-center bg-white text-black border border-black font-md py-2 rounded hover:bg-grayTwo gap-2 w-[100%]"
           onClick={handleDiscardChanges}
+          disabled={isUpdating} // Disable discard button while updating
         >
           Discard Changes
         </button>
         <button
-          className="flex justify-center bg-[#5F22D9] text-white font-md py-2 rounded hover:bg-[#7e45ee] gap-2 w-[100%]"
+          className={`flex justify-center font-md py-2 rounded gap-2 w-[100%] ${
+            isUpdating 
+              ? "bg-gray-400 text-white cursor-not-allowed" 
+              : "bg-[#5F22D9] text-white hover:bg-[#7e45ee]"
+          }`}
           onClick={handleUpdate}
+          disabled={isUpdating} // Disable button while updating
         >
-          Update
+          {isUpdating ? (
+            <>
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+              Updating...
+            </>
+          ) : (
+            "Update"
+          )}
         </button>
       </div>
     </div>
