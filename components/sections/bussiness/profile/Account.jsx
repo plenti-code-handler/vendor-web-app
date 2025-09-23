@@ -25,7 +25,9 @@ const Account = () => {
   
   const [originalData, setOriginalData] = useState(null); // Store original data for discard
   const [formData, setFormData] = useState({
-    store_manager_name: "",
+    vendor_name: "",
+    owner_name: "", 
+    store_manager_name: "", // Add store_manager_name field
     vendor_type: "",
     gst_number: "",
     fssai_number: "",
@@ -34,11 +36,13 @@ const Account = () => {
     latitude: null,
     longitude: null,
     address_url: "",
+    address: "", // Add address field
     pincode: "",
     phone_number: "",
   });
 
   const [mapUrl, setMapUrl] = useState("");
+  const [googleMapsUrl, setGoogleMapsUrl] = useState(""); // Add state for Google Maps URL
 
   const autoCompleteRef = useRef(null);
   const autocompleteInstanceRef = useRef(null);
@@ -57,7 +61,9 @@ const Account = () => {
       console.log(vendorData);
       setOriginalData(vendorData);
       setFormData({
-        store_manager_name: vendorData.vendor_name || "",
+        vendor_name: vendorData.vendor_name || "",
+        owner_name: vendorData.owner_name || "", // Add owner_name
+        store_manager_name: vendorData.store_manager_name || "", // Add store_manager_name
         vendor_type: vendorData.vendor_type || "",
         gst_number: vendorData.gst_number || "",
         fssai_number: vendorData.fssai_number || "",
@@ -65,7 +71,8 @@ const Account = () => {
         description: vendorData.description || "",
         latitude: vendorData.latitude || null,
         longitude: vendorData.longitude || null,
-        address_url: removeDuplicateWords(vendorData.address_url) || "",
+        address_url: removeDuplicateWords(vendorData.address_url || ""), // Add fallback
+        address: vendorData.address || "", // Add address
         pincode: vendorData.pincode || "",
         phone_number: vendorData.phone_number || "",
       });
@@ -133,16 +140,28 @@ const Account = () => {
         console.log("Selected place:", place);
         
         if (place.geometry && place.formatted_address) {
+          const formattedAddress = place.formatted_address;
+          const latitude = place.geometry.location.lat();
+          const longitude = place.geometry.location.lng();
+          
+          // Generate Google Maps URL for address_url
+          const googleMapsUrl = `https://www.google.com/maps/place/${encodeURIComponent(formattedAddress)}/@${latitude},${longitude},15z`;
+          setGoogleMapsUrl(googleMapsUrl);
+          
           setFormData((prev) => ({
             ...prev,
-            address_url: place.formatted_address,
-            latitude: place.geometry.location.lat(),
-            longitude: place.geometry.location.lng(),
+            address_url: googleMapsUrl, // Use Google Maps URL
+            address: formattedAddress, // Store formatted address
+            latitude: latitude,
+            longitude: longitude,
           }));
 
           setMapUrl(
-            `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${place.geometry.location.lat()},${place.geometry.location.lng()}&zoom=15`
+            `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${latitude},${longitude}&zoom=15`
           );
+          
+          console.log("Google Maps URL:", googleMapsUrl);
+          console.log("Embed URL:", mapUrl);
           
           toast.success("Address selected successfully!");
         } else {
@@ -167,7 +186,9 @@ const Account = () => {
   // Discard changes
   const handleDiscardChanges = () => {
     setFormData({
-      store_manager_name: originalData.vendor_name || "",
+      vendor_name: originalData.vendor_name || "",
+      owner_name: originalData.owner_name || "", // Add owner_name
+      store_manager_name: originalData.store_manager_name || "", // Add store_manager_name
       vendor_type: originalData.vendor_type || "",
       gst_number: originalData.gst_number || "",
       fssai_number: originalData.fssai_number || "",
@@ -175,7 +196,8 @@ const Account = () => {
       description: originalData.description || "",
       latitude: originalData.latitude || null,
       longitude: originalData.longitude || null,
-      address_url: removeDuplicateWords(originalData.address_url) || "",
+      address_url: removeDuplicateWords(originalData.address_url || ""), // Add fallback
+      address: originalData.address || "", // Add address
       pincode: originalData.pincode || "",
       phone_number: originalData.phone_number || "",
     });
@@ -201,11 +223,34 @@ const Account = () => {
         <h3 className="font-medium ml-1 mb-1">Store name</h3>
         <TextField
           placeholder="Store Name"
+          name="vendor_name"
+          value={formData.vendor_name}
+          onChange={handleChange}
+        />
+      </div>
+      
+      {/* Add Owner Name field */}
+      <div>
+        <h3 className="font-medium ml-1 mb-1">Owner Name</h3>
+        <TextField
+          placeholder="Owner Name"
+          name="owner_name"
+          value={formData.owner_name}
+          onChange={handleChange}
+        />
+      </div>
+      
+      {/* Add Store Manager Name field */}
+      <div>
+        <h3 className="font-medium ml-1 mb-1">Store Manager Name</h3>
+        <TextField
+          placeholder="Store Manager Name"
           name="store_manager_name"
           value={formData.store_manager_name}
           onChange={handleChange}
         />
       </div>
+      
       <div>
         <h3 className="font-medium ml-1 mb-1">Email</h3>
         <div className="flex justify-between w-full rounded-lg border border-gray-300 bg-gray-100 py-3 px-3 text-sm text-black">
@@ -280,8 +325,8 @@ const Account = () => {
             ref={autoCompleteRef}
             className="rounded-md w-full border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
             placeholder={isLoaded ? "Search your business address" : "Loading address search..."}
-            name="address_url"
-            value={formData.address_url}
+            name="address"
+            value={formData.address}
             onChange={handleChange}
             disabled={!isLoaded}
           />
