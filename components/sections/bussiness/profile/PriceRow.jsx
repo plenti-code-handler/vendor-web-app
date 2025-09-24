@@ -28,11 +28,11 @@ const PriceRow = ({ bagSize, currentPrice, currentCut }) => {
           <div className="text-right">
             <div className="flex flex-col items-end">
               <span className="text-m font-semibold text-gray-900">
-                ₹{currentPrice.toFixed(2)}
+                You earn: ₹{currentPrice.toFixed(2) - currentCut.toFixed(2)}
               </span>
               {currentCut !== undefined && (
                 <span className="text-[10px] text-gray-500">
-                  Platform cut: ₹{currentCut.toFixed(2)}
+                  Bag price: ₹{currentPrice.toFixed(2)}
                 </span>
               )}
             </div>
