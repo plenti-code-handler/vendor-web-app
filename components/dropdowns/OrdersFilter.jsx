@@ -9,28 +9,13 @@ const OrdersFilter = ({ selectedFilter, onFilterChange }) => {
           id="orders"
           className="bg-grayFive text-grayThree text-sm font-semibold rounded-lg focus:ring-grayTwo focus:border-grayTwo block w-full p-2.5 appearance-none"
           value={selectedFilter}
-          onChange={(e) => onFilterChange(e.target.value)}
+          onChange={(e) => onFilterChange(e.target.value === 'true' ? true : e.target.value === 'false' ? false : null)}
         >
-          <option value="" className="text-base">
-            All Orders
+          <option value="false" className="text-base">
+            Completed Orders
           </option>
-          <option value="CREATED" className="text-base">
-            Created
-          </option>
-          <option value="WAITING_FOR_PICKUP" className="text-base">
-            Waiting for Pickup
-          </option>
-          <option value="READY_FOR_PICKUP" className="text-base">
-            Ready for Pickup
-          </option>
-          <option value="PICKED_UP" className="text-base">
-            Picked Up
-          </option>
-          <option value="NOT_PICKED_UP" className="text-base">
-            Not Picked Up
-          </option>
-          <option value="CANCELLED" className="text-base">
-            Cancelled
+          <option value="true" className="text-base">
+            Active Orders
           </option>
         </select>
 

@@ -10,7 +10,8 @@ import { ShieldCheckIcon } from "@heroicons/react/20/solid";
 const RecentOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [filter, setFilter] = useState("");
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [filter, setFilter] = useState(""); // This will be true, false, or ""
   const [selectedItem, setSelectedItem] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [verifyModalOpen, setVerifyModalOpen] = useState(false);
@@ -18,6 +19,13 @@ const RecentOrders = () => {
   const inputRefs = useRef([]);
   const [verifying, setVerifying] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
+  
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(0);
+  const [hasMoreOrders, setHasMoreOrders] = useState(true);
+  const [totalOrders, setTotalOrders] = useState(0);
+  
+  const ITEMS_PER_PAGE = 10;
 
   const handleOtpChange = (value, index) => {
     if (!/^\d*$/.test(value)) return;
@@ -41,6 +49,8 @@ const RecentOrders = () => {
       if (response.status === 200) {
         toast.success("Order code verified successfully");
         setVerifyModalOpen(false);
+        // Refresh orders after successful verification
+        fetchRecentOrders(true);
       }
     } catch (error) {
       toast.error("Failed to verify order code");
@@ -49,21 +59,63 @@ const RecentOrders = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchRecentOrders = async () => {
-      setLoading(true);
-      try {
-        const response = await axiosClient.get(
-          "/v1/vendor/order/get?skip=0&limit=10"
-        );
-        if (response.status === 200) setOrders(response.data || []);
-      } catch (error) {
-        toast.error("Failed to fetch orders");
+  const fetchRecentOrders = async (reset = false) => {
+    if (reset) {
+      setCurrentPage(0);
+      setOrders([]);
+      setHasMoreOrders(true);
+    }
+
+    const skip = reset ? 0 : currentPage * ITEMS_PER_PAGE;
+    setLoading(reset);
+    setLoadingMore(!reset);
+
+    try {
+      // Build the API URL with the active parameter
+      let apiUrl = `/v1/vendor/order/get?skip=${skip}&limit=${ITEMS_PER_PAGE}`;
+      
+      // Add active parameter based on filter
+      if (filter === true) {
+        apiUrl += "&active=true";
+      } else if (filter === false) {
+        apiUrl += "&active=false";
       }
+      // If filter is "" (All Orders), don't add active parameter
+
+      const response = await axiosClient.get(apiUrl);
+      if (response.status === 200) {
+        const newOrders = response.data || [];
+        
+        if (reset) {
+          setOrders(newOrders);
+        } else {
+          setOrders(prevOrders => [...prevOrders, ...newOrders]);
+        }
+        
+        // Check if there are more orders to load
+        setHasMoreOrders(newOrders.length === ITEMS_PER_PAGE);
+        
+        if (!reset) {
+          setCurrentPage(prev => prev + 1);
+        }
+      }
+    } catch (error) {
+      toast.error("Failed to fetch orders");
+    } finally {
       setLoading(false);
-    };
-    fetchRecentOrders();
-  }, []);
+      setLoadingMore(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchRecentOrders(true);
+  }, [filter]);
+
+  const handleLoadMore = () => {
+    if (!loadingMore && hasMoreOrders) {
+      fetchRecentOrders(false);
+    }
+  };
 
   const openModal = async (orderId) => {
     try {
@@ -81,10 +133,6 @@ const RecentOrders = () => {
       toast.error("Error fetching order items");
     }
   };
-
-  const filteredOrders = filter
-    ? orders.filter((order) => order.current_status === filter)
-    : orders;
 
   // --- UI ---
   return (
@@ -114,8 +162,8 @@ const RecentOrders = () => {
                   Loading...
                 </td>
               </tr>
-            ) : filteredOrders.length > 0 ? (
-              filteredOrders.map((order, index) => (
+            ) : orders.length > 0 ? (
+              orders.map((order, index) => (
                 <tr key={index} className="border-b hover:bg-gray-50 transition">
                   <td className="text-center px-2 text-sm py-3">
                     <div className="truncate" title={order.user_name || "Not provided"}>
@@ -223,6 +271,30 @@ const RecentOrders = () => {
           </tbody>
         </table>
       </div>
+
+      {/* Load More Button */}
+      {orders.length > 0 && hasMoreOrders && (
+        <div className="flex justify-center mt-6">
+          <button
+            onClick={handleLoadMore}
+            disabled={loadingMore}
+            className={`px-4 py-2 rounded-md text-sm font-normal transition-colors duration-200 ${
+              loadingMore
+                ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                : "bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-200"
+            }`}
+          >
+            {loadingMore ? (
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 border-2 border-gray-300 border-t-transparent rounded-full animate-spin"></div>
+                Loading...
+              </div>
+            ) : (
+              "Load More Orders"
+            )}
+          </button>
+        </div>
+      )}
 
       {/* Order Details Modal */}
       {modalOpen && selectedItem?.items?.length > 0 && (
