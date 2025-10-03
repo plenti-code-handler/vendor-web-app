@@ -85,7 +85,18 @@ const DescriptionSection = ({
               placeholder="Enter your custom description..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
+              maxLength={255}
             />
+            <div className="mt-2 flex justify-between items-center">
+              <p className="text-xs text-gray-500">
+                {description.length}/255 characters
+              </p>
+              {description.length > 200 && (
+                <p className="text-xs text-amber-600">
+                  {255 - description.length} characters remaining
+                </p>
+              )}
+            </div>
           </div>
         )}
 

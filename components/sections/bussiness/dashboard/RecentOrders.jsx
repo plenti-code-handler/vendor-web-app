@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import axiosClient from "../../../../AxiosClient";
 import { toast } from "sonner";
 import OrdersFilter from "../../../dropdowns/OrdersFilter";
-import { formatTimestamp, formatTime } from "../../../../utility/FormateTime";
+import { formatTimestamp, formatTime, formatDateTime } from "../../../../utility/FormateTime";
 import { EyeIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { ShieldCheckIcon } from "@heroicons/react/20/solid";
 
@@ -11,7 +11,7 @@ const RecentOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
-  const [filter, setFilter] = useState(""); // This will be true, false, or ""
+  const [filter, setFilter] = useState(true); // This will be true, false, or ""
   const [selectedItem, setSelectedItem] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [verifyModalOpen, setVerifyModalOpen] = useState(false);
@@ -19,6 +19,7 @@ const RecentOrders = () => {
   const inputRefs = useRef([]);
   const [verifying, setVerifying] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
+  const [loadingOrderId, setLoadingOrderId] = useState(null);
   
   // Pagination state
   const [currentPage, setCurrentPage] = useState(0);
@@ -118,6 +119,7 @@ const RecentOrders = () => {
   };
 
   const openModal = async (orderId) => {
+    setLoadingOrderId(orderId);
     try {
       const response = await axiosClient.get(
         `/v1/vendor/order/${orderId}/items`
@@ -131,6 +133,8 @@ const RecentOrders = () => {
       }
     } catch (error) {
       toast.error("Error fetching order items");
+    } finally {
+      setLoadingOrderId(null);
     }
   };
 
@@ -198,7 +202,7 @@ const RecentOrders = () => {
                   </td>
                   <td className="text-center px-2 text-xs text-gray-500">
                     <div className="truncate" title={formatTime(order.created_at)}>
-                      {formatTime(order.created_at)}
+                      {formatDateTime(order.created_at)}
                     </div>
                   </td>
                   <td className="text-center px-2 text-xs">
@@ -242,8 +246,13 @@ const RecentOrders = () => {
                         onClick={() => openModal(order.order_id)}
                         className="p-2 rounded hover:bg-blue-50 transition"
                         title="View"
+                        disabled={loadingOrderId === order.order_id}
                       >
-                        <EyeIcon className="h-5 w-5 text-blue-600" />
+                        {loadingOrderId === order.order_id ? (
+                          <div className="animate-spin rounded-full h-5 w-5 border-2 border-blue-600 border-t-transparent"></div>
+                        ) : (
+                          <EyeIcon className="h-5 w-5 text-blue-600" />
+                        )}
                       </button>
                       {order.current_status === "READY_FOR_PICKUP" && (
                         <button

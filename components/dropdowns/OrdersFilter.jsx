@@ -11,11 +11,11 @@ const OrdersFilter = ({ selectedFilter, onFilterChange }) => {
           value={selectedFilter}
           onChange={(e) => onFilterChange(e.target.value === 'true' ? true : e.target.value === 'false' ? false : null)}
         >
-          <option value="false" className="text-base">
-            Completed Orders
-          </option>
           <option value="true" className="text-base">
             Active Orders
+          </option>
+          <option value="false" className="text-base">
+            Completed Orders
           </option>
         </select>
 
