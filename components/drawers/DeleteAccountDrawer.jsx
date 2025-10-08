@@ -18,7 +18,6 @@
 // } from "firebase/auth";
 // import { auth, db } from "../../app/firebase/config";
 
-// import { logoutUser, loginUser } from "../../redux/slices/loggedInUserSlice";
 // import { useRouter } from "next/navigation";
 // import { toast } from "sonner";
 

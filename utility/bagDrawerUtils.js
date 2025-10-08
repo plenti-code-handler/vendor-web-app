@@ -37,6 +37,9 @@ export const validateTimeConstraints = (windowStartTime, windowEndTime, bestBefo
   if (windowEndTime < windowStartTime) {
     return "End time must be after start time!";
   }
+  if (bestBeforeTime < windowEndTime) {
+    return "Best before time cannot be before window end time!";
+  }
   return null;
 };
 

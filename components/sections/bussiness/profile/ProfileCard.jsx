@@ -7,9 +7,11 @@ import { setOpenDrawer } from "../../../../redux/slices/addCategorySlice";
 import { useDispatch } from "react-redux";
 
 import AddCategoryDrawer from "../../../drawers/AddCategoryDrawer";
+import BackcoverImageModal from "../../../modals/BackcoverImageModal";
 import axiosClient from "../../../../AxiosClient";
 import { PencilIcon } from "@heroicons/react/20/solid";
 import OnlineOfflineToggle from "./ToggleOnlineOffline";
+import BeatLoader from "react-spinners/BeatLoader";
 
 const ProfileCard = () => {
   const dispatch = useDispatch();
@@ -21,9 +23,61 @@ const ProfileCard = () => {
   const [error, setError] = useState(null);
   const [coverLoaded, setCoverLoaded] = useState(false);
   const [profileLoaded, setProfileLoaded] = useState(false);
+  const [isBackcoverModalOpen, setIsBackcoverModalOpen] = useState(false);
+  const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [uploadingCover, setUploadingCover] = useState(false);
 
   const handleAddCategory = () => {
     dispatch(setOpenDrawer(true));
+  };
+
+  const handleBackcoverClick = () => {
+    setIsBackcoverModalOpen(true);
+  };
+
+  const handleLibraryImageSelect = async (image) => {
+    try {
+      setUploadingCover(true);
+      console.log("Uploading cover image...");
+      const token = localStorage.getItem("token");
+      
+      const formData = new FormData();
+      formData.append("image_url", image.url);
+
+      const response = await axiosClient.post(
+        "/v1/vendor/me/images/upload?image_type=backcover",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      console.log("Library image API response:", response.data);
+      if (response.data?.url) {
+        setVendorData((prev) => ({
+          ...prev,
+          backcover_url: `${response.data.url}?t=${new Date().getTime()}`,
+        }));
+        setCoverLoaded(true);
+        // Close modal after successful upload
+        setIsBackcoverModalOpen(false);
+      }
+    } catch (error) {
+      console.error("Error setting library image:", error);
+    } finally {
+      setUploadingCover(false);
+    }
+  };
+
+  const handleUploadSelect = () => {
+    // Trigger the file input for upload
+    const fileInput = document.getElementById("coverUpload");
+    if (fileInput) {
+      fileInput.click();
+    }
   };
 
   useEffect(() => {
@@ -57,6 +111,7 @@ const ProfileCard = () => {
     if (!file) return;
 
     try {
+      setUploadingLogo(true);
       const token = localStorage.getItem("token");
 
       const formData = new FormData();
@@ -80,6 +135,8 @@ const ProfileCard = () => {
       }
     } catch (error) {
       console.error("Error uploading image:", error);
+    } finally {
+      setUploadingLogo(false);
     }
   };
 
@@ -88,6 +145,7 @@ const ProfileCard = () => {
     if (!file) return;
 
     try {
+      setUploadingCover(true);
       const token = localStorage.getItem("token");
       const formData = new FormData();
       formData.append("file", file);
@@ -114,6 +172,8 @@ const ProfileCard = () => {
       }
     } catch (error) {
       console.error("Error uploading cover image:", error);
+    } finally {
+      setUploadingCover(false);
     }
   };
 
@@ -132,8 +192,8 @@ const ProfileCard = () => {
               onChange={handleCoverChange}
             />
 
-            <label
-              htmlFor="coverUpload"
+            <div
+              onClick={handleBackcoverClick}
               className="group relative w-full h-full cursor-pointer block"
             >
               {!coverLoaded ? (
@@ -147,10 +207,16 @@ const ProfileCard = () => {
                 />
               )}
 
-              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <PencilIcon className="w-6 h-6 text-[#7a48e3] bg-white p-1 rounded-full shadow" />
-              </div>
-            </label>
+              {uploadingCover ? (
+                <div className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-t-md">
+                  <BeatLoader color="#ffffff" size={10} />
+                </div>
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <PencilIcon className="w-6 h-6 text-[#7a48e3] bg-white p-1 rounded-full shadow" />
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Profile & Name Section */}
@@ -179,9 +245,16 @@ const ProfileCard = () => {
                     onLoad={() => setProfileLoaded(true)}
                   />
                 )}
-                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <PencilIcon className="w-6 h-6 text-[#7a48e3] bg-white p-1 rounded-full shadow" />
-                </div>
+                
+                {uploadingLogo ? (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-full">
+                    <BeatLoader color="#ffffff" size={8} />
+                  </div>
+                ) : (
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <PencilIcon className="w-6 h-6 text-[#7a48e3] bg-white p-1 rounded-full shadow" />
+                  </div>
+                )}
               </label>
             </div>
           </div>
@@ -201,6 +274,15 @@ const ProfileCard = () => {
           )}
         </div>
       </div>
+
+      {/* Backcover Image Selection Modal */}
+      <BackcoverImageModal
+        isOpen={isBackcoverModalOpen}
+        onClose={() => setIsBackcoverModalOpen(false)}
+        onImageSelect={handleLibraryImageSelect}
+        onUploadSelect={handleUploadSelect}
+        uploading={uploadingCover}
+      />
     </>
   );
 };

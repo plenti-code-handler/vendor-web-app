@@ -4,9 +4,12 @@ import axiosClient from '../../AxiosClient';
 // Async thunk to fetch vendor details
 export const fetchVendorDetails = createAsyncThunk(
   'vendor/fetchVendorDetails',
-  async (_, { rejectWithValue }) => {
+  async (token, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem("token");
+      if (!token) {
+        token = localStorage.getItem("token");
+      }
+      console.log("fetching vendor details", token);
       const response = await axiosClient.get("/v1/vendor/me/get", {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -93,6 +96,17 @@ const vendorSlice = createSlice({
   name: 'vendor',
   initialState,
   reducers: {
+    logoutVendor: (state) => {
+      state.vendorData = null;
+      state.loading = false;
+      state.error = null;
+      state.isOnline = false;
+      state.isActive = false;
+      state.emailVerified = false;
+      state.bankAccountDetails = null;
+      state.bankAccountLoading = false;
+      state.bankAccountError = null;
+    },
     clearVendorData: (state) => {
       state.vendorData = null;
       state.loading = false;
@@ -183,6 +197,7 @@ const vendorSlice = createSlice({
 });
 
 export const { 
+  logoutVendor,
   clearVendorData, 
   setVendorOnlineStatus, 
   setVendorActiveStatus, 

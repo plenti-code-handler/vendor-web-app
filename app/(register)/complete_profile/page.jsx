@@ -68,7 +68,17 @@ function Page() {
         { 
           types: ["geocode", "establishment"],
           componentRestrictions: { country: "IN" }, // Restrict to India
-          fields: ["formatted_address", "geometry", "place_id", "name"]
+          fields: [
+            "formatted_address", 
+            "geometry", 
+            "place_id", 
+            "name",
+            "url",                   
+            "website",               
+            "place_id",              
+            "business_status",       
+            "types"                  
+          ]
         }
       );
 
@@ -93,7 +103,7 @@ function Page() {
           setMapUrl(embedUrl);
 
           // Generate Google Maps URL for address_url
-          const googleMapsUrl = `https://www.google.com/maps/place/${encodeURIComponent(formattedAddress)}/@${latitude},${longitude},15z`;
+          psUrl = place.url || `https://www.google.com/maps/place/${encodeURIComponent(formattedAddress)}/@${latitude},${longitude},15z`;
           setGoogleMapsUrl(googleMapsUrl);
           
           console.log("Google Maps URL:", googleMapsUrl);

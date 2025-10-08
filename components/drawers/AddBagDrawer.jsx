@@ -36,7 +36,7 @@ import SubmitButton from './components/SubmitButton';
 
 const AddBagDrawer = () => {
   const dispatch = useDispatch();
-  const [selectedBag, setSelectedBag] = useState("MEAL");
+  const [selectedBag, setSelectedBag] = useState("");
   const [selectedAllergens, setSelectedAllergens] = useState([]);
   const [isVeg, setIsVeg] = useState(true);
   const [isNonVeg, setIsNonVeg] = useState(false);

@@ -17,15 +17,15 @@ import {
   EyeSlashIcon
 } from "@heroicons/react/24/outline";
 import { fetchCatalogue } from "../../../redux/slices/catalogueSlice";
+import { fetchVendorDetails, selectVendorData } from "../../../redux/slices/vendorSlice";
 const LoginForm = () => {
   const dispatch = useDispatch();
   const router = useRouter();
-  const { user: stateUser } = useSelector((state) => state.loggedInUser);
-
   const [loading, setLoading] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [focusedField, setFocusedField] = useState(null);
+  const vendorData = useSelector(selectVendorData);
 
   const {
     register,
@@ -50,50 +50,34 @@ const LoginForm = () => {
     try {
       // Step 1: Login and get token
       const response = await axiosClient.post("/v1/vendor/me/login", loginData);
-
-      console.log(response);
+      
       if (response.status === 200) {
-        console.log("Success message ");
         const { access_token } = response.data;
         localStorage.setItem("token", access_token);
-        dispatch(fetchCatalogue());
+        
+        const vendorResult = await dispatch(fetchVendorDetails(access_token)).unwrap();
 
-        // Step 2: Get vendor details to check is_active
-        try {
-          const vendorResponse = await axiosClient.get("/v1/vendor/me/get", {
-            headers: {
-              Authorization: `Bearer ${access_token}`,
-            },
-          });
-
-          const vendorData = vendorResponse.data;
-          console.log("Vendor data:", vendorData);
-
-          // Step 3: Check is_active and route accordingly
-          if (!vendorData.is_active) {
-            console.log("Vendor account is not active, redirecting to processing page");
-            toast.info("Your account is under review. You'll be notified once approved.");
-            router.push("/accountProcessing");
-            return;
-          }
-
-          // Step 4: Store user data and redirect to business dashboard
-          localStorage.setItem("user", JSON.stringify(vendorData));
-          localStorage.setItem("logo", vendorData.logo_url);
-          
-          // Update Redux state if needed
-          dispatch(loginUser(vendorData));
-          
-          toast.success("Login successful!");
-          router.push("/business");
-        } catch (vendorError) {
-          console.error("Error fetching vendor details:", vendorError);
-          toast.error("Failed to verify account status. Please try again.");
+        // Step 3: Check is_active and route accordingly
+        if (!vendorResult.is_active) {
+          console.log("Vendor account is not active, redirecting to processing page");
+          toast.info("Your account is under review. You'll be notified once approved.");
+          router.push("/accountProcessing");
+          return;
         }
+
+        // Step 4: Store user data and fetch catalogue
+        localStorage.setItem("user", JSON.stringify(vendorResult));
+        localStorage.setItem("logo", vendorResult.logo_url);
+        
+        dispatch(fetchCatalogue(access_token));
+        
+        toast.success("Login successful!");
+        router.push("/business");
       }
     } catch (error) {
       setShowAlert(true);
-      
+      console.error("Error fetching vendor details:", error);
+      toast.error("Failed to verify account status. Please try again.");
       console.log(error);
       
       // Better error handling
