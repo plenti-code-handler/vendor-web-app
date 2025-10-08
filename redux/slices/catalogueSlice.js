@@ -4,15 +4,17 @@ import axiosClient from '../../AxiosClient';
 // Async thunk to fetch catalogue
 export const fetchCatalogue = createAsyncThunk(
   'catalogue/fetchCatalogue',
-  async (_, { rejectWithValue }) => {
+  async (token, { rejectWithValue }) => {
+    console.log("fetching catalogue");
     try {
-      const token = localStorage.getItem("token");
+      if (!token) {
+        token = localStorage.getItem("token");
+      }
       const response = await axiosClient.get("/v1/vendor/catalogue/get", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log(response.data, "response.data");
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Failed to fetch catalogue');

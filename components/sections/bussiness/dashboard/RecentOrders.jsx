@@ -6,6 +6,10 @@ import OrdersFilter from "../../../dropdowns/OrdersFilter";
 import { formatTimestamp, formatTime, formatDateTime } from "../../../../utility/FormateTime";
 import { EyeIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { ShieldCheckIcon } from "@heroicons/react/20/solid";
+import DietIcon from "../../../common/DietIcon";
+import BagSizeTag from "../../../common/BagSizeTag";
+import OrderDetailsModal from "../../../modals/OrderDetailsModal";
+import { ITEM_TYPE_DISPLAY_NAMES } from "../../../../constants/itemTypes";
 
 const RecentOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -120,6 +124,7 @@ const RecentOrders = () => {
 
   const openModal = async (orderId) => {
     setLoadingOrderId(orderId);
+    console.log(localStorage.getItem("token"), "vendor_id!!!!")
     try {
       const response = await axiosClient.get(
         `/v1/vendor/order/${orderId}/items`
@@ -150,19 +155,20 @@ const RecentOrders = () => {
         <table className="w-full min-w-[800px] table-fixed">
           <thead>
             <tr className="border-b text-xs font-semibold text-gray-500 uppercase">
-              <th className="pb-2 px-2 pt-4 text-center w-1/7">User Name</th>
-              <th className="pb-2 px-2 pt-4 text-center w-1/7">Phone</th>
-              <th className="pb-2 px-2 pt-4 text-center w-1/7">Amount</th>
-              <th className="pb-2 px-2 pt-4 text-center w-1/7">Allergens</th>
-              <th className="pb-2 px-2 pt-4 text-center w-1/7">Created At</th>
-              <th className="pb-2 px-2 pt-4 text-center w-1/7">Status</th>
-              <th className="pb-2 text-center pt-4 w-1/7">Action</th>
+              <th className="pb-2 px-2 pt-4 text-center w-[12%]">User Name</th>
+              <th className="pb-2 px-2 pt-4 text-center w-[10%]">Phone</th>
+              <th className="pb-2 px-2 pt-4 text-center w-[8%]">Amount</th>
+              <th className="pb-2 px-2 pt-4 text-center w-[22%]">Items</th>
+              <th className="pb-2 px-2 pt-4 text-center w-[12%]">Allergens</th>
+              <th className="pb-2 px-2 pt-4 text-center w-[12%]">Created At</th>
+              <th className="pb-2 px-2 pt-4 text-center w-[12%]">Status</th>
+              <th className="pb-2 text-center pt-4 w-[12%]">Action</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan="7" className="text-center py-8 text-gray-400">
+                <td colSpan="8" className="text-center py-8 text-gray-400">
                   Loading...
                 </td>
               </tr>
@@ -183,6 +189,29 @@ const RecentOrders = () => {
                   </td>
                   <td className="text-center px-2 text-sm font-semibold text-blue-700">
                     ₹ {order.transaction_amount}
+                  </td>
+                  <td className="text-center px-1 py-2">
+                    {order.checkout_items && order.checkout_items.length > 0 ? (
+                      <div className="flex flex-col items-center space-y-1">
+                        {order.checkout_items.map((item, idx) => (
+                          <div key={idx} className="flex items-center gap-1 text-[10px] leading-tight whitespace-nowrap">
+                            <DietIcon diet={item.diet} size="xs" />
+                            <span className="flex items-center gap-1">
+                              <span className="font-medium">{item.quantity}X</span>
+                              <span className="text-gray-600">{ITEM_TYPE_DISPLAY_NAMES[item.item_type] || item.item_type}</span>
+                              <BagSizeTag 
+                                bagSize={item.bag_size} 
+                                showIcon={false}
+                                showWorth={true}
+                                itemType={item.item_type}
+                              />
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <span className="text-gray-400 text-[10px]">No items</span>
+                    )}
                   </td>
                   <td className="text-center px-2 text-xs py-2">
                     {order.allergens && order.allergens.length > 0 ? (
@@ -272,7 +301,7 @@ const RecentOrders = () => {
               ))
             ) : (
               <tr>
-                <td colSpan="7" className="text-center py-8 text-gray-400">
+                <td colSpan="8" className="text-center py-8 text-gray-400">
                   No orders found.
                 </td>
               </tr>
@@ -306,105 +335,11 @@ const RecentOrders = () => {
       )}
 
       {/* Order Details Modal */}
-      {modalOpen && selectedItem?.items?.length > 0 && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-          <div className="w-full max-w-3xl rounded-2xl bg-white shadow-2xl overflow-hidden flex flex-col">
-            {/* Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b">
-              <h2 className="text-xl font-semibold text-gray-900">Order Details</h2>
-              <button onClick={() => setModalOpen(false)}>
-                <XMarkIcon className="h-6 w-6 text-gray-400 hover:text-gray-900" />
-              </button>
-            </div>
-            {/* Scrollable Items */}
-            <div className="overflow-y-auto max-h-[70vh] px-6 py-4 space-y-6">
-              {selectedItem.items.map((item, index) => (
-                <div key={item.item_id || index} className="rounded-xl border border-gray-100 shadow-sm p-4 flex flex-col md:flex-row gap-4 bg-gray-50">
-                  <img
-                    src={item.image_url}
-                    alt="Item"
-                    className="h-32 w-32 object-cover rounded-lg border"
-                  />
-                  <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2 text-sm">
-                    <div>
-                      <span className="font-medium text-gray-700">Type:</span>{" "}
-                      <span className="text-gray-900">{item.item_type.replace(/_/g, " ")}</span>
-                    </div>
-                    <div>
-                      <span className="font-medium text-gray-700">Description:</span>{" "}
-                      <span className="text-gray-900">{item.description}</span>
-                    </div>
-                    <div>
-                      <span className="font-medium text-gray-700">Tags:</span>{" "}
-                      <span className="text-gray-900">
-                        {item.tags?.map(
-                          (tag) =>
-                            tag.charAt(0).toUpperCase() + tag.slice(1).toLowerCase()
-                        ).join(", ") || "N/A"}
-                      </span>
-                    </div>
-                    <div>
-                      <span className="font-medium text-gray-700">Diet:</span>{" "}
-                      <span className="text-gray-900">{item.diet}</span>
-                    </div>
-                    <div>
-                      <span className="font-medium text-gray-700">Quantity:</span>{" "}
-                      <span className="text-gray-900">{item.quantity}</span>
-                    </div>
-                    <div>
-                      <span className="font-medium text-gray-700">Price:</span>{" "}
-                      <span className="text-gray-900">₹{item.price}</span>
-                    </div>
-                    <div>
-                      <span className="font-medium text-gray-700">Bag Size:</span>{" "}
-                      <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-semibold ${
-                        item.bag_size === 'SMALL' 
-                          ? 'bg-blue-100 text-blue-700' 
-                          : item.bag_size === 'MEDIUM' 
-                          ? 'bg-yellow-100 text-yellow-700' 
-                          : 'bg-green-100 text-green-700'
-                      }`}>
-                        {item.bag_size === 'SMALL' && '👜'}
-                        {item.bag_size === 'MEDIUM' && '🛍️'}
-                        {item.bag_size === 'LARGE' && '🛒'}
-                        {' '}{item.bag_size}
-                      </span>
-                    </div>
-                    <div>
-                      <span className="font-medium text-gray-700">Best Before:</span>{" "}
-                      <span className="inline-block px-3 py-1 rounded-lg text-gray-900 font-medium" style={{
-                        background: 'linear-gradient(135deg, #EFE5FF 0%, #DAC4FF 100%)'
-                      }}>
-                        {item.best_before_time 
-                          ? formatTime(item.best_before_time)
-                          : formatTime(item.window_end_time + 3600) // Add 1 hour (3600 seconds)
-                        }
-                      </span>
-                    </div>
-                    <div>
-                      <span className="font-medium text-gray-700">Window Start:</span>{" "}
-                      <span className="text-gray-900">{formatTime(item.window_start_time)}</span>
-                    </div>
-                    <div>
-                      <span className="font-medium text-gray-700">Window End:</span>{" "}
-                      <span className="text-gray-900">{formatTime(item.window_end_time)}</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-            {/* Footer */}
-            <div className="flex justify-end px-6 py-4 border-t bg-gray-50">
-              <button
-                onClick={() => setModalOpen(false)}
-                className="px-6 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors duration-200 font-medium"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <OrderDetailsModal 
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        orderDetails={selectedItem}
+      />
 
       {/* OTP Verify Modal */}
       {verifyModalOpen && (
@@ -414,7 +349,7 @@ const RecentOrders = () => {
             <div className="flex items-center justify-between px-6 py-4 border-b">
               <h2 className="text-xl font-semibold text-gray-900">Enter Order Code</h2>
               <button onClick={() => setVerifyModalOpen(false)}>
-                <XMarkIcon className="h-6 w-6 text-gray-400 hover:text-gray-900" />
+                x
               </button>
             </div>
             {/* OTP Inputs */}

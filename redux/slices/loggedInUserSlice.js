@@ -100,6 +100,7 @@ export const loggedInUserSlice = createSlice({
       state.user = null;
       localStorage.removeItem("user");
       localStorage.removeItem("countryCode");
+      localStorage.removeItem("token");
     },
   },
   extraReducers: (builder) => {

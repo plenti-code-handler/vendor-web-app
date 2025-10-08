@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
-import { logoutUser } from "../../redux/slices/loggedInUserSlice";
+import { logoutVendor } from "../../redux/slices/vendorSlice";
 import { logoutIconSvg } from "../../svgs";
 import { toast } from "sonner";
 
@@ -20,7 +20,7 @@ const ProfileDropdown = () => {
 
   const handleLogout = async () => {
     toast.success("Signed Out Successfully!");
-    dispatch(logoutUser());
+    dispatch(logoutVendor());
     router.push("/");
     localStorage.clear();
     setIsDropdownOpen(false);

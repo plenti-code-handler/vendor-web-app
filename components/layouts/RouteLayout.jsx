@@ -11,7 +11,6 @@ import {
 
 export const RouteLayout = ({ children }) => {
     const [isClient, setIsClient] = useState(false);
-    const { user: loggedInUser } = useSelector((state) => state.loggedInUser);
     const pathname = usePathname();
     const router = useRouter();
 

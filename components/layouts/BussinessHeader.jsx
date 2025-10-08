@@ -11,7 +11,6 @@ import ProfileDropdown from "../dropdowns/ProfileDropdown";
 import { setActivePage } from "../../redux/slices/headerSlice";
 import { appLogoUrl } from "../../lib/constant_data";
 import { menuItemsData } from "../../lib/business_menu";
-import { logoutUser } from "../../redux/slices/loggedInUserSlice";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -33,7 +32,7 @@ const BussinessHeader = () => {
         
         if (!token) {
           console.log("No token found");
-          router.push("/vendor/login");
+          router.push("/");
           return;
         }
 
@@ -62,7 +61,7 @@ const BussinessHeader = () => {
         console.error("Error loading user info:", error);
         if (error.response?.status === 401) {
           localStorage.removeItem("token");
-          router.push("/vendor/login");
+          router.push("/");
         }
         toast.error("Failed to load user information");
       } finally {
@@ -106,13 +105,6 @@ const BussinessHeader = () => {
     dispatch(setActivePage(page));
   };
 
-  const handleLogout = async () => {
-    // await auth.signOut();
-    toast.success("Signed Out Successfully!");
-    dispatch(logoutUser());
-    router.push("/");
-    localStorage.clear();
-  };
 
   useEffect(() => {
     if (isMenuOpen) {
