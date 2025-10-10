@@ -6,6 +6,7 @@ import axiosClient from "../../../../AxiosClient";
 
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
+  loading: () => <div className="flex justify-center items-center h-[350px]">Loading chart...</div>
 });
 
 const RevenueChart = () => {
