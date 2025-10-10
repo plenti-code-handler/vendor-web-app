@@ -103,7 +103,7 @@ function Page() {
           setMapUrl(embedUrl);
 
           // Generate Google Maps URL for address_url
-          psUrl = place.url || `https://www.google.com/maps/place/${encodeURIComponent(formattedAddress)}/@${latitude},${longitude},15z`;
+          const googleMapsUrl = place.url || `https://www.google.com/maps/place/${encodeURIComponent(formattedAddress)}/@${latitude},${longitude},15z`;
           setGoogleMapsUrl(googleMapsUrl);
           
           console.log("Google Maps URL:", googleMapsUrl);
