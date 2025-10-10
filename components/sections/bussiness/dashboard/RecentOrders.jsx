@@ -105,7 +105,10 @@ const RecentOrders = () => {
         }
       }
     } catch (error) {
-      toast.error("Failed to fetch orders");
+      // if error code is not 403
+      if (error.response.status !== 403) {
+        toast.error("Failed to fetch orders");
+      }
     } finally {
       setLoading(false);
       setLoadingMore(false);
