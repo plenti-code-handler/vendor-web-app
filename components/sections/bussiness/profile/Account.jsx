@@ -58,8 +58,6 @@ const Account = () => {
   // Update form data when vendor data is loaded
   useEffect(() => {
     if (vendorData) {
-      console.log("Vendor details");
-      console.log(vendorData);
       setOriginalData(vendorData);
       setFormData({
         vendor_name: vendorData.vendor_name || "",

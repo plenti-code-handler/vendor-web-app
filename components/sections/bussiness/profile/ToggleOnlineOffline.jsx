@@ -1,13 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Wifi, WifiOff } from "lucide-react";
 import axiosClient from "../../../../AxiosClient";
 import { toast } from "sonner";
 
-export default function OnlineOfflineToggle() {
-  const [isOnline, setIsOnline] = useState(true);
+export default function OnlineOfflineToggle({ status }) {
+  const [isOnline, setIsOnline] = useState(status || false);
   const [isAnimating, setIsAnimating] = useState(false);
+
+  // Update state when status prop changes
+  useEffect(() => {
+    setIsOnline(status || false);
+  }, [status]);
 
   const toggleStatus = async () => {
     setIsAnimating(true);
@@ -25,9 +30,10 @@ export default function OnlineOfflineToggle() {
         }
       );
 
-      setIsOnline((prev) => !prev);
+      const newStatus = response.data.status;
+      setIsOnline(newStatus);
 
-      toast.success(`Status updated to ${!isOnline ? "online" : "offline"}`);
+      toast.success(`Status updated to ${newStatus ? "online" : "offline"}`);
     } catch (err) {
       console.error("Error updating status:", err);
       toast.error("Failed to update status");
