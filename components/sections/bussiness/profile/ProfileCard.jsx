@@ -259,7 +259,7 @@ const ProfileCard = () => {
             </div>
           </div>
           <div className="w-full flex justify-end">
-            <OnlineOfflineToggle />
+            <OnlineOfflineToggle status={vendorData?.is_online} />
           </div>
         </div>
 
