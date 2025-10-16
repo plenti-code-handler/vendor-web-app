@@ -91,7 +91,7 @@ const PaymentInfo = () => {
       console.log("bank account data", bankAccountDetails);
       
       if (bankAccountDetails?.account_number) {
-        setAccountNumber('******* ' + bankAccountDetails.account_number);
+        setAccountNumber('******* ' + bankAccountDetails.account_number.slice(-4));
         setIfscCode(bankAccountDetails.ifsc_code);
         setBankName(bankAccountDetails.bank_name);
         setAccountHolder(bankAccountDetails.account_holder_name);
@@ -160,7 +160,13 @@ const PaymentInfo = () => {
                 <div className="flex items-center gap-3">
                   <StatusTag status={status} />
                   <button
-                    onClick={() => setView("addCard")}
+                    onClick={() => {
+                      setAccountHolder("");
+                      setAccountNumber("");
+                      setIfscCode("");
+                      setBankName("");
+                      setView("addCard");
+                    }}
                     className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-full hover:bg-[#7e45ee] transition-colors"
                   >
                     <PencilIcon className="w-4 h-4" />
@@ -208,7 +214,7 @@ const PaymentInfo = () => {
           )}
 
           {view === "addCard" && (
-            <div className="bg-white p-6 w-full border rounded-full shadow">
+            <div className="bg-white p-6 w-full border rounded-lg shadow">
               <h2 className="text-xl font-semibold mb-4">
                 Add / Edit Bank Details
               </h2>
@@ -259,9 +265,20 @@ const PaymentInfo = () => {
 
               <div className="flex gap-4">
                 <button
-                  onClick={() =>
-                    setView(accountNumber ? "linkedBank" : "initial")
-                  }
+                  onClick={() => {
+                    if (bankAccountDetails?.account_number) {
+                      // Restore original values
+                      setAccountNumber('******* ' + bankAccountDetails.account_number.slice(-4));
+                      setIfscCode(bankAccountDetails.ifsc_code);
+                      setBankName(bankAccountDetails.bank_name);
+                      setAccountHolder(bankAccountDetails.account_holder_name);
+                      setStatus(bankAccountDetails.status || "");
+                      setView("linkedBank");
+                    } else {
+                      // No bank details exist, go to initial
+                      setView("initial");
+                    }
+                  }}
                   className="w-full bg-gray-300 text-black px-4 py-2 rounded-lg hover:bg-gray-400 transition"
                 >
                   Cancel

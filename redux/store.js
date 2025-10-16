@@ -17,6 +17,7 @@ import couponReducer from "./slices/couponSlice";
 import addCouponReducer from "./slices/addCouponSlice";
 import catalogueReducer from "./slices/catalogueSlice";
 import vendorReducer from "./slices/vendorSlice";
+import itemImageReducer from "./slices/itemImageSlice";
 
 export const store = configureStore({
   reducer: {
@@ -38,6 +39,7 @@ export const store = configureStore({
     addCoupon: addCouponReducer,
     catalogue: catalogueReducer,
     vendor: vendorReducer,
+    itemImage: itemImageReducer,
   },
   devTools: process.env.NODE_ENV !== "production",
 });
