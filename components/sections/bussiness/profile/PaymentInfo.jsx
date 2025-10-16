@@ -133,7 +133,7 @@ const PaymentInfo = () => {
 
   return (
     <div className="flex flex-col justify-center p-6 w-full ">
-      {bankAccountLoading && !fetchedOnce ? (
+      {bankAccountLoading ? (
         <Loader />
       ) : (
         <>
