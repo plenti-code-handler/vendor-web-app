@@ -166,7 +166,7 @@ const RevenueChart = () => {
 
   const getDisplayValue = () => {
     if (chartType === "revenue") {
-      return totalRevenue ? totalRevenue : "0";
+      return totalRevenue ? totalRevenue.toFixed(2) : "0";
     } else {
       return totalOrders ? totalOrders : "0";
     }

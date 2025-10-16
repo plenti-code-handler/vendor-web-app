@@ -24,6 +24,12 @@ const Transactions = () => {
   const [payouts, setPayouts] = useState([]);
   const [activeTab, setActiveTab] = useState("transactions");
   const [loading, setLoading] = useState(true);
+  const [paymentBreakdown, setPaymentBreakdown] = useState({
+    total_captured_payments: 0,
+    total_refund_payments: 0,
+    total_payouts: 0,
+    balance: 0
+  });
 
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -45,7 +51,17 @@ const Transactions = () => {
 
   useEffect(() => {
     dispatch(fetchBalance());
+    fetchPaymentBreakdown();
   }, [dispatch]);
+
+  const fetchPaymentBreakdown = async () => {
+    try {
+      const response = await axiosClient.get("/v1/vendor/me/balance");
+      setPaymentBreakdown(response.data);
+    } catch (error) {
+      console.error("Error fetching payment breakdown:", error);
+    }
+  };
 
   // useEffect(() => {
   //   const fetchBalance = async () => {
@@ -119,15 +135,26 @@ const Transactions = () => {
         <div className="absolute top-[0%] left-[15%] -z-0">
           {topLeftWalletBackground}
         </div>
-        <p className="text-[40px] font-bold text-white z-0">
-          {Number(balance).toFixed(2)}{" "}
-          <span className="text-base ml-1">INR ₹</span>
+        {/* Wallet Balance Title */}
+        <p className="text-xs text-white/60 font-medium uppercase tracking-wider z-0 mb-2">My Wallet Balance</p>
+        
+        {/* Main Balance Amount - Center Focus */}
+        <p className="text-5xl font-bold text-white z-0 mb-3">
+          ₹{Number(balance).toFixed(2)}
         </p>
-        <p className="text-base font-medium text-white z-0">My Wallet</p>
+
+        {/* Payment Breakdown - Subtle */}
+        <div className="flex items-center gap-1.5 z-0 mb-4 text-xs text-white/50">
+          <span className="border border-white/20 rounded-lg px-2 py-1 text-white/80">₹{Number(paymentBreakdown.total_captured_payments).toFixed(2)} (Revenue)</span>
+          <span>−</span>
+          <span className="border border-white/20 rounded-lg px-2 py-1 text-white/80">₹{Number(paymentBreakdown.total_refund_payments).toFixed(2)} (Refunds)</span>
+          <span>−</span>
+          <span className="border border-white/20 rounded-lg px-2 py-1 text-white/80">₹{Number(paymentBreakdown.total_payouts).toFixed(2)} (Payouts)</span>
+        </div>
 
         <button
           onClick={handleWithdraw}
-          className="flex justify-center items-center bg-black/5 text-white font-medium rounded hover:bg-primary p-2 mt-4 z-0"
+          className="flex justify-center items-center bg-white/10 backdrop-blur-sm border border-white/20 text-white font-medium rounded-lg hover:bg-white/20 px-4 py-2 z-0 transition-all duration-200"
         >
           {withdrawAmountSvg}
           <span className="ml-2">Withdraw Amount</span>
