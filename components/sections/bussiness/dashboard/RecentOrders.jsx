@@ -4,7 +4,7 @@ import axiosClient from "../../../../AxiosClient";
 import { toast } from "sonner";
 import OrdersFilter from "../../../dropdowns/OrdersFilter";
 import { formatTimestamp, formatTime, formatDateTime } from "../../../../utility/FormateTime";
-import { EyeIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { EyeIcon, XMarkIcon, ArrowPathIcon } from "@heroicons/react/24/outline";
 import { ShieldCheckIcon } from "@heroicons/react/20/solid";
 import DietIcon from "../../../common/DietIcon";
 import BagSizeTag from "../../../common/BagSizeTag";
@@ -127,7 +127,6 @@ const RecentOrders = () => {
 
   const openModal = async (orderId) => {
     setLoadingOrderId(orderId);
-    console.log(localStorage.getItem("token"), "vendor_id!!!!")
     try {
       const response = await axiosClient.get(
         `/v1/vendor/order/${orderId}/items`
@@ -151,7 +150,24 @@ const RecentOrders = () => {
     <div className="mt-4 w-full border border-gray-200 rounded-2xl bg-white shadow-sm p-6 sm:px-4">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <h2 className="text-xl font-bold text-gray-900">Recent Orders</h2>
-        <OrdersFilter selectedFilter={filter} onFilterChange={setFilter} />
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => fetchRecentOrders(true)}
+            disabled={loading}
+            className={`p-2 rounded-lg transition-all duration-200 flex items-center gap-2 ${
+              loading
+                ? "bg-purple-50 cursor-not-allowed"
+                : "bg-purple-50 hover:bg-purple-100 hover:shadow-sm active:scale-95"
+            } border border-purple-200`}
+            title="Refresh orders"
+          >
+            <ArrowPathIcon
+              className={`h-5 w-5 text-purple-600 ${loading ? "animate-spin" : ""}`}
+            />
+            <p className="text-sm text-purple-600">Refresh</p>
+          </button>
+          <OrdersFilter selectedFilter={filter} onFilterChange={setFilter} />
+        </div>
       </div>
 
       <div className="w-full overflow-x-auto">
