@@ -143,7 +143,7 @@ const WithdrawAmountDrawer = ({ balance }) => {
                   <div className="space-y-2">
                     <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Quick Select</p>
                     <div className="grid grid-cols-4 gap-2">
-                      {[100, 500, 1000, 2000].map((quickAmount) => (
+                      {[2000, 5000, 10000, 20000].map((quickAmount) => (
                         <button
                           key={quickAmount}
                           onClick={() => setAmount(quickAmount.toString())}

@@ -5,7 +5,7 @@ import axiosClient from '../../AxiosClient';
 export const fetchCatalogue = createAsyncThunk(
   'catalogue/fetchCatalogue',
   async (token, { rejectWithValue }) => {
-    console.log("fetching catalogue");
+
     try {
       if (!token) {
         token = localStorage.getItem("token");
@@ -15,6 +15,7 @@ export const fetchCatalogue = createAsyncThunk(
           Authorization: `Bearer ${token}`,
         },
       });
+      console.log("catalogue response", response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Failed to fetch catalogue');

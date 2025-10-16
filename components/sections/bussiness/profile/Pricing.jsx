@@ -326,7 +326,7 @@ const Pricing = () => {
                         <div className="flex items-center space-x-1 text-indigo-800 px-2 py-1 rounded-md bg-gradient-to-r from-indigo-100 to-indigo-200">
                           <ClockIcon className="w-3 h-3" />
                           <span className="text-xs font-medium">
-                            Your request for ASP update of ₹{hasPendingRequest} is being processed..
+                            Your request for ASP update of ₹{hasPendingRequest} is under review.
                           </span>
                         </div>
                       )}

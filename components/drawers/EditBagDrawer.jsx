@@ -12,7 +12,7 @@ import { toast } from "sonner";
 import { setOpenDrawer } from "../../redux/slices/editBagSlice";
 import { fetchAllBags } from "../../redux/slices/bagsSlice";
 import InfoIcon from '../common/InfoIcon';
-import { useVendorData } from '../../hooks/useVendorData';
+import { selectVendorData } from '../../redux/slices/vendorSlice';
 import { 
   getRequiredFields, 
   validateTimeConstraints, 
@@ -47,9 +47,8 @@ const EditBagDrawer = () => {
   const [showCustomDescription, setShowCustomDescription] = useState(false);
   const { bagToEdit } = useSelector((state) => state.editBag);
   const { itemTypes } = useSelector((state) => state.catalogue);
-  
-  // Use custom hook for vendor data
-  const { availableDescriptions } = useVendorData();
+  const vendorData = useSelector(selectVendorData);
+  const availableDescriptions = vendorData?.item_descriptions || [];
 
   useEffect(() => {
     if (bagToEdit) {

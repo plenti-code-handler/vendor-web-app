@@ -14,7 +14,7 @@ import { toast } from "sonner";
 import { fetchAllBags } from "../../redux/slices/bagsSlice";
 import { fetchCatalogue } from "../../redux/slices/catalogueSlice";
 import InfoIcon from '../common/InfoIcon';
-import { useVendorData } from '../../hooks/useVendorData';
+import { selectVendorData } from '../../redux/slices/vendorSlice';
 import { 
   getRequiredFields, 
   validateTimeConstraints, 
@@ -50,9 +50,10 @@ const AddBagDrawer = () => {
   const [showCustomDescription, setShowCustomDescription] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   
-  // Use custom hook for vendor data
-  const { availableDescriptions } = useVendorData();
+  // Get vendor data and catalogue from Redux
+  const vendorData = useSelector(selectVendorData);
   const { itemTypes } = useSelector((state) => state.catalogue);
+  const availableDescriptions = vendorData?.item_descriptions || [];
 
   // Fetch catalogue data
   useEffect(() => {

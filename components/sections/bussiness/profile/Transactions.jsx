@@ -138,10 +138,6 @@ const Transactions = () => {
         {/* Wallet Balance Title */}
         <p className="text-xs text-white/60 font-medium uppercase tracking-wider z-0 mb-2">My Wallet Balance</p>
         
-        {/* Main Balance Amount - Center Focus */}
-        <p className="text-5xl font-bold text-white z-0 mb-3">
-          ₹{Number(balance).toFixed(2)}
-        </p>
 
         {/* Payment Breakdown - Subtle */}
         <div className="flex items-center gap-1.5 z-0 mb-4 text-xs text-white/50">
@@ -150,7 +146,13 @@ const Transactions = () => {
           <span className="border border-white/20 rounded-lg px-2 py-1 text-white/80">₹{Number(paymentBreakdown.total_refund_payments).toFixed(2)} (Refunds)</span>
           <span>−</span>
           <span className="border border-white/20 rounded-lg px-2 py-1 text-white/80">₹{Number(paymentBreakdown.total_payouts).toFixed(2)} (Payouts)</span>
+          <span>=</span>
         </div>
+
+        {/* Main Balance Amount - Center Focus */}
+        <p className="text-5xl font-bold text-white z-0 mb-3">
+          ₹{Number(balance).toFixed(2)}
+        </p>
 
         <button
           onClick={handleWithdraw}
