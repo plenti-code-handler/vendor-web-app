@@ -271,7 +271,7 @@ const PriceDecision = () => {
                       {categories.find(c => c.id === activeTab)?.name} Pricing
                     </h2>
                     <p className="text-gray-600">
-                      Based on your average selling price of ₹${currentAveragePrice}
+                      Based on your average selling price of ₹{currentAveragePrice}
                     </p>
                   </div>
 
