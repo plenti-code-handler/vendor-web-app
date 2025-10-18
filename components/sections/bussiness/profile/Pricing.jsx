@@ -179,32 +179,6 @@ const Pricing = () => {
       if (response.status === 200) {
         toast.success('Pricing update request submitted successfully!');
         dispatch(fetchCatalogue());
-        // Refresh pending requests after successful submission
-        setTimeout(() => {
-          const fetchPendingRequests = async () => {
-            try {
-              const response = await axiosClient.get('/v1/vendor/catalogue/get_request');
-              if (response.status === 200 && response.data) {
-                const requestData = response.data;
-                const pending = {};
-                
-                ALL_ITEM_TYPES.forEach(itemType => {
-                  const currentASP = localItemTypes[itemType]?.asp;
-                  const requestedASP = requestData.item_types?.[itemType]?.asp;
-                  
-                  if (requestedASP && currentASP !== requestedASP) {
-                    pending[itemType] = requestedASP;
-                  }
-                });
-                
-                setPendingRequests(pending);
-              }
-            } catch (error) {
-              setPendingRequests({});
-            }
-          };
-          fetchPendingRequests();
-        }, 1000);
       } else {
         toast.error('Failed to submit pricing update request');
       }
@@ -326,7 +300,7 @@ const Pricing = () => {
                         <div className="flex items-center space-x-1 text-indigo-800 px-2 py-1 rounded-md bg-gradient-to-r from-indigo-100 to-indigo-200">
                           <ClockIcon className="w-3 h-3" />
                           <span className="text-xs font-medium">
-                            Your request for ASP update of ₹{hasPendingRequest} is under review.
+                            Your request for ASP update of ₹{hasPendingRequest} is pending.
                           </span>
                         </div>
                       )}
