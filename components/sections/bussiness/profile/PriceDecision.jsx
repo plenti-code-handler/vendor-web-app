@@ -6,18 +6,14 @@ import { toast } from 'sonner';
 import axiosClient from '../../../../AxiosClient';
 import { 
   ArrowLeftIcon,
-  CurrencyDollarIcon,
   CalculatorIcon,
-  SparklesIcon,
   CurrencyRupeeIcon,
-  InformationCircleIcon
 } from '@heroicons/react/24/outline';
 import { getCategoriesForUI, ITEM_TYPES } from '../../../../constants/itemTypes';
 import { calculatePrices, getTierInfo } from '../../../../utility/priceCalculations';
 import PriceCard from './PriceCard';
 import PayoutThresholdSection from './PayoutThresholdSection';
 import CategorySelection from './CategorySelection';
-import { SmallBagIcon, MediumBagIcon, LargeBagIcon } from '../../../../svgs';
 
 const PriceDecision = () => {
   const router = useRouter();
@@ -26,7 +22,6 @@ const PriceDecision = () => {
   const [activeTab, setActiveTab] = useState(ITEM_TYPES.MEAL);
   const [averagePrices, setAveragePrices] = useState({});
   const [showCards, setShowCards] = useState(false);
-  const [showSnacksInfo, setShowSnacksInfo] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Dynamic categories from constants
@@ -52,7 +47,6 @@ const PriceDecision = () => {
   const handleBack = () => {
     setStep(1);
     setShowCards(false);
-    setShowSnacksInfo(false);
   };
 
   const handleSubmit = async () => {
@@ -80,11 +74,7 @@ const PriceDecision = () => {
       selectedCategories.forEach(categoryId => {
         let asp = 0;
         
-        if (categoryId === ITEM_TYPES.SNACKS_AND_DESSERT) {
-          asp = 100; // Fixed ASP for snacks
-        } else {
-          asp = averagePrices[categoryId] || 0;
-        }
+        asp = averagePrices[categoryId] || 0;
 
         // Calculate prices for this category
         const prices = calculatePrices(asp, categoryId);
@@ -137,13 +127,6 @@ const PriceDecision = () => {
 
   // Handle average price change
   const handleAveragePriceChange = (value) => {
-    if (activeTab === ITEM_TYPES.SNACKS_AND_DESSERT) {
-      // Show info message for snacks and desserts
-      setShowSnacksInfo(true);
-      setTimeout(() => setShowSnacksInfo(false), 3000); // Hide after 3 seconds
-      return;
-    }
-    
     setAveragePrices(prev => ({
       ...prev,
       [activeTab]: value
@@ -154,14 +137,10 @@ const PriceDecision = () => {
   const handleCategoryTabChange = (categoryId) => {
     setActiveTab(categoryId);
     setShowCards(false);
-    setShowSnacksInfo(false);
   };
 
   // Check if we should show cards
   const shouldShowCards = () => {
-    if (activeTab === ITEM_TYPES.SNACKS_AND_DESSERT) {
-      return true; // Always show for snacks and desserts
-    }
     return currentAveragePrice && prices;
   };
 
@@ -221,35 +200,15 @@ const PriceDecision = () => {
                         type="number"
                         value={currentAveragePrice}
                         onChange={(e) => handleAveragePriceChange(e.target.value)}
-                        placeholder={activeTab === ITEM_TYPES.SNACKS_AND_DESSERT 
-                          ? "Fixed pricing - no input needed" 
-                          : "Enter your average menu price"
-                        }
-                        className={`w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#5F22D9] focus:border-transparent transition-all duration-200 ${
-                          activeTab === ITEM_TYPES.SNACKS_AND_DESSERT ? 'bg-gray-50 cursor-not-allowed' : ''
-                        }`}
-                        disabled={activeTab === ITEM_TYPES.SNACKS_AND_DESSERT}
+                        placeholder="Enter your average menu price"
+
+                        className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#5F22D9] focus:border-transparent transition-all duration-200"
                       />
                     </div>
                     
-                    {/* Info message for snacks and desserts */}
-                    {showSnacksInfo && (
-                      <div className="flex items-center space-x-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                        <InformationCircleIcon className="w-5 h-5 text-blue-500 flex-shrink-0" />
-                        <p className="text-sm text-blue-700">
-                          Prices are fixed for Snacks & Desserts category
-                        </p>
-                      </div>
-                    )}
-                    
-                    {currentAveragePrice && activeTab !== ITEM_TYPES.SNACKS_AND_DESSERT && (
+                    {currentAveragePrice && (
                       <div className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${tierInfo.color}`}>
                         {tierInfo.name} TIER
-                      </div>
-                    )}
-                    {activeTab === ITEM_TYPES.SNACKS_AND_DESSERT && (
-                      <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                        FIXED PRICING
                       </div>
                     )}
                   </div>
@@ -312,10 +271,7 @@ const PriceDecision = () => {
                       {categories.find(c => c.id === activeTab)?.name} Pricing
                     </h2>
                     <p className="text-gray-600">
-                      {activeTab === ITEM_TYPES.SNACKS_AND_DESSERT 
-                        ? 'Fixed pricing for all vendors'
-                        : `Based on your average selling price of ₹${currentAveragePrice}`
-                      }
+                      Based on your average selling price of ₹${currentAveragePrice}
                     </p>
                   </div>
 
@@ -343,16 +299,10 @@ const PriceDecision = () => {
               <div className="bg-white rounded-2xl shadow-lg p-12 text-center">
                 <CalculatorIcon className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  {activeTab === ITEM_TYPES.SNACKS_AND_DESSERT 
-                    ? 'Snacks & Desserts pricing is ready'
-                    : 'Enter your average price'
-                  }
+                  Enter your average price
                 </h3>
                 <p className="text-gray-600">
-                  {activeTab === ITEM_TYPES.SNACKS_AND_DESSERT
-                    ? 'Fixed pricing is automatically applied'
-                    : 'We\'ll calculate optimal pricing for your selected categories'
-                  }
+                  We\'ll calculate optimal pricing for your selected categories
                 </p>
               </div>
             )}

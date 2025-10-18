@@ -14,14 +14,6 @@ export const roundToNearestNine = (value) => {
 export const calculatePrices = (asp, category) => {
   const aspNum = parseFloat(asp);
   
-  if (category === 'SNACKS_AND_DESSERT') {
-    return {
-      small: { price: 39, cut: 5, serves: '1 person' },
-      medium: { price: 59, cut: 10, serves: '2-3 people' },
-      large: { price: 89, cut: 15, serves: '3-5 people' }
-    };
-  }
-
   // For meals and baked goods, both use their own ASP
   if (!aspNum || aspNum <= 0) return null;
 
