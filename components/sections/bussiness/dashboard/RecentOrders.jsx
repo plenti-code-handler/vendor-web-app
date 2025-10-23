@@ -10,6 +10,9 @@ import DietIcon from "../../../common/DietIcon";
 import BagSizeTag from "../../../common/BagSizeTag";
 import OrderDetailsModal from "../../../modals/OrderDetailsModal";
 import { ITEM_TYPE_DISPLAY_NAMES } from "../../../../constants/itemTypes";
+import { messaging, onMessage } from "../../../../lib/firebase";
+import playNotificationSound from "../../../../utils/notificationSound";
+
 
 const RecentOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -119,6 +122,27 @@ const RecentOrders = () => {
     fetchRecentOrders(true);
   }, [filter]);
 
+  // Listen for push notifications and refresh orders
+  useEffect(() => {
+    if (!messaging) return;
+    
+    const unsubscribe = onMessage(messaging, (payload) => {
+      console.log('Notification received:', payload);
+      playNotificationSound('order', 0.7);
+      
+      // Show toast notification
+      toast.success(payload.notification?.title || 'New Notification', {
+        description: payload.notification?.body || 'You have a new notification',
+        duration: 5000,
+      });
+      
+      // Automatically refresh orders when notification is received
+      fetchRecentOrders(true);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
   const handleLoadMore = () => {
     if (!loadingMore && hasMoreOrders) {
       fetchRecentOrders(false);
@@ -154,7 +178,7 @@ const RecentOrders = () => {
           <button
             onClick={() => fetchRecentOrders(true)}
             disabled={loading}
-            className={`p-2 rounded-lg transition-all duration-200 flex items-center gap-2 ${
+            className={`p-2 rounded-lg transition-all duration-200 ${
               loading
                 ? "bg-purple-50 cursor-not-allowed"
                 : "bg-purple-50 hover:bg-purple-100 hover:shadow-sm active:scale-95"
@@ -164,7 +188,6 @@ const RecentOrders = () => {
             <ArrowPathIcon
               className={`h-5 w-5 text-purple-600 ${loading ? "animate-spin" : ""}`}
             />
-            <p className="text-sm text-purple-600">Refresh</p>
           </button>
           <OrdersFilter selectedFilter={filter} onFilterChange={setFilter} />
         </div>
