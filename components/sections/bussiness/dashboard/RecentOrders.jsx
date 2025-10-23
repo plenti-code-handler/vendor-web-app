@@ -3,8 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import axiosClient from "../../../../AxiosClient";
 import { toast } from "sonner";
 import OrdersFilter from "../../../dropdowns/OrdersFilter";
-import { formatTimestamp, formatTime, formatDateTime } from "../../../../utility/FormateTime";
-import { EyeIcon, XMarkIcon, ArrowPathIcon } from "@heroicons/react/24/outline";
+import { formatTime, formatDateTime } from "../../../../utility/FormateTime";
+import { EyeIcon, ArrowPathIcon } from "@heroicons/react/24/outline";
 import { ShieldCheckIcon } from "@heroicons/react/20/solid";
 import DietIcon from "../../../common/DietIcon";
 import BagSizeTag from "../../../common/BagSizeTag";
@@ -12,26 +12,25 @@ import OrderDetailsModal from "../../../modals/OrderDetailsModal";
 import { ITEM_TYPE_DISPLAY_NAMES } from "../../../../constants/itemTypes";
 
 const RecentOrders = () => {
+  // State management
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
-  const [filter, setFilter] = useState(true); // This will be true, false, or ""
+  const [filter, setFilter] = useState(true);
   const [selectedItem, setSelectedItem] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [verifyModalOpen, setVerifyModalOpen] = useState(false);
   const [otp, setOtp] = useState(["", "", "", "", ""]);
-  const inputRefs = useRef([]);
   const [verifying, setVerifying] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [loadingOrderId, setLoadingOrderId] = useState(null);
-  
-  // Pagination state
   const [currentPage, setCurrentPage] = useState(0);
   const [hasMoreOrders, setHasMoreOrders] = useState(true);
-  const [totalOrders, setTotalOrders] = useState(0);
   
+  const inputRefs = useRef([]);
   const ITEMS_PER_PAGE = 10;
 
+  // OTP handling
   const handleOtpChange = (value, index) => {
     if (!/^\d*$/.test(value)) return;
     const newOtp = [...otp];
@@ -40,6 +39,7 @@ const RecentOrders = () => {
     if (value && index < 4) inputRefs.current[index + 1]?.focus();
   };
 
+  // Verification
   const handleVerifyCode = async () => {
     const code = otp.join("");
     if (code.length !== 5) {
@@ -53,8 +53,7 @@ const RecentOrders = () => {
       );
       if (response.status === 200) {
         toast.success("Order code verified successfully");
-        setVerifyModalOpen(false);
-        // Refresh orders after successful verification
+        closeVerifyModal();
         fetchRecentOrders(true);
       }
     } catch (error) {
@@ -64,6 +63,7 @@ const RecentOrders = () => {
     }
   };
 
+  // Data fetching
   const fetchRecentOrders = async (reset = false) => {
     if (reset) {
       setCurrentPage(0);
@@ -76,16 +76,13 @@ const RecentOrders = () => {
     setLoadingMore(!reset);
 
     try {
-      // Build the API URL with the active parameter
       let apiUrl = `/v1/vendor/order/get?skip=${skip}&limit=${ITEMS_PER_PAGE}`;
       
-      // Add active parameter based on filter
       if (filter === true) {
         apiUrl += "&active=true";
       } else if (filter === false) {
         apiUrl += "&active=false";
       }
-      // If filter is "" (All Orders), don't add active parameter
 
       const response = await axiosClient.get(apiUrl);
       if (response.status === 200) {
@@ -97,7 +94,6 @@ const RecentOrders = () => {
           setOrders(prevOrders => [...prevOrders, ...newOrders]);
         }
         
-        // Check if there are more orders to load
         setHasMoreOrders(newOrders.length === ITEMS_PER_PAGE);
         
         if (!reset) {
@@ -105,8 +101,7 @@ const RecentOrders = () => {
         }
       }
     } catch (error) {
-      // if error code is not 403
-      if (error.response.status !== 403) {
+      if (error.response?.status !== 403) {
         toast.error("Failed to fetch orders");
       }
     } finally {
@@ -115,10 +110,12 @@ const RecentOrders = () => {
     }
   };
 
+  // Effects
   useEffect(() => {
     fetchRecentOrders(true);
   }, [filter]);
 
+  // Actions
   const handleLoadMore = () => {
     if (!loadingMore && hasMoreOrders) {
       fetchRecentOrders(false);
@@ -128,12 +125,9 @@ const RecentOrders = () => {
   const openModal = async (orderId) => {
     setLoadingOrderId(orderId);
     try {
-      const response = await axiosClient.get(
-        `/v1/vendor/order/${orderId}/items`
-      );
+      const response = await axiosClient.get(`/v1/vendor/order/${orderId}/items`);
       if (response.status === 200) {
         setSelectedItem({ id: orderId, items: response.data });
-        console.log(response.data, "response.data")
         setModalOpen(true);
       } else {
         toast.error("Failed to fetch order details");
@@ -143,6 +137,80 @@ const RecentOrders = () => {
     } finally {
       setLoadingOrderId(null);
     }
+  };
+
+  // Paste handling
+  const handlePaste = (e, currentIndex) => {
+    e.preventDefault();
+    const pastedText = e.clipboardData.getData('text').replace(/\D/g, '');
+    
+    if (pastedText.length >= otp.length) {
+      const newOtp = pastedText.slice(0, otp.length).split('');
+      setOtp(newOtp);
+      if (inputRefs.current[otp.length - 1]) {
+        inputRefs.current[otp.length - 1].focus();
+      }
+    } else {
+      const newOtp = [...otp];
+      for (let i = 0; i < pastedText.length && (currentIndex + i) < otp.length; i++) {
+        newOtp[currentIndex + i] = pastedText[i];
+      }
+      setOtp(newOtp);
+      
+      const nextIndex = currentIndex + pastedText.length;
+      if (nextIndex < otp.length && inputRefs.current[nextIndex]) {
+        inputRefs.current[nextIndex].focus();
+      }
+    }
+  };
+
+  // Modal management
+  const resetModalValues = () => {
+    setOtp(["", "", "", "", ""]);
+    setVerifying(false);
+    setSelectedOrderId(null);
+  };
+
+  const closeVerifyModal = () => {
+    setVerifyModalOpen(false);
+    resetModalValues();
+  };
+
+  // Status rendering
+  const renderOrderStatus = (rawStatus) => {
+    if (!rawStatus) {
+      return (
+        <span className="inline-block px-2 py-1 rounded bg-gray-400 text-white text-xs font-semibold">
+          Not Available
+        </span>
+      );
+    }
+    
+    const status = rawStatus.replace("order.", "").toUpperCase();
+    const getStatusColor = (status) => {
+      switch (status) {
+        case "CREATED": return "bg-[#7e45ee]";
+        case "WAITING_FOR_PICKUP": return "bg-indigo-500";
+        case "READY_FOR_PICKUP": return "bg-yellow-500";
+        case "PICKED_UP": return "bg-green-500";
+        case "CANCELLED": return "bg-red-500";
+        case "NOT_PICKED_UP": return "bg-orange-500";
+        default: return "bg-blue-500";
+      }
+    };
+    
+    const formattedText = status
+      .toLowerCase()
+      .replace(/_/g, " ")
+      .replace(/\b\w/g, (l) => l.toUpperCase());
+    
+    return (
+      <span
+        className={`inline-block px-2 py-1 rounded text-white text-xs font-semibold ${getStatusColor(status)}`}
+      >
+        {formattedText}
+      </span>
+    );
   };
 
   // --- UI ---
@@ -254,39 +322,7 @@ const RecentOrders = () => {
                     </div>
                   </td>
                   <td className="text-center px-2 text-xs">
-                    {(() => {
-                      const rawStatus = order.current_status;
-                      if (!rawStatus) {
-                        return (
-                          <span className="inline-block px-2 py-1 rounded bg-gray-400 text-white text-xs font-semibold">
-                            Not Available
-                          </span>
-                        );
-                      }
-                      const status = rawStatus.replace("order.", "").toUpperCase();
-                      const getStatusColor = (status) => {
-                        switch (status) {
-                          case "CREATED": return "bg-[#7e45ee]";
-                          case "WAITING_FOR_PICKUP": return "bg-indigo-500";
-                          case "READY_FOR_PICKUP": return "bg-yellow-500";
-                          case "PICKED_UP": return "bg-green-500";
-                          case "CANCELLED": return "bg-red-500";
-                          case "NOT_PICKED_UP": return "bg-orange-500";
-                          default: return "bg-blue-500";
-                        }
-                      };
-                      const formattedText = status
-                        .toLowerCase()
-                        .replace(/_/g, " ")
-                        .replace(/\b\w/g, (l) => l.toUpperCase());
-                      return (
-                        <span
-                          className={`inline-block px-2 py-1 rounded text-white text-xs font-semibold ${getStatusColor(status)}`}
-                        >
-                          {formattedText}
-                        </span>
-                      );
-                    })()}
+                    {renderOrderStatus(order.current_status)}
                   </td>
                   <td className="text-center px-2 py-2">
                     <div className="flex items-center justify-center gap-2">
@@ -360,17 +396,17 @@ const RecentOrders = () => {
         orderDetails={selectedItem}
       />
 
-      {/* OTP Verify Modal */}
       {verifyModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
           <div className="w-full max-w-md rounded-2xl bg-white shadow-2xl overflow-hidden flex flex-col">
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b">
               <h2 className="text-xl font-semibold text-gray-900">Enter Order Code</h2>
-              <button onClick={() => setVerifyModalOpen(false)}>
+              <button onClick={closeVerifyModal}>
                 x
               </button>
             </div>
+            
             {/* OTP Inputs */}
             <div className="flex justify-center gap-3 py-8">
               {otp.map((digit, i) => (
@@ -382,10 +418,12 @@ const RecentOrders = () => {
                   value={digit}
                   ref={(el) => (inputRefs.current[i] = el)}
                   onChange={(e) => handleOtpChange(e.target.value, i)}
+                  onPaste={(e) => handlePaste(e, i)}
                   className="w-12 h-12 border border-gray-300 text-center text-xl rounded-lg focus:ring-2 focus:ring-blue-500 transition"
                 />
               ))}
             </div>
+            
             {/* Footer */}
             <div className="flex justify-end px-6 py-4 border-t bg-gray-50">
               <button
