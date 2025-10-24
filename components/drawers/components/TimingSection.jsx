@@ -29,8 +29,10 @@ const TimingSection = ({
             showTimeSelect
             timeFormat="HH:mm"
             timeIntervals={15}
-            dateFormat="MMM d, yyyy h:mm aa"
+            dateFormat="MMM d, yyyy HH:mm"
             minDate={new Date()}
+            timeCaption="Time"
+            strictParsing
             className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#5F22D9] focus:border-transparent transition-all duration-200"
           />
         </div>
@@ -43,8 +45,10 @@ const TimingSection = ({
             showTimeSelect
             timeFormat="HH:mm"
             timeIntervals={15}
-            dateFormat="MMM d, yyyy h:mm aa"
+            dateFormat="MMM d, yyyy HH:mm"
             minDate={windowStartTime}
+            timeCaption="Time"
+            strictParsing
             className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#5F22D9] focus:border-transparent transition-all duration-200"
           />
         </div>
@@ -57,8 +61,10 @@ const TimingSection = ({
             showTimeSelect
             timeFormat="HH:mm"
             timeIntervals={15}
-            dateFormat="MMM d, yyyy h:mm aa"
+            dateFormat="MMM d, yyyy HH:mm"
             minDate={windowEndTime}
+            timeCaption="Time"
+            strictParsing
             className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#5F22D9] focus:border-transparent transition-all duration-200"
           />
         </div>
