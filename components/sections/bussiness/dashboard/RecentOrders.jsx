@@ -1,5 +1,6 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { useRouter } from "next/navigation"; // ✅ Add this import
 import axiosClient from "../../../../AxiosClient";
 import { toast } from "sonner";
 import OrdersFilter from "../../../dropdowns/OrdersFilter";
@@ -10,9 +11,12 @@ import DietIcon from "../../../common/DietIcon";
 import BagSizeTag from "../../../common/BagSizeTag";
 import OrderDetailsModal from "../../../modals/OrderDetailsModal";
 import { ITEM_TYPE_DISPLAY_NAMES } from "../../../../constants/itemTypes";
+import { initMessaging, getMessagingInstance, onMessage } from "../../../../lib/firebase";
+import playNotificationSound, { initializeAudio, preloadSound } from "../../../../utils/notificationSound";
+import { BellIcon } from "@heroicons/react/24/solid";
 
 const RecentOrders = () => {
-  // State management
+  const router = useRouter(); // ✅ Add this hook
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -30,57 +34,49 @@ const RecentOrders = () => {
   const inputRefs = useRef([]);
   const ITEMS_PER_PAGE = 10;
 
-  // OTP handling
-  const handleOtpChange = (value, index) => {
-    if (!/^\d*$/.test(value)) return;
-    const newOtp = [...otp];
-    newOtp[index] = value;
-    setOtp(newOtp);
-    if (value && index < 4) inputRefs.current[index + 1]?.focus();
-  };
+  // 🔧 Use ref to store latest filter value
+  const filterRef = useRef(filter);
+  useEffect(() => {
+    filterRef.current = filter;
+  }, [filter]);
 
-  // Verification
-  const handleVerifyCode = async () => {
-    const code = otp.join("");
-    if (code.length !== 5) {
-      toast.error("Please enter a 5-digit code");
-      return;
-    }
-    setVerifying(true);
-    try {
-      const response = await axiosClient.patch(
-        `/v1/vendor/order/pickup/${selectedOrderId}?order_code=${code}`
-      );
-      if (response.status === 200) {
-        toast.success("Order code verified successfully");
-        closeVerifyModal();
-        fetchRecentOrders(true);
-      }
-    } catch (error) {
-      toast.error("Failed to verify order code");
-    } finally {
-      setVerifying(false);
-    }
-  };
+  // 🔊 Initialize audio on mount
+  useEffect(() => {
+    preloadSound('order');
+    
+    const unlockAudio = () => {
+      initializeAudio();
+    };
+    
+    document.addEventListener('click', unlockAudio, { once: true });
+    document.addEventListener('touchstart', unlockAudio, { once: true });
+    
+    return () => {
+      document.removeEventListener('click', unlockAudio);
+      document.removeEventListener('touchstart', unlockAudio);
+    };
+  }, []);
 
-  // Data fetching
-  const fetchRecentOrders = async (reset = false) => {
+  const fetchRecentOrders = useCallback(async (reset = false, pageNum = 0, currentFilter = null) => {
     if (reset) {
       setCurrentPage(0);
       setOrders([]);
       setHasMoreOrders(true);
     }
 
-    const skip = reset ? 0 : currentPage * ITEMS_PER_PAGE;
+    // Use passed parameters instead of closure state
+    const skip = reset ? 0 : pageNum * ITEMS_PER_PAGE;
+    const activeFilter = currentFilter ?? filterRef.current;
+    
     setLoading(reset);
     setLoadingMore(!reset);
 
     try {
       let apiUrl = `/v1/vendor/order/get?skip=${skip}&limit=${ITEMS_PER_PAGE}`;
       
-      if (filter === true) {
+      if (activeFilter === true) {
         apiUrl += "&active=true";
-      } else if (filter === false) {
+      } else if (activeFilter === false) {
         apiUrl += "&active=false";
       }
 
@@ -108,17 +104,73 @@ const RecentOrders = () => {
       setLoading(false);
       setLoadingMore(false);
     }
+  }, []); // ✅ No dependencies! Stable function reference
+
+  // OTP handling
+  const handleOtpChange = (value, index) => {
+    if (!/^\d*$/.test(value)) return;
+    const newOtp = [...otp];
+    newOtp[index] = value;
+    setOtp(newOtp);
+    if (value && index < 4) inputRefs.current[index + 1]?.focus();
   };
 
-  // Effects
-  useEffect(() => {
-    fetchRecentOrders(true);
-  }, [filter]);
+  // Verification
+  const handleVerifyCode = useCallback(async () => {
+    const code = otp.join("");
+    if (code.length !== 5) {
+      toast.error("Please enter a 5-digit code");
+      return;
+    }
+    setVerifying(true);
+    try {
+      const response = await axiosClient.patch(
+        `/v1/vendor/order/pickup/${selectedOrderId}?order_code=${code}`
+      );
+      if (response.status === 200) {
+        toast.success("Order code verified successfully");
+        closeVerifyModal();
+        
+        // ✅ Use fetchRecentOrders instead of manual state updates
+        fetchRecentOrders(true, 0, filterRef.current);
+      }
+    } catch (error) {
+      toast.error("Failed to verify order code");
+    } finally {
+      setVerifying(false);
+    }
+  }, [otp, selectedOrderId, fetchRecentOrders]);
 
-  // Actions
+  // Fetch orders when filter changes
+  useEffect(() => {
+    fetchRecentOrders(true, 0, filter);
+  }, [filter, fetchRecentOrders]); // ✅ Safe now
+
+  // Foreground FCM listener
+  useEffect(() => {
+    let unsubscribe;
+    (async () => {
+      const m = await initMessaging();
+      if (!m) return;
+      unsubscribe = onMessage(m, (payload) => {
+        console.log('🔔 Foreground notification:', payload);
+        // 1) Play sound
+        playNotificationSound('order', 0.7);
+        // 2) Show toast
+        toast.success(payload.notification?.title || 'New Notification', {
+          description: payload.notification?.body || 'You have a new notification',
+          duration: 5000,
+        });
+        // 3) Refresh list
+        fetchRecentOrders(true, 0, filterRef.current);
+      });
+    })();
+    return () => unsubscribe?.();
+  }, [fetchRecentOrders]);
+
   const handleLoadMore = () => {
     if (!loadingMore && hasMoreOrders) {
-      fetchRecentOrders(false);
+      fetchRecentOrders(false, currentPage, filter);
     }
   };
 
@@ -219,10 +271,20 @@ const RecentOrders = () => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <h2 className="text-xl font-bold text-gray-900">Recent Orders</h2>
         <div className="flex items-center gap-3">
+          {/* ✅ Test Notifications Button */}
           <button
-            onClick={() => fetchRecentOrders(true)}
+            onClick={() => router.push('/test-notifications')}
+            className="p-2 rounded-lg transition-all duration-200 bg-blue-50 hover:bg-blue-100 hover:shadow-sm active:scale-95 border border-blue-200"
+            title="Test PWA Notifications"
+          >
+            <BellIcon className="h-5 w-5 text-blue-600" />
+          </button>
+
+          {/* Refresh Button */}
+          <button
+            onClick={() => fetchRecentOrders(true, 0, filter)}
             disabled={loading}
-            className={`p-2 rounded-lg transition-all duration-200 flex items-center gap-2 ${
+            className={`p-2 rounded-lg transition-all duration-200 ${
               loading
                 ? "bg-purple-50 cursor-not-allowed"
                 : "bg-purple-50 hover:bg-purple-100 hover:shadow-sm active:scale-95"
@@ -232,11 +294,13 @@ const RecentOrders = () => {
             <ArrowPathIcon
               className={`h-5 w-5 text-purple-600 ${loading ? "animate-spin" : ""}`}
             />
-            <p className="text-sm text-purple-600">Refresh</p>
           </button>
+
           <OrdersFilter selectedFilter={filter} onFilterChange={setFilter} />
         </div>
       </div>
+
+  {/* ... rest of your component stays the same ... */}
 
       <div className="w-full overflow-x-auto">
         <table className="w-full min-w-[800px] table-fixed">
@@ -260,8 +324,8 @@ const RecentOrders = () => {
                 </td>
               </tr>
             ) : orders.length > 0 ? (
-              orders.map((order, index) => (
-                <tr key={index} className="border-b hover:bg-gray-50 transition">
+              orders.map((order) => ( // ✅ Remove index parameter
+                <tr key={order.order_id} className="border-b hover:bg-gray-50 transition">
                   <td className="text-center px-2 text-sm py-3">
                     <div className="truncate" title={order.user_name || "Not provided"}>
                       {order.user_name ?? <span className="text-gray-400">Not provided</span>}

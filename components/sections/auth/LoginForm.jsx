@@ -71,7 +71,7 @@ const LoginForm = () => {
         
         dispatch(fetchCatalogue(access_token));
         
-        toast.success("Login successful!");
+        toast.success("Login successful");
         router.push("/business");
       }
     } catch (error) {
