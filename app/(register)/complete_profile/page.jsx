@@ -194,7 +194,7 @@ function Page() {
   return (
     <div
       className="min-h-screen bg-cover bg-center bg-no-repeat"
-      style={{ backgroundImage: "url('/Background.png')" }}
+      // style={{ backgroundImage: "url('/Background.png')" }}
     >
       <div className="flex flex-col lg:flex-row pt-5 pb-5 justify-between px-10">
         <AuthLeftContent />

@@ -264,6 +264,7 @@ const ProfileCard = () => {
         </div>
 
         <div className="p-5 ">
+
           <Tabs />
 
           {true && (
