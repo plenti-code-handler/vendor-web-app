@@ -17,12 +17,10 @@ axiosClient.interceptors.request.use(async (config) => {
   return config;
 });
 
-export default axiosClient;
-
 export const axiosFormClient = axios.create({
   baseURL: baseUrl,
   headers: {
-    "Content-Type": "multipart/form-data", // Set header for FormData
+    "Content-Type": "multipart/form-data",
   },
 });
 
@@ -34,3 +32,53 @@ axiosFormClient.interceptors.request.use(async (config) => {
   }
   return config;
 });
+
+// Enhanced response interceptor with auto-logout
+axiosClient.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    console.log("❌ Response error:", error.response?.status);
+    
+    const errorData = error.response?.data;
+    const errorDetail = errorData?.detail;
+    
+    // List of authentication error messages that should trigger logout
+    const authErrorMessages = [
+      "Could not validate credentials",
+      "Invalid credentials",
+      "Token has expired",
+      "Authentication failed",
+      "Unauthorized",
+      "Invalid token",
+      "Token expired",
+      "Access denied", 
+      "Not authenticated"
+    ];
+    
+    // Check if this is an authentication error
+    const isAuthError = 
+      error.response?.status === 401 || // Unauthorized
+      error.response?.status === 403 || // Forbidden
+      (errorDetail && authErrorMessages.some(msg => 
+        errorDetail.toLowerCase().includes(msg.toLowerCase())
+      ));
+    
+    if (isAuthError) {
+      console.log("🔒 Authentication error detected, logging out");
+
+      // Clear all auth data
+      localStorage.clear();
+      sessionStorage.clear();
+
+      if (typeof window !== 'undefined') {
+        window.location.href = "/";
+      }
+    }
+    
+    return Promise.reject(error);
+  }
+);
+
+export default axiosClient;

@@ -1,9 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
 import playNotificationSound from '../utils/notificationSound';
-import { toast } from 'sonner';
 import { isIOS, isPushNotificationSupported, isPWA } from '../utility/deviceDetection';
-import { X } from 'lucide-react';
 
 export default function NotificationListener() {
   const [deviceInfo, setDeviceInfo] = useState({

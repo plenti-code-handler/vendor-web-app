@@ -13,7 +13,6 @@ import OrderDetailsModal from "../../../modals/OrderDetailsModal";
 import { ITEM_TYPE_DISPLAY_NAMES } from "../../../../constants/itemTypes";
 import { initMessaging, getMessagingInstance, onMessage } from "../../../../lib/firebase";
 import playNotificationSound, { initializeAudio, preloadSound } from "../../../../utils/notificationSound";
-import { BellIcon } from "@heroicons/react/24/solid";
 
 const RecentOrders = () => {
   const router = useRouter(); // ✅ Add this hook
@@ -153,7 +152,6 @@ const RecentOrders = () => {
       const m = await initMessaging();
       if (!m) return;
       unsubscribe = onMessage(m, (payload) => {
-        console.log('🔔 Foreground notification:', payload);
         // 1) Play sound
         playNotificationSound('order', 0.7);
         // 2) Show toast
@@ -271,14 +269,6 @@ const RecentOrders = () => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <h2 className="text-xl font-bold text-gray-900">Recent Orders</h2>
         <div className="flex items-center gap-3">
-          {/* ✅ Test Notifications Button */}
-          <button
-            onClick={() => router.push('/test-notifications')}
-            className="p-2 rounded-lg transition-all duration-200 bg-blue-50 hover:bg-blue-100 hover:shadow-sm active:scale-95 border border-blue-200"
-            title="Test PWA Notifications"
-          >
-            <BellIcon className="h-5 w-5 text-blue-600" />
-          </button>
 
           {/* Refresh Button */}
           <button
