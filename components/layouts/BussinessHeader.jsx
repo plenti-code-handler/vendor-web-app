@@ -60,7 +60,7 @@ const BussinessHeader = () => {
       } catch (error) {
         console.error("Error loading user info:", error);
         if (error.response?.status === 401) {
-          localStorage.removeItem("token");
+          localStorage.clear();
           router.push("/");
         }
         toast.error("Failed to load user information");
@@ -120,13 +120,21 @@ const BussinessHeader = () => {
 
   return (
     <>
-      <header className=" xl:px-[6%] py-2  justify-around bg-[#5f22d9] ">
+      <header className=" xl:px-[6%] py-2 py-4 justify-around bg-[#5f22d9] ">
         <div className="mx-auto flex items-center justify-between ">
-          <div onClick={() => router.push("/business")}>
+          <div
+            onClick={() => router.push("/business")}
+            className="flex items-center cursor-pointer ml-5"
+          >
+            <img
+              alt="Vendor App Icon"
+              src="/icons/icon-150.png"
+              className="w-10 h-10 rounded-xl border border-white/40 shadow-sm"
+            />
             <img
               alt="Plenti Logo"
-              src={"/splash-logo.png"}
-              className="w-36 h-auto cursor-pointer"
+              src="/splash-logo.png"
+              className="w-20 h-auto"
             />
           </div>
           <div className="flex lg:hidden gap-3 items-center mr-3">

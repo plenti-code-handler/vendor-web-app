@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { toast } from "sonner";
 import {
   bottomWalletBackground,
   leftWalletBackground,
@@ -17,6 +18,7 @@ import { fetchBalance } from "../../../../redux/slices/blanceSlice";
 
 const Transactions = () => {
   const dispatch = useDispatch();
+  const payoutThreshold = useSelector((state) => state.catalogue?.payout?.threshold || 0);
   const { value: balance } = useSelector((state) => state.balance);
   const [newbalance, setBalance] = useState(0);
 
@@ -95,6 +97,10 @@ const Transactions = () => {
   }, []);
 
   const handleWithdraw = () => {
+    if (Number(balance) < payoutThreshold) {
+      toast.error("Your balance is less than the payout threshold");
+      return;
+    }
     dispatch(setOpenDrawer(true));
   };
 
