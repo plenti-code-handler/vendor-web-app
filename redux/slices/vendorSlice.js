@@ -9,13 +9,11 @@ export const fetchVendorDetails = createAsyncThunk(
       if (!token) {
         token = localStorage.getItem("token");
       }
-      console.log("fetching vendor details", token);
       const response = await axiosClient.get("/v1/vendor/me/get", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log("venor details fetched ->", response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Failed to fetch vendor details');

@@ -65,7 +65,6 @@ const RevenueChart = () => {
         const response = await axiosClient.get("/v1/vendor/stats/");
         if (response.status === 200) {
           toast.success("Stats fetched successfully!");
-          console.log(response.data);
           const {
             daily_revenue,
             monthly_revenue,
@@ -78,7 +77,6 @@ const RevenueChart = () => {
             yearly_orders,
           } = response.data;
 
-          console.log(response.data);
           setTotalRevenue(total_revenue);
           setTotalOrders(total_orders); // Set total orders
 
@@ -161,8 +159,6 @@ const RevenueChart = () => {
 
     fetchStats();
   }, [activeTab, chartType]); // Added chartType dependency
-
-  // ... existing useEffect for fetchVendorDetails ...
 
   const getDisplayValue = () => {
     if (chartType === "revenue") {
