@@ -45,43 +45,44 @@ const AddBagDrawer = () => {
   const [nonVegServings, setNonVegServings] = useState(0);
   const [loading, setLoading] = useState(false);
   const [windowStartTime, setWindowStartTime] = useState(new Date());
-  const [windowEndTime, setWindowEndTime] = useState(new Date());
-  const [bestBeforeTime, setBestBeforeTime] = useState(new Date());
+  const [windowDuration, setWindowDuration] = useState(60); // Duration in minutes
+  const [bestBeforeDuration, setBestBeforeDuration] = useState(60); // Duration in minutes after window ends
   const [showCustomDescription, setShowCustomDescription] = useState(false);
-  const [currentStep, setCurrentStep] = useState(1);
   
+  // Calculate end times
+  const windowEndTime = new Date(windowStartTime.getTime() + windowDuration * 60000);
+  const bestBeforeTime = new Date(windowEndTime.getTime() + bestBeforeDuration * 60000);
+
   // Get vendor data and catalogue from Redux
   const vendorData = useSelector(selectVendorData);
   const { itemTypes } = useSelector((state) => state.catalogue);
   const availableDescriptions = vendorData?.item_descriptions || [];
+
+  const availableCategories = getAvailableCategories(itemTypes);
 
   // Fetch catalogue data
   useEffect(() => {
     dispatch(fetchCatalogue());
   }, [dispatch]);
 
+  // Set default selected bag when drawer opens and categories are available
+  useEffect(() => {
+    if (availableCategories.length > 0 && !selectedBag) {
+      setSelectedBag(availableCategories[0]);
+    }
+  }, [availableCategories, selectedBag]);
+
   // Initialize time values
   useEffect(() => {
-    const initialEndTime = new Date(windowStartTime.getTime() + 30 * 60000);
-    setWindowEndTime(initialEndTime);
-    const initialBestBeforeTime = new Date(initialEndTime.getTime() + 60 * 60000);
-    setBestBeforeTime(initialBestBeforeTime);
-  }, []);
+    // Removed initialBestBeforeTime calculation
+  }, [windowStartTime, windowDuration]);
 
   // Time change handlers using utility functions
   const handleStartTimeChange = (date) => {
-    handleStartTimeChangeUtil(date, setWindowStartTime, setWindowEndTime, setBestBeforeTime);
+    setWindowStartTime(date);
   };
 
-  const handleEndTimeChange = (date) => {
-    handleEndTimeChangeUtil(date, windowStartTime, setWindowEndTime, setBestBeforeTime, toast);
-  };
-
-  const handleBestBeforeTimeChange = (date) => {
-    handleBestBeforeTimeChangeUtil(date, windowEndTime, setBestBeforeTime, toast);
-  };
-
-  const availableCategories = getAvailableCategories(itemTypes);
+  // Remove handleEndTimeChange and handleBestBeforeTimeChange
 
   const resetForm = () => {
     const resetValues = getResetFormValues();
@@ -91,12 +92,11 @@ const AddBagDrawer = () => {
     setVegServings(resetValues.vegServings);
     setNonVegServings(resetValues.nonVegServings);
     setWindowStartTime(resetValues.windowStartTime);
-    setWindowEndTime(resetValues.windowEndTime);
-    setBestBeforeTime(resetValues.bestBeforeTime);
+    setWindowDuration(60); // Reset to default
+    setBestBeforeDuration(60); // Reset to default
     setIsVeg(resetValues.isVeg);
     setIsNonVeg(resetValues.isNonVeg);
     setShowCustomDescription(resetValues.showCustomDescription);
-    setCurrentStep(resetValues.currentStep);
   };
 
   const handleSubmitBag = async () => {
@@ -139,7 +139,7 @@ const AddBagDrawer = () => {
         "/v1/vendor/item/create",
         newItem
       );
-
+      console.log("bag creation response ->", response);
       if (response.status === 200) {
         toast.success("Item Created Successfully!");
         resetForm();
@@ -221,14 +221,13 @@ const AddBagDrawer = () => {
 
                   <TimingSection 
                     windowStartTime={windowStartTime}
-                    setWindowStartTime={setWindowStartTime}
                     windowEndTime={windowEndTime}
-                    setWindowEndTime={setWindowEndTime}
                     bestBeforeTime={bestBeforeTime}
-                    setBestBeforeTime={setBestBeforeTime}
                     handleStartTimeChange={handleStartTimeChange}
-                    handleEndTimeChange={handleEndTimeChange}
-                    handleBestBeforeTimeChange={handleBestBeforeTimeChange}
+                    windowDuration={windowDuration}
+                    setWindowDuration={setWindowDuration}
+                    bestBeforeDuration={bestBeforeDuration}
+                    setBestBeforeDuration={setBestBeforeDuration}
                   />
 
                   <DescriptionSection 

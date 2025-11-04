@@ -221,7 +221,6 @@ const ProfileCard = () => {
 
           {/* Profile & Name Section */}
           <div className="relative bg-white px-4 pt-16 ">
-            {/* Profile Image Container */}
             <div className="absolute -top-16 left-4 w-32 h-32">
               <input
                 type="file"

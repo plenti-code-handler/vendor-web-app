@@ -89,7 +89,7 @@ function ForgetpasswordScreen() {
     setLoading(true);
     try {
       await axios.post(
-        `${baseUrl}/v1/vendor/me/reset-password/update?password=${data.password}&token=${token}`
+        `${baseUrl}/v1/vendor/me/reset-password/update?email=${email}&password=${data.password}&token=${token}`
       );
       toast.success("Password reset successful!");
       reset();
@@ -236,31 +236,7 @@ function ForgetpasswordScreen() {
   // ✅ Don't render until mounted to prevent hydration mismatch
   if (!mounted) {
     return (
-      <div
-        className="flex flex-col md:flex-row justify-between items-center min-h-screen px-6 lg:px-20 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: "url('/Background.png')" }}
-      >
-        <div className="flex lg:w-[45%] items-center justify-center text-center h-full">
-          <div className="flex">
-            <Link href="/">
-              <img
-                alt="Plenti Logo"
-                src={"/splash-logo.png"}
-                className="max-w-[180px] md:max-w-[240px] cursor-pointer"
-              />
-            </Link>
-            <div className="bg-white w-1 h-20 mt-2"></div>
-            <div className="flex flex-col gap-2">
-              <h2 className="text-2xl text-white text-start ml-5 mt-2">
-                India's first
-              </h2>
-              <h3 className="text-2xl text-white text-start ml-5">
-                surplus Food Marketspace
-              </h3>
-            </div>
-          </div>
-        </div>
-
+  
         <div className="flex flex-col w-full md:w-[80%] lg:w-[40%] bg-white h-[90vh] max-h-[600px] rounded-[24px] justify-between shadow-lg overflow-hidden">
           <div className="flex justify-center items-center flex-1 px-6 pb-16 md:pb-28 lg:p-6">
             <div className="flex flex-col w-full max-w-md space-y-4">
@@ -271,42 +247,16 @@ function ForgetpasswordScreen() {
             </div>
           </div>
         </div>
-      </div>
     );
   }
 
   return (
-    <div
-      className="flex flex-col md:flex-row justify-between items-center min-h-screen px-6 lg:px-20 bg-cover bg-center bg-no-repeat"
-      style={{ backgroundImage: "url('/Background.png')" }}
-    >
-      <div className="flex lg:w-[45%] items-center justify-center text-center h-full">
-        <div className="flex">
-          <Link href="/">
-            <img
-              alt="Plenti Logo"
-              src={"/splash-logo.png"}
-              className="max-w-[180px] md:max-w-[240px] cursor-pointer"
-            />
-          </Link>
-          <div className="bg-white w-1 h-20 mt-2"></div>
-          <div className="flex flex-col gap-2">
-            <h2 className="text-2xl text-white text-start ml-5 mt-2">
-              India's first
-            </h2>
-            <h3 className="text-2xl text-white text-start ml-5">
-              surplus Food Marketspace
-            </h3>
-          </div>
-        </div>
-      </div>
 
       <div className="flex flex-col w-full md:w-[80%] lg:w-[40%] bg-white h-[90vh] max-h-[600px] rounded-[24px] justify-between shadow-lg overflow-hidden">
         <div className="flex justify-center items-center flex-1 px-6 pb-16 md:pb-28 lg:p-6">
           {renderForm()}
         </div>
       </div>
-    </div>
   );
 }
 

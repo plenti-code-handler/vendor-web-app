@@ -15,7 +15,6 @@ export const fetchCatalogue = createAsyncThunk(
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log("catalogue response", response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Failed to fetch catalogue');
