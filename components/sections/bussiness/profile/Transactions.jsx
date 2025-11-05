@@ -13,6 +13,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { setOpenDrawer } from "../../../../redux/slices/withdrawAmountSlice";
 import WithdrawAmountDrawer from "../../../drawers/WithdrawAmountDrawer";
 import Loader from "../../../loader/loader";
+import BeatLoader from "react-spinners/BeatLoader";
+
 import axiosClient from "../../../../AxiosClient";
 import { fetchBalance } from "../../../../redux/slices/blanceSlice";
 import { fetchBankAccountDetails } from "../../../../redux/slices/vendorSlice";
@@ -28,6 +30,7 @@ const Transactions = () => {
   const [payouts, setPayouts] = useState([]);
   const [activeTab, setActiveTab] = useState("transactions");
   const [loading, setLoading] = useState(true);
+  const [checkingPayout, setCheckingPayout] = useState(false);
   const [paymentBreakdown, setPaymentBreakdown] = useState({
     total_captured_payments: 0,
     total_refund_payments: 0,
@@ -67,21 +70,6 @@ const Transactions = () => {
     }
   };
 
-  // useEffect(() => {
-  //   const fetchBalance = async () => {
-  //     try {
-  //       setLoading(true);
-  //       const response = await axiosClient.get("/v1/vendor/me/balance");
-  //       setBalance(response.data.balance);
-  //     } catch (error) {
-  //       console.error("Error fetching balance:", error);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   fetchBalance();
-  // }, []);
 
   useEffect(() => {
     const fetchPayouts = async () => {
@@ -99,19 +87,29 @@ const Transactions = () => {
   }, []);
 
   const handleWithdraw = async () => {
-    const result = await dispatch(fetchBankAccountDetails()).unwrap();
-    if (!result || result.status === "INACTIVE") {
+    setCheckingPayout(true);
+    const result = await dispatch(fetchBankAccountDetails());
+    if (result.error) {
+      toast.error(result.payload.detail);
+      setCheckingPayout(false);
+      return;
+    }
+    if (result.status === "INACTIVE") {
       toast.error("Please add your bank account details to enable payouts");
+      setCheckingPayout(false);
       return;
     } else if (result.status === "PENDING") {
       toast.info("Your bank account details are pending verification");
+      setCheckingPayout(false);
       return;
     }
       
     if (Number(balance) < payoutThreshold) {
       toast.error(`Minimum balance of ₹${payoutThreshold} required for withdrawal`);
+      setCheckingPayout(false);
       return;
     }
+    setCheckingPayout(false);
     dispatch(setOpenDrawer(true));
   };
 
@@ -173,10 +171,15 @@ const Transactions = () => {
 
         <button
           onClick={handleWithdraw}
-          className="flex justify-center items-center bg-white/10 backdrop-blur-sm border border-white/20 text-white font-medium rounded-lg hover:bg-white/20 px-4 py-2 z-0 transition-all duration-200"
+          className=" w-64 h-10 flex justify-center items-center bg-white/10 backdrop-blur-sm border border-white/20 text-white font-medium rounded-lg hover:bg-white/20 px-4 py-2 z-0 transition-all duration-200"
         >
-          {withdrawAmountSvg}
+          {checkingPayout ? <BeatLoader color="#ffffff" size={8} /> : 
+            <>
+              {withdrawAmountSvg}
+            </>
+          }
           <span className="ml-2">Withdraw Amount</span>
+            
         </button>
       </div>
 
