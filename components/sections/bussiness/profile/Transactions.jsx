@@ -15,11 +15,13 @@ import WithdrawAmountDrawer from "../../../drawers/WithdrawAmountDrawer";
 import Loader from "../../../loader/loader";
 import axiosClient from "../../../../AxiosClient";
 import { fetchBalance } from "../../../../redux/slices/blanceSlice";
+import { fetchBankAccountDetails } from "../../../../redux/slices/vendorSlice";
 
 const Transactions = () => {
   const dispatch = useDispatch();
   const payoutThreshold = useSelector((state) => state.catalogue?.payout?.threshold || 0);
   const { value: balance } = useSelector((state) => state.balance);
+  const bankAccountDetails = useSelector((state) => state.vendor.bankAccountDetails);
   const [newbalance, setBalance] = useState(0);
 
   const [transactions, setTransactions] = useState([]);
@@ -96,9 +98,18 @@ const Transactions = () => {
     fetchPayouts();
   }, []);
 
-  const handleWithdraw = () => {
+  const handleWithdraw = async () => {
+    const result = await dispatch(fetchBankAccountDetails()).unwrap();
+    if (!result || result.status === "INACTIVE") {
+      toast.error("Please add your bank account details to enable payouts");
+      return;
+    } else if (result.status === "PENDING") {
+      toast.info("Your bank account details are pending verification");
+      return;
+    }
+      
     if (Number(balance) < payoutThreshold) {
-      toast.error("Your balance is less than the payout threshold");
+      toast.error(`Minimum balance of ₹${payoutThreshold} required for withdrawal`);
       return;
     }
     dispatch(setOpenDrawer(true));
