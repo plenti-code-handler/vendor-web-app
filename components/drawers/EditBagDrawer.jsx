@@ -42,13 +42,17 @@ const EditBagDrawer = () => {
   const [nonVegServings, setNonVegServings] = useState(0);
   const [loading, setLoading] = useState(false);
   const [windowStartTime, setWindowStartTime] = useState(new Date());
-  const [windowEndTime, setWindowEndTime] = useState(new Date());
-  const [bestBeforeTime, setBestBeforeTime] = useState(new Date());
+  const [windowDuration, setWindowDuration] = useState(60); // Add this
+  const [bestBeforeDuration, setBestBeforeDuration] = useState(60); // Add this
   const [showCustomDescription, setShowCustomDescription] = useState(false);
   const { bagToEdit } = useSelector((state) => state.editBag);
   const { itemTypes } = useSelector((state) => state.catalogue);
   const vendorData = useSelector(selectVendorData);
   const availableDescriptions = vendorData?.item_descriptions || [];
+
+  // Calculate end times from durations
+  const windowEndTime = new Date(windowStartTime.getTime() + windowDuration * 60000);
+  const bestBeforeTime = new Date(windowEndTime.getTime() + bestBeforeDuration * 60000);
 
   useEffect(() => {
     if (bagToEdit) {
@@ -57,9 +61,20 @@ const EditBagDrawer = () => {
       setDescription(bagToEdit.description || "");
       setVegServings(bagToEdit.veg_servings_current || 0);
       setNonVegServings(bagToEdit.non_veg_servings_current || 0);
-      setWindowStartTime(bagToEdit.window_start_time ? new Date(bagToEdit.window_start_time * 1000) : new Date());
-      setWindowEndTime(bagToEdit.window_end_time ? new Date(bagToEdit.window_end_time * 1000) : new Date());
-      setBestBeforeTime(bagToEdit.best_before_time ? new Date(bagToEdit.best_before_time * 1000) : new Date());
+      
+      // Calculate durations from existing times
+      const startTime = bagToEdit.window_start_time ? new Date(bagToEdit.window_start_time * 1000) : new Date();
+      const endTime = bagToEdit.window_end_time ? new Date(bagToEdit.window_end_time * 1000) : new Date();
+      const beforeTime = bagToEdit.best_before_time ? new Date(bagToEdit.best_before_time * 1000) : new Date();
+      
+      setWindowStartTime(startTime);
+      
+      // Calculate durations in minutes
+      const calculatedWindowDuration = Math.round((endTime - startTime) / 60000);
+      const calculatedBestBeforeDuration = Math.round((beforeTime - endTime) / 60000);
+      
+      setWindowDuration(calculatedWindowDuration > 0 ? calculatedWindowDuration : 60);
+      setBestBeforeDuration(calculatedBestBeforeDuration > 0 ? calculatedBestBeforeDuration : 60);
       
       // Set diet options based on existing data
       setIsVeg(bagToEdit.veg || false);
@@ -69,17 +84,9 @@ const EditBagDrawer = () => {
 
   const availableCategories = getAvailableCategories(itemTypes);
 
-  // Time change handlers using utility functions
+  // Simplified time change handler
   const handleStartTimeChange = (date) => {
-    handleStartTimeChangeUtil(date, setWindowStartTime, setWindowEndTime, setBestBeforeTime);
-  };
-
-  const handleEndTimeChange = (date) => {
-    handleEndTimeChangeUtil(date, windowStartTime, setWindowEndTime, setBestBeforeTime, toast);
-  };
-
-  const handleBestBeforeTimeChange = (date) => {
-    handleBestBeforeTimeChangeUtil(date, windowEndTime, setBestBeforeTime, toast);
+    setWindowStartTime(date);
   };
 
   const handleEditBag = async () => {
@@ -184,14 +191,13 @@ const EditBagDrawer = () => {
 
                   <TimingSection 
                     windowStartTime={windowStartTime}
-                    setWindowStartTime={setWindowStartTime}
                     windowEndTime={windowEndTime}
-                    setWindowEndTime={setWindowEndTime}
                     bestBeforeTime={bestBeforeTime}
-                    setBestBeforeTime={setBestBeforeTime}
                     handleStartTimeChange={handleStartTimeChange}
-                    handleEndTimeChange={handleEndTimeChange}
-                    handleBestBeforeTimeChange={handleBestBeforeTimeChange}
+                    windowDuration={windowDuration}
+                    setWindowDuration={setWindowDuration}
+                    bestBeforeDuration={bestBeforeDuration}
+                    setBestBeforeDuration={setBestBeforeDuration}
                   />
 
                   <DescriptionSection 
