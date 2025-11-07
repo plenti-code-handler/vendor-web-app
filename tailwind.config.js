@@ -42,6 +42,15 @@ module.exports = {
       aspectRatio: {
         normal: "2 / 3",
       },
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: '0', transform: 'translateY(-4px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+      },
+      animation: {
+        'fade-in': 'fadeIn 0.15s ease-out', // Changed from 0.3s to 0.15s
+      },
       colors: {
         // texts
         primary: "#5F22D9",

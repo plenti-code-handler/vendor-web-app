@@ -1,8 +1,23 @@
-// Common allergens options
 export const ALLERGENS_OPTIONS = [
-  "PEANUTS", "TREE NUTS", "MILK", "EGGS", "WHEAT", "SOY", 
-  "FISH", "SHELLFISH", "BEEF", "PORK", "ONION", "GARLIC"
+  { value: "RED_MEAT", label: "Red Meat", emoji: "🥩" },
+  { value: "SUGAR", label: "Sugar", emoji: "🍬" },
+  { value: "ROOT_VEGETABLES", label: "Root Vegetables", emoji: "🥕" },
+  { value: "WHEAT", label: "Wheat", emoji: "🌾" },
+  { value: "MAIDA", label: "Maida", emoji: "🍞" },
+  { value: "PEANUTS", label: "Peanuts", emoji: "🥜" },
+  { value: "TREE_NUTS", label: "Tree Nuts", emoji: "🌰" },
+  { value: "DAIRY", label: "Dairy", emoji: "🥛" },
+  { value: "EGGS", label: "Eggs", emoji: "🥚" },
+  { value: "SOY", label: "Soy", emoji: "🫘" },
+  { value: "FISH", label: "Fish", emoji: "🐟" },
+  { value: "SHELLFISH", label: "Shellfish", emoji: "🦐" },
+  { value: "BEEF", label: "Beef", emoji: "🐄" },
+  { value: "PORK", label: "Pork", emoji: "🐷" },
+  { value: "ONION", label: "Onion", emoji: "🧅" },
+  { value: "GARLIC", label: "Garlic", emoji: "🧄" },
 ];
+
+// Rest of your existing code...
 
 // Common validation fields
 export const getRequiredFields = (selectedBag, description, isVeg, isNonVeg, vegServings, nonVegServings) => [

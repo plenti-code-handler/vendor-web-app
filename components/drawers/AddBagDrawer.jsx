@@ -206,7 +206,7 @@ const AddBagDrawer = () => {
                       <h3 className="text-lg font-semibold text-gray-900">Choose Item Type</h3>
                       <InfoIcon content="Select the category of food item you're creating" />
                     </div>
-                    <div className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm hover:shadow-md transition-shadow duration-200">
+                    <div className="bg-white rounded-xl border border-gray-100 p-4">
                       <ItemTypeFilter
                         selectedFilter={selectedBag}
                         onFilterChange={setSelectedBag}
