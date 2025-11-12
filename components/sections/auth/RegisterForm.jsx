@@ -15,12 +15,16 @@ import {
   EyeSlashIcon,
   BuildingStorefrontIcon
 } from "@heroicons/react/24/outline";
+import { useGoogleAuth } from "../../../hooks/useGoogleAuth";
+import GoogleAuthButton from "../../buttons/GoogleAuthButton"; 
 
 const RegisterForm = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [focusedField, setFocusedField] = useState(null);
+  const { loading: googleLoading, handleGoogleAuth, handleGoogleError } = useGoogleAuth();
+
 
   const {
     register,
@@ -249,6 +253,13 @@ const RegisterForm = () => {
             </div>
           )}
         </button>
+
+        {/* ✅ Google Sign-Up Button */}
+        <GoogleAuthButton 
+          onSuccess={(response) => handleGoogleAuth(response, true)}
+          onError={() => handleGoogleError(true)}
+          text="signup_with"
+        />
 
         {/* Terms and Privacy */}
         <div className="text-center space-y-3">
