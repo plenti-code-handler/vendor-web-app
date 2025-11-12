@@ -57,7 +57,7 @@ const PriceDecision = () => {
       const token = localStorage.getItem("token");
       if (!token) {
         // No token available - navigate to partner verification page
-        window.location.href = 'https://partner.plenti.co.in/verify_email';
+        router.push('/verify_email');
         return;
       }
 
@@ -97,13 +97,12 @@ const PriceDecision = () => {
       });
 
       // Make API call
-      console.log(payload, "!!!!");
       const response = await axiosClient.post('/v1/vendor/catalogue/request', payload);
       
       if (response.status === 200) {
-        toast.success('Price decision submitted successfully!');
+        toast.success('New Pricing requested submitted successfully!');
         // Navigate to home page after successful submission
-        router.push('/');
+        router.back();
       } else {
         toast.error('Failed to submit price decision');
       }

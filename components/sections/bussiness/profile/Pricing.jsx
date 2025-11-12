@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCatalogue, clearCatalogueError } from '../../../../redux/slices/catalogueSlice';
 import { toast } from 'sonner';
@@ -19,6 +20,7 @@ import PriceRow from "./PriceRow";
 import PricingInfo from "./PricingInfo";
 
 const Pricing = () => {
+  const router = useRouter();
   const dispatch = useDispatch();
   const { itemTypes, payout, loading, error, lastUpdated } = useSelector((state) => state.catalogue);
 
@@ -207,16 +209,29 @@ const Pricing = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="space-y-2">
-        <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 bg-[#5F22D9] rounded-lg flex items-center justify-center">
-            <CurrencyRupeeIcon className="w-5 h-5 text-white" />
+      <div className="flex items-center justify-between">
+        <div className="space-y-2">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-[#5F22D9] rounded-lg flex items-center justify-center">
+              <CurrencyRupeeIcon className="w-5 h-5 text-white" />
+            </div>
+            <h1 className="text-lg font-bold text-gray-900">Pricing Management</h1>
           </div>
-          <h1 className="text-lg font-bold text-gray-900">Pricing Management</h1>
+          <p className="text-sm text-gray-600">
+            View and edit your pricing for different item types and bag sizes
+          </p>
         </div>
-        <p className="text-sm text-gray-600">
-          View and edit your pricing for different item types and bag sizes
-        </p>
+
+        {/* Minimal Edit Button */}
+        <button
+          onClick={() => router.push('/price-decision')}
+          className="px-3 py-2 text-[#5F22D9] rounded-lg hover:bg-purple-50 transition-colors duration-200 border border-gray-200"
+          title="Edit pricing"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+          </svg>
+        </button>
       </div>
 
       {/* Payout Information Display */}
