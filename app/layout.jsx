@@ -4,6 +4,8 @@ import Providers from "../redux/provider";
 import { Toaster } from "sonner";
 import './globals.css';
 import ServiceWorkerRegister from "./sw-register";
+import { GoogleOAuthProvider } from '@react-oauth/google';
+
 
 export const metadata = {
   title: 'Plenti Vendor Dashboard',
@@ -45,9 +47,11 @@ export default function RootLayout({ children }) {
       <body>
         <ServiceWorkerRegister />
         <Toaster richColors position="top-center" />
-        <Providers>
-          <RouteLayout>{children}</RouteLayout>
-        </Providers>
+        <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}>
+          <Providers>
+            <RouteLayout>{children}</RouteLayout>
+          </Providers>
+        </GoogleOAuthProvider>
       </body>
     </html>
   );
