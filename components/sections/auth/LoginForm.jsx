@@ -1,14 +1,11 @@
 "use client";
 import Link from "next/link";
-import AuthPasswordField from "../../fields/AuthPasswordField";
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
-import { whiteLoader } from "../../../svgs";
 import axiosClient from "../../../AxiosClient";
-import { loginUser } from "../../../redux/slices/loggedInUserSlice";
 import { 
   EnvelopeIcon, 
   LockClosedIcon, 
@@ -17,7 +14,10 @@ import {
   EyeSlashIcon
 } from "@heroicons/react/24/outline";
 import { fetchCatalogue } from "../../../redux/slices/catalogueSlice";
-import { fetchVendorDetails, selectVendorData } from "../../../redux/slices/vendorSlice";
+import { fetchVendorDetails } from "../../../redux/slices/vendorSlice";
+import { useGoogleAuth } from "../../../hooks/useGoogleAuth"; // ✅ Import hook
+import GoogleAuthButton from "../../buttons/GoogleAuthButton"; // ✅ Import button
+
 const LoginForm = () => {
   const dispatch = useDispatch();
   const router = useRouter();
@@ -25,7 +25,9 @@ const LoginForm = () => {
   const [showAlert, setShowAlert] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [focusedField, setFocusedField] = useState(null);
-  const vendorData = useSelector(selectVendorData);
+
+  // ✅ Use the Google auth hook
+  const { loading: googleLoading, handleGoogleAuth, handleGoogleError } = useGoogleAuth();
 
   const {
     register,
@@ -38,7 +40,6 @@ const LoginForm = () => {
   const password = watch("password");
 
   const handleLogin = async (data, event) => {
-    console.log("Inside handle login");
     event?.preventDefault();
     setLoading(true);
 
@@ -48,27 +49,13 @@ const LoginForm = () => {
     };
 
     try {
-      // Step 1: Login and get token
       const response = await axiosClient.post("/v1/vendor/me/login", loginData);
       
       if (response.status === 200) {
         const { access_token } = response.data;
         localStorage.setItem("token", access_token);
         
-        const vendorResult = await dispatch(fetchVendorDetails(access_token)).unwrap();
-
-        // Step 3: Check is_active and route accordingly
-        if (!vendorResult.is_active) {
-          console.log("Vendor account is not active, redirecting to processing page");
-          toast.info("Your account is under review. You'll be notified once approved.");
-          router.push("/accountProcessing");
-          return;
-        }
-
-        // Step 4: Store user data and fetch catalogue
-        localStorage.setItem("user", JSON.stringify(vendorResult));
-        localStorage.setItem("logo", vendorResult.logo_url);
-        
+        await dispatch(fetchVendorDetails(access_token)).unwrap();
         dispatch(fetchCatalogue(access_token));
         
         toast.success("Login successful");
@@ -76,11 +63,7 @@ const LoginForm = () => {
       }
     } catch (error) {
       setShowAlert(true);
-      console.error("Error fetching vendor details:", error);
-      toast.error("Failed to verify account status. Please try again.");
-      console.log(error);
       
-      // Better error handling
       if (error.response?.status === 401) {
         toast.error("Invalid email or password");
       } else if (error.response?.status === 403) {
@@ -91,9 +74,7 @@ const LoginForm = () => {
         toast.error("Login failed. Please try again.");
       }
       
-      setTimeout(() => {
-        setShowAlert(false);
-      }, 2000);
+      setTimeout(() => setShowAlert(false), 2000);
     } finally {
       setLoading(false);
     }
@@ -225,9 +206,9 @@ const LoginForm = () => {
         {/* Submit Button */}
         <button
           type="submit"
-          disabled={loading}
+          disabled={loading || googleLoading}
           className={`group relative w-full flex items-center justify-center px-6 py-3 border border-transparent text-sm font-medium rounded-xl text-white transition-all duration-300 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5F22D9] ${
-            loading 
+            loading || googleLoading
               ? 'bg-gray-400 cursor-not-allowed' 
               : 'bg-[#5F22D9] hover:bg-[#4A1BB8] shadow-lg hover:shadow-xl'
           }`}
@@ -245,13 +226,20 @@ const LoginForm = () => {
           )}
         </button>
 
+        {/* ✅ Google Sign-In Button - At the top for better UX */}
+        <GoogleAuthButton 
+          onSuccess={(response) => handleGoogleAuth(response, false)}
+          onError={() => handleGoogleError(false)}
+          text="continue_with"
+        />
+
         {/* Divider */}
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-gray-200"></div>
           </div>
           <div className="relative flex justify-center text-xs">
-            <span className="px-2 bg-white text-gray-500">or</span>
+            <span className="px-2 bg-white text-gray-500">or if you need help</span>
           </div>
         </div>
 
