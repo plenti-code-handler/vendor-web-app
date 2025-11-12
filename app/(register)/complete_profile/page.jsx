@@ -183,7 +183,7 @@ function Page() {
       );
       localStorage.removeItem("password");
       localStorage.removeItem("email");
-      router.push("/");
+      router.push("/accountProcessing");
     } catch (error) {
       console.error("Error occurred during form submission:", error);
     } finally {
