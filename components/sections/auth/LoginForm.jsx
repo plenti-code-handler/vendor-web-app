@@ -52,13 +52,24 @@ const LoginForm = () => {
       const response = await axiosClient.post("/v1/vendor/me/login", loginData);
       
       if (response.status === 200) {
-        const { access_token } = response.data;
+        const { access_token, vendor } = response.data;
         localStorage.setItem("token", access_token);
+        localStorage.setItem("user", JSON.stringify(vendor));
         
-        await dispatch(fetchVendorDetails(access_token)).unwrap();
+        const vendorResult = await dispatch(fetchVendorDetails(access_token)).unwrap();
+        if (!vendorResult.latitude && !vendorResult.longitude) {
+          router.push("/complete_profile");
+          return;
+        }
+        if (!vendorResult.is_active) {
+          router.push("/accountProcessing");
+          return;
+        }
         dispatch(fetchCatalogue(access_token));
         
-        toast.success("Login successful");
+        const message = isRegistration ? "Account created successfully!" : "Google sign-in successful";
+        toast.success(message);
+        
         router.push("/business");
       }
     } catch (error) {
