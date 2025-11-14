@@ -67,12 +67,13 @@ const LoginForm = () => {
         }
         dispatch(fetchCatalogue(access_token));
         
-        const message = isRegistration ? "Account created successfully!" : "Google sign-in successful";
+        const message = 'Login successful';
         toast.success(message);
         
         router.push("/business");
       }
     } catch (error) {
+      console.log(error);
       setShowAlert(true);
       
       if (error.response?.status === 401) {
