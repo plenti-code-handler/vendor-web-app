@@ -3,6 +3,10 @@ export const mround = (value, multiple) => {
   return Math.round(value / multiple) * multiple;
 };
 
+export const floorToMultiple = (value, multiple) => {
+  return Math.floor(value / multiple) * multiple;
+};
+
 export const ceiling = (value, multiple) => {
   return Math.ceil(value / multiple) * multiple;
 };
@@ -14,32 +18,42 @@ export const roundToNearestNine = (value) => {
 export const calculatePrices = (asp, category) => {
   const aspNum = parseFloat(asp);
   
-  // For meals and baked goods, both use their own ASP
-  if (!aspNum || aspNum <= 0) return null;
+  let smallPrice, mediumPrice, largePrice;
+  let smallCut, mediumCut, largeCut;
 
-  // Common calculation for both MEALS and BAKED_GOODS
-  // SMALL: MROUND( ROUND(ASP/3, 0), 10 ) - 1
-  const smallPrice = mround(Math.round(aspNum / 3), 10) - 1;
-  
-  // MEDIUM: MROUND( ROUND(ASP/3 * 1.35, 0), 10 ) - 1
-  const mediumPrice = mround(Math.round((aspNum / 3) * 1.35), 10) - 1;
-  
-  // LARGE: MROUND( ROUND(ASP/3 * 1.35 * 1.4, 0), 10 ) - 1
-  const largePrice = mround(Math.round((aspNum / 3) * 1.35 * 1.4), 10) - 1;
+  if (category === "MEAL") {
+    const aspAdj = aspNum * 1.2;
 
-  // SMALLCUT: Round down to nearest lower multiple of 2
-  const smallCutRaw = Math.floor((smallPrice * 0.2) * 100) / 100;
-  const smallCut = Math.floor(smallCutRaw / 2) * 2;
-  
-  // MEDIUMCUT: Round down to nearest lower multiple of 2, with minimum increment
-  const mediumCutRaw = Math.floor((mediumPrice * 0.2) * 100) / 100;
-  const mediumCutRounded = Math.floor(mediumCutRaw / 2) * 2;
-  const mediumCut = Math.max(mediumCutRounded, smallCut + 5);
-  
-  // LARGECUT: Round down to nearest lower multiple of 2, with minimum increment
-  const largeCutRaw = Math.floor((largePrice * 0.2) * 100) / 100;
-  const largeCutRounded = Math.floor(largeCutRaw / 2) * 2;
-  const largeCut = Math.max(largeCutRounded, mediumCut + 5);
+    smallPrice = mround(Math.round(aspAdj / 2.7), 10) - 1;
+    mediumPrice = mround(Math.round((aspAdj / 3) * 1.85), 10) - 1;
+    largePrice = mround(Math.round((aspAdj / 3) * 1.75 * 1.55), 10) - 1;
+
+    const smallCutRaw = smallPrice * 0.2;
+    smallCut = floorToMultiple(smallCutRaw, 2);
+
+    const mediumCutRaw = mediumPrice * 0.2;
+    const mediumCutRounded = floorToMultiple(mediumCutRaw, 2);
+    mediumCut = Math.max(mediumCutRounded, smallCut + 5);
+
+    const largeCutRaw = largePrice * 0.2;
+    const largeCutRounded = floorToMultiple(largeCutRaw, 2);
+    largeCut = Math.max(largeCutRounded, mediumCut + 5);
+  } else {
+    smallPrice = mround(Math.round(aspNum / 3), 10) - 1;
+    mediumPrice = mround(Math.round((aspNum / 3) * 1.35), 10) - 1;
+    largePrice = mround(Math.round((aspNum / 3) * 1.35 * 1.4), 10) - 1;
+
+    const smallCutRaw = Math.floor((smallPrice * 0.2) * 100) / 100;
+    smallCut = floorToMultiple(smallCutRaw, 2);
+
+    const mediumCutRaw = Math.floor((mediumPrice * 0.2) * 100) / 100;
+    const mediumCutRounded = floorToMultiple(mediumCutRaw, 2);
+    mediumCut = Math.max(mediumCutRounded, smallCut + 5);
+
+    const largeCutRaw = Math.floor((largePrice * 0.2) * 100) / 100;
+    const largeCutRounded = floorToMultiple(largeCutRaw, 2);
+    largeCut = Math.max(largeCutRounded, mediumCut + 5);
+  }
 
   return {
     small: { price: smallPrice, cut: smallCut, serves: '1 person' },
