@@ -133,6 +133,12 @@ const vendorSlice = createSlice({
       state.bankAccountLoading = false;
       state.bankAccountError = null;
     },
+    setVendorOnlineStatus: (state, action) => {
+      state.isOnline = action.payload;
+      if (state.vendorData) {
+        state.vendorData.is_online = action.payload;
+      }
+    },
   },
   extraReducers: (builder) => {
     // Fetch vendor details
