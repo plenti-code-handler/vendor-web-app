@@ -235,7 +235,7 @@ const AccountProcessingPage = () => {
                   </p>
                 </div>
                 <p className="text-sm text-[#5F22D9] font-medium">
-                  support@plenti.co.in
+                  partner@plenti.co.in
                 </p>
               </div>
             )}

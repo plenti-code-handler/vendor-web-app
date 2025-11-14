@@ -10,7 +10,7 @@ import AddCategoryDrawer from "../../../drawers/AddCategoryDrawer";
 import BackcoverImageModal from "../../../modals/BackcoverImageModal";
 import axiosClient from "../../../../AxiosClient";
 import { PencilIcon } from "@heroicons/react/20/solid";
-import OnlineOfflineToggle from "./ToggleOnlineOffline";
+import ToggleOnlineOffline from "./ToggleOnlineOffline";
 import BeatLoader from "react-spinners/BeatLoader";
 
 const ProfileCard = () => {
@@ -258,7 +258,7 @@ const ProfileCard = () => {
             </div>
           </div>
           <div className="w-full flex justify-end">
-            <OnlineOfflineToggle status={vendorData?.is_online} />
+            <ToggleOnlineOffline />
           </div>
         </div>
 
