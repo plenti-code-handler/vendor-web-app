@@ -14,6 +14,7 @@ import {
   preloadSound, 
   initializeAudio, 
 } from "../../../../utils/notificationSound";
+import ToggleOnlineOffline from "../../../sections/bussiness/profile/ToggleOnlineOffline";
 
 // Constants
 const ITEMS_PER_PAGE = 10;
@@ -367,8 +368,10 @@ const RecentOrders = () => {
           >
             <ArrowPathIcon className={`h-5 w-5 text-purple-600 ${loading ? "animate-spin" : ""}`} />
           </button>
-
-          <OrdersFilter selectedFilter={filter} onFilterChange={setFilter} />
+          <div className="flex w-full items-center justify-end gap-3 sm:w-auto sm:justify-end">
+            <ToggleOnlineOffline />
+            <OrdersFilter selectedFilter={filter} onFilterChange={setFilter} />
+          </div>
         </div>
       </div>
 
