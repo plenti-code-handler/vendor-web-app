@@ -20,9 +20,9 @@ export const calculatePrices = (asp, category) => {
   
   let smallPrice, mediumPrice, largePrice;
   let smallCut, mediumCut, largeCut;
+  const aspAdj = aspNum * 1.2;
 
   if (category === "MEAL") {
-    const aspAdj = aspNum * 1.2;
 
     smallPrice = mround(Math.round(aspAdj / 2.7), 10) - 1;
     mediumPrice = mround(Math.round((aspAdj / 3) * 1.85), 10) - 1;
@@ -39,9 +39,9 @@ export const calculatePrices = (asp, category) => {
     const largeCutRounded = floorToMultiple(largeCutRaw, 2);
     largeCut = Math.max(largeCutRounded, mediumCut + 5);
   } else {
-    smallPrice = mround(Math.round(aspNum / 3), 10) - 1;
-    mediumPrice = mround(Math.round((aspNum / 3) * 1.35), 10) - 1;
-    largePrice = mround(Math.round((aspNum / 3) * 1.35 * 1.4), 10) - 1;
+    smallPrice = mround(Math.round(aspAdj / 3), 10) - 1;
+    mediumPrice = mround(Math.round((aspAdj / 3) * 1.35), 10) - 1;
+    largePrice = mround(Math.round((aspAdj / 3) * 1.35 * 1.4), 10) - 1;
 
     const smallCutRaw = Math.floor((smallPrice * 0.2) * 100) / 100;
     smallCut = floorToMultiple(smallCutRaw, 2);
