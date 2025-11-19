@@ -27,7 +27,7 @@ const BagSizeTag = ({ bagSize, showIcon = true, showWorth = false, itemType = nu
     const itemData = itemTypes[itemType];
     const price = itemData.bags?.[bagSize] || 0;
     const cut = itemData.cuts?.[bagSize] || 0;
-    worth = Math.round(3 * (price - cut) - 10);
+    worth = Math.round(3 * (price - cut));
   }
 
   return (
