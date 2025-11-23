@@ -48,6 +48,7 @@ const AddBagDrawer = () => {
   const [windowDuration, setWindowDuration] = useState(60); // Duration in minutes
   const [bestBeforeDuration, setBestBeforeDuration] = useState(60); // Duration in minutes after window ends
   const [showCustomDescription, setShowCustomDescription] = useState(false);
+  const open = useSelector((state) => state.addBag.drawerOpen);
   
   // Calculate end times
   const windowEndTime = new Date(windowStartTime.getTime() + windowDuration * 60000);
@@ -72,17 +73,11 @@ const AddBagDrawer = () => {
     }
   }, [availableCategories, selectedBag]);
 
-  // Initialize time values
-  useEffect(() => {
-    // Removed initialBestBeforeTime calculation
-  }, [windowStartTime, windowDuration]);
-
   // Time change handlers using utility functions
   const handleStartTimeChange = (date) => {
     setWindowStartTime(date);
   };
 
-  // Remove handleEndTimeChange and handleBestBeforeTimeChange
 
   const resetForm = () => {
     const resetValues = getResetFormValues();
@@ -172,7 +167,13 @@ const AddBagDrawer = () => {
     }
   };
 
-  const open = useSelector((state) => state.addBag.drawerOpen);
+  // Set window start time to 10 minutes from now when drawer opens
+  useEffect(() => {
+    if (open) {
+      const tenMinutesFromNow = new Date(Date.now() + 10 * 60000);
+      setWindowStartTime(tenMinutesFromNow);
+    }
+  }, [open]);
 
   const handleClose = () => {
     setLoading(false);
