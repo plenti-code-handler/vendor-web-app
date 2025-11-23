@@ -336,10 +336,10 @@ const RecentOrders = () => {
           {order.current_status === "READY_FOR_PICKUP" && (
             <button
               onClick={() => handleVerifyPickup(order.order_id)}
-              className="p-2 rounded hover:bg-green-50 transition"
+              className="px-3 py-1.5 rounded-lg bg-green-50 hover:bg-green-100 border border-green-200 text-green-700 text-xs font-medium transition-all duration-200 hover:border-green-300"
               title="Verify Pickup"
             >
-              <ShieldCheckIcon className="h-5 w-5 text-green-600" />
+              Verify OTP
             </button>
           )}
         </div>
