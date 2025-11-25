@@ -1,144 +1,121 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
-import HeaderStyle from "../../../components/sections/auth/HeaderStyle";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import BackButton from "../../../components/sections/auth/BackButton";
-import { useForm } from "react-hook-form";
 import axiosClient from "../../../AxiosClient";
-import Link from "next/link";
-import { useLoadScript } from "@react-google-maps/api";
 import { toast } from "sonner";
 import AuthLeftContent from "../../../components/layouts/AuthLeftContent";
-
-const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-const libraries = ["places"];
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchVendorDetails,
+  updateVendorDetails,
+  selectVendorData,
+  selectVendorLoading,
+} from "../../../redux/slices/vendorSlice";
+import BeatLoader from "react-spinners/BeatLoader";
+import ContactDetailsForm from "../../../components/sections/auth/ContactDetailsForm";
+import CompleteProfileForm from "../../../components/sections/auth/CompleteProfileForm";
 
 function Page() {
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    formState: { errors },
-  } = useForm();
-  const [loading, setLoading] = useState(false);
-  const [address, setAddress] = useState("");
-  const [coordinates, setCoordinates] = useState({ lat: null, lng: null });
-  const [mapUrl, setMapUrl] = useState("");
-  const [googleMapsUrl, setGoogleMapsUrl] = useState(""); // Add state for Google Maps URL
-  
+  const dispatch = useDispatch();
   const router = useRouter();
-  const autoCompleteRef = useRef(null);
-  const autocompleteInstanceRef = useRef(null);
+  const vendorData = useSelector(selectVendorData);
+  const vendorLoading = useSelector(selectVendorLoading);
 
-  const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: apiKey,
-    libraries: libraries,
-  });
+  // Step state: 1 = Contact Details, 2 = Complete Profile
+  const [currentStep, setCurrentStep] = useState(0);
+  const [loading, setLoading] = useState(false);
 
-  // Debug Google Maps loading
+  // Fetch vendor data on mount
   useEffect(() => {
-    console.log("Google Maps API Status:", {
-      isLoaded,
-      loadError,
-      apiKey: apiKey ? "Present" : "Missing",
-      libraries
-    });
-    
-    if (loadError) {
-      console.error("Google Maps API Error:", loadError);
-      toast.error("Failed to load Google Maps API");
+    const token = localStorage.getItem("token");
+    if (token && !vendorData) {
+      dispatch(fetchVendorDetails(token));
     }
-  }, [isLoaded, loadError, apiKey]);
+  }, [dispatch, vendorData]);
 
-  // Initialize Google Places Autocomplete
+  // Determine which step to show based on vendor data
   useEffect(() => {
-    console.log("isLoaded", isLoaded);
-    if (!isLoaded || !autoCompleteRef.current) return;
+    if (vendorData) {
+      const hasPhoneNumber =
+        vendorData.phone_number && vendorData.phone_number.trim() !== "";
+      const hasVendorName =
+        vendorData.vendor_name && vendorData.vendor_name.trim() !== "";
+      const hasAddress = vendorData.address && vendorData.address.trim() !== "";
 
-    try {
-      // Clean up previous instance
-      if (autocompleteInstanceRef.current) {
-        window.google.maps.event.clearInstanceListeners(autocompleteInstanceRef.current);
+      // If phone_number OR vendor_name is missing, show Step 1
+      if (!hasPhoneNumber || !hasVendorName) {
+        setCurrentStep(1);
       }
-
-      // Create new autocomplete instance
-      autocompleteInstanceRef.current = new window.google.maps.places.Autocomplete(
-        autoCompleteRef.current,
-        { 
-          types: ["geocode", "establishment"],
-          componentRestrictions: { country: "IN" }, // Restrict to India
-          fields: [
-            "formatted_address", 
-            "geometry", 
-            "place_id", 
-            "name",
-            "url",                   
-            "website",               
-            "place_id",              
-            "business_status",       
-            "types"                  
-          ]
-        }
-      );
-
-      console.log("Autocomplete initialized:", autocompleteInstanceRef.current);
-
-      // Add place_changed listener
-      autocompleteInstanceRef.current.addListener("place_changed", () => {
-        const place = autocompleteInstanceRef.current.getPlace();
-        console.log("Selected place:", place);
-        
-        if (place.geometry && place.formatted_address) {
-          const formattedAddress = place.formatted_address;
-          const latitude = place.geometry.location.lat();
-          const longitude = place.geometry.location.lng();
-          
-          setAddress(formattedAddress);
-          setCoordinates({ lat: latitude, lng: longitude });
-          setValue("addressUrl", formattedAddress);
-
-          // Generate embed URL for iframe
-          const embedUrl = `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${latitude},${longitude}&zoom=15`;
-          setMapUrl(embedUrl);
-
-          // Generate Google Maps URL for address_url
-          const googleMapsUrl = place.url || `https://www.google.com/maps/place/${encodeURIComponent(formattedAddress)}/@${latitude},${longitude},15z`;
-          setGoogleMapsUrl(googleMapsUrl);
-          
-          console.log("Google Maps URL:", googleMapsUrl);
-          console.log("Embed URL:", embedUrl);
-          
-          toast.success("Address selected successfully!");
+      // If phone_number AND vendor_name are filled but address is missing, show Step 2
+      else if (hasPhoneNumber && hasVendorName && !hasAddress) {
+        setCurrentStep(2);
+      }
+      // If all required fields are filled, redirect to account processing or business
+      else {
+        if (!vendorData.is_active) {
+          router.push("/accountProcessing");
         } else {
-          toast.error("Please select a valid address from the suggestions");
+          router.push("/business");
         }
-      });
-
-    } catch (error) {
-      console.error("Error initializing autocomplete:", error);
-      toast.error("Failed to initialize address autocomplete");
-    }
-
-    // Cleanup function
-    return () => {
-      if (autocompleteInstanceRef.current) {
-        window.google.maps.event.clearInstanceListeners(autocompleteInstanceRef.current);
-        autocompleteInstanceRef.current = null;
       }
-    };
-  }, [isLoaded, setValue]);
+    }
+  }, [vendorData, router]);
 
-  const onSubmit = async (data) => {
+  // Step 1: Submit Contact Details
+  const onSubmitStep1 = async (data) => {
     try {
       const token = localStorage.getItem("token");
+      if (!token) {
+        toast.error("Authentication required. Please login again.");
+        router.push("/");
+        return;
+      }
 
       setLoading(true);
 
+      const contactData = {
+        phone_number: data.phoneNumber.trim(),
+        vendor_name: data.outletName.trim(),
+      };
+
+      await dispatch(updateVendorDetails(contactData)).unwrap();
+
+      // Refresh vendor data
+      await dispatch(fetchVendorDetails(token)).unwrap();
+
+      toast.success("Contact details saved successfully!");
+      // Step will be updated automatically by the useEffect that watches vendorData
+    } catch (error) {
+      console.error("Error occurred during contact details submission:", error);
+      toast.error(
+        error.response?.data?.detail ||
+          error.message ||
+          "Failed to save contact details"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Step 2: Submit Complete Profile
+  const onSubmitStep2 = async (data, { address, coordinates, googleMapsUrl }) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        toast.error("Authentication required. Please login again.");
+        router.push("/");
+        return;
+      }
+
+      setLoading(true);
+
+      // Upload logo
       const formData = new FormData();
       formData.append("file", data.logo[0]);
 
-      const uploadLogoResponse = await axiosClient.post(
+      await axiosClient.post(
         "/v1/vendor/me/images/upload?image_type=logo",
         formData,
         {
@@ -149,47 +126,83 @@ function Page() {
         }
       );
 
-      console.log("Upload successful:", uploadLogoResponse.data);
-
-      const vendorData = {
-        vendor_name: data.storeName,
-        store_manager_name: data.storeManagerName || null,
-        owner_name: data.ownerName, 
+      // Prepare vendor update data
+      const vendorUpdateData = {
+        store_manager_name: data.storeManagerName?.trim() || null,
+        owner_name: data.ownerName?.trim() || null,
         vendor_type: data.vendorType,
-        gst_number: data.gstnumber,
-        description: data.description,
+        gst_number: data.gstnumber.trim(),
+        description: data.description.trim(),
         latitude: coordinates.lat,
         longitude: coordinates.lng,
-        address_url: googleMapsUrl, 
-        address: address,
-        pincode: data.pincode,
+        address_url: googleMapsUrl,
+        address: address.trim(),
+        pincode: data.pincode.toString().trim(),
       };
 
-      console.log("Vendor data being sent:", vendorData);
+      await axiosClient.put("/v1/vendor/me/update", vendorUpdateData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-      const uploadVendorDataResponse = await axiosClient.put(
-        "/v1/vendor/me/update",
-        vendorData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      // Refresh vendor data
+      await dispatch(fetchVendorDetails(token)).unwrap();
 
-      console.log(
-        "Vendor data uploaded successfully:",
-        uploadVendorDataResponse.data
-      );
       localStorage.removeItem("password");
       localStorage.removeItem("email");
       router.push("/accountProcessing");
     } catch (error) {
       console.error("Error occurred during form submission:", error);
+      toast.error(
+        error.response?.data?.detail ||
+          error.message ||
+          "Failed to complete profile"
+      );
     } finally {
       setLoading(false);
     }
   };
+
+  // Prepare initial data for forms
+  const step1InitialData =
+    vendorData && currentStep === 1
+      ? {
+          phoneNumber: vendorData.phone_number || "",
+          outletName: vendorData.vendor_name || "",
+        }
+      : null;
+
+  const step2InitialData =
+    vendorData && currentStep === 2
+      ? {
+          storeManagerName: vendorData.store_manager_name || "",
+          ownerName: vendorData.owner_name || "",
+          vendorType: vendorData.vendor_type || "",
+          gstnumber: vendorData.gst_number || "",
+          pincode: vendorData.pincode || "",
+          description: vendorData.description || "",
+          address: vendorData.address || "",
+          latitude: vendorData.latitude || null,
+          longitude: vendorData.longitude || null,
+          address_url: vendorData.address_url || "",
+        }
+      : null;
+
+  // Show loading state while fetching vendor data
+  if (vendorLoading) {
+    return (
+      <div
+        className="min-h-screen bg-cover bg-center bg-no-repeat flex items-center justify-center"
+        style={{ backgroundImage: "url('/Background.png')" }}
+      >
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -203,228 +216,28 @@ function Page() {
           <div className="ml-5 mt-10">
             <BackButton />
           </div>
-          <div className="flex flex-col justify-start items-center flex-1 px-6 pb-6 md:pb-10 lg:p-6 h-auto overflow-y-auto ">
-            <form
-              onSubmit={handleSubmit(onSubmit)}
-              className="flex flex-col w-full max-w-md space-y-5"
-            >
-              <div className="flex flex-col space-y-3">
-                <p className="text-black font-semibold text-[28px]">
-                  Complete Your Business Profile
-                </p>
-                <p className="text-[#A1A5B7] text-sm">
-                  Fill out the details below to complete your profile
-                </p>
+          <div className="flex flex-col justify-start items-center flex-1 px-6 pb-6 md:pb-10 lg:p-6 h-auto overflow-y-auto">
+            {currentStep === 0 && (
+              <div className="flex flex-col justify-start items-center flex-1 px-6 pb-6 md:pb-10 lg:p-6 h-auto overflow-y-auto">
+                <BeatLoader color="#5F22D9" size={10} />
               </div>
+            )}
 
-              <div className="flex flex-col space-y-1">
-                <label className="text-sm font-medium text-gray-600">Logo</label>
-                <input
-                  type="file"
-                  {...register("logo", { required: "Logo is required" })}
-                  className="rounded-md border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
-                />
-                {errors.logo && (
-                  <p className="text-red-500 text-sm">{errors.logo.message}</p>
-                )}
-              </div>
+            {currentStep === 1 && (
+              <ContactDetailsForm
+                onSubmit={onSubmitStep1}
+                loading={loading}
+                initialData={step1InitialData}
+              />
+            )}
 
-              <div className="flex flex-col space-y-1">
-                <label className="text-sm font-medium text-gray-600">
-                  Store Name
-                </label>
-                <input
-                  type="text"
-                  {...register("storeName", {
-                    required: "Store name is required",
-                  })}
-                  className="rounded-md border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
-                  placeholder="Enter store name"
-                />
-                {errors.storeName && (
-                  <p className="text-red-500 text-sm">
-                    {errors.storeName.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="flex flex-col space-y-1">
-                <label className="text-sm font-medium text-gray-600">
-                  Store Manager Name(Optional)
-                </label>
-                <input
-                  type="text"
-                  {...register("storeManagerName")}
-                  className="rounded-md border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
-                  placeholder="Enter store Manager name"
-                />
-                {errors.storeManagerName && (
-                  <p className="text-red-500 text-sm">
-                    {errors.storeManagerName.message}
-                  </p>
-                )}
-              </div>
-
-              {/* Add Owner Name field */}
-              <div className="flex flex-col space-y-1">
-                <label className="text-sm font-medium text-gray-600">
-                  Owner Name
-                </label>
-                <input
-                  type="text"
-                  {...register("ownerName")}
-                  className="rounded-md border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
-                  placeholder="Enter owner name (optional)"
-                />
-                {errors.ownerName && (
-                  <p className="text-red-500 text-sm">
-                    {errors.ownerName.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="flex flex-col space-y-1">
-                <label className="text-sm font-medium text-gray-600">
-                  Vendor Type
-                </label>
-                <select
-                  {...register("vendorType", {
-                    required: "Vendor type is required",
-                  })}
-                  className="rounded-md border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
-                >
-                  <option value="">Select Vendor Type</option>
-                  <option value="RESTAURANT">Restaurant</option>
-                  <option value="SUPERMARKET">Super Market</option>
-                  <option value="BAKERY">Bakery</option>
-                </select>
-                {errors.vendorType && (
-                  <p className="text-red-500 text-sm">
-                    {errors.vendorType.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="flex flex-col space-y-1">
-                <label className="text-sm font-medium text-gray-600">
-                  GST Number
-                </label>
-                <input
-                  type="text"
-                  {...register("gstnumber", {
-                    required: "GST Number is required",
-                  })}
-                  className="rounded-md border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
-                  placeholder="Enter Gst Number"
-                />
-                {errors.gstnumber && (
-                  <p className="text-red-500 text-sm">
-                    {errors.gstnumber.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="flex flex-col space-y-1">
-                <label className="text-sm font-medium text-gray-600">
-                  Pin Code
-                </label>
-                <input
-                  type="number"
-                  {...register("pincode", {
-                    required: "Pin Code is required",
-                  })}
-                  className="rounded-md border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
-                  placeholder="Enter Pin Code"
-                />
-                {errors.pincode && (
-                  <p className="text-red-500 text-sm">{errors.pincode.message}</p>
-                )}
-              </div>
-
-              <div className="flex flex-col space-y-1">
-                <label className="text-sm font-medium text-gray-600">
-                  Description
-                </label>
-                <textarea
-                  {...register("description", {
-                    required: "Description is required",
-                    minLength: {
-                      value: 10,
-                      message: "Description must be at least 10 characters",
-                    },
-                    maxLength: {
-                      value: 250,
-                      message: "Description cannot be more than 250 characters",
-                    },
-                  })}
-                  rows={4}
-                  className="rounded-md border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black resize-none"
-                  placeholder="Enter your description (50 words max)"
-                />
-                {errors.description && (
-                  <p className="text-red-500 text-sm">
-                    {errors.description.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="flex flex-col space-y-1">
-                <label className="text-sm font-medium text-gray-600">
-                  Address
-                </label>
-                <div className="relative">
-                  <input
-                    {...register("adressurl", {})}
-                    type="text"
-                    ref={autoCompleteRef}
-                    className="rounded-md border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black w-full"
-                    placeholder={isLoaded ? "Search your business address" : "Loading address search..."}
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
-                    disabled={!isLoaded}
-                  />
-                  {!isLoaded && (
-                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600"></div>
-                    </div>
-                  )}
-                </div>
-                {!isLoaded && (
-                  <p className="text-xs text-gray-500 mt-1">Loading Google Places API...</p>
-                )}
-                {isLoaded && (
-                  <p className="text-xs text-gray-500 mt-1">Start typing to see address suggestions</p>
-                )}
-                {errors.adressurl && (
-                  <p className="text-red-500 text-sm">
-                    {errors.adressurl.message}
-                  </p>
-                )}
-              </div>
-
-              {mapUrl && (
-                <iframe
-                  src={mapUrl}  
-                  width="450"
-                  height="250"
-                  className="w-full rounded-lg"
-                  style={{ border: 0 }}
-                  allowFullScreen
-                  loading="lazy"
-                />
-              )}
-
-              <div className="mt-6">
-                <button
-                  type="submit"
-                  className={`flex justify-center bg-primary text-white font-semibold py-2 rounded hover:bg-hoverPrimary gap-2 w-full ${
-                    loading ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
-                >
-                  {loading ? "Processing..." : "Create Account"}
-                </button>
-              </div>
-            </form>
+            {currentStep === 2 && (
+              <CompleteProfileForm
+                onSubmit={onSubmitStep2}
+                loading={loading}
+                initialData={step2InitialData}
+              />
+            )}
           </div>
         </div>
       </div>

@@ -29,7 +29,7 @@ export const useGoogleAuth = () => {
         localStorage.setItem("user", JSON.stringify(vendor));
         
         const vendorResult = await dispatch(fetchVendorDetails(access_token)).unwrap();
-        if (!vendorResult.latitude && !vendorResult.longitude) {
+        if (!vendorResult.phone_number || !vendorResult.vendor_name || !vendorResult.address) {
           router.push("/complete_profile");
           return;
         }
