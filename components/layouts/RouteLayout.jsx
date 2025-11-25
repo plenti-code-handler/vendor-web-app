@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import {
     PublicLayout, 
     BusinessLayout,
-    LandingLayout,
+    OnboardLayout,
 } from "./AllLayouts";
 
 export const RouteLayout = ({ children }) => {
@@ -17,33 +17,30 @@ export const RouteLayout = ({ children }) => {
         setIsClient(true);
     }, []);
 
-    // ✅ Fix: Use PublicLayout for account processing
-    if (pathname === "/accountProcessing") {
-        return <LandingLayout>{children}</LandingLayout>;
-    }
+    // Public pages - accessible without token
+    const publicPages = ["/terms", "/privacy", "/price-decision"];
+    const isPublicPage = publicPages.includes(pathname);
 
-    if (
-        pathname === "/verify_email" || 
-        pathname === "/verify_otp" ||
-        pathname === "/complete_profile" ||
-        pathname === "/price-decision" ||
-        pathname === "/terms" ||
-        pathname === "/privacy"
-    ) {
-        return <LandingLayout>{children}</LandingLayout>;
-    } else if (pathname === "/") {
-        if (isClient && localStorage.getItem("token")) {
-            router.push("/business");
-            return null;
-        }
-        return <LandingLayout>{children}</LandingLayout>;
+    // Onboarding pages - handled by OnboardLayout with centralized routing
+    const onboardPages = [
+        "/",
+        "/verify_email",
+        "/verify_otp",
+        "/complete_profile",
+        "/accountProcessing"
+    ];
+    const isOnboardPage = onboardPages.includes(pathname);
+
+    // Route to appropriate layout
+    if (isPublicPage) {
+        return <PublicLayout>{children}</PublicLayout>;
+    } else if (isOnboardPage) {
+        return <OnboardLayout>{children}</OnboardLayout>;
     } else if (pathname.startsWith("/business")) {
-        if (isClient && !localStorage.getItem("token")) {
-            router.push("/");
-            return null;
-        }
+        // BusinessLayout will handle its own guard checks
         return <BusinessLayout>{children}</BusinessLayout>;
     } else {
+        // Default to PublicLayout for unknown routes
         return <PublicLayout>{children}</PublicLayout>;
     }
 };

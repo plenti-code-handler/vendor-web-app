@@ -1,7 +1,6 @@
 "use client";
 import Link from "next/link";
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
@@ -13,20 +12,17 @@ import {
   EyeIcon,
   EyeSlashIcon
 } from "@heroicons/react/24/outline";
-import { fetchCatalogue } from "../../../redux/slices/catalogueSlice";
-import { fetchVendorDetails } from "../../../redux/slices/vendorSlice";
-import { useGoogleAuth } from "../../../hooks/useGoogleAuth"; // ✅ Import hook
-import GoogleAuthButton from "../../buttons/GoogleAuthButton"; // ✅ Import button
+import { useGoogleAuth } from "../../../hooks/useGoogleAuth";
+import GoogleAuthButton from "../../buttons/GoogleAuthButton";
 
 const LoginForm = () => {
-  const dispatch = useDispatch();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [focusedField, setFocusedField] = useState(null);
 
-  // ✅ Use the Google auth hook
+  // Use the Google auth hook
   const { loading: googleLoading, handleGoogleAuth, handleGoogleError } = useGoogleAuth();
 
   const {
@@ -56,21 +52,13 @@ const LoginForm = () => {
         localStorage.setItem("token", access_token);
         localStorage.setItem("user", JSON.stringify(vendor));
         
-        const vendorResult = await dispatch(fetchVendorDetails(access_token)).unwrap();
-        if (!vendorResult.phone_number || !vendorResult.vendor_name || !vendorResult.address) {
-          router.push("/complete_profile");
-          return;
-        }
-        if (!vendorResult.is_active) {
-          router.push("/accountProcessing");
-          return;
-        }
-        dispatch(fetchCatalogue(access_token));
+        // OnboardLayout will handle routing based on vendor state
+        toast.success("Login successful");
         
-        const message = 'Login successful';
-        toast.success(message);
-        
-        router.push("/business");
+        // Trigger a page reload to let OnboardLayout handle routing
+        // Alternatively, we could dispatch an action to refresh vendor data
+        // For now, reload to ensure OnboardLayout picks up the new token
+        window.location.href = "/";
       }
     } catch (error) {
       console.log(error);
@@ -236,7 +224,7 @@ const LoginForm = () => {
           )}
         </button>
 
-        {/* ✅ Google Sign-In Button - At the top for better UX */}
+        {/* Google Sign-In Button */}
         <GoogleAuthButton 
           onSuccess={(response) => handleGoogleAuth(response, false)}
           onError={() => handleGoogleError(false)}

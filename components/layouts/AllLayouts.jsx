@@ -9,6 +9,7 @@ import Header from "./Header";
 import Main from "./Main";
 import { BagsProvider } from "../../contexts/BagsContext";
 import NotificationPermissionPrompt from "../NotificationPermissionPrompt";
+import { OnboardLayout } from "./OnboardLayout";
 
 export const PublicLayout = ({ children }) => {
   useProtectedRoute([]);
@@ -58,3 +59,5 @@ export const LandingLayout = ({ children }) => {
     </>
   );
 };
+
+export { OnboardLayout };
