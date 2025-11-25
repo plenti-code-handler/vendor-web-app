@@ -74,9 +74,12 @@ export const OnboardLayout = ({ children }) => {
 
     // Determine where user should be based on their state
     let targetRoute = null;
-
-    // Missing phone_number or vendor_name -> complete_profile
-    if ((!hasPhoneNumber || !hasVendorName) || !hasAddress) {
+    
+    if (vendorData.is_active) {
+      toast.success("Please wait for your account to be approved");
+      targetRoute = "/business";
+    }
+    else if ((!hasPhoneNumber || !hasVendorName) || !hasAddress) {
       toast.info("Please fill up your profile details");
       targetRoute = "/complete_profile";
     }

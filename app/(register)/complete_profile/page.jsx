@@ -25,6 +25,18 @@ function Page() {
   const [currentStep, setCurrentStep] = useState(0);
   const [loading, setLoading] = useState(false);
 
+  // Handle back to login
+  const handleBackToLogin = () => {
+    // Clear all auth-related data
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    localStorage.removeItem("password");
+    localStorage.removeItem("email");
+    
+    // Redirect to login
+    router.push("/");
+  };
+
   // Determine which step to show based on vendor data
   // OnboardLayout ensures we only reach this page when profile is incomplete
   useEffect(() => {
@@ -207,8 +219,14 @@ function Page() {
         <AuthLeftContent />
 
         <div className="flex flex-col w-full lg:w-[40%] bg-white lg:h-[95vh] max-h-[800px] rounded-[24px] shadow-lg overflow-hidden mt-20">
-          <div className="ml-5 mt-10">
+          <div className="ml-5 mt-10 flex items-center justify-between pr-5">
             <BackButton />
+            <button
+              onClick={handleBackToLogin}
+              className="text-sm text-[#5F22D9] hover:text-[#4A1BB8] font-medium transition-colors underline-offset-4 hover:underline"
+            >
+              Back to Login
+            </button>
           </div>
           <div className="flex flex-col justify-start items-center flex-1 px-6 pb-6 md:pb-10 lg:p-6 h-auto overflow-y-auto">
             {currentStep === 1 && (
