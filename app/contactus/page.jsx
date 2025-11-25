@@ -1,11 +1,21 @@
 "use client";
 import React from "react";
+import { useRouter } from 'next/navigation';
 import { EnvelopeIcon, PhoneIcon, DocumentTextIcon, ShieldCheckIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
+import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 
 const ContactUsPage = () => {
+  const router = useRouter();
   return (
     <div className="max-w-4xl mx-auto py-8">
+      <button 
+              onClick={() => router.back()}
+              className="text-[#5F22D9] hover:text-[#7e45ee] text-xs transition-colors cursor-pointer flex items-center gap-2"
+            >
+            <ArrowLeftIcon className="h-3 w-3" />
+            Go Back
+      </button>
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Contact Us</h1>
         <p className="text-gray-600">

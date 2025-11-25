@@ -17,19 +17,22 @@ import {
   LocationMarkerIcon,
   BellIcon
 } from '@heroicons/react/24/outline';
+import { useRouter } from 'next/navigation';
+import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 
 const PrivacyPage = () => {
+  const router = useRouter();
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Main Content */}
       <div className="bg-white rounded-lg shadow-sm border p-8 text-xs">
-        <Link 
-          href="/verify_email"
-          className="text-[#5F22D9] hover:text-[#7e45ee] font-medium transition-colors"
-        >
-          Back to Home
-        </Link>
-        
+        <button 
+                onClick={() => router.back()}
+                className="text-[#5F22D9] hover:text-[#7e45ee] text-xs transition-colors cursor-pointer flex items-center gap-2"
+              >
+              <ArrowLeftIcon className="h-3 w-3" />
+              Go Back
+        </button>
         {/* Header */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">

@@ -300,7 +300,7 @@ const RegisterForm = () => {
         {/* Support Link */}
         <div className="text-center">
           <Link 
-            href="/contact" 
+            href="/contactus" 
             className="text-sm text-[#5F22D9] hover:text-[#4A1BB8] transition-colors duration-200 underline-offset-4 hover:underline"
           >
             Contact our support team
