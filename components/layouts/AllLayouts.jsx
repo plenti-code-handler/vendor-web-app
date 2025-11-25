@@ -13,7 +13,7 @@ import { OnboardLayout } from "./OnboardLayout";
 
 export const PublicLayout = ({ children }) => {
   useProtectedRoute([]);
-  return <AuthMain>{children}</AuthMain>;
+  return <>{children}</>;
 };
 
 export const BusinessLayout = ({ children }) => {
