@@ -8,10 +8,9 @@ import { toast } from "sonner";
 import AuthLeftContent from "../../../components/layouts/AuthLeftContent";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  fetchVendorDetails,
   updateVendorDetails,
+  fetchVendorDetails,
   selectVendorData,
-  selectVendorLoading,
 } from "../../../redux/slices/vendorSlice";
 import BeatLoader from "react-spinners/BeatLoader";
 import ContactDetailsForm from "../../../components/sections/auth/ContactDetailsForm";
@@ -21,28 +20,21 @@ function Page() {
   const dispatch = useDispatch();
   const router = useRouter();
   const vendorData = useSelector(selectVendorData);
-  const vendorLoading = useSelector(selectVendorLoading);
 
   // Step state: 1 = Contact Details, 2 = Complete Profile
   const [currentStep, setCurrentStep] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  // Fetch vendor data on mount
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token && !vendorData) {
-      dispatch(fetchVendorDetails(token));
-    }
-  }, [dispatch, vendorData]);
-
   // Determine which step to show based on vendor data
+  // OnboardLayout ensures we only reach this page when profile is incomplete
   useEffect(() => {
     if (vendorData) {
       const hasPhoneNumber =
         vendorData.phone_number && vendorData.phone_number.trim() !== "";
       const hasVendorName =
         vendorData.vendor_name && vendorData.vendor_name.trim() !== "";
-      const hasAddress = vendorData.address && vendorData.address.trim() !== "";
+      const hasAddress =
+        vendorData.address && vendorData.address.trim() !== "";
 
       // If phone_number OR vendor_name is missing, show Step 1
       if (!hasPhoneNumber || !hasVendorName) {
@@ -52,16 +44,10 @@ function Page() {
       else if (hasPhoneNumber && hasVendorName && !hasAddress) {
         setCurrentStep(2);
       }
-      // If all required fields are filled, redirect to account processing or business
-      else {
-        if (!vendorData.is_active) {
-          router.push("/accountProcessing");
-        } else {
-          router.push("/business");
-        }
-      }
+      // If all required fields are filled, OnboardLayout will handle redirect
+      // We don't need to redirect here as OnboardLayout watches vendorData changes
     }
-  }, [vendorData, router]);
+  }, [vendorData]);
 
   // Step 1: Submit Contact Details
   const onSubmitStep1 = async (data) => {
@@ -82,7 +68,7 @@ function Page() {
 
       await dispatch(updateVendorDetails(contactData)).unwrap();
 
-      // Refresh vendor data
+      // Refresh vendor data - OnboardLayout will handle routing based on updated state
       await dispatch(fetchVendorDetails(token)).unwrap();
 
       toast.success("Contact details saved successfully!");
@@ -132,6 +118,7 @@ function Page() {
         owner_name: data.ownerName?.trim() || null,
         vendor_type: data.vendorType,
         gst_number: data.gstnumber.trim(),
+        fssai_number: data.fssainumber.trim(),
         description: data.description.trim(),
         latitude: coordinates.lat,
         longitude: coordinates.lng,
@@ -146,12 +133,14 @@ function Page() {
         },
       });
 
-      // Refresh vendor data
+      // Refresh vendor data - OnboardLayout will handle routing to /accountProcessing
       await dispatch(fetchVendorDetails(token)).unwrap();
 
       localStorage.removeItem("password");
       localStorage.removeItem("email");
-      router.push("/accountProcessing");
+      
+      toast.success("Profile completed successfully!");
+      // OnboardLayout will automatically redirect to /accountProcessing based on updated vendorData
     } catch (error) {
       console.error("Error occurred during form submission:", error);
       toast.error(
@@ -180,6 +169,7 @@ function Page() {
           ownerName: vendorData.owner_name || "",
           vendorType: vendorData.vendor_type || "",
           gstnumber: vendorData.gst_number || "",
+          fssainumber: vendorData.fssai_number || "",
           pincode: vendorData.pincode || "",
           description: vendorData.description || "",
           address: vendorData.address || "",
@@ -189,16 +179,20 @@ function Page() {
         }
       : null;
 
-  // Show loading state while fetching vendor data
-  if (vendorLoading) {
+  // Show loading state while determining step
+  if (!vendorData || currentStep === 0) {
     return (
       <div
-        className="min-h-screen bg-cover bg-center bg-no-repeat flex items-center justify-center"
+        className="min-h-screen bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: "url('/Background.png')" }}
       >
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
+        <div className="flex flex-col lg:flex-row pt-5 pb-5 justify-between px-10">
+          <AuthLeftContent />
+          <div className="flex flex-col w-full lg:w-[40%] bg-white lg:h-[95vh] max-h-[800px] rounded-[24px] shadow-lg overflow-hidden mt-20">
+            <div className="flex flex-col justify-start items-center flex-1 px-6 pb-6 md:pb-10 lg:p-6 h-auto overflow-y-auto">
+              <BeatLoader color="#5F22D9" size={10} />
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -217,12 +211,6 @@ function Page() {
             <BackButton />
           </div>
           <div className="flex flex-col justify-start items-center flex-1 px-6 pb-6 md:pb-10 lg:p-6 h-auto overflow-y-auto">
-            {currentStep === 0 && (
-              <div className="flex flex-col justify-start items-center flex-1 px-6 pb-6 md:pb-10 lg:p-6 h-auto overflow-y-auto">
-                <BeatLoader color="#5F22D9" size={10} />
-              </div>
-            )}
-
             {currentStep === 1 && (
               <ContactDetailsForm
                 onSubmit={onSubmitStep1}

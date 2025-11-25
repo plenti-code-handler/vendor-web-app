@@ -83,12 +83,26 @@ const AccountProcessingPage = () => {
       } catch (error) {
         console.error('Error loading account data:', error);
         setLoading(false);
-        router.push('/');
+        // OnboardLayout will handle routing if token is invalid
+        // Only redirect if there's a critical error
+        const token = localStorage.getItem("token");
+        if (!token) {
+          router.push('/');
+        }
       }
     };
 
     init();
   }, []);
+
+  // Check if account becomes approved - OnboardLayout will handle redirect
+  useEffect(() => {
+    if (isAccountApproved && vendorDetails) {
+      // OnboardLayout will automatically redirect to /business when is_active = true
+      // We can trigger a refresh to let OnboardLayout handle routing
+      // Or just let the user click the button
+    }
+  }, [isAccountApproved, vendorDetails]);
 
   // Sequential step animation
   useEffect(() => {
@@ -119,7 +133,11 @@ const AccountProcessingPage = () => {
     router.push('/');
   };
 
-  const handleGoToDashboard = () => router.push('/business');
+  const handleGoToDashboard = () => {
+    // OnboardLayout will handle routing, but we can trigger a refresh
+    // to ensure OnboardLayout picks up the updated vendor state
+    window.location.href = '/business';
+  };
   
   const handleSetPricing = () => router.push('/price-decision');
 
@@ -128,6 +146,10 @@ const AccountProcessingPage = () => {
     try {
       await loadAccountData();
       setTimeout(() => setRefreshing(false), 1000);
+      
+      // If account becomes approved after refresh, OnboardLayout will handle redirect
+      // We could trigger a page reload to let OnboardLayout route, but the button
+      // provides a better UX for immediate navigation
     } catch (error) {
       console.error('Error refreshing status:', error);
       setRefreshing(false);

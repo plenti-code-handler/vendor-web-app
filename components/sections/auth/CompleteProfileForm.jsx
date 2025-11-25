@@ -21,6 +21,7 @@ const CompleteProfileForm = ({ onSubmit, loading, initialData }) => {
       ownerName: "",
       vendorType: "",
       gstnumber: "",
+      fssainumber: "",
       pincode: "",
       description: "",
     },
@@ -47,6 +48,7 @@ const CompleteProfileForm = ({ onSubmit, loading, initialData }) => {
         ownerName: initialData.ownerName || "",
         vendorType: initialData.vendorType || "",
         gstnumber: initialData.gstnumber || "",
+        fssainumber: initialData.fssainumber || "",
         pincode: initialData.pincode || "",
         description: initialData.description || "",
       });
@@ -245,6 +247,25 @@ const CompleteProfileForm = ({ onSubmit, loading, initialData }) => {
         {errors.gstnumber && (
           <p className="text-red-500 text-sm">
             {errors.gstnumber.message}
+          </p>
+        )}
+      </div>
+
+      <div className="flex flex-col space-y-1">
+        <label className="text-sm font-medium text-gray-600">
+          FSSAI Number
+        </label>
+        <input
+          type="text"
+          {...register("fssainumber", {
+            required: "FSSAI Number is required",
+          })}
+          className="rounded-md border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
+          placeholder="Enter FSSAI Number"
+        />
+        {errors.fssainumber && (
+          <p className="text-red-500 text-sm">
+            {errors.fssainumber.message}
           </p>
         )}
       </div>
