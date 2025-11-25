@@ -57,7 +57,7 @@ const LoginForm = () => {
         localStorage.setItem("user", JSON.stringify(vendor));
         
         const vendorResult = await dispatch(fetchVendorDetails(access_token)).unwrap();
-        if (!vendorResult.latitude && !vendorResult.longitude) {
+        if (!vendorResult.phone_number || !vendorResult.vendor_name || !vendorResult.address) {
           router.push("/complete_profile");
           return;
         }
@@ -74,7 +74,6 @@ const LoginForm = () => {
       }
     } catch (error) {
       console.log(error);
-      setShowAlert(true);
       
       if (error.response?.status === 401) {
         toast.error("Invalid email or password");
@@ -86,7 +85,6 @@ const LoginForm = () => {
         toast.error("Login failed. Please try again.");
       }
       
-      setTimeout(() => setShowAlert(false), 2000);
     } finally {
       setLoading(false);
     }
