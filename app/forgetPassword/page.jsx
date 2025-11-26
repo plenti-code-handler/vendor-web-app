@@ -9,6 +9,8 @@ import AuthPasswordField from "../../components/fields/AuthPasswordField";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { baseUrl } from "../../utility/BaseURL";
+import AuthLeftContent from "../../components/layouts/AuthLeftContent";
+import BackButton from "../../components/sections/auth/BackButton";
 
 function ForgetpasswordScreen() {
   const [step, setStep] = useState("email");
@@ -24,6 +26,18 @@ function ForgetpasswordScreen() {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Handle back to login
+  const handleBackToLogin = () => {
+    // Clear all auth-related data
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    localStorage.removeItem("password");
+    localStorage.removeItem("email");
+    
+    // Redirect to login
+    router.push("/");
+  };
 
   const {
     register,
@@ -236,27 +250,59 @@ function ForgetpasswordScreen() {
   // ✅ Don't render until mounted to prevent hydration mismatch
   if (!mounted) {
     return (
-  
-        <div className="flex flex-col w-full md:w-[80%] lg:w-[40%] bg-white h-[90vh] max-h-[600px] rounded-[24px] justify-between shadow-lg overflow-hidden">
-          <div className="flex justify-center items-center flex-1 px-6 pb-16 md:pb-28 lg:p-6">
-            <div className="flex flex-col w-full max-w-md space-y-4">
-              <p className="text-black font-semibold text-[28px]">Forgot Password</p>
-              <p className="text-sm text-[#7E8299]">
-                Enter your email to receive a reset link
-              </p>
+      <div
+        className="min-h-screen bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: "url('/Background.png')" }}
+      >
+        <div className="flex flex-col lg:flex-row pt-5 pb-5 justify-between px-10">
+          <AuthLeftContent />
+          <div className="flex flex-col w-full lg:w-[40%] bg-white lg:h-[95vh] max-h-[800px] rounded-[24px] shadow-lg overflow-hidden mt-20">
+            <div className="ml-5 mt-10 flex items-center justify-end pr-5">
+              <button
+                onClick={handleBackToLogin}
+                className="text-sm text-[#5F22D9] hover:text-[#4A1BB8] font-medium transition-colors underline-offset-4 hover:underline"
+              >
+                Go Back to Login
+              </button>
+            </div>
+            <div className="flex justify-center items-center flex-1 px-6 pb-16 md:pb-28 lg:p-6">
+              <div className="flex flex-col w-full max-w-md space-y-4">
+                <p className="text-black font-semibold text-[28px]">Forgot Password</p>
+                <p className="text-sm text-[#7E8299]">
+                  Enter your email to receive a reset link
+                </p>
+              </div>
             </div>
           </div>
         </div>
+      </div>
     );
   }
 
   return (
+    <div
+      className="min-h-screen bg-cover bg-center bg-no-repeat"
+      style={{ backgroundImage: "url('/Background.png')" }}
+    >
+      <div className="flex flex-col lg:flex-row pt-5 pb-5 justify-between px-10">
+        <AuthLeftContent />
 
-      <div className="flex flex-col w-full md:w-[80%] lg:w-[40%] bg-white h-[90vh] max-h-[600px] rounded-[24px] justify-between shadow-lg overflow-hidden">
-        <div className="flex justify-center items-center flex-1 px-6 pb-16 md:pb-28 lg:p-6">
-          {renderForm()}
+        <div className="flex flex-col w-full lg:w-[40%] bg-white lg:h-[95vh] max-h-[800px] rounded-[24px] shadow-lg overflow-hidden mt-20">
+          <div className="ml-10 mt-10 flex items-center justify-start pr-10 gap-2">
+            <BackButton />
+            <button
+              onClick={handleBackToLogin}
+              className="text-sm text-[#5F22D9] hover:text-[#4A1BB8] font-medium transition-colors underline-offset-4 hover:underline"
+            >
+              Go Back to Login
+            </button>
+          </div>
+          <div className="flex justify-center items-center flex-1 px-6 pb-16 md:pb-28 lg:p-6">
+            {renderForm()}
+          </div>
         </div>
       </div>
+    </div>
   );
 }
 

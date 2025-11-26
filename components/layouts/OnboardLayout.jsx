@@ -19,7 +19,7 @@ export const OnboardLayout = ({ children }) => {
   const [isChecking, setIsChecking] = useState(true);
 
   // Routes that don't require token
-  const publicOnboardRoutes = ["/", "/verify_email", "/verify_otp"];
+  const publicOnboardRoutes = ["/", "/verify_email", "/verify_otp", "/forgetPassword"];
 
   // Check if current route is a public onboard route
   const isPublicOnboardRoute = publicOnboardRoutes.includes(pathname);
@@ -76,7 +76,6 @@ export const OnboardLayout = ({ children }) => {
     let targetRoute = null;
     
     if (vendorData.is_active) {
-      toast.success("Please wait for your account to be approved");
       targetRoute = "/business";
     }
     else if ((!hasPhoneNumber || !hasVendorName) || !hasAddress) {
