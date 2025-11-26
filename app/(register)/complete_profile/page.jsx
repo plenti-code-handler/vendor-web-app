@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import BackButton from "../../../components/sections/auth/BackButton";
 import axiosClient from "../../../AxiosClient";
 import { toast } from "sonner";
 import AuthLeftContent from "../../../components/layouts/AuthLeftContent";
@@ -15,6 +14,7 @@ import {
 import BeatLoader from "react-spinners/BeatLoader";
 import ContactDetailsForm from "../../../components/sections/auth/ContactDetailsForm";
 import CompleteProfileForm from "../../../components/sections/auth/CompleteProfileForm";
+import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 
 function Page() {
   const dispatch = useDispatch();
@@ -219,13 +219,13 @@ function Page() {
         <AuthLeftContent />
 
         <div className="flex flex-col w-full lg:w-[40%] bg-white lg:h-[95vh] max-h-[800px] rounded-[24px] shadow-lg overflow-hidden mt-20">
-          <div className="ml-5 mt-10 flex items-center justify-between pr-5">
-            <BackButton />
+        <div className="ml-10 mt-10 items-start justify-start pr-10 gap-2">
             <button
               onClick={handleBackToLogin}
-              className="text-sm text-[#5F22D9] hover:text-[#4A1BB8] font-medium transition-colors underline-offset-4 hover:underline"
+              className="text-sm text-[#5F22D9] hover:text-[#4A1BB8] font-medium transition-colors underline-offset-4 hover:underline flex items-center gap-2"
             >
-              Back to Login
+              <ArrowLeftIcon className="h-3 w-3" />
+              <span>Go Back to Login</span>
             </button>
           </div>
           <div className="flex flex-col justify-start items-center flex-1 px-6 pb-6 md:pb-10 lg:p-6 h-auto overflow-y-auto">
@@ -252,3 +252,4 @@ function Page() {
 }
 
 export default Page;
+

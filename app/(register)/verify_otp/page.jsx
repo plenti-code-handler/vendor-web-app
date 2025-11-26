@@ -19,6 +19,18 @@ const VerifyAccountForm = () => {
 
   const router = useRouter();
 
+  // Handle back to login
+  const handleBackToLogin = () => {
+    // Clear all auth-related data
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    localStorage.removeItem("password");
+    localStorage.removeItem("email");
+    
+    // Redirect to login
+    router.push("/");
+  };
+
   // Handle countdown for resend button
   useEffect(() => {
     if (timeLeft > 0) {
@@ -142,11 +154,17 @@ const VerifyAccountForm = () => {
         <AuthLeftContent />
 
         <div className="flex flex-col w-full lg:w-[40%] bg-white lg:h-[95vh] max-h-[800px] rounded-[24px] shadow-lg overflow-hidden mt-20">
-          <div className="ml-10 mt-10">
+        <div className="ml-10 mt-10 flex items-center justify-start pr-10 gap-2">
             <BackButton />
+            <button
+              onClick={handleBackToLogin}
+              className="text-sm text-[#5F22D9] hover:text-[#4A1BB8] font-medium transition-colors underline-offset-4 hover:underline"
+            >
+              Go Back to Login
+            </button>
           </div>
 
-          <div className="flex flex-col flex-grow items-center justify-center px-5">
+          <div className="flex flex-col flex-grow items-center justify-center px-5 pb-10">
             <p className="text-black font-semibold text-[28px]">Verify Account</p>
             <p className="text-base">Enter the code to verify your account</p>
 

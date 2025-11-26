@@ -8,7 +8,7 @@ import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 const ContactUsPage = () => {
   const router = useRouter();
   return (
-    <div className="max-w-4xl mx-auto py-8">
+    <div className="max-w-4xl mx-auto p-10">
       <button 
               onClick={() => router.back()}
               className="text-[#5F22D9] hover:text-[#7e45ee] text-xs transition-colors cursor-pointer flex items-center gap-2"

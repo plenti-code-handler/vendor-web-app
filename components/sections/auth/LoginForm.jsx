@@ -16,7 +16,6 @@ import { useGoogleAuth } from "../../../hooks/useGoogleAuth";
 import GoogleAuthButton from "../../buttons/GoogleAuthButton";
 
 const LoginForm = () => {
-  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -246,7 +245,7 @@ const LoginForm = () => {
           <p className="text-xs text-gray-500">
             Need help?{" "}
             <Link 
-              href="/contact" 
+              href="/contactus" 
               className="text-[#5F22D9] hover:text-[#4A1BB8] transition-colors duration-200 underline-offset-4 hover:underline"
             >
               Contact support

@@ -1,14 +1,8 @@
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useDispatch } from 'react-redux';
 import { toast } from 'sonner';
 import axiosClient from '../AxiosClient';
-import { fetchVendorDetails } from '../redux/slices/vendorSlice';
-import { fetchCatalogue } from '../redux/slices/catalogueSlice';
 
 export const useGoogleAuth = () => {
-  const router = useRouter();
-  const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
 
   const handleGoogleAuth = async (credentialResponse, isRegistration = false) => {
@@ -28,21 +22,12 @@ export const useGoogleAuth = () => {
         localStorage.setItem("token", access_token);
         localStorage.setItem("user", JSON.stringify(vendor));
         
-        const vendorResult = await dispatch(fetchVendorDetails(access_token)).unwrap();
-        if (!vendorResult.phone_number || !vendorResult.vendor_name || !vendorResult.address) {
-          router.push("/complete_profile");
-          return;
-        }
-        if (!vendorResult.is_active) {
-          router.push("/accountProcessing");
-          return;
-        }
-        dispatch(fetchCatalogue(access_token));
-        
+        // OnboardLayout will handle routing based on vendor state
         const message = isRegistration ? "Account created successfully!" : "Google sign-in successful";
         toast.success(message);
         
-        router.push("/business");
+        // Trigger a page reload to let OnboardLayout handle routing
+        window.location.href = "/";
       }
     } catch (error) {
       console.error("Google auth error:", error);

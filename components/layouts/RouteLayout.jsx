@@ -27,7 +27,8 @@ export const RouteLayout = ({ children }) => {
         "/verify_email",
         "/verify_otp",
         "/complete_profile",
-        "/accountProcessing"
+        "/accountProcessing", 
+        "/forgetPassword",
     ];
     const isOnboardPage = onboardPages.includes(pathname);
 
