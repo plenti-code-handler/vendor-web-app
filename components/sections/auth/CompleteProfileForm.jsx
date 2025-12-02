@@ -4,6 +4,10 @@ import React, { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { useLoadScript } from "@react-google-maps/api";
 import { toast } from "sonner";
+import { 
+  getAdministrativeArea, 
+  formatServiceLocation 
+} from "../../../utility/googlePlacesUtils";
 
 const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 const libraries = ["places"];
@@ -31,6 +35,7 @@ const CompleteProfileForm = ({ onSubmit, loading, initialData }) => {
   const [coordinates, setCoordinates] = useState({ lat: null, lng: null });
   const [mapUrl, setMapUrl] = useState("");
   const [googleMapsUrl, setGoogleMapsUrl] = useState("");
+  const [serviceLocation, setServiceLocation] = useState("");  // Add service_location state
 
   const autoCompleteRef = useRef(null);
   const autocompleteInstanceRef = useRef(null);
@@ -66,6 +71,9 @@ const CompleteProfileForm = ({ onSubmit, loading, initialData }) => {
       }
       if (initialData.address_url) {
         setGoogleMapsUrl(initialData.address_url);
+      }
+      if (initialData.service_location) {
+        setServiceLocation(initialData.service_location);
       }
     }
   }, [initialData, reset, apiKey]);
@@ -103,6 +111,7 @@ const CompleteProfileForm = ({ onSubmit, loading, initialData }) => {
             "website",
             "business_status",
             "types",
+            "address_components",  // Add address_components field
           ],
         }
       );
@@ -116,8 +125,16 @@ const CompleteProfileForm = ({ onSubmit, loading, initialData }) => {
           const latitude = place.geometry.location.lat();
           const longitude = place.geometry.location.lng();
 
+          // Extract administrative area levels from address_components
+          const administrativeAreaLevel1 = getAdministrativeArea(place.address_components, 1);
+          const administrativeAreaLevel3 = getAdministrativeArea(place.address_components, 3);
+          
+          // Format service_location as uppercase(level3, level1)
+          const formattedServiceLocation = formatServiceLocation(administrativeAreaLevel3, administrativeAreaLevel1);
+
           setAddress(formattedAddress);
           setCoordinates({ lat: latitude, lng: longitude });
+          setServiceLocation(formattedServiceLocation || "");  // Store service_location
 
           // Generate embed URL for iframe
           const embedUrl = `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${latitude},${longitude}&zoom=15`;
@@ -155,8 +172,18 @@ const CompleteProfileForm = ({ onSubmit, loading, initialData }) => {
       return;
     }
 
-    // Call parent's onSubmit with form data, address, coordinates, and googleMapsUrl
-    await onSubmit(data, { address, coordinates, googleMapsUrl });
+    // Format service_location - ensure it's uppercase
+    const formattedServiceLocation = serviceLocation 
+      ? serviceLocation.trim().toUpperCase() 
+      : null;
+
+    // Call parent's onSubmit with form data, address, coordinates, googleMapsUrl, and service_location
+    await onSubmit(data, { 
+      address, 
+      coordinates, 
+      googleMapsUrl,
+      service_location: formattedServiceLocation,
+    });
   };
 
   return (

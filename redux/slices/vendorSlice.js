@@ -165,7 +165,9 @@ const vendorSlice = createSlice({
       })
       .addCase(updateVendorDetails.fulfilled, (state, action) => {
         state.loading = false;
+        // Merge the updated data with existing vendorData to preserve service_location
         state.vendorData = { ...state.vendorData, ...action.payload };
+        // If the backend returns service_location, it will be included automatically
       })
       .addCase(updateVendorDetails.rejected, (state, action) => {
         state.loading = false;
