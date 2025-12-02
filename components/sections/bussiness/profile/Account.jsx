@@ -13,6 +13,10 @@ import {
   fetchVendorDetails,
   updateVendorDetails 
 } from "../../../../redux/slices/vendorSlice";
+import { 
+  getAdministrativeArea, 
+  formatServiceLocation 
+} from "../../../../utility/googlePlacesUtils";
 
 const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 const libraries = ["places"]; // Define as constant outside component
@@ -40,6 +44,7 @@ const Account = () => {
     address: "", // Add address field
     pincode: "",
     phone_number: "",
+    service_location: "",  // Add service_location field
   });
 
   const [mapUrl, setMapUrl] = useState("");
@@ -74,6 +79,7 @@ const Account = () => {
         address: vendorData.address || "", // Add address
         pincode: vendorData.pincode || "",
         phone_number: vendorData.phone_number || "", // Keep as string for form input
+        service_location: vendorData.service_location || "",  // Add service_location
       });
 
       if (vendorData.latitude && vendorData.longitude) {
@@ -134,9 +140,9 @@ const Account = () => {
             "name",
             "url",                   
             "website",               
-            "place_id",              
             "business_status",       
-            "types"                  
+            "types",
+            "address_components"  // Add this field
           ]
         }
       );
@@ -153,6 +159,13 @@ const Account = () => {
           const latitude = place.geometry.location.lat();
           const longitude = place.geometry.location.lng();
           
+          // Extract administrative area levels from address_components
+          const administrativeAreaLevel1 = getAdministrativeArea(place.address_components, 1);
+          const administrativeAreaLevel3 = getAdministrativeArea(place.address_components, 3);
+          
+          // Format service_location as uppercase(level3, level1)
+          const serviceLocation = formatServiceLocation(administrativeAreaLevel3, administrativeAreaLevel1);
+          
           // Generate Google Maps URL for address_url
           const googleMapsUrl = place.url || `https://www.google.com/maps/place/${encodeURIComponent(formattedAddress)}/@${latitude},${longitude},15z`;
           setGoogleMapsUrl(googleMapsUrl);
@@ -163,6 +176,7 @@ const Account = () => {
             address: formattedAddress, // Store formatted address
             latitude: latitude,
             longitude: longitude,
+            service_location: serviceLocation || "",  // Store formatted service_location
           }));
 
           setMapUrl(
@@ -170,7 +184,6 @@ const Account = () => {
           );
           
           console.log("Google Maps URL:", googleMapsUrl);
-          console.log("Embed URL:", mapUrl);
           
           toast.success("Address selected successfully!");
         } else {
@@ -209,6 +222,7 @@ const Account = () => {
       address: originalData.address || "", // Add address
       pincode: originalData.pincode || "",
       phone_number: originalData.phone_number || "", // Keep as string for form input
+      service_location: originalData.service_location || "",  // Add service_location
     });
   };
 
@@ -216,6 +230,12 @@ const Account = () => {
   const handleUpdate = async () => {
     try {
       setIsUpdating(true); // Start loading
+      
+      // Format service_location - ensure it's uppercase and properly formatted
+      let formattedServiceLocation = null;
+      if (formData.service_location && formData.service_location.trim() !== "") {
+        formattedServiceLocation = formData.service_location.trim().toUpperCase();
+      }
       
       // Prepare data for API call - convert empty strings to null for phone_number
       const apiData = {
@@ -229,14 +249,14 @@ const Account = () => {
         pan_number: formData.pan_number.trim() === "" ? null : formData.pan_number.trim(),
         description: formData.description.trim() === "" ? null : formData.description.trim(),
         pincode: formData.pincode.trim() === "" ? null : formData.pincode.trim(),
+        service_location: formattedServiceLocation,  // Use formatted service_location
       };
 
       console.log("Form data", formData);
       console.log("API data", apiData);
       
       const result = await dispatch(updateVendorDetails(apiData)).unwrap();
-      console.log("Profile update console");
-      console.log(result);
+      console.log("Profile update console", result);
       toast.success("Profile updated successfully!");
       setOriginalData(formData);
     } catch (err) {

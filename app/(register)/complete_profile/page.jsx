@@ -98,7 +98,7 @@ function Page() {
   };
 
   // Step 2: Submit Complete Profile
-  const onSubmitStep2 = async (data, { address, coordinates, googleMapsUrl }) => {
+  const onSubmitStep2 = async (data, { address, coordinates, googleMapsUrl, service_location }) => {
     try {
       const token = localStorage.getItem("token");
       if (!token) {
@@ -137,6 +137,7 @@ function Page() {
         address_url: googleMapsUrl,
         address: address.trim(),
         pincode: data.pincode.toString().trim(),
+        service_location: service_location || null,  // Add service_location
       };
 
       await axiosClient.put("/v1/vendor/me/update", vendorUpdateData, {
@@ -188,6 +189,7 @@ function Page() {
           latitude: vendorData.latitude || null,
           longitude: vendorData.longitude || null,
           address_url: vendorData.address_url || "",
+          service_location: vendorData.service_location || "",  // Add service_location to initial data
         }
       : null;
 
