@@ -29,6 +29,8 @@ export const RouteLayout = ({ children }) => {
         "/complete_profile",
         "/accountProcessing", 
         "/forgetPassword",
+        "/terms-acceptance",
+        "/pricing",
     ];
     const isOnboardPage = onboardPages.includes(pathname);
 

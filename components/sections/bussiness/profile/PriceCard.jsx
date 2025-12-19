@@ -29,13 +29,6 @@ const PriceCard = ({ size, prices, isMedium, showCards, index }) => {
       }`}
       style={{ transitionDelay: `${index * 200}ms` }}
     >
-      {isMedium && (
-        <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-10">
-          <div className="bg-[#5F22D9] text-white px-4 py-1 rounded-full text-xs font-semibold shadow-lg">
-            ⭐ Most Popular
-          </div>
-        </div>
-      )}
 
       <div className={`rounded-2xl p-8 h-full ${
         isMedium 

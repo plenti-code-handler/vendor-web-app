@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { ALL_ITEM_TYPES, ITEM_TYPE_DISPLAY_NAMES, ITEM_TYPE_ICONS, ITEM_TYPE_DESCRIPTIONS } from '../../constants/itemTypes';
 import { fetchCatalogue } from '../../redux/slices/catalogueSlice';
 import { useRouter } from 'next/navigation';
+import { getAvailableCategories } from '../../utility/bagDrawerUtils';
 
 const ItemTypeFilter = ({ selectedFilter, onFilterChange }) => {
   const dispatch = useDispatch();
@@ -14,12 +15,7 @@ const ItemTypeFilter = ({ selectedFilter, onFilterChange }) => {
   const { itemTypes } = useSelector((state) => state.catalogue);
   const router = useRouter();
 
-  const availableCategories = useMemo(() => {
-    return ALL_ITEM_TYPES.filter(itemType => {
-      const catalogueItem = itemTypes[itemType];
-      return catalogueItem && catalogueItem.bags && Object.keys(catalogueItem.bags).length > 0;
-    });
-  }, [itemTypes]);
+  const availableCategories = getAvailableCategories(itemTypes);
 
   // Auto-select first available category if selectedFilter is empty or invalid
   useEffect(() => {

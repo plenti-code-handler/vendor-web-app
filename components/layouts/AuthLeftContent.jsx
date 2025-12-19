@@ -17,20 +17,20 @@ const AuthLeftContent = () => {
       </div>
       
       {/* Main content - right aligned on mobile, centered on desktop */}
-      <div className="flex-1 flex items-center justify-end md:justify-center px-4 md:px-8">
-        <div className="text-right md:text-left relative">
+      <div className="flex-1 flex items-center justify-end px-4 md:px-8">
+        <div className="text-right lg:text-left relative">
           {/* Background gradient overlay for text enhancement */}
           <div className="absolute inset-0 bg-gradient-to-r from-purple-900/20 to-transparent rounded-lg"></div>
           
           {/* Main heading with enhanced styling */}
-          <h1 className="relative z-10 text-4xl md:text-5xl lg:text-10xl text-white font-black leading-none tracking-tight drop-shadow-2xl">
+          <h1 className="relative z-10 text-2xl md:text-3xl lg:text-4xl text-white font-black leading-none tracking-tight drop-shadow-2xl">
               <span className="bg-gradient-to-r from-[#EFE5FF] via-white to-[#DAC4FF] bg-clip-text text-transparent">
                 join hands to
               </span>
             </h1>
             
             {/* Sub heading with dramatic styling */}
-            <h1 className="relative z-10 text-4xl md:text-5xl lg:text-9xl text-white font-black leading-none tracking-tight mt-4 drop-shadow-2xl">
+            <h1 className="relative z-10 text-5xl md:text-6xl lg:text-8xl text-white font-black leading-none tracking-tight mt-4 drop-shadow-2xl">
               <span className="bg-gradient-to-r from-[#DAC4FF] via-white to-[#EFE5FF] bg-clip-text text-transparent">
                 zero food wastage.
               </span>

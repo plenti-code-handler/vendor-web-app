@@ -13,9 +13,12 @@ import MOUContent from '../../components/sections/auth/MOUContent';
 import BeatLoader from 'react-spinners/BeatLoader';
 import axiosClient from '../../AxiosClient';
 import OnboardingTimeline from '../../components/common/OnboardingTimeLine';
+import { fetchVendorDetails } from '../../redux/slices/vendorSlice';
+import { useDispatch } from 'react-redux';
 
 const TermsAcceptancePage = () => {
   const router = useRouter();
+  const dispatch = useDispatch();
   const scrollContainerRef = useRef(null);
   const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -61,26 +64,28 @@ const TermsAcceptancePage = () => {
       toast.error('Please read the entire agreement before accepting');
       return;
     }
-
+  
     try {
       setIsSubmitting(true);
       
-      // API call to accept terms - adjust endpoint as needed
-      const response = await axiosClient.post('/v1/vendor/accept-terms', {
-        accepted: true,
-        accepted_at: new Date().toISOString()
-      });
-
+      // API call to accept terms
+      const response = await axiosClient.patch('/v1/vendor/me/mou/true');
+      
       if (response.status === 200) {
-        toast.success('Terms accepted successfully!');
-        // Navigate to pricing page
-        router.push('/price-decision');
+        // Refresh vendor data after successful MOU signing
+        await dispatch(fetchVendorDetails()).unwrap();
+        toast.success('MOU signed successfully!');
+        // Redirect to pricing page (next step in onboarding)
+      } else {
+        toast.error('Failed to accept terms');
       }
     } catch (error) {
-      console.error('Error accepting terms:', error);
-      // For now, proceed even if API fails (you can adjust this behavior)
-      toast.success('Terms accepted!');
-      router.push('/price-decision');
+      console.error("Error accepting terms:", error);
+      const errorMessage = error?.response?.data?.detail || 
+                          error?.response?.data?.message || 
+                          error?.message || 
+                          'Failed to accept terms';
+      toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -95,7 +100,7 @@ const TermsAcceptancePage = () => {
         <AuthLeftContent />
 
         <div className="relative flex flex-col w-full lg:w-[60%] bg-white lg:h-[95vh] max-h-[850px] rounded-[24px] shadow-lg overflow-hidden mt-10 lg:mt-20">
-        <OnboardingTimeline currentStep={5} />  
+        <OnboardingTimeline currentStep={3} />  
           {/* Header */}
           <div className="px-8 pt-6 pb-4 border-b border-gray-100">
             <div className="flex items-center justify-between">

@@ -22,6 +22,22 @@ export const fetchCatalogue = createAsyncThunk(
   }
 );
 
+export const fetchCatalogueRequest = createAsyncThunk(
+  'catalogue/fetchCatalogueRequest',
+  async (token, { rejectWithValue }) => {
+    try {
+      const response = await axiosClient.get('/v1/vendor/catalogue/get_request', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Failed to fetch catalogue request');
+    }
+  }
+);
+
 // Async thunk to request catalogue update
 export const requestCatalogueUpdate = createAsyncThunk(
   'catalogue/requestUpdate',
@@ -54,6 +70,7 @@ const catalogueSlice = createSlice({
     resetCatalogue: (state) => {
       state.itemTypes = {}; // Updated field name
       state.payout = {}; // Added payout reset
+      state.requestData = {};
       state.loading = false;
       state.error = null;
       state.updateLoading = false;
@@ -91,6 +108,18 @@ const catalogueSlice = createSlice({
       .addCase(requestCatalogueUpdate.rejected, (state, action) => {
         state.updateLoading = false;
         state.updateError = action.payload;
+      })
+      .addCase(fetchCatalogueRequest.pending, (state) => {
+        state.requestLoading = true;
+        state.requestError = null;
+      })
+      .addCase(fetchCatalogueRequest.fulfilled, (state, action) => {
+        state.requestLoading = false;
+        state.requestData = action.payload;
+      })
+      .addCase(fetchCatalogueRequest.rejected, (state, action) => {
+        state.requestLoading = false;
+        state.requestError = action.payload;
       });
   },
 });

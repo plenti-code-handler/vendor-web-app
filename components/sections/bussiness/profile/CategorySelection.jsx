@@ -11,7 +11,7 @@ const CategorySelection = ({ categories, selectedCategories, onCategoryToggle, o
             <SparklesIcon className="w-8 h-8 text-[#5F22D9]" />
           </div>
           <h1 className="text-2xl font-bold text-gray-900">
-            Welcome to Plenti! 🎉
+            Welcome to Plenti Pricing 💜
           </h1>
           <p className="text-base text-gray-600 max-w-md mx-auto">
             Let's set up your pricing strategy to maximize your earnings
@@ -28,39 +28,42 @@ const CategorySelection = ({ categories, selectedCategories, onCategoryToggle, o
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {categories.map((category) => (
-              <button
-                key={category.id}
-                onClick={() => onCategoryToggle(category.id)}
-                className={`w-full aspect-square p-6 rounded-3xl border-2 transition-all duration-300 transform hover:scale-[1.02] flex flex-col items-center justify-center relative ${
-                  selectedCategories.includes(category.id)
-                    ? 'border-[#5F22D9] bg-[#5F22D9]/5 '
-                    : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-md'
-                }`}
-              >
-                <div className="flex flex-col items-center justify-center h-full space-y-4">
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl transition-all duration-300 ${
+          {/* Horizontal scrollable container */}
+          <div className="overflow-x-auto pb-4 -mx-2 px-2">
+            <div className="flex gap-6 min-w-max">
+              {categories.map((category) => (
+                <button
+                  key={category.id}
+                  onClick={() => onCategoryToggle(category.id)}
+                  className={`flex-shrink-0 w-64 h-64 p-6 rounded-3xl border-2 transition-all duration-300 transform hover:scale-[1.02] flex flex-col items-center justify-center relative ${
                     selectedCategories.includes(category.id)
-                      ? 'bg-[#5F22D9] text-white shadow-lg'
-                      : 'bg-gray-100 text-gray-600'
-                  }`}>
-                    {category.icon}
+                      ? 'border-[#5F22D9] bg-[#5F22D9]/5 '
+                      : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-md'
+                  }`}
+                >
+                  <div className="flex flex-col items-center justify-center h-full space-y-4">
+                    <div className={`w-14 h-14 rounded-xl flex items-center justify-center text-2xl transition-all duration-300 ${
+                      selectedCategories.includes(category.id)
+                        ? 'bg-[#5F22D9] text-white shadow-lg'
+                        : 'bg-gray-100 text-gray-600'
+                    }`}>
+                      {category.icon}
+                    </div>
+                    
+                    <div className="text-center space-y-2 flex-1 flex flex-col justify-center">
+                      <h3 className="font-semibold text-base text-gray-900 leading-tight">{category.name}</h3>
+                      <p className="text-sm text-gray-600 leading-relaxed px-2">{category.description}</p>
+                    </div>
                   </div>
                   
-                  <div className="text-center space-y-2 flex-1 flex flex-col justify-center">
-                    <h3 className="font-semibold text-base text-gray-900 leading-tight">{category.name}</h3>
-                    <p className="text-xs text-gray-600 leading-relaxed px-2">{category.description}</p>
-                  </div>
-                </div>
-                
-                {selectedCategories.includes(category.id) && (
-                  <div className="absolute top-3 right-3 w-6 h-6 bg-[#5F22D9] rounded-full flex items-center justify-center shadow-lg">
-                    <CheckIcon className="w-4 h-4 text-white" />
-                  </div>
-                )}
-              </button>
-            ))}
+                  {selectedCategories.includes(category.id) && (
+                    <div className="absolute top-4 right-4 w-6 h-6 bg-[#5F22D9] rounded-full flex items-center justify-center shadow-lg">
+                      <CheckIcon className="w-4 h-4 text-white" />
+                    </div>
+                  )}
+                </button>
+              ))}
+            </div>
           </div>
 
           <div className="pt-6">
