@@ -13,17 +13,9 @@ import {
 } from '@heroicons/react/24/outline';
 import { fetchVendorDetails, selectVendorData } from '../../redux/slices/vendorSlice';
 import axiosClient from '../../AxiosClient';
-
-// Step status helper
-const getStepStatus = (stepId, currentStep, hasPricing, isApproved) => {
-  const conditions = {
-    1: 'completed',
-    2: hasPricing ? (currentStep >= 2 ? 'completed' : 'pending') : 'pending',
-    3: isApproved ? (currentStep >= 3 ? 'completed' : 'pending') : (currentStep >= 3 ? 'active' : 'pending'),
-    4: isApproved ? (currentStep >= 4 ? 'completed' : 'pending') : 'pending'
-  };
-  return conditions[stepId];
-};
+import AuthLeftContent from '../../components/layouts/AuthLeftContent';
+import BeatLoader from 'react-spinners/BeatLoader';
+import OnboardingTimeline from '../../components/common/OnboardingTimeLine';
 
 // Check if catalogue has pricing data
 const checkCataloguePricing = (catalogue) => {
@@ -33,7 +25,6 @@ const checkCataloguePricing = (catalogue) => {
 const AccountProcessingPage = () => {
   const router = useRouter();
   const dispatch = useDispatch();
-  const [currentStep, setCurrentStep] = useState(1);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [vendorDetails, setVendorDetails] = useState(null);
@@ -73,6 +64,13 @@ const AccountProcessingPage = () => {
     return details;
   };
 
+  const handleBackToLogin = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    localStorage.removeItem("logo");
+    router.push("/");
+  };
+
   // Initial load
   useEffect(() => {
     const init = async () => {
@@ -83,8 +81,6 @@ const AccountProcessingPage = () => {
       } catch (error) {
         console.error('Error loading account data:', error);
         setLoading(false);
-        // OnboardLayout will handle routing if token is invalid
-        // Only redirect if there's a critical error
         const token = localStorage.getItem("token");
         if (!token) {
           router.push('/');
@@ -95,47 +91,8 @@ const AccountProcessingPage = () => {
     init();
   }, []);
 
-  // Check if account becomes approved - OnboardLayout will handle redirect
-  useEffect(() => {
-    if (isAccountApproved && vendorDetails) {
-      // OnboardLayout will automatically redirect to /business when is_active = true
-      // We can trigger a refresh to let OnboardLayout handle routing
-      // Or just let the user click the button
-    }
-  }, [isAccountApproved, vendorDetails]);
-
-  // Sequential step animation
-  useEffect(() => {
-    if (loading || !vendorDetails) return;
-
-    const timers = [];
-    
-    if (isAccountApproved) {
-      // Approved: animate all steps sequentially
-      timers.push(setTimeout(() => setCurrentStep(2), 1000));
-      timers.push(setTimeout(() => setCurrentStep(3), 2000));
-      timers.push(setTimeout(() => setCurrentStep(4), 3000));
-    } else if (hasPricing) {
-      // Pricing set: show pricing then review
-      timers.push(setTimeout(() => setCurrentStep(2), 1000));
-      timers.push(setTimeout(() => setCurrentStep(3), 2000));
-    } else {
-      // No pricing: skip to review
-      timers.push(setTimeout(() => setCurrentStep(3), 1000));
-    }
-
-    return () => timers.forEach(clearTimeout);
-  }, [loading, vendorDetails, hasPricing, isAccountApproved]);
-
   // Handlers
-  const handleLogout = () => {
-    ['token', 'user', 'logo'].forEach(key => localStorage.removeItem(key));
-    router.push('/');
-  };
-
   const handleGoToDashboard = () => {
-    // OnboardLayout will handle routing, but we can trigger a refresh
-    // to ensure OnboardLayout picks up the updated vendor state
     window.location.href = '/business';
   };
   
@@ -146,10 +103,6 @@ const AccountProcessingPage = () => {
     try {
       await loadAccountData();
       setTimeout(() => setRefreshing(false), 1000);
-      
-      // If account becomes approved after refresh, OnboardLayout will handle redirect
-      // We could trigger a page reload to let OnboardLayout route, but the button
-      // provides a better UX for immediate navigation
     } catch (error) {
       console.error('Error refreshing status:', error);
       setRefreshing(false);
@@ -159,164 +112,144 @@ const AccountProcessingPage = () => {
   // Loading state
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-100 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#5F22D9] mx-auto mb-4" />
-          <p className="text-sm text-gray-600">Loading account details...</p>
+      <div
+        className="min-h-screen bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: "url('/Background.png')" }}
+      >
+        <div className="flex flex-col lg:flex-row pt-5 pb-5 justify-between px-10">
+          <AuthLeftContent />
+          <div className="flex flex-col w-full lg:w-[40%] bg-white lg:h-[95vh] max-h-[800px] rounded-[24px] shadow-lg overflow-hidden mt-20">
+            <div className="flex flex-col justify-center items-center flex-1 px-6 pb-6 md:pb-10 lg:p-6 h-auto overflow-y-auto">
+              <BeatLoader color="#5F22D9" size={10} />
+              <p className="mt-4 text-gray-600 text-sm">Loading account details...</p>
+            </div>
+          </div>
         </div>
       </div>
     );
   }
 
-  const STEPS = [
-    { id: 1, title: 'Application submitted' },
-    { id: 2, title: 'Pricing set' },
-    { id: 3, title: 'Under review' },
-    { id: 4, title: 'Account approved' }
-  ];
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-100 flex items-center justify-center px-4 py-12">
-      <div className="max-w-md w-full">
-        <div className="bg-white rounded-2xl shadow-xl p-8 border border-purple-100">
-          {/* Animated Icon */}
-          <div className="flex justify-center mb-6">
-            <div className="relative">
-              <div className={`w-20 h-20 rounded-full flex items-center justify-center transition-all duration-500 ${
-                isAccountApproved ? 'bg-green-100 scale-110' :
-                currentStep >= 3 ? 'bg-purple-100 scale-110' : 'bg-gray-100'
-              }`}>
-                {isAccountApproved ? (
-                  <CheckCircleIcon className="w-10 h-10 text-green-600" />
-                ) : (
-                  <ClockIcon className={`w-10 h-10 transition-colors duration-500 ${
-                    currentStep >= 3 ? 'text-[#5F22D9]' : 'text-gray-400'
-                  }`} />
-                )}
-              </div>
-              {(currentStep >= 3 || isAccountApproved) && (
-                <div className={`absolute -top-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center animate-pulse ${
-                  isAccountApproved ? 'bg-green-600' : 'bg-[#5F22D9]'
-                }`}>
-                  <CheckCircleIcon className="w-4 h-4 text-white" />
-                </div>
-              )}
-            </div>
+    <div
+      className="min-h-screen bg-cover bg-center bg-no-repeat"
+      style={{ backgroundImage: "url('/Background.png')" }}
+    >
+      <div className="flex flex-col lg:flex-row pt-5 pb-5 justify-between px-10">
+        <AuthLeftContent />
+
+        <div className="flex flex-col w-full lg:w-[40%] bg-white lg:h-[95vh] max-h-[800px] rounded-[24px] shadow-lg overflow-hidden mt-20">
+          {/* Back to Login Button */}
+          <div className="ml-10 mt-10 items-start justify-start pr-10 gap-2">
+            <button
+              onClick={handleBackToLogin}
+              className="text-sm text-[#5F22D9] hover:text-[#4A1BB8] font-medium transition-colors underline-offset-4 hover:underline flex items-center gap-2"
+            >
+              <ArrowLeftIcon className="h-3 w-3" />
+              <span>Go Back to Login</span>
+            </button>
           </div>
 
-          {/* Content */}
-          <div className="text-center">
-            <h1 className="text-2xl font-bold text-gray-900 mb-3">
-              {isAccountApproved ? 'Account Approved! 🎉' : 'Account Under Review'}
-            </h1>
-            <p className="text-gray-600 mb-6 leading-relaxed">
-              {isAccountApproved 
-                ? "Congratulations! Your Plenti account has been approved. You can now access your dashboard and start managing your surprise drops."
-                : "We're currently processing your Plenti account. This usually takes 24-48 hours. You'll receive an email notification once your account is approved."
-              }
-            </p>
+          {/* Onboarding Timeline */}
+          <OnboardingTimeline currentStep={isAccountApproved ? 4 : 3} />
 
-            {/* Progress Steps */}
-            <div className="space-y-4 mb-8">
-              {STEPS.map((step) => {
-                const status = getStepStatus(step.id, currentStep, hasPricing, isAccountApproved);
-                return (
-                  <div key={step.id} className="flex items-center space-x-3">
-                    <div className={`w-6 h-6 rounded-full flex items-center justify-center transition-all duration-500 ${
-                      status === 'completed' ? 'bg-green-500 scale-110' :
-                      status === 'active' ? 'bg-[#5F22D9] animate-pulse scale-110' :
-                      'bg-gray-200'
-                    }`}>
-                      {status === 'completed' ? (
-                        <CheckCircleIcon className="w-4 h-4 text-white" />
-                      ) : status === 'active' ? (
-                        <ClockIcon className="w-4 h-4 text-white" />
-                      ) : (
-                        <span className="text-xs text-gray-500">{step.id}</span>
-                      )}
-                    </div>
-                    <span className={`text-sm transition-all duration-500 text-left ${
-                      status === 'completed' ? 'text-gray-700 font-medium' :
-                      status === 'active' ? 'text-[#5F22D9] font-semibold' :
-                      'text-gray-400'
-                    }`}>
-                      {step.title}
-                    </span>
+          {/* Content Area */}
+          <div className="flex flex-col justify-start items-center flex-1 px-6 pb-6 md:pb-10 lg:p-6 h-auto overflow-y-auto">
+            <div className="w-full max-w-md">
+              {/* Animated Icon */}
+              <div className="flex justify-center mb-6">
+                <div className="relative">
+                  <div className={`w-20 h-20 rounded-full flex items-center justify-center transition-all duration-500 ${
+                    isAccountApproved ? 'bg-green-100 scale-110' : 'bg-purple-100'
+                  }`}>
+                    {isAccountApproved ? (
+                      <CheckCircleIcon className="w-10 h-10 text-green-600" />
+                    ) : (
+                      <ClockIcon className="w-10 h-10 text-[#5F22D9]" />
+                    )}
                   </div>
-                );
-              })}
-            </div>
+                  {isAccountApproved && (
+                    <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center bg-green-600">
+                      <CheckCircleIcon className="w-4 h-4 text-white" />
+                    </div>
+                  )}
+                </div>
+              </div>
 
-            {/* Contact Info */}
-            {!isAccountApproved && (
-              <div className="bg-purple-50 rounded-xl p-4 mb-6 border border-purple-100">
-                <div className="flex items-center justify-center space-x-2 mb-2">
-                  <EnvelopeIcon className="w-4 h-4 text-gray-500" />
-                  <p className="text-sm text-gray-600">
-                    Have questions about your application?
+              {/* Content */}
+              <div className="text-center">
+                <h1 className="text-2xl font-bold text-gray-900 mb-3">
+                  {isAccountApproved ? 'Account Approved! 🎉' : 'Account Under Review'}
+                </h1>
+                <p className="text-gray-600 mb-6 leading-relaxed text-sm">
+                  {isAccountApproved 
+                    ? "Congratulations! Your Plenti account has been approved. You can now access your dashboard and start managing your surprise drops."
+                    : "We're currently processing your Plenti account. This usually takes 24-48 hours. You'll receive an email notification once your account is approved."
+                  }
+                </p>
+
+                {/* Contact Info */}
+                {!isAccountApproved && (
+                  <div className="bg-purple-50 rounded-xl p-4 mb-6 border border-purple-100">
+                    <div className="flex items-center justify-center space-x-2 mb-2">
+                      <EnvelopeIcon className="w-4 h-4 text-gray-500" />
+                      <p className="text-sm text-gray-600">
+                        Have questions about your application?
+                      </p>
+                    </div>
+                    <p className="text-sm text-[#5F22D9] font-medium">
+                      partner@plenti.co.in
+                    </p>
+                  </div>
+                )}
+
+                {/* Set Pricing Button */}
+                {!hasPricing && !isAccountApproved && (
+                  <button
+                    onClick={handleSetPricing}
+                    className="w-full bg-[#5F22D9] text-white py-3 px-6 rounded-xl font-medium hover:bg-[#4A1BB8] transition-all duration-200 flex items-center justify-center space-x-2 hover:scale-105 mb-3"
+                  >
+                    <CurrencyDollarIcon className="w-5 h-5" />
+                    <span>Set Pricing (Required)</span>
+                  </button>
+                )}
+
+                {/* Action Buttons */}
+                <div className="space-y-3">
+                  {!isAccountApproved && (
+                    <button
+                      onClick={handleRefresh}
+                      disabled={refreshing}
+                      className={`w-full py-3 px-6 rounded-xl font-medium transition-all duration-200 flex items-center justify-center space-x-2 ${
+                        refreshing
+                          ? 'bg-purple-100 text-purple-400 cursor-not-allowed'
+                          : 'bg-purple-100 text-[#5F22D9] hover:bg-purple-200 hover:scale-105'
+                      }`}
+                    >
+                      <ArrowPathIcon className={`w-5 h-5 ${refreshing ? 'animate-spin' : ''}`} />
+                      <span>{refreshing ? 'Checking...' : 'Check Status'}</span>
+                    </button>
+                  )}
+
+                  {isAccountApproved && (
+                    <button
+                      onClick={handleGoToDashboard}
+                      className="w-full bg-[#5F22D9] text-white py-3 px-6 rounded-xl font-medium hover:bg-[#4A1BB8] transition-all duration-200 flex items-center justify-center space-x-2 hover:scale-105 shadow-lg"
+                    >
+                      <span>Go to Dashboard</span>
+                      <ArrowRightIcon className="w-5 h-5" />
+                    </button>
+                  )}
+                </div>
+
+                {/* Footer */}
+                <div className="text-center mt-8">
+                  <p className="text-xs text-gray-400">
+                    © 2024 Plenti. All rights reserved.
                   </p>
                 </div>
-                <p className="text-sm text-[#5F22D9] font-medium">
-                  partner@plenti.co.in
-                </p>
               </div>
-            )}
-
-            {/* Set Pricing Button */}
-            {!hasPricing && !isAccountApproved && (
-              <button
-                onClick={handleSetPricing}
-                className="w-full bg-[#5F22D9] text-white py-3 px-6 rounded-xl font-medium hover:bg-[#4A1BB8] transition-all duration-200 flex items-center justify-center space-x-2 hover:scale-105 mb-3"
-              >
-                <CurrencyDollarIcon className="w-5 h-5" />
-                <span>Set Pricing (Required)</span>
-              </button>
-            )}
-
-            {/* Action Buttons */}
-            <div className="space-y-3">
-              {!isAccountApproved && (
-                <button
-                  onClick={handleRefresh}
-                  disabled={refreshing}
-                  className={`w-full py-3 px-6 rounded-xl font-medium transition-all duration-200 flex items-center justify-center space-x-2 ${
-                    refreshing
-                      ? 'bg-purple-100 text-purple-400 cursor-not-allowed'
-                      : 'bg-purple-100 text-[#5F22D9] hover:bg-purple-200 hover:scale-105'
-                  }`}
-                >
-                  <ArrowPathIcon className={`w-5 h-5 ${refreshing ? 'animate-spin' : ''}`} />
-                  <span>{refreshing ? 'Checking...' : 'Check Status'}</span>
-                </button>
-              )}
-
-              {isAccountApproved ? (
-                <button
-                  onClick={handleGoToDashboard}
-                  className="w-full bg-[#5F22D9] text-white py-3 px-6 rounded-xl font-medium hover:bg-[#4A1BB8] transition-all duration-200 flex items-center justify-center space-x-2 hover:scale-105 shadow-lg"
-                >
-                  <span>Go to Dashboard</span>
-                  <ArrowRightIcon className="w-5 h-5" />
-                </button>
-              ) : (
-                <button
-                  onClick={handleLogout}
-                  disabled={refreshing}
-                  className="w-full bg-gray-100 text-gray-700 py-3 px-6 rounded-xl font-medium hover:bg-gray-200 transition-all duration-200 flex items-center justify-center space-x-2 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <ArrowLeftIcon className="w-5 h-5" />
-                  <span>Back to Login</span>
-                </button>
-              )}
             </div>
           </div>
-        </div>
-
-        {/* Footer */}
-        <div className="text-center mt-6">
-          <p className="text-xs text-gray-500">
-            © 2024 Plenti. All rights reserved.
-          </p>
         </div>
       </div>
     </div>

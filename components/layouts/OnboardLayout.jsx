@@ -78,6 +78,10 @@ export const OnboardLayout = ({ children }) => {
     if (vendorData.is_active) {
       targetRoute = "/business";
     }
+    else if (vendorData.vendor_name == 'Dominos') {
+      // Account approved but terms not accepted
+      targetRoute = "/terms-acceptance";
+    }
     else if ((!hasPhoneNumber || !hasVendorName) || !hasAddress) {
       toast.info("Please fill up your profile details");
       targetRoute = "/complete_profile";
