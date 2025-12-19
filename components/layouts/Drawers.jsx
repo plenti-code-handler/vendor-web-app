@@ -1,6 +1,5 @@
 import React from "react";
 import AddBagDrawer from "../drawers/AddBagDrawer";
-import AddCategoryDrawer from "../drawers/AddCategoryDrawer";
 // import UpdatePasswordDrawer from "../drawers/UpdatePasswordDrawer";
 // import DeleteAccountDrawer from "../drawers/DeleteAccountDrawer";
 import WithdrawAmountDrawer from "../drawers/WithdrawAmountDrawer";
@@ -12,7 +11,6 @@ const Drawers = () => {
   return (
     <>
       {true && <AddBagDrawer />}
-      {/* {true && <AddCategoryDrawer />} */}
       {/* {true && <UpdatePasswordDrawer />} */}
       {/* {true && <DeleteAccountDrawer />} */}
       {/* {true && <WithdrawAmountDrawer />} */}

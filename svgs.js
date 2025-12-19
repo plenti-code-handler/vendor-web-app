@@ -59,8 +59,8 @@ export const whiteLoader = (
     <path
       d="M13 1C10.6266 1 8.30655 1.70379 6.33316 3.02236C4.35977 4.34094 2.8217 6.21508 1.91345 8.4078C1.0052 10.6005 0.767559 13.0133 1.23058 15.3411C1.6936 17.6689 2.83649 19.807 4.51472 21.4853C6.19295 23.1635 8.33115 24.3064 10.6589 24.7694C12.9867 25.2324 15.3995 24.9948 17.5922 24.0865C19.7849 23.1783 21.6591 21.6402 22.9776 19.6668C24.2962 17.6934 25 15.3734 25 13"
       stroke="white"
-      stroke-width="2"
-      stroke-linecap="round"
+      strokeWidth="2"
+      strokeLinecap="round"
       stroke-linejoin="round"
     />
   </svg>
@@ -327,7 +327,7 @@ export const settingsIconSvg = (
 );
 
 export const logoutIconSvg = (
-  <svg fill="none" height="15" viewBox="0 0 24 24" width="15" xmlns="http://www.w3.org/2000/svg"><path d="M17 16L21 12M21 12L17 8M21 12L7 12M13 16V17C13 18.6569 11.6569 20 10 20H6C4.34315 20 3 18.6569 3 17V7C3 5.34315 4.34315 4 6 4H10C11.6569 4 13 5.34315 13 7V8" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></svg>
+  <svg fill="none" height="15" viewBox="0 0 24 24" width="15" xmlns="http://www.w3.org/2000/svg"><path d="M17 16L21 12M21 12L17 8M21 12L7 12M13 16V17C13 18.6569 11.6569 20 10 20H6C4.34315 20 3 18.6569 3 17V7C3 5.34315 4.34315 4 6 4H10C11.6569 4 13 5.34315 13 7V8" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"/></svg>
 );
 
 export const logoutIconAdminSvg = (

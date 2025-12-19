@@ -6,7 +6,6 @@ import Tabs from "./Tabs";
 import { setOpenDrawer } from "../../../../redux/slices/addCategorySlice";
 import { useDispatch } from "react-redux";
 
-import AddCategoryDrawer from "../../../drawers/AddCategoryDrawer";
 import BackcoverImageModal from "../../../modals/BackcoverImageModal";
 import axiosClient from "../../../../AxiosClient";
 import { PencilIcon } from "@heroicons/react/20/solid";
@@ -266,12 +265,6 @@ const ProfileCard = () => {
 
           <Tabs />
 
-          {true && (
-            <AddCategoryDrawer
-              items={categories}
-              setCategories={setCategories}
-            />
-          )}
         </div>
       </div>
 
