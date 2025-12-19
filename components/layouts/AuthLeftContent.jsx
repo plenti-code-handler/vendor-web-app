@@ -24,18 +24,18 @@ const AuthLeftContent = () => {
           
           {/* Main heading with enhanced styling */}
           <h1 className="relative z-10 text-4xl md:text-5xl lg:text-10xl text-white font-black leading-none tracking-tight drop-shadow-2xl">
-            <span className="bg-gradient-to-r from-[#EFE5FF] via-white to-[#DAC4FF] bg-clip-text text-transparent">
-              join hands to
-            </span>
-          </h1>
-          
-          {/* Sub heading with dramatic styling */}
-          <h1 className="relative z-10 text-4xl md:text-5xl lg:text-9xl text-white font-black leading-none tracking-tight mt-4 drop-shadow-2xl">
-            <span className="bg-gradient-to-r from-[#DAC4FF] via-white to-[#EFE5FF] bg-clip-text text-transparent">
-              zero food wastage.
-            </span>
-          </h1>
-          
+              <span className="bg-gradient-to-r from-[#EFE5FF] via-white to-[#DAC4FF] bg-clip-text text-transparent">
+                join hands to
+              </span>
+            </h1>
+            
+            {/* Sub heading with dramatic styling */}
+            <h1 className="relative z-10 text-4xl md:text-5xl lg:text-9xl text-white font-black leading-none tracking-tight mt-4 drop-shadow-2xl">
+              <span className="bg-gradient-to-r from-[#DAC4FF] via-white to-[#EFE5FF] bg-clip-text text-transparent">
+                zero food wastage.
+              </span>
+            </h1>
+            
           {/* Decorative underline */}
           {/* <div className="relative z-10 mt-6 w-24 h-1 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full shadow-lg"></div> */}
           
