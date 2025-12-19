@@ -172,17 +172,13 @@ const CompleteProfileForm = ({ onSubmit, loading, initialData }) => {
       return;
     }
 
-    // Format service_location - ensure it's uppercase
-    const formattedServiceLocation = serviceLocation 
-      ? serviceLocation.trim().toUpperCase() 
-      : null;
 
     // Call parent's onSubmit with form data, address, coordinates, googleMapsUrl, and service_location
     await onSubmit(data, { 
       address, 
       coordinates, 
       googleMapsUrl,
-      service_location: formattedServiceLocation,
+      service_location: serviceLocation,
     });
   };
 

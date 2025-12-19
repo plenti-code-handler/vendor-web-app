@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { ALL_ITEM_TYPES, ITEM_TYPE_DISPLAY_NAMES, ITEM_TYPE_ICONS, ITEM_TYPE_DESCRIPTIONS } from '../../constants/itemTypes';
 import { fetchCatalogue } from '../../redux/slices/catalogueSlice';
@@ -14,14 +14,22 @@ const ItemTypeFilter = ({ selectedFilter, onFilterChange }) => {
   const { itemTypes } = useSelector((state) => state.catalogue);
   const router = useRouter();
 
-  const getAvailableCategories = () => {
+  const availableCategories = useMemo(() => {
     return ALL_ITEM_TYPES.filter(itemType => {
       const catalogueItem = itemTypes[itemType];
       return catalogueItem && catalogueItem.bags && Object.keys(catalogueItem.bags).length > 0;
     });
-  };
+  }, [itemTypes]);
 
-  const availableCategories = getAvailableCategories();
+  // Auto-select first available category if selectedFilter is empty or invalid
+  useEffect(() => {
+    if (availableCategories.length > 0) {
+      const isValidFilter = selectedFilter && availableCategories.includes(selectedFilter);
+      if (!isValidFilter) {
+        onFilterChange(availableCategories[0]);
+      }
+    }
+  }, [availableCategories, selectedFilter, onFilterChange]);
 
   if (availableCategories.length === 0) {
     return (
@@ -50,7 +58,7 @@ const ItemTypeFilter = ({ selectedFilter, onFilterChange }) => {
               className={`
                 relative flex flex-col items-center gap-3 px-4 py-5 rounded-lg border transition-all duration-200
                 ${isSelected 
-                  ? 'bg-purple-50 border-purple-200 text-purple-700 shadow-sm' 
+                  ? 'bg-[#5F22D9] border-[#5F22D9] shadow-sm' 
                   : 'bg-white border-gray-200 text-gray-600 hover:border-gray-300 hover:bg-gray-50'
                 }
               `}
@@ -66,7 +74,7 @@ const ItemTypeFilter = ({ selectedFilter, onFilterChange }) => {
               {/* Title */}
               <h4 className={`
                 font-medium text-sm transition-colors duration-200
-                ${isSelected ? 'text-purple-700' : 'text-gray-900'}
+                ${isSelected ? 'text-white' : 'text-gray-900'}
               `}>
                 {ITEM_TYPE_DISPLAY_NAMES[itemType]}
               </h4>
