@@ -25,9 +25,9 @@ const CompleteProfileForm = ({ onSubmit, loading, initialData }) => {
       ownerName: "",
       vendorType: "",
       gstnumber: "",
+      pannumber: "",
       fssainumber: "",
       pincode: "",
-      description: "",
     },
   });
 
@@ -35,7 +35,7 @@ const CompleteProfileForm = ({ onSubmit, loading, initialData }) => {
   const [coordinates, setCoordinates] = useState({ lat: null, lng: null });
   const [mapUrl, setMapUrl] = useState("");
   const [googleMapsUrl, setGoogleMapsUrl] = useState("");
-  const [serviceLocation, setServiceLocation] = useState("");  // Add service_location state
+  const [serviceLocation, setServiceLocation] = useState("");
 
   const autoCompleteRef = useRef(null);
   const autocompleteInstanceRef = useRef(null);
@@ -53,9 +53,9 @@ const CompleteProfileForm = ({ onSubmit, loading, initialData }) => {
         ownerName: initialData.ownerName || "",
         vendorType: initialData.vendorType || "",
         gstnumber: initialData.gstnumber || "",
+        pannumber: initialData.pannumber || "",
         fssainumber: initialData.fssainumber || "",
         pincode: initialData.pincode || "",
-        description: initialData.description || "",
       });
 
       if (initialData.address) {
@@ -111,7 +111,7 @@ const CompleteProfileForm = ({ onSubmit, loading, initialData }) => {
             "website",
             "business_status",
             "types",
-            "address_components",  // Add address_components field
+            "address_components",
           ],
         }
       );
@@ -134,7 +134,7 @@ const CompleteProfileForm = ({ onSubmit, loading, initialData }) => {
 
           setAddress(formattedAddress);
           setCoordinates({ lat: latitude, lng: longitude });
-          setServiceLocation(formattedServiceLocation || "");  // Store service_location
+          setServiceLocation(formattedServiceLocation || "");
 
           // Generate embed URL for iframe
           const embedUrl = `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${latitude},${longitude}&zoom=15`;
@@ -171,7 +171,6 @@ const CompleteProfileForm = ({ onSubmit, loading, initialData }) => {
       toast.error("Please select a valid address");
       return;
     }
-
 
     // Call parent's onSubmit with form data, address, coordinates, googleMapsUrl, and service_location
     await onSubmit(data, { 
@@ -223,14 +222,21 @@ const CompleteProfileForm = ({ onSubmit, loading, initialData }) => {
 
       <div className="flex flex-col space-y-1">
         <label className="text-sm font-medium text-gray-600">
-          Owner Name
+          Owner Name <span className="text-red-500">*</span>
         </label>
         <input
           type="text"
-          {...register("ownerName")}
+          {...register("ownerName", {
+            required: "Owner Name is required",
+          })}
           className="rounded-md border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
-          placeholder="Enter owner name (optional)"
+          placeholder="Enter owner name"
         />
+        {errors.ownerName && (
+          <p className="text-red-500 text-sm">
+            {errors.ownerName.message}
+          </p>
+        )}
       </div>
 
       <div className="flex flex-col space-y-1">
@@ -257,26 +263,38 @@ const CompleteProfileForm = ({ onSubmit, loading, initialData }) => {
 
       <div className="flex flex-col space-y-1">
         <label className="text-sm font-medium text-gray-600">
-          GST Number
+          GST Number (Optional)
         </label>
         <input
           type="text"
-          {...register("gstnumber", {
-            required: "GST Number is required",
-          })}
+          {...register("gstnumber")}
           className="rounded-md border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
           placeholder="Enter GST Number"
         />
-        {errors.gstnumber && (
+      </div>
+
+      <div className="flex flex-col space-y-1">
+        <label className="text-sm font-medium text-gray-600">
+          PAN Number <span className="text-red-500">*</span>
+        </label>
+        <input
+          type="text"
+          {...register("pannumber", {
+            required: "PAN Number is required",
+          })}
+          className="rounded-md border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
+          placeholder="Enter PAN Number"
+        />
+        {errors.pannumber && (
           <p className="text-red-500 text-sm">
-            {errors.gstnumber.message}
+            {errors.pannumber.message}
           </p>
         )}
       </div>
 
       <div className="flex flex-col space-y-1">
         <label className="text-sm font-medium text-gray-600">
-          FSSAI Number
+          FSSAI Number <span className="text-red-500">*</span>
         </label>
         <input
           type="text"
@@ -312,33 +330,6 @@ const CompleteProfileForm = ({ onSubmit, loading, initialData }) => {
 
       <div className="flex flex-col space-y-1">
         <label className="text-sm font-medium text-gray-600">
-          Description
-        </label>
-        <textarea
-          {...register("description", {
-            required: "Description is required",
-            minLength: {
-              value: 10,
-              message: "Description must be at least 10 characters",
-            },
-            maxLength: {
-              value: 250,
-              message: "Description cannot be more than 250 characters",
-            },
-          })}
-          rows={4}
-          className="rounded-md border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black resize-none"
-          placeholder="Enter your description (10-250 characters)"
-        />
-        {errors.description && (
-          <p className="text-red-500 text-sm">
-            {errors.description.message}
-          </p>
-        )}
-      </div>
-
-      <div className="flex flex-col space-y-1">
-        <label className="text-sm font-medium text-gray-600">
           Address
         </label>
         <div className="relative">
@@ -347,7 +338,7 @@ const CompleteProfileForm = ({ onSubmit, loading, initialData }) => {
             type="text"
             ref={autoCompleteRef}
             className="rounded-md border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black w-full"
-            placeholder={isLoaded ? "Search your business address" : "Loading address search..."}
+            placeholder={isLoaded ? "Search your business as per Google" : "Loading address search..."}
             value={address}
             onChange={(e) => setAddress(e.target.value)}
             disabled={!isLoaded}

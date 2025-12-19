@@ -4,20 +4,11 @@ import { CheckIcon } from '@heroicons/react/24/solid';
 
 const ONBOARDING_STEPS = [
   { id: 1, label: 'Complete Profile' },
-  { id: 2, label: 'Account Processing' },
-  { id: 3, label: 'Account Approved' },
-  { id: 4, label: 'Terms' },
-  { id: 5, label: 'Pricing' },
-  { id: 6, label: 'Done' },
+  { id: 2, label: 'Account Review' },
+  { id: 3, label: 'Terms' },
+  { id: 4, label: 'Pricing' },
+  { id: 5, label: 'Done' },
 ];
-
-export const STEP_MAP = {
-  'complete_profile': 2,
-  'accountProcessing': 3,
-  'terms-acceptance': 5,
-  'price-decision': 6,
-  'business': 7,
-};
 
 const OnboardingTimeline = ({ currentStep = 1, isApproved = false }) => {
   const effectiveStep = currentStep === 3 && isApproved ? 4 : currentStep;

@@ -96,17 +96,9 @@ const AccountProcessingPage = () => {
     window.location.href = '/business';
   };
   
-  const handleSetPricing = () => router.push('/price-decision');
 
   const handleRefresh = async () => {
-    setRefreshing(true);
-    try {
-      await loadAccountData();
-      setTimeout(() => setRefreshing(false), 1000);
-    } catch (error) {
-      console.error('Error refreshing status:', error);
-      setRefreshing(false);
-    }
+    await dispatch(fetchVendorDetails()).unwrap();
   };
 
   // Loading state
@@ -118,7 +110,8 @@ const AccountProcessingPage = () => {
       >
         <div className="flex flex-col lg:flex-row pt-5 pb-5 justify-between px-10">
           <AuthLeftContent />
-          <div className="flex flex-col w-full lg:w-[40%] bg-white lg:h-[95vh] max-h-[800px] rounded-[24px] shadow-lg overflow-hidden mt-20">
+          <div className="flex flex-col w-full lg:w-[60%] bg-white lg:h-[95vh] max-h-[800px] rounded-[24px] shadow-lg overflow-hidden mt-20">
+            <OnboardingTimeline currentStep={2} />
             <div className="flex flex-col justify-center items-center flex-1 px-6 pb-6 md:pb-10 lg:p-6 h-auto overflow-y-auto">
               <BeatLoader color="#5F22D9" size={10} />
               <p className="mt-4 text-gray-600 text-sm">Loading account details...</p>
@@ -137,7 +130,7 @@ const AccountProcessingPage = () => {
       <div className="flex flex-col lg:flex-row pt-5 pb-5 justify-between px-10">
         <AuthLeftContent />
 
-        <div className="flex flex-col w-full lg:w-[40%] bg-white lg:h-[95vh] max-h-[800px] rounded-[24px] shadow-lg overflow-hidden mt-20">
+        <div className="flex flex-col w-full lg:w-[60%] bg-white lg:h-[95vh] max-h-[800px] rounded-[24px] shadow-lg overflow-hidden mt-20">
           {/* Back to Login Button */}
           <div className="ml-10 mt-10 items-start justify-start pr-10 gap-2">
             <button
@@ -150,7 +143,7 @@ const AccountProcessingPage = () => {
           </div>
 
           {/* Onboarding Timeline */}
-          <OnboardingTimeline currentStep={isAccountApproved ? 4 : 3} />
+          <OnboardingTimeline currentStep={2} />
 
           {/* Content Area */}
           <div className="flex flex-col justify-start items-center flex-1 px-6 pb-6 md:pb-10 lg:p-6 h-auto overflow-y-auto">
@@ -200,17 +193,6 @@ const AccountProcessingPage = () => {
                       partner@plenti.co.in
                     </p>
                   </div>
-                )}
-
-                {/* Set Pricing Button */}
-                {!hasPricing && !isAccountApproved && (
-                  <button
-                    onClick={handleSetPricing}
-                    className="w-full bg-[#5F22D9] text-white py-3 px-6 rounded-xl font-medium hover:bg-[#4A1BB8] transition-all duration-200 flex items-center justify-center space-x-2 hover:scale-105 mb-3"
-                  >
-                    <CurrencyDollarIcon className="w-5 h-5" />
-                    <span>Set Pricing (Required)</span>
-                  </button>
                 )}
 
                 {/* Action Buttons */}

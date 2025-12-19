@@ -15,6 +15,7 @@ import BeatLoader from "react-spinners/BeatLoader";
 import ContactDetailsForm from "../../../components/sections/auth/ContactDetailsForm";
 import CompleteProfileForm from "../../../components/sections/auth/CompleteProfileForm";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
+import OnboardingTimeline from "../../../components/common/OnboardingTimeLine";
 
 function Page() {
   const dispatch = useDispatch();
@@ -131,7 +132,6 @@ function Page() {
         vendor_type: data.vendorType,
         gst_number: data.gstnumber.trim(),
         fssai_number: data.fssainumber.trim(),
-        description: data.description.trim(),
         latitude: coordinates.lat,
         longitude: coordinates.lng,
         address_url: googleMapsUrl,
@@ -202,8 +202,8 @@ function Page() {
       >
         <div className="flex flex-col lg:flex-row pt-5 pb-5 justify-between px-10">
           <AuthLeftContent />
-          <div className="flex flex-col w-full lg:w-[40%] bg-white lg:h-[95vh] max-h-[800px] rounded-[24px] shadow-lg overflow-hidden mt-20">
-            <OnboardingTimeline currentStep={2} />
+          <div className="flex flex-col w-full lg:w-[60%] bg-white lg:h-[95vh] max-h-[800px] rounded-[24px] shadow-lg overflow-hidden mt-20">
+            <OnboardingTimeline currentStep={1} />
             <div className="flex flex-col justify-start items-center flex-1 px-6 pb-6 md:pb-10 lg:p-6 h-auto overflow-y-auto">
               <BeatLoader color="#5F22D9" size={10} />
             </div>
@@ -221,7 +221,8 @@ function Page() {
       <div className="flex flex-col lg:flex-row pt-5 pb-5 justify-between px-10">
         <AuthLeftContent />
 
-        <div className="flex flex-col w-full lg:w-[40%] bg-white lg:h-[95vh] max-h-[800px] rounded-[24px] shadow-lg overflow-hidden mt-20">
+        <div className="flex flex-col w-full lg:w-[60%] bg-white lg:h-[95vh] max-h-[800px] rounded-[24px] shadow-lg overflow-hidden mt-20">
+        <OnboardingTimeline currentStep={currentStep} />
         <div className="ml-10 mt-10 items-start justify-start pr-10 gap-2">
             <button
               onClick={handleBackToLogin}

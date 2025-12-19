@@ -153,7 +153,7 @@ const VerifyAccountForm = () => {
       <div className="flex flex-col lg:flex-row pt-5 pb-5 justify-between px-10">
         <AuthLeftContent />
 
-        <div className="flex flex-col w-full lg:w-[40%] bg-white lg:h-[95vh] max-h-[800px] rounded-[24px] shadow-lg overflow-hidden mt-20">
+        <div className="flex flex-col w-full lg:w-[60%] bg-white lg:h-[95vh] max-h-[800px] rounded-[24px] shadow-lg overflow-hidden mt-20">
         <div className="ml-10 mt-10 flex items-center justify-start pr-10 gap-2">
             <BackButton />
             <button
