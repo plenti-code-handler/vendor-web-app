@@ -40,7 +40,7 @@ export const OnboardLayout = ({ children }) => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-  
+    
     // If no token, allow access to public onboard routes
     if (!token) {
       if (!isPublicOnboardRoute) {
@@ -50,13 +50,17 @@ export const OnboardLayout = ({ children }) => {
       setIsChecking(false);
       return;
     }
-  
-    // Token exists - fetch all required data once
+    
+    // Token exists - fetch all required data on every route change
+    // This ensures we always have the latest data for routing decisions
     const fetchData = async () => {
+      console.log("fetching data");
       try {
+        setIsChecking(true);
+        
         // Always fetch vendor details (will be cached by Redux if already loaded)
         await dispatch(fetchVendorDetails()).unwrap();
-  
+    
         // Always try to fetch catalogue and request (errors are expected if they don't exist)
         // Use Promise.allSettled to handle errors gracefully
         await Promise.allSettled([
@@ -70,6 +74,7 @@ export const OnboardLayout = ({ children }) => {
           console.error("Error fetching vendor details:", error);
           localStorage.removeItem("token");
           router.push("/");
+          return;
         } else {
           // Catalogue errors are expected for new vendors - just log and continue
           console.log("Catalogue data not available (expected for new vendors)");
@@ -78,10 +83,8 @@ export const OnboardLayout = ({ children }) => {
         setIsChecking(false);
       }
     };
-  
+    
     fetchData();
-    // Only depend on dispatch and router - these are stable
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, router, isPublicOnboardRoute]);
 
   // Handle routing based on vendor data state
@@ -104,55 +107,39 @@ export const OnboardLayout = ({ children }) => {
     let targetRoute = null;
     
     if (vendorData.is_active) {
-      targetRoute = "/business";
+      if (pathname !== "/accountApproved") {
+        targetRoute = "/business";
+      } else {
+        targetRoute = pathname;
+      }
     }
     else if ((!hasPhoneNumber || !hasVendorName) || !hasAddress) {
-      toast.info("Please fill up your profile details");
       targetRoute = "/complete_profile";
+      if (pathname !== targetRoute) {
+        toast.info("Please fill up your profile details");
+      }
     }
     else if (!vendorData.account_approved) {
       targetRoute = "/accountProcessing";
+      if (pathname !== targetRoute) {
+        toast.info("Please wait for your account to be approved");
+      }
     }
     else if (!vendorData.mou_signed) {
       targetRoute = "/terms-acceptance";
+      if (pathname !== targetRoute) {
+        toast.info("Please accept the terms and conditions");
+      }
     }
     else if (!checkCataloguePricing(catalogueItemTypes, catalogueRequestData)) {
       // Neither catalogue nor catalogue request has pricing - route to price-decision
       targetRoute = "/pricing";
+      if (pathname !== targetRoute) {
+        toast.info("Please set up your pricing");
+      }
     }
     else {
-      // All conditions met - activate account (only if not already active)
-      if (!vendorData.is_active && !isActivating) {
-        const activateAccount = async () => {
-          try {
-            setIsActivating(true);
-            setIsChecking(true);
-  
-            const activateResponse = await axiosClient.patch('/v1/vendor/me/account/activate');
-            if (activateResponse.status === 200) {
-              // Account activated successfully, refresh vendor data
-              await dispatch(fetchVendorDetails()).unwrap();
-              toast.success("Account activated successfully!");
-              router.push("/business");
-            } else {
-              // Activation failed, redirect to login
-              toast.error("Failed to activate account. Please try again.");
-              router.push("/");
-            }
-          } catch (error) {
-            console.error("Error activating account:", error);
-            // On error, redirect to login
-            toast.error("An error occurred. Please try again.");
-            router.push("/");
-          } finally {
-            setIsActivating(false);
-            setIsChecking(false);
-          }
-        };
-  
-        activateAccount();
-        return; // Exit early as async operation will handle routing
-      }
+      targetRoute = "/accountApproved";
     }
   
     // If user is on verify_email or verify_otp with token, redirect based on state
