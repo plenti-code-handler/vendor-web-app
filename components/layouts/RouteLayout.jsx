@@ -31,6 +31,7 @@ export const RouteLayout = ({ children }) => {
         "/forgetPassword",
         "/terms-acceptance",
         "/pricing",
+        "/accountApproved",
     ];
     const isOnboardPage = onboardPages.includes(pathname);
 

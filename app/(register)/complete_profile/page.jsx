@@ -37,7 +37,7 @@ function Page() {
     // Redirect to login
     router.push("/");
   };
-
+  
   // Determine which step to show based on vendor data
   // OnboardLayout ensures we only reach this page when profile is incomplete
   useEffect(() => {
