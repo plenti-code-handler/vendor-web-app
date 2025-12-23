@@ -29,13 +29,13 @@ const CategorySelection = ({ categories, selectedCategories, onCategoryToggle, o
           </div>
 
           {/* Horizontal scrollable container */}
-          <div className="overflow-x-auto pb-4 -mx-2 px-2">
+          <div className="overflow-x-auto pt-4 pb-4 -mx-2 px-2">
             <div className="flex gap-6 min-w-max">
               {categories.map((category) => (
                 <button
                   key={category.id}
                   onClick={() => onCategoryToggle(category.id)}
-                  className={`flex-shrink-0 w-64 h-64 p-6 rounded-3xl border-2 transition-all duration-300 transform hover:scale-[1.02] flex flex-col items-center justify-center relative ${
+                  className={`flex-shrink-0 w-40 h-50 p-3 rounded-3xl border-2 transition-all duration-100 transform hover:scale-[1.02] flex flex-col items-center justify-center relative ${
                     selectedCategories.includes(category.id)
                       ? 'border-[#5F22D9] bg-[#5F22D9]/5 '
                       : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-md'
