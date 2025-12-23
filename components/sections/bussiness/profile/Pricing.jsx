@@ -103,6 +103,10 @@ const Pricing = () => {
     }
   }, [error, dispatch]);
 
+  const handleRefresh = () => {
+    dispatch(fetchCatalogue());
+  };
+
   const handleEditASP = (itemType) => {
     const currentASP = localItemTypes[itemType]?.asp || '';
     setEditingASP(prev => ({ ...prev, [itemType]: true }));
@@ -222,16 +226,30 @@ const Pricing = () => {
           </p>
         </div>
 
-        {/* Minimal Edit Button */}
-        <button
-          onClick={() => router.push('/price-decision')}
-          className="px-3 py-2 text-[#5F22D9] rounded-lg hover:bg-purple-50 transition-colors duration-200 border border-gray-200"
-          title="Edit pricing"
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-          </svg>
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={handleRefresh}
+            disabled={loading}
+            className={`p-2 rounded-lg transition-all duration-200 border border-purple-200 ${
+              loading
+                ? "bg-purple-50 cursor-not-allowed"
+                : "bg-purple-50 hover:bg-purple-100 hover:shadow-sm active:scale-95"
+            }`}
+            title="Refresh catalogue"
+            aria-label="Refresh catalogue"
+          >
+            <ArrowPathIcon className={`h-5 w-5 text-purple-600 ${loading ? "animate-spin" : ""}`} />
+          </button>
+          <button
+            onClick={() => router.push('/price-decision')}
+            className="px-3 py-2 text-[#5F22D9] rounded-lg hover:bg-purple-50 transition-colors duration-200 border border-gray-200"
+            title="Edit pricing"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+          </button>
+        </div>
       </div>
 
       {/* Payout Information Display */}
