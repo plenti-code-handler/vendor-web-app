@@ -34,6 +34,16 @@ const NotificationPermissionPrompt = () => {
     })();
   }, []);
 
+  // Also check when component mounts or when prod flag changes
+  useEffect(() => {
+    if (!ready) return;
+    
+    // If permission is granted, ensure token is sent (especially after login)
+    if (Notification.permission === 'granted') {
+      fetchTokenSilently();
+    }
+  }, [ready]);
+
   const sendToken = async (token) => {
     // Only send token if prod is true
     const prod = localStorage.getItem('prod');
@@ -42,10 +52,14 @@ const NotificationPermissionPrompt = () => {
       return;
     }
 
-    // const last = localStorage.getItem('last_sent_fcm_token');
-    // if (last === token) return;
-    await axiosClient.post('/v1/vendor/me/fcm-token/add', null, { params: { fcm_token: token } });
-    localStorage.setItem('last_sent_fcm_token', token);
+    try {
+      await axiosClient.post('/v1/vendor/me/fcm-token/add', null, { params: { fcm_token: token } });
+      localStorage.setItem('last_sent_fcm_token', token);
+      console.log('✅ FCM token sent to backend');
+    } catch (error) {
+      console.error('❌ Error sending FCM token:', error);
+      // Don't throw - allow retry later
+    }
   };
 
   const fetchTokenSilently = async () => {
@@ -57,18 +71,32 @@ const NotificationPermissionPrompt = () => {
         return;
       }
 
-      const existing = localStorage.getItem('fcm_token');
-      if (existing) return;
       const registration = await navigator.serviceWorker.getRegistration();
       const messaging = getMessagingInstance();
-      if (!registration || !messaging) return;
+      if (!registration || !messaging) {
+        console.log('⚠️ Service worker or messaging not ready');
+        return;
+      }
+      
       const vapidKey = process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY;
-      if (!vapidKey) return;
+      if (!vapidKey) {
+        console.log('⚠️ VAPID key not configured');
+        return;
+      }
 
+      // Get or refresh token
       const token = await getToken(messaging, { vapidKey, serviceWorkerRegistration: registration });
       if (token) {
         localStorage.setItem('fcm_token', token);
-        await sendToken(token);
+        
+        // Always send token if prod is true (don't check if it was sent before)
+        // This ensures token is sent after login
+        const lastSent = localStorage.getItem('last_sent_fcm_token');
+        if (lastSent !== token) {
+          await sendToken(token);
+        } else {
+          console.log('✅ FCM token already sent (same token)');
+        }
       }
     } catch (e) {
       console.error('Silent token error:', e);
