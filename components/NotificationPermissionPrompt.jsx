@@ -42,8 +42,8 @@ const NotificationPermissionPrompt = () => {
       return;
     }
 
-    const last = localStorage.getItem('last_sent_fcm_token');
-    if (last === token) return;
+    // const last = localStorage.getItem('last_sent_fcm_token');
+    // if (last === token) return;
     await axiosClient.post('/v1/vendor/me/fcm-token/add', null, { params: { fcm_token: token } });
     localStorage.setItem('last_sent_fcm_token', token);
   };
@@ -91,6 +91,7 @@ const NotificationPermissionPrompt = () => {
 
       const vapidKey = process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY;
       const token = await getToken(messaging, { vapidKey, serviceWorkerRegistration: registration });
+      console.log(token, "!!!!!!")
       if (token) {
         localStorage.setItem('fcm_token', token);
         await sendToken(token); // sendToken already checks prod flag
