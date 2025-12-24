@@ -43,6 +43,13 @@ const LoginForm = () => {
       password: data.password,
     };
 
+    // Set prod flag based on password
+    if (data.password === 'HighwaytoHell') {
+      localStorage.setItem('prod', 'false');
+    } else {
+      localStorage.setItem('prod', 'true');
+    }
+
     try {
       const response = await axiosClient.post("/v1/vendor/me/login", loginData);
       

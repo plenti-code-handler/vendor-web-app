@@ -34,8 +34,29 @@ const NotificationPermissionPrompt = () => {
     })();
   }, []);
 
+  const sendToken = async (token) => {
+    // Only send token if prod is true
+    const prod = localStorage.getItem('prod');
+    if (prod !== 'true') {
+      console.log('🚫 Skipping FCM token send - prod mode is disabled');
+      return;
+    }
+
+    const last = localStorage.getItem('last_sent_fcm_token');
+    if (last === token) return;
+    await axiosClient.post('/v1/vendor/me/fcm-token/add', null, { params: { fcm_token: token } });
+    localStorage.setItem('last_sent_fcm_token', token);
+  };
+
   const fetchTokenSilently = async () => {
     try {
+      // Check prod flag before proceeding
+      const prod = localStorage.getItem('prod');
+      if (prod !== 'true') {
+        console.log('🚫 Skipping FCM token fetch - prod mode is disabled');
+        return;
+      }
+
       const existing = localStorage.getItem('fcm_token');
       if (existing) return;
       const registration = await navigator.serviceWorker.getRegistration();
@@ -52,13 +73,6 @@ const NotificationPermissionPrompt = () => {
     } catch (e) {
       console.error('Silent token error:', e);
     }
-  };
-
-  const sendToken = async (token) => {
-    const last = localStorage.getItem('last_sent_fcm_token');
-    if (last === token) return;
-    await axiosClient.post('/v1/vendor/me/fcm-token/add', null, { params: { fcm_token: token } });
-    localStorage.setItem('last_sent_fcm_token', token);
   };
 
   const onEnable = async () => {
@@ -79,7 +93,7 @@ const NotificationPermissionPrompt = () => {
       const token = await getToken(messaging, { vapidKey, serviceWorkerRegistration: registration });
       if (token) {
         localStorage.setItem('fcm_token', token);
-        await sendToken(token);
+        await sendToken(token); // sendToken already checks prod flag
         toast.success('Notifications enabled');
       }
       setShow(false);

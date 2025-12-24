@@ -9,6 +9,7 @@ import Header from "./Header";
 import Main from "./Main";
 import { BagsProvider } from "../../contexts/BagsContext";
 import NotificationPermissionPrompt from "../NotificationPermissionPrompt";
+import NotificationSoundHandler from "../NotificationSoundHandler";
 import { OnboardLayout } from "./OnboardLayout";
 
 export const PublicLayout = ({ children }) => {
@@ -48,6 +49,7 @@ export const BusinessLayout = ({ children }) => {
       <Header />
       <Main>{children}</Main>
       <NotificationPermissionPrompt />
+      <NotificationSoundHandler />
     </BagsProvider>
   );
 };
