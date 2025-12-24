@@ -34,11 +34,9 @@ const NotificationPermissionPrompt = () => {
     })();
   }, []);
 
-  // Also check when component mounts or when prod flag changes
+  // Also run when component is ready to ensure token is sent after login
   useEffect(() => {
     if (!ready) return;
-    
-    // If permission is granted, ensure token is sent (especially after login)
     if (Notification.permission === 'granted') {
       fetchTokenSilently();
     }
@@ -53,16 +51,25 @@ const NotificationPermissionPrompt = () => {
     }
 
     try {
+      const lastSent = localStorage.getItem('last_sent_fcm_token');
+      // Only skip if it's the exact same token
+      if (lastSent === token) {
+        console.log('✅ FCM token already sent (same token)');
+        return;
+      }
+
+      console.log('📤 Sending FCM token to backend...');
       await axiosClient.post('/v1/vendor/me/fcm-token/add', null, { params: { fcm_token: token } });
       localStorage.setItem('last_sent_fcm_token', token);
-      console.log('✅ FCM token sent to backend');
+      console.log('✅ FCM token sent successfully');
     } catch (error) {
       console.error('❌ Error sending FCM token:', error);
-      // Don't throw - allow retry later
+      // Don't throw - allow retry
     }
   };
 
   const fetchTokenSilently = async () => {
+    console.log("FETCHING TOKEN SILENTILY")
     try {
       // Check prod flag before proceeding
       const prod = localStorage.getItem('prod');
@@ -71,6 +78,8 @@ const NotificationPermissionPrompt = () => {
         return;
       }
 
+      console.log('🔍 Fetching FCM token - prod mode is enabled');
+      
       const registration = await navigator.serviceWorker.getRegistration();
       const messaging = getMessagingInstance();
       if (!registration || !messaging) {
@@ -84,22 +93,18 @@ const NotificationPermissionPrompt = () => {
         return;
       }
 
-      // Get or refresh token
+      // Always get the token (even if one exists, it might have changed)
       const token = await getToken(messaging, { vapidKey, serviceWorkerRegistration: registration });
       if (token) {
+        console.log('✅ FCM token obtained:', token.substring(0, 20) + '...');
         localStorage.setItem('fcm_token', token);
-        
-        // Always send token if prod is true (don't check if it was sent before)
-        // This ensures token is sent after login
-        const lastSent = localStorage.getItem('last_sent_fcm_token');
-        if (lastSent !== token) {
-          await sendToken(token);
-        } else {
-          console.log('✅ FCM token already sent (same token)');
-        }
+        // Always try to send if prod is true
+        await sendToken(token);
+      } else {
+        console.log('⚠️ No FCM token obtained');
       }
     } catch (e) {
-      console.error('Silent token error:', e);
+      console.error('❌ Silent token error:', e);
     }
   };
 
@@ -119,10 +124,9 @@ const NotificationPermissionPrompt = () => {
 
       const vapidKey = process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY;
       const token = await getToken(messaging, { vapidKey, serviceWorkerRegistration: registration });
-      console.log(token, "!!!!!!")
       if (token) {
         localStorage.setItem('fcm_token', token);
-        await sendToken(token); // sendToken already checks prod flag
+        await sendToken(token);
         toast.success('Notifications enabled');
       }
       setShow(false);
