@@ -20,18 +20,29 @@ messaging.onBackgroundMessage((payload) => {
   const title = payload.notification?.title || 'Plenti Notification';
   const body = payload.notification?.body || 'You have a new notification';
   const icon = 'https://plenti-company-logo.s3.us-east-2.amazonaws.com/playstore.png';
-  return self.registration.showNotification(title, {
+  const soundUrl = '/sounds/order.mp3';
+  
+  // Show notification with sound
+  self.registration.showNotification(title, {
     body,
     icon,
     badge: icon,
     tag: 'plenti-notification',
     requireInteraction: true,
     silent: false,
+    sound: soundUrl,
     data: payload.data || {}
+  });
+  
+  // Notify main thread to play sound (backup for when app is in background tab)
+  self.clients.matchAll({ includeUncontrolled: true, type: 'window' }).then((clients) => {
+    clients.forEach((client) => {
+      client.postMessage({ type: 'PLAY_NOTIFICATION_SOUND' });
+    });
   });
 });
 
-// Clicks
+// Notification click handler
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
   event.waitUntil(
