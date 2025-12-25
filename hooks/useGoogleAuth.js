@@ -21,6 +21,7 @@ export const useGoogleAuth = () => {
         const { access_token, vendor } = response.data;
         localStorage.setItem("token", access_token);
         localStorage.setItem("user", JSON.stringify(vendor));
+        localStorage.setItem("prod", "true");
         
         // OnboardLayout will handle routing based on vendor state
         const message = isRegistration ? "Account created successfully!" : "Google sign-in successful";
