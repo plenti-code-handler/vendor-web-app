@@ -62,8 +62,8 @@ export const BusinessLayout = ({ children }) => {
         const lastPopupTime = parseInt(lastPopup, 10);
         const hoursSinceLastPopup = (currentTime - lastPopupTime) / 3600;
         
-        // Show popup if 24 hours or more have passed
-        if (hoursSinceLastPopup >= 24) {
+        // Show popup if 6 hours or more have passed
+        if (hoursSinceLastPopup >= 6) {
           setShowTermsModal(true);
           // Update last_terms_popup timestamp when showing
           localStorage.setItem('last_terms_popup', currentTime.toString());
