@@ -87,7 +87,7 @@ const FaqForm = () => {
         />
         <button
           type="submit"
-          className={`flex justify-center bg-blueBgDark text-white font-bold py-3 px-4 rounded hover:bg-blueBgDarkHover2 w-full sm:w-auto sm:px-6 lg:w-[35%]  `}
+          className={`flex justify-center bg-blueBgDark text-white font-semibold py-3 px-4 rounded hover:bg-blueBgDarkHover2 w-full sm:w-auto sm:px-6 lg:w-[35%]  `}
         >
           Contact Us
         </button>

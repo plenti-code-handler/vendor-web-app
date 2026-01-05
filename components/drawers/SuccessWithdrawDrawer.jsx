@@ -72,7 +72,7 @@ const SuccessWithdrawDrawer = ({ amount, iban }) => {
                         Your request has been received
                       </p>
 
-                      <p className="text-white text-[50px] font-bold">
+                      <p className="text-white text-[50px] font-semibold">
                         {countryCode ? countryCode : "SEK"} {amount}
                       </p>
 

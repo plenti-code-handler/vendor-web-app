@@ -105,7 +105,6 @@ export const OnboardLayout = ({ children }) => {
   
     // Determine where user should be based on their state
     let targetRoute = null;
-    
     if (vendorData.is_active) {
       if (pathname !== "/accountApproved") {
         targetRoute = "/business";
@@ -125,7 +124,7 @@ export const OnboardLayout = ({ children }) => {
         toast.info("Please wait for your account to be approved");
       }
     }
-    else if (!vendorData.mou_signed) {
+    else if (Object.keys(vendorData.mou || {}).length === 0) {
       targetRoute = "/terms-acceptance";
       if (pathname !== targetRoute) {
         toast.info("Please accept the terms and conditions");

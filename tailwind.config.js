@@ -7,6 +7,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['var(--font-poppins)', 'sans-serif'],
+      },
       dropShadow: {
         custom: "0px 4px 10px rgba(0, 0, 0, 0.08)",
       },

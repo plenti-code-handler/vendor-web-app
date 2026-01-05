@@ -90,10 +90,10 @@ const BagDetails = ({
   return (
     <>
       <div className="flex flex-col pb-5 mt-5 ">
-        <p className="text-black font-bold text-xl">Bag Details</p>
+        <p className="text-black font-semibold text-xl">Bag Details</p>
       </div>
       <Textarea
-        className="block w-full  placeholder:font-bold resize-none rounded-lg border border-gray-300 py-3 px-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
+        className="block w-full  placeholder:font-semibold resize-none rounded-lg border border-gray-300 py-3 px-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
         rows={6}
         placeholder="Description..."
         value={description}
@@ -124,7 +124,7 @@ const BagDetails = ({
           onChange={handleTagInputChange}
           onFocus={() => setShowTagOptions(true)}
           onBlur={() => setTimeout(() => setShowTagOptions(false), 200)}
-          className="w-full py-2 px-3 rounded-lg placeholder:font-bold"
+          className="w-full py-2 px-3 rounded-lg placeholder:font-semibold"
         />
         {showTagOptions && filteredTags.length > 0 && (
           <div className="mt-2 border border-gray-300 rounded-lg max-h-40 overflow-y-auto">
@@ -163,7 +163,7 @@ const BagDetails = ({
           onChange={handleCategoryInputChange}
           onFocus={() => setShowCategoryOptions(true)}
           onBlur={() => setTimeout(() => setShowCategoryOptions(false), 200)}
-          className="w-full py-2 px-3 rounded-lg placeholder:font-bold"
+          className="w-full py-2 px-3 rounded-lg placeholder:font-semibold"
         />
         {showCategoryOptions && filteredCategories.length > 0 && (
           <div className="mt-2 border border-gray-300 rounded-lg max-h-40 overflow-y-auto">
@@ -181,13 +181,13 @@ const BagDetails = ({
       </div> */}
       <div className="relative flex mt-3 items-center">
         <input
-          className="block w-full  placeholder:font-bold rounded-lg border border-gray-300 py-4 px-5 text-md text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
+          className="block w-full  placeholder:font-semibold rounded-lg border border-gray-300 py-4 px-5 text-md text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
           placeholder="Quantity"
           value={stock}
           type="number"
           onChange={(e) => setStock(e.target.value)}
         />
-        <span className="absolute right-3 text-black font-bold"></span>
+        <span className="absolute right-3 text-black font-semibold"></span>
       </div>
     </>
   );

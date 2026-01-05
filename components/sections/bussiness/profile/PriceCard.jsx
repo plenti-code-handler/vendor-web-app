@@ -48,7 +48,7 @@ const PriceCard = ({ size, prices, isMedium, showCards, index }) => {
             }`}>
               {size} Bag
             </p>
-            <div className={`text-4xl font-bold ${
+            <div className={`text-4xl font-semibold ${
               isMedium ? 'text-[#5F22D9]' : 'text-gray-900'
             }`}>
               ₹{prices[size].price}
@@ -72,7 +72,7 @@ const PriceCard = ({ size, prices, isMedium, showCards, index }) => {
               
               <div className="flex justify-between items-center py-2">
                 <span>You earn:</span>
-                <span className={`font-bold ${
+                <span className={`font-semibold ${
                   isMedium ? 'text-[#5F22D9]' : 'text-gray-900'
                 }`}>
                   ₹{prices[size].price - prices[size].cut}

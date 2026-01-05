@@ -5,7 +5,13 @@ import { Toaster } from "sonner";
 import './globals.css';
 import ServiceWorkerRegister from "./sw-register";
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import { Poppins } from 'next/font/google';
 
+const poppins = Poppins({
+  subsets: ['latin'],
+  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+  variable: '--font-poppins',
+});
 
 export const metadata = {
   title: 'Plenti Vendor Dashboard',
@@ -33,18 +39,18 @@ export const metadata = {
       // Windows/macOS icons
       { url: '/icons/icon-150.png', sizes: '150x150', type: 'image/png' },
       { url: '/icons/icon-310.png', sizes: '310x310', type: 'image/png' },
-      { url: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' }, // ← This is for macOS
+      { url: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' },
     ]
   },
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" className={poppins.variable}>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
-      <body>
+      <body className={poppins.className}>
         <ServiceWorkerRegister />
         <Toaster richColors position="top-center" />
         <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}>

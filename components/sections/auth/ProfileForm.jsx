@@ -224,7 +224,7 @@ const ProfileForm = () => {
       </div>
 
       <input
-        className="placeholder:font-bold rounded-md border border-gray-200 py-3 px-3 text-black text-[13px] font-semibold placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
+        className="placeholder:font-semibold rounded-md border border-gray-200 py-3 px-3 text-black text-[13px] font-semibold placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
         placeholder="Business Name"
         name="businessName"
         {...register("businessName", {
@@ -236,7 +236,7 @@ const ProfileForm = () => {
       )}
       <input
         value={input.completeAddress || input.streetAddress || ""}
-        className="block w-full placeholder:font-bold rounded-lg border border-gray-300 py-3 px-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
+        className="block w-full placeholder:font-semibold rounded-lg border border-gray-300 py-3 px-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
         onChange={handleChange}
         ref={inputRef}
         name="streetAddress"
@@ -254,7 +254,7 @@ const ProfileForm = () => {
         />
       )}
       <Textarea
-        className="block w-full placeholder:font-bold resize-none rounded-lg border border-gray-200 py-3 px-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
+        className="block w-full placeholder:font-semibold resize-none rounded-lg border border-gray-200 py-3 px-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
         rows={6}
         name="description"
         placeholder="Description..."

@@ -34,7 +34,7 @@ const TermsPage = () => {
           <div className="text-center mb-8">
             <div className="flex items-center justify-center mb-4">
               <DocumentTextIcon className="h-8 w-8 text-[#5F22D9] mr-3" />
-              <h1 className="text-3xl font-bold text-gray-900">
+              <h1 className="text-3xl font-semibold text-gray-900">
                 Terms and Conditions
               </h1>
             </div>

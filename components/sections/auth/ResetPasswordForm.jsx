@@ -37,7 +37,7 @@ const ResetPasswordForm = () => {
         <p className="text-black font-semibold text-[28px]">Set Password</p>
         <p className="text-[#A1A5B7] text-sm font-medium">
           For your account{" "}
-          <span className="font-bold text-blackTwo">{email}</span>
+          <span className="font-semibold text-blackTwo">{email}</span>
         </p>
       </div>
       <AuthPasswordField

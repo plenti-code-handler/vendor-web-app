@@ -188,12 +188,12 @@ const AddCouponDrawer = () => {
               <div className="flex h-full flex-col overflow-y-scroll bg-white py-5 shadow-xl">
                 <div className="relative mt-3 pb-3 flex-1 px-4 sm:px-6">
                   <div className="flex flex-col pb-5">
-                    <p className="text-black font-bold text-xl">Create New Coupon</p>
+                    <p className="text-black font-semibold text-xl">Create New Coupon</p>
                   </div>
 
                   {/* Coupon Image Upload */}
                   <div className="mb-6">
-                    <p className="text-black font-bold text-lg mb-3">Coupon Image *</p>
+                    <p className="text-black font-semibold text-lg mb-3">Coupon Image *</p>
                     <div 
                       className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-colors duration-200"
                       onClick={handleImageClick}
@@ -234,7 +234,7 @@ const AddCouponDrawer = () => {
                   {/* Rest of the form remains the same */}
                   {/* Coupon Code */}
                   <div className="mb-4">
-                    <p className="text-black font-bold text-lg mb-2">Coupon Code *</p>
+                    <p className="text-black font-semibold text-lg mb-2">Coupon Code *</p>
                     <input
                       type="text"
                       value={code}
@@ -246,7 +246,7 @@ const AddCouponDrawer = () => {
 
                   {/* Coupon Name */}
                   <div className="mb-4">
-                    <p className="text-black font-bold text-lg mb-2">Coupon Name *</p>
+                    <p className="text-black font-semibold text-lg mb-2">Coupon Name *</p>
                     <input
                       type="text"
                       value={name}
@@ -258,7 +258,7 @@ const AddCouponDrawer = () => {
 
                   {/* Discount Type */}
                   <div className="mb-4">
-                    <p className="text-black font-bold text-lg mb-2">Discount Type</p>
+                    <p className="text-black font-semibold text-lg mb-2">Discount Type</p>
                     <select
                       value={discountType}
                       onChange={(e) => setDiscountType(e.target.value)}
@@ -271,7 +271,7 @@ const AddCouponDrawer = () => {
 
                   {/* Discount Value */}
                   <div className="mb-4">
-                    <p className="text-black font-bold text-lg mb-2">Discount Value *</p>
+                    <p className="text-black font-semibold text-lg mb-2">Discount Value *</p>
                     <input
                       type="number"
                       value={discountValue}
@@ -283,7 +283,7 @@ const AddCouponDrawer = () => {
 
                   {/* Min Order Value */}
                   <div className="mb-4">
-                    <p className="text-black font-bold text-lg mb-2">Minimum Order Value</p>
+                    <p className="text-black font-semibold text-lg mb-2">Minimum Order Value</p>
                     <input
                       type="number"
                       value={minOrderValue}
@@ -295,7 +295,7 @@ const AddCouponDrawer = () => {
 
                   {/* Max Discount */}
                   <div className="mb-4">
-                    <p className="text-black font-bold text-lg mb-2">Maximum Discount (Optional)</p>
+                    <p className="text-black font-semibold text-lg mb-2">Maximum Discount (Optional)</p>
                     <input
                       type="number"
                       value={maxDiscount}
@@ -307,7 +307,7 @@ const AddCouponDrawer = () => {
 
                   {/* Usage Limit */}
                   <div className="mb-4">
-                    <p className="text-black font-bold text-lg mb-2">Usage Limit (Optional)</p>
+                    <p className="text-black font-semibold text-lg mb-2">Usage Limit (Optional)</p>
                     <input
                       type="number"
                       value={usageLimit}
@@ -319,7 +319,7 @@ const AddCouponDrawer = () => {
 
                   {/* Valid From */}
                   <div className="mb-4">
-                    <p className="text-black font-bold text-lg mb-2">Valid From</p>
+                    <p className="text-black font-semibold text-lg mb-2">Valid From</p>
                     <DatePicker
                       selected={validFrom}
                       onChange={handleValidFromChange}
@@ -334,7 +334,7 @@ const AddCouponDrawer = () => {
 
                   {/* Valid Until */}
                   <div className="mb-6">
-                    <p className="text-black font-bold text-lg mb-2">Valid Until</p>
+                    <p className="text-black font-semibold text-lg mb-2">Valid Until</p>
                     <DatePicker
                       selected={validUntil}
                       onChange={handleValidUntilChange}

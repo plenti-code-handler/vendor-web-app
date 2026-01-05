@@ -178,7 +178,7 @@ const PriceDecision = () => {
               <span>Back to categories</span>
             </button>
             <div className="text-right">
-              <h1 className="text-2xl font-bold text-gray-900">Set Your Pricing</h1>
+              <h1 className="text-2xl font-semibold text-gray-900">Set Your Pricing</h1>
               <p className="text-gray-600">Configure pricing for your selected categories</p>
             </div>
           </div>

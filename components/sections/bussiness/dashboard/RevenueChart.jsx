@@ -222,7 +222,7 @@ const RevenueChart = () => {
           />
         </div>
         
-        <h1 className="text-[40px] leading-[28px] text-primary font-bold my-4">
+        <h1 className="text-[40px] leading-[28px] text-primary font-semibold my-4">
           {getDisplayValue()}
           {getDisplayUnit() && (
             <span className="text-base ml-1">{getDisplayUnit()}</span>

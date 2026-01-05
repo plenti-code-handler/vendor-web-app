@@ -165,7 +165,7 @@ const Transactions = () => {
         </div>
 
         {/* Main Balance Amount - Center Focus */}
-        <p className="text-5xl font-bold text-white z-0 mb-3">
+        <p className="text-5xl font-semibold text-white z-0 mb-3">
           ₹{Number(balance).toFixed(2)}
         </p>
 

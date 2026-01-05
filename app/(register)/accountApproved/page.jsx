@@ -150,7 +150,7 @@ useEffect(() => {
 
               {/* Content */}
               <div className="text-center">
-                <h1 className="text-2xl font-bold text-gray-900 mb-3">
+                <h1 className="text-2xl font-semibold text-gray-900 mb-3">
                   {showSuccess 
                     ? 'Account Activated! 🎉' 
                     : showError 

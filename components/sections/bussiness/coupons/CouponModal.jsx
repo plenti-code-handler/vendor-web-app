@@ -19,7 +19,7 @@ const CouponModal = ({ isOpen, onClose, item }) => {
   const DetailRow = ({ label, value, isHighlight = false }) => (
     <div className="flex justify-between">
       <span className="text-sm text-gray-600">{label}:</span>
-      <span className={`text-sm font-medium ${isHighlight ? 'text-lg font-bold' : 'text-gray-900'} ${isHighlight === 'green' ? 'text-green-600' : isHighlight === 'blue' ? 'text-blue-600' : ''}`}>
+      <span className={`text-sm font-medium ${isHighlight ? 'text-lg font-semibold' : 'text-gray-900'} ${isHighlight === 'green' ? 'text-green-600' : isHighlight === 'blue' ? 'text-blue-600' : ''}`}>
         {value}
       </span>
     </div>
@@ -57,7 +57,7 @@ const CouponModal = ({ isOpen, onClose, item }) => {
           <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4 mb-6 border border-blue-100">
             <div className="text-center">
               <div className="text-sm font-medium text-gray-600 mb-1">Coupon Code</div>
-              <div className="text-2xl font-bold text-gray-900 font-mono tracking-wider">{item.code}</div>
+              <div className="text-2xl font-semibold text-gray-900 font-mono tracking-wider">{item.code}</div>
               <div className="text-sm text-gray-500 mt-1">{item.name}</div>
             </div>
           </div>

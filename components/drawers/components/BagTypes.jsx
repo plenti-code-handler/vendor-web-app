@@ -8,7 +8,7 @@ const BagTypes = ({ selectedBag, setSelectedBag, bagTypes }) => {
   return (
     <>
       <div className="flex flex-col pb-5">
-        <p className="text-black font-bold text-xl">Choose Bag Type</p>
+        <p className="text-black font-semibold text-xl">Choose Bag Type</p>
       </div>
       <div className="flex gap-5 cursor-pointer">
         {bagTypes.map((bag) => (
@@ -25,7 +25,7 @@ const BagTypes = ({ selectedBag, setSelectedBag, bagTypes }) => {
             <p
               className={`text-sm font-semibold mt-2 ${
                 selectedBag.type === bag.type
-                  ? "text-black font-bold"
+                  ? "text-black font-semibold"
                   : "text-black"
               }`}
             >

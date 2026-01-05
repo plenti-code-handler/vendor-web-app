@@ -97,7 +97,7 @@ const RegisterForm = () => {
               <div className="w-8 h-8 bg-[#5F22D9]/10 rounded-lg flex items-center justify-center">
                 <BuildingStorefrontIcon className="w-5 h-5 text-[#5F22D9]" />
               </div>
-              <h1 className="text-2xl font-bold text-gray-900">
+              <h1 className="text-2xl font-semibold text-gray-900">
                 Join Plenti
               </h1>
             </div>

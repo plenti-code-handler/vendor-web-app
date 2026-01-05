@@ -72,7 +72,7 @@ const AccountProcessingPage = () => {
 
               {/* Content */}
               <div className="text-center">
-                <h1 className="text-2xl font-bold text-gray-900 mb-3">
+                <h1 className="text-2xl font-semibold text-gray-900 mb-3">
                   Account Under Review
                 </h1>
                 <p className="text-gray-600 mb-6 leading-relaxed text-sm">

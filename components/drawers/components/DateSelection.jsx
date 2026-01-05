@@ -34,7 +34,7 @@ const DateSelection = ({ selectedDates, setSelectedDates }) => {
 
   return (
     <div className="flex flex-col pb-5 mt-4 gap-1">
-      <p className="text-black font-bold text-xl">Date & Time</p>
+      <p className="text-black font-semibold text-xl">Date & Time</p>
       <form onSubmit={(e) => e.preventDefault()}>
         <input
           type="date"
@@ -52,7 +52,7 @@ const DateSelection = ({ selectedDates, setSelectedDates }) => {
             ]);
             setSelectedDate("");
           }}
-          className="block w-full placeholder:font-bold rounded-lg border border-gray-300 py-3 px-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
+          className="block w-full placeholder:font-semibold rounded-lg border border-gray-300 py-3 px-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
           placeholder="Select Date"
           min={
             selectedDates.length > 0
@@ -65,7 +65,7 @@ const DateSelection = ({ selectedDates, setSelectedDates }) => {
       {selectedDates.length !== 0 && (
         <>
           <div className="flex items-center justify-between pb-3 mt-4 gap-2">
-            <p className="text-black font-bold text-xl">Selected Dates</p>
+            <p className="text-black font-semibold text-xl">Selected Dates</p>
           </div>
           {selectedDates.map((date, index) => (
             <div key={index} className="flex flex-col gap-1">
@@ -77,7 +77,7 @@ const DateSelection = ({ selectedDates, setSelectedDates }) => {
                     handleDateChange(index, "date", e.target.value)
                   }
                   disabled={!date.isEditable}
-                  className={`block placeholder:font-bold rounded-lg border border-gray-300 py-2 px-2 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black ${
+                  className={`block placeholder:font-semibold rounded-lg border border-gray-300 py-2 px-2 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black ${
                     !date.isEditable ? "bg-gray-200" : ""
                   }`}
                   placeholder="Select Date"
@@ -96,7 +96,7 @@ const DateSelection = ({ selectedDates, setSelectedDates }) => {
                     }));
                   }}
                   disabled={!date.isEditable}
-                  className={`block placeholder:font-bold rounded-lg border border-gray-300 py-2 px-2 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black ${
+                  className={`block placeholder:font-semibold rounded-lg border border-gray-300 py-2 px-2 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black ${
                     !date.isEditable ? "bg-gray-200" : ""
                   }`}
                   placeholder="Start Time"
@@ -109,7 +109,7 @@ const DateSelection = ({ selectedDates, setSelectedDates }) => {
                   }
                   min={date.starttime || ""}
                   disabled={!date.isEditable}
-                  className={`block placeholder:font-bold rounded-lg border ${
+                  className={`block placeholder:font-semibold rounded-lg border ${
                     errors[index] ? "border-red-500" : "border-gray-300"
                   } py-2 px-2 text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 ${
                     errors[index] ? "focus:ring-red-500" : "focus:ring-black"

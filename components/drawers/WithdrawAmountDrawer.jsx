@@ -97,7 +97,7 @@ const WithdrawAmountDrawer = ({ balance }) => {
                 <div className="flex flex-1 flex-col px-6 py-8 space-y-8">
                   {/* Balance Card */}
                   <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-6 border border-purple-200">
-                    <p className="text-3xl font-bold text-primary">
+                    <p className="text-3xl font-semibold text-primary">
                       ₹{Number(balance).toFixed(2)}
                     </p>
                     <p className="text-sm font-medium text-primary">Available Balance</p>

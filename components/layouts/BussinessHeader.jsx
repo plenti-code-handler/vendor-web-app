@@ -161,12 +161,12 @@ const BussinessHeader = () => {
                 <Link
                   key={name}
                   href={href}
-                  className={`lg:text-[12px] xl:text-base font-semibold leading-6 transition-all rounded-md flex items-center justify-start lg:justify-center px-[2%] py-2 m-2 lg:m-0 ${
+                  className={`lg:text-[12px] xl:text-base leading-6 rounded-xl flex items-center justify-start lg:justify-center px-[2%] py-2 m-2 lg:m-0 ${
                     isSmallDevice ? "w-[100%]" : ""
-                  }  ${
+                  } ${
                     activePage === name
-                      ? "bg-[#7a48e3]  text-white"
-                      : "text-white lg:text-textLight  hover:bg-[#7a48e3] "
+                      ? "bg-[#7a48e3] font-semibold text-white animate-fade-in"
+                      : "text-white lg:text-textLight hover:bg-[#7a48e3] hover:opacity-100"
                   }`}
                   onClick={() => {
                     handleLinkClick(name);

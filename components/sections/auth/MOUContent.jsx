@@ -1,18 +1,46 @@
 "use client";
 import React from "react";
 
-const MOU_TEXT = `MEMORANDUM OF UNDERSTANDING
-This MEMORANDUM OF UNDERSTANDING is made on this …… day of (Month), (Year) (Effective Date)
+const MOUContent = ({ vendorData = null }) => {
+  // Helper function to format date
+  const formatDate = () => {
+    const now = new Date();
+    const months = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+    return {
+      day: now.getDate(),
+      month: months[now.getMonth()],
+      year: now.getFullYear(),
+      formatted: now.toLocaleDateString('en-GB', { 
+        day: 'numeric', 
+        month: 'long', 
+        year: 'numeric' 
+      })
+    };
+  };
+
+  const date = formatDate();
+  
+  // Replace placeholders with actual vendor data or fallback values
+  const vendorName = vendorData?.vendor_name || "{vendor_name}";
+  const ownerName = vendorData?.owner_name || "{owner_name}";
+  const address = vendorData?.address || "{address}";
+  const formattedDate = date.formatted;
+
+  const MOU_TEXT = `MEMORANDUM OF UNDERSTANDING
+This MEMORANDUM OF UNDERSTANDING is made on this ${date.day} day of ${date.month}, ${date.year} (Effective Date)
 
 BY and BETWEEN
 
-SURGESLAMCO PRIVATE LIMITED, a private limited Company duly constituted under the Companies Act 2013, having its registered office at Building No. 455/9 Firdouse, Thamarkulam, Kaniyampuram, Pallippuram, Thiruvananthapuram, Kerala-695316 represented herein by its COO, hereinafter referred to as “PLENTI” (which expression shall unless excluded by or repugnant to the context or meaning thereof, be deemed to include their directors, successors in business, administrators, executors and permitted assigns) of the FIRST PART
+SURGESLAMCO PRIVATE LIMITED, a private limited Company duly constituted under the Companies Act 2013, having its registered office at Building No. 455/9 Firdouse, Thamarkulam, Kaniyampuram, Pallippuram, Thiruvananthapuram, Kerala-695316 represented herein by its COO, hereinafter referred to as "PLENTI" (which expression shall unless excluded by or repugnant to the context or meaning thereof, be deemed to include their directors, successors in business, administrators, executors and permitted assigns) of the FIRST PART
 
 AND
 
-______________, a restaurant with its principal place of business located at _____________ represented through ___________, herein referred to as the "PARTNER", which expression shall unless excluded by or repugnant to the context or meaning thereof, be deemed to include their directors, successors in business, administrators, executors and permitted assigns) of the SECOND PART.
+${vendorName}, a restaurant with its principal place of business located at ${address} represented through ${ownerName}, herein referred to as the "PARTNER", which expression shall unless excluded by or repugnant to the context or meaning thereof, be deemed to include their directors, successors in business, administrators, executors and permitted assigns) of the SECOND PART.
 
-All the parts are hereinafter collectively referred to as “Parties”;
+All the parts are hereinafter collectively referred to as "Parties";
 
 RECITALS
 
@@ -159,20 +187,43 @@ c) are in compliance with all other applicable laws and regulations in force in 
 29.8 Acceptance of Plenti’s Privacy Policy: By executing this MoU, the Partner acknowledges that it has agreed to comply with Plenti’s Privacy Policy as published on Plenti’s website and as may be updated from time to time. The Partner shall immediately notify Plenti in writing upon becoming aware of any actual or suspected unauthorized access, use, disclosure, or breach of user data, customer information, or any confidential information related to Plenti or its customers. Such notification shall be provided within twenty-four (24) hours of discovery. The Partner agrees to cooperate fully with Plenti in any investigation, remediation, or mitigation efforts related to such security incidents, including providing access to relevant records, personnel, and systems as reasonably requested by Plenti. The Partner shall take immediate steps to contain and remedy any security breach and shall not publicly disclose any such incident without Plenti’s prior written consent, except as required by applicable law.
 
 IN WITNESS WHEREOF, the Parties (through their duly authorized representatives) have executed this Memorandum of Understanding on the dates shown below.
-
-For Plenti                       For [Restaurant Partner]
-Name: BHARATH MOHAN S.           Name:
-Title: COO                       Title:
-Signature:                       Signature:
-Date:                            Date:
 `;
 
-const MOUContent = () => {
-  return (
-    <div className="text-sm leading-relaxed text-gray-700 whitespace-pre-wrap">
-      {MOU_TEXT}
+return (
+  <div className="text-sm leading-relaxed text-gray-700 whitespace-pre-wrap">
+    {MOU_TEXT}
+    
+    {/* Signature Section with table for perfect alignment */}
+    <div className="mt-6">
+      <table className="w-full border-collapse">
+        <thead>
+          <tr>
+            <th className="text-left font-semibold pb-3 w-1/2">For PLENTI</th>
+            <th className="text-left font-semibold pb-3 w-1/2">For {vendorName}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td className="py-1">Name: BHARATH MOHAN S.</td>
+            <td className="py-1">Name: {ownerName}</td>
+          </tr>
+          <tr>
+            <td className="py-1">Title: COO</td>
+            <td className="py-1">Title: OWNER/MANAGER</td>
+          </tr>
+          <tr>
+            <td className="py-1">Signature: BHARATH MOHAN S.</td>
+            <td className="py-1">Signature: {ownerName}</td>
+          </tr>
+          <tr>
+            <td className="py-1">Date: {formattedDate}</td>
+            <td className="py-1">Date: {formattedDate}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-  );
+  </div>
+);
 };
 
 export default MOUContent;

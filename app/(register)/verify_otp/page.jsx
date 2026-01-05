@@ -178,7 +178,7 @@ const VerifyAccountForm = () => {
                   onChange={(e) => handleChange(e, index)}
                   onKeyDown={(e) => handleKeyDown(e, index)}
                   maxLength="1"
-                  className="rounded-[10px] border text-center font-bold text-2xl w-[30px] h-[30px] md:w-[55px] md:h-[55px]"
+                  className="rounded-[10px] border text-center font-semibold text-2xl w-[30px] h-[30px] md:w-[55px] md:h-[55px]"
                 />
               ))}
             </div>
