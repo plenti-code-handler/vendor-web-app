@@ -165,6 +165,10 @@ const CompleteProfileForm = ({ onSubmit, loading, initialData }) => {
     };
   }, [isLoaded, setValue, apiKey]);
 
+  const handleWheel = (e) => {
+    e.currentTarget.blur();
+  };
+
   const handleFormSubmit = async (data) => {
     // Validate address and coordinates
     if (!address || !coordinates.lat || !coordinates.lng) {
@@ -217,6 +221,7 @@ const CompleteProfileForm = ({ onSubmit, loading, initialData }) => {
           {...register("storeManagerName")}
           className="rounded-md border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
           placeholder="Enter store Manager name"
+          onWheel={handleWheel}
         />
       </div>
 
@@ -231,6 +236,7 @@ const CompleteProfileForm = ({ onSubmit, loading, initialData }) => {
           })}
           className="rounded-md border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
           placeholder="Enter owner name"
+          onWheel={handleWheel}
         />
         {errors.ownerName && (
           <p className="text-red-500 text-sm">
@@ -270,6 +276,7 @@ const CompleteProfileForm = ({ onSubmit, loading, initialData }) => {
           {...register("gstnumber")}
           className="rounded-md border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
           placeholder="Enter GST Number"
+          onWheel={handleWheel}
         />
       </div>
 
@@ -284,6 +291,7 @@ const CompleteProfileForm = ({ onSubmit, loading, initialData }) => {
           })}
           className="rounded-md border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
           placeholder="Enter PAN Number"
+          onWheel={handleWheel}
         />
         {errors.pannumber && (
           <p className="text-red-500 text-sm">
@@ -303,6 +311,7 @@ const CompleteProfileForm = ({ onSubmit, loading, initialData }) => {
           })}
           className="rounded-md border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
           placeholder="Enter FSSAI Number"
+          onWheel={handleWheel}
         />
         {errors.fssainumber && (
           <p className="text-red-500 text-sm">
@@ -322,6 +331,7 @@ const CompleteProfileForm = ({ onSubmit, loading, initialData }) => {
           })}
           className="rounded-md border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
           placeholder="Enter Pin Code"
+          onWheel={handleWheel}
         />
         {errors.pincode && (
           <p className="text-red-500 text-sm">{errors.pincode.message}</p>
@@ -339,6 +349,7 @@ const CompleteProfileForm = ({ onSubmit, loading, initialData }) => {
             ref={autoCompleteRef}
             className="rounded-md border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black w-full"
             placeholder={isLoaded ? "Search your business as per Google" : "Loading address search..."}
+            onWheel={handleWheel}
             value={address}
             onChange={(e) => setAddress(e.target.value)}
             disabled={!isLoaded}
