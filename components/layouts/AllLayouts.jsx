@@ -49,7 +49,6 @@ export const BusinessLayout = ({ children }) => {
   // Check if terms modal should be shown (works on all /business routes)
   useEffect(() => {
     if (!vendorData) return;
-    setShowTermsModal(true);
     // Check if MOU is not signed or is empty
     const isMouEmpty = Object.keys(vendorData.mou || {}).length === 0;
     
