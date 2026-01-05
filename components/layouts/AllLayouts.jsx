@@ -51,10 +51,9 @@ export const BusinessLayout = ({ children }) => {
     if (!vendorData) return;
     setShowTermsModal(true);
     // Check if MOU is not signed or is empty
-    const isMouEmpty = !vendorData.mou || Object.keys(vendorData.mou || {}).length === 0;
-    const isMouNotSigned = vendorData.mou?.signed === false || !vendorData.mou?.signed;
+    const isMouEmpty = Object.keys(vendorData.mou || {}).length === 0;
     
-    if (isMouEmpty || isMouNotSigned) {
+    if (isMouEmpty) {
       const lastPopup = localStorage.getItem('last_terms_popup');
       const currentTime = Math.floor(Date.now() / 1000);
       
