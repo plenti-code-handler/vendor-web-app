@@ -219,7 +219,7 @@ const Pricing = () => {
             <div className="w-8 h-8 bg-[#5F22D9] rounded-lg flex items-center justify-center">
               <CurrencyRupeeIcon className="w-5 h-5 text-white" />
             </div>
-            <h1 className="text-lg font-bold text-gray-900">Pricing Management</h1>
+            <h1 className="text-lg font-semibold text-gray-900">Pricing Management</h1>
           </div>
           <p className="text-sm text-gray-600">
             View and edit your pricing for different item types and bag sizes

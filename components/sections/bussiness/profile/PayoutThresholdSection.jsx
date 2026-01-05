@@ -18,7 +18,7 @@ const PayoutThresholdSection = ({ tier, smallBagPrice }) => {
         </div>
         <div className="text-gray-700 text-base mb-2">
           <span className="font-semibold">Threshold:</span>{" "}
-          <span className="text-[#5F22D9] font-bold text-xl">₹{threshold}</span>
+          <span className="text-[#5F22D9] font-semibold text-xl">₹{threshold}</span>
         </div>
         <div className="text-xs text-gray-500">
           <br />

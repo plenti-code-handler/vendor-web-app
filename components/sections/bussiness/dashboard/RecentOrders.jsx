@@ -352,7 +352,7 @@ const RecentOrders = () => {
     <div className="mt-4 w-full border border-gray-200 rounded-2xl bg-white shadow-sm p-6 sm:px-4">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-        <h2 className="text-xl font-bold text-gray-900">Recent Orders</h2>
+        <h2 className="text-xl font-semibold text-gray-900">Recent Orders</h2>
         
         <div className="flex items-center gap-3">
           <button

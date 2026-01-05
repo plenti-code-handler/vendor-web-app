@@ -70,7 +70,7 @@ const VerifyPhoneForm = () => {
         <p className="text-black font-semibold text-[28px]">Verify Phone</p>
         <p className="text-base">
           Code has been sent to{" "}
-          <span className="font-bold text-blackTwo">03723828392</span>
+          <span className="font-semibold text-blackTwo">03723828392</span>
           <br />
           Enter the code to verify your account
         </p>
@@ -85,7 +85,7 @@ const VerifyPhoneForm = () => {
             onChange={(e) => handleChange(e, index)}
             onKeyDown={(e) => handleKeyDown(e, index)}
             maxLength="1"
-            className="rounded-[15px] border text-center font-bold text-bold border-[#DDDDDD] text-black text-2xl placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black w-[30px] h-[30px] md:w-[55px] md:h-[55px]"
+            className="rounded-[15px] border text-center font-semibold text-bold border-[#DDDDDD] text-black text-2xl placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black w-[30px] h-[30px] md:w-[55px] md:h-[55px]"
           />
         ))}
       </div>

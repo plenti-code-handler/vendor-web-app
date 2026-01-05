@@ -17,7 +17,7 @@ const ContactUsPage = () => {
             Go Back
       </button>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Contact Us</h1>
+        <h1 className="text-3xl font-semibold text-gray-900 mb-2">Contact Us</h1>
         <p className="text-gray-600">
           Have questions or need support? We're here to help!
         </p>

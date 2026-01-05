@@ -17,7 +17,7 @@ const PasswordField = ({ value, onChange }) => {
         onChange={(e) => onChange(e.target.value)}
       />
       <span
-        className="absolute right-3 text-black font-bold"
+        className="absolute right-3 text-black font-semibold"
         onClick={togglePasswordVisibility}
       >
         {showPassword ? passwordShowSvg : passwordHideSvg}

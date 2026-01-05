@@ -11,7 +11,7 @@ const TableUpper = ({
 }) => {
   return (
     <div className="flex flex-col sm:flex-row sm:justify-between items-center mb-4 px-2 sm:px-4">
-      <p className="text-xl font-bold text-blackTwo hidden sm:mr-5 sm:block w-full sm:w-auto">
+      <p className="text-xl font-semibold text-blackTwo hidden sm:mr-5 sm:block w-full sm:w-auto">
         Orders
       </p>
       <div className="flex flex-col items-center gap-2 sm:flex-row w-full sm:w-auto">

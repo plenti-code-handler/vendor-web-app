@@ -35,7 +35,7 @@ function ResetPasswordPage() {
           />
         </a>
         <div className="flex flex-col gap-4">
-          <p className="text-[40px] font-bold text-gray-800">
+          <p className="text-[40px] font-semibold text-gray-800">
             Stop waste, save food!
           </p>
           <p className="text-sm font-medium text-[#7E8299] leading-6">
@@ -59,7 +59,7 @@ function ResetPasswordPage() {
               </p>
               <p className="text-[#A1A5B7] text-sm font-medium">
                 For your account{" "}
-                <span className="font-bold text-blackTwo">{email}</span>
+                <span className="font-semibold text-blackTwo">{email}</span>
               </p>
             </div>
             <AuthPasswordField
@@ -130,7 +130,7 @@ export default ResetPasswordPage;
 //           />
 //         </a>
 //         <div className="flex flex-col gap-4 mt-4 lg:mt-6">
-//           <p className="text-[40px] font-bold text-gray-800">
+//           <p className="text-[40px] font-semibold text-gray-800">
 //             Stop waste, save food!
 //           </p>
 //           <p className="text-sm font-medium text-[#7E8299] leading-6 px-[8%]">

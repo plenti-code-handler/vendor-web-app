@@ -37,7 +37,7 @@ const PrivacyPage = () => {
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">
             <ShieldCheckIcon className="h-8 w-8 text-[#5F22D9] mr-3" />
-            <h1 className="text-3xl font-bold text-gray-900">
+            <h1 className="text-3xl font-semibold text-gray-900">
               Privacy Policy
             </h1>
           </div>

@@ -78,7 +78,7 @@ const Breadcrumb = () => {
     return (
       <div className="flex justify-between items-center lg:mr-auto lg:mt-4 lg:mb-4 lg:py-2 lg:w-[99%]">
         {/* Dashboard Title */}
-        <p className="m-4 text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-one">
+        <p className="m-4 text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold text-one">
           {currentPath === "Manage Bags" ? "Manage Bags" : currentPath}
         </p>
   
@@ -93,7 +93,7 @@ const Breadcrumb = () => {
               onClick={handleOpenDrawer}
               className="mr-3 mt-2 lg:m-0 flex items-center text-center justify-center bg-blueBgDark text-white font-semibold py-2 px-4 rounded-[6px] hover:bg-blueBgDarkHover2"
             >
-              <span className="mr-3 ml-2 font-semibold">Add New Bags</span>
+              <span className="mr-2 ml-2 font-semibold">Add New Bags</span>
               <span>{addUserSvg}</span>
             </button>
           )}
@@ -104,7 +104,7 @@ const Breadcrumb = () => {
 
   const ApprovalsContent = () => (
     <div className="flex items-center m-4 lg:mr-auto lg:mt-4 lg:mb-4 lg:w-[99%] gap-2">
-      <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-one">
+      <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold text-one">
         {currentPath}
       </p>
       <p className="text-lg sm:m-0 sm:text-xl md:text-2xl lg:text-3xl font-medium text-secondary">
@@ -121,7 +121,7 @@ const Breadcrumb = () => {
       >
         {backButtonSvg}
       </button>
-      <p className="m-4 text-lg sm:m-0 sm:text-xl md:text-2xl lg:text-3xl font-bold text-one">
+      <p className="m-4 text-lg sm:m-0 sm:text-xl md:text-2xl lg:text-3xl font-semibold text-one">
         {currentPath}
       </p>
     </div>

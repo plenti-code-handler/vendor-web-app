@@ -30,7 +30,7 @@ const ItemTagsFilter = ({ selectedFilter, onFilterChange }) => {
   return (
     <form className="w-full space-y-2 mt-3">
       <div className="flex flex-col">
-        <p className="text-black font-bold text-xl">Choose Item Tags</p>
+        <p className="text-black font-semibold text-xl">Choose Item Tags</p>
       </div>
       <div className="grid grid-cols-2 gap-2">
         {options.map((option) => (

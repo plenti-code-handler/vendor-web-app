@@ -50,7 +50,7 @@ const Rating = () => {
     <div className="w-full">
       <div className="flex justify-between items-center">
         <div className="text-center">
-          <p className="text-4xl font-bold text-gray-900">{averageRating}</p>
+          <p className="text-4xl font-semibold text-gray-900">{averageRating}</p>
           <p className="text-gray-500 text-sm">{totalReviews} Reviews</p>
         </div>
 

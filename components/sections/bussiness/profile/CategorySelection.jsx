@@ -10,7 +10,7 @@ const CategorySelection = ({ categories, selectedCategories, onCategoryToggle, o
           <div className="w-16 h-16 bg-[#5F22D9]/10 rounded-full flex items-center justify-center mx-auto mb-6">
             <SparklesIcon className="w-8 h-8 text-[#5F22D9]" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="text-2xl font-semibold text-gray-900">
             Welcome to Plenti Pricing 💜
           </h1>
           <p className="text-base text-gray-600 max-w-md mx-auto">
