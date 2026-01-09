@@ -112,27 +112,27 @@ const BagsTable = () => {
       {loading ? (
         <Loader />
       ) : (
-        <table className="w-full table-auto bg-white">
+        <table className="w-full table-auto bg-white animate-fade-down">
           <thead>
-            <tr className="border-b-[1px] border-grayOne border-dashed border-opacity-45 text-sm font-semibold text-grayOne">
+            <tr className="border-b-[1px] border-grayOne border-dashed border-opacity-45 text-sm text-grayOne">
               <th className="pb-[8px] px-2 pt-[18px] text-left w-[80px]">
-                Image
+                IMAGE
               </th>
               <th className="pb-[8px] px-2 pt-[18px] text-left w-1/6">Type</th>
               <th className="pb-[8px] px-2 pt-[18px] text-center w-1/6">
-                Start Time
+                START TIME
               </th>
               <th className="pb-[8px] px-2 pt-[18px] text-center w-1/6">
-                End Time
+                END TIME
               </th>
               <th className="pb-[8px] px-2 pt-[18px] text-center w-1/6">
-                Veg Servings Left
+                VEG SERVINGS LEFT
               </th>
               <th className="pb-[8px] px-2 pt-[18px] text-center w-1/6">
-                Non-Veg Servings Left
+                NON-VEG SERVINGS LEFT
               </th>
               <th className="pb-[8px] px-2 pt-[18px] text-center w-1/6">
-                Actions
+                ACTIONS
               </th>
             </tr>
           </thead>
