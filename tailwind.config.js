@@ -50,9 +50,20 @@ module.exports = {
           '0%': { opacity: '0', transform: 'translateY(-4px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
+        fadeDown: {
+          '0%': { 
+            opacity: '0', 
+            transform: 'translateY(-8px)' 
+          },
+          '100%': { 
+            opacity: '1', 
+            transform: 'translateY(0)' 
+          },
+        },
       },
       animation: {
-        'fade-in': 'fadeIn 0.15s ease-out', // Changed from 0.3s to 0.15s
+        'fade-in': 'fadeIn 0.15s ease-out',
+        'fade-down': 'fadeDown 0.2s ease-out',
       },
       colors: {
         // texts

@@ -1,9 +1,6 @@
 // app/(main)/layout.jsx
-import { Inter } from "next/font/google";
 import "../globals.css";
 import Script from "next/script";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
   title: "Plenti",
@@ -12,7 +9,7 @@ export const metadata = {
 
 export default function MainLayout({ children }) {
   return (
-    <div className={inter.className}>
+    <>
       {/* Google Translate Element */}
       <div id="google_translate_element" style={{ display: "none" }}></div>
       
@@ -37,6 +34,6 @@ export default function MainLayout({ children }) {
           `,
         }}
       />
-    </div>
+    </>
   );
 }

@@ -246,7 +246,7 @@ const RecentOrders = () => {
   }, []);
 
   const renderTableRow = useCallback((order) => (
-    <tr key={order.order_id} className="border-b hover:bg-gray-50 transition">
+    <tr key={order.order_id} className="border-b hover:bg-gray-50 transition animate-fade-down">
       <td className="text-center px-2 text-sm py-3">
         <div className="truncate" title={order.user_name || "Not provided"}>
           {order.user_name || <span className="text-gray-400">Not provided</span>}
@@ -377,7 +377,7 @@ const RecentOrders = () => {
 
       {/* Table */}
       <div className="w-full overflow-x-auto">
-        <table className="w-full min-w-[800px] table-fixed">
+        <table className="w-full min-w-[800px] table-fixed animate-fade-down">
           <thead>
             <tr className="border-b text-xs font-semibold text-gray-500 uppercase">
               <th className="pb-2 px-2 pt-4 text-center w-[12%]">User Name</th>
@@ -401,7 +401,7 @@ const RecentOrders = () => {
             ) : orders.length > 0 ? (
               orders.map(renderTableRow)
             ) : (
-              <tr>
+              <tr className="animate-fade-down">
                 <td colSpan="8" className="text-center py-8 text-gray-400">
                   No orders found.
                 </td>
