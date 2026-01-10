@@ -119,7 +119,7 @@ const OrderDetailsModal = ({ isOpen, onClose, orderDetails }) => {
               </div>
               <div className="flex justify-between items-center text-sm">
                 <span className="text-gray-600">Platform Fee GST</span>
-                <span className="font-medium text-blue-700">₹{platformCut.toFixed(2)}</span>
+                <span className="font-medium text-blue-700">₹{platformFeeGst.toFixed(2)}</span>
               </div>
             </div>
           </div>
