@@ -2,10 +2,18 @@ import React from "react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { formatTime } from "../../utility/FormateTime";
 import BagSizeTag from "../common/BagSizeTag";
+import DietIcon from "../common/DietIcon";
 import { ITEM_TYPE_DISPLAY_NAMES } from "../../constants/itemTypes";
 
 const OrderDetailsModal = ({ isOpen, onClose, orderDetails }) => {
   if (!isOpen || !orderDetails?.items?.length) return null;
+
+  const orderData = orderDetails?.orderData;
+  const transactionAmount = orderData?.transaction_amount || 0;
+  const vendorCut = orderData?.vendor_cut || 0;
+  const platformCut = orderData?.platform_cut || 0;
+  const couponDiscount = orderData?.coupon_discount || 0;
+  const platformFeeGst = orderData?.platform_fee_gst || 0;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4 animate-fade-down">
@@ -45,9 +53,12 @@ const OrderDetailsModal = ({ isOpen, onClose, orderDetails }) => {
                     ).join(", ") || "N/A"}
                   </span>
                 </div>
-                <div>
+                <div className="flex items-center gap-2">
                   <span className="font-medium text-gray-700">Diet:</span>{" "}
-                  <span className="text-gray-900">{item.diet}</span>
+                  <span className="flex items-center gap-2 text-gray-900">
+                    <DietIcon diet={item.diet} size="xs" />
+                    <span className="capitalize">{item.diet?.replace(/_/g, " ") || "N/A"}</span>
+                  </span>
                 </div>
                 <div>
                   <span className="font-medium text-gray-700">Quantity:</span>{" "}
@@ -84,6 +95,35 @@ const OrderDetailsModal = ({ isOpen, onClose, orderDetails }) => {
             </div>
           ))}
         </div>
+        
+        {/* Transaction Breakdown */}
+        {orderData && (
+          <div className="px-6 py-4 border-t border-b bg-gray-50">
+            <h3 className="text-sm font-semibold text-gray-700 mb-3">Payment Breakdown</h3>
+            <div className="space-y-2">
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-gray-600">Total Amount</span>
+                <span className="font-semibold text-gray-900">₹{transactionAmount.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between items-center text-sm pt-2 border-t border-gray-200">
+                <span className="text-gray-600">Vendor Cut</span>
+                <span className="font-medium text-green-700">₹{vendorCut.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-gray-600">PLENTI fee from customer</span>
+                <span className="font-medium text-blue-700">₹{platformCut.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-gray-600">Coupon Discount</span>
+                <span className="font-medium text-blue-700">₹{couponDiscount.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-gray-600">Platform Fee GST</span>
+                <span className="font-medium text-blue-700">₹{platformCut.toFixed(2)}</span>
+              </div>
+            </div>
+          </div>
+        )}
         
         {/* Footer */}
         <div className="flex justify-end px-6 py-4 border-t bg-gray-50">

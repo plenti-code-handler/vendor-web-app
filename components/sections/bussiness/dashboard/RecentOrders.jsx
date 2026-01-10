@@ -132,12 +132,13 @@ const RecentOrders = () => {
     fetchRecentOrders(true, 0, filter);
   }, [filter, fetchRecentOrders]);
 
-  const handleViewOrder = useCallback(async (orderId) => {
+  const handleViewOrder = useCallback(async (order) => {
+    const orderId = order.order_id;
     setLoadingOrderId(orderId);
     try {
       const response = await axiosClient.get(`/v1/vendor/order/${orderId}/items`);
       if (response.status === 200) {
-        setSelectedItem({ id: orderId, items: response.data });
+        setSelectedItem({ id: orderId, items: response.data, orderData: order });
         setModalOpen(true);
       } else {
         toast.error("Failed to fetch order details");
@@ -262,7 +263,7 @@ const RecentOrders = () => {
       </td>
       
       <td className="text-center px-2 text-sm font-semibold text-blue-700">
-        ₹{order.transaction_amount}
+        ₹{order.vendor_cut}
       </td>
       
       <td className="text-center px-1 py-2">
@@ -321,7 +322,7 @@ const RecentOrders = () => {
       <td className="text-center px-2 py-2">
         <div className="flex items-center justify-center gap-2">
           <button
-            onClick={() => handleViewOrder(order.order_id)}
+            onClick={() => handleViewOrder(order)}
             className="p-2 rounded hover:bg-blue-50 transition"
             title="View"
             disabled={loadingOrderId === order.order_id}
@@ -382,7 +383,7 @@ const RecentOrders = () => {
             <tr className="border-b text-xs font-semibold text-gray-500 uppercase">
               <th className="pb-2 px-2 pt-4 text-center w-[12%]">User Name</th>
               <th className="pb-2 px-2 pt-4 text-center w-[10%]">Phone</th>
-              <th className="pb-2 px-2 pt-4 text-center w-[8%]">Amount</th>
+              <th className="pb-2 px-2 pt-4 text-center w-[8%]">You Get</th>
               <th className="pb-2 px-2 pt-4 text-center w-[22%]">Items</th>
               <th className="pb-2 px-2 pt-4 text-center w-[12%]">Allergens</th>
               <th className="pb-2 px-2 pt-4 text-center w-[12%]">Created At</th>
