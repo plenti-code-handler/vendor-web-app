@@ -10,9 +10,9 @@ const GoogleAuthButton = ({ onSuccess, onError, text = "continue_with" }) => {
         size="large"
         width="100%"
         text={text}
-        shape="pill"
+        shape="rectangular"
         logo_alignment="left"
-        auto_select={false}
+        useOneTap={false}
       />
     </div>
   );
