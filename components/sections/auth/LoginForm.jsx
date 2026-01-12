@@ -230,6 +230,16 @@ const LoginForm = () => {
           )}
         </button>
 
+        {/* Add a divider with text "or" */}
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-gray-200"></div>
+          </div>
+          <div className="relative flex justify-center text-xs">
+            <span className="px-2 bg-white text-gray-500">or</span>
+          </div>
+        </div>
+
         {/* Google Sign-In Button */}
         <GoogleAuthButton 
           onSuccess={(response) => handleGoogleAuth(response, false)}
