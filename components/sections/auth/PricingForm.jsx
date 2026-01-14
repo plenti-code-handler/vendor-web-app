@@ -9,7 +9,7 @@ import {
   CurrencyRupeeIcon,
 } from '@heroicons/react/24/outline';
 import { getCategoriesForUI, ITEM_TYPES } from '../../../constants/itemTypes';
-import { calculatePrices, getTierInfo } from '../../../utility/priceCalculations';
+import { calculatePrices, getTierInfo, getPayoutTier, getPayoutThreshold } from '../../../utility/priceCalculations';
 import PriceCard from '../../sections/bussiness/profile/PriceCard';
 import PayoutThresholdSection from '../../sections/bussiness/profile/PayoutThresholdSection';
 import CategorySelection from '../bussiness/profile/CategorySelection';
@@ -61,35 +61,65 @@ const PricingForm = ({ onSuccess, showBackButton = false }) => {
         return;
       }
 
+      // Validate that all selected categories have average prices set
+      const missingPrices = [];
+      selectedCategories.forEach(categoryId => {
+        const asp = averagePrices[categoryId];
+        if (!asp || asp <= 0) {
+          const categoryName = categories.find(c => c.id === categoryId)?.name || categoryId;
+          missingPrices.push(categoryName);
+        }
+      });
+
+      // If any categories are missing prices, show error and return early
+      if (missingPrices.length > 0) {
+        const errorMessage = missingPrices.length === 1
+          ? `Please enter a valid average price for ${missingPrices[0]}`
+          : `Please enter valid average prices for: ${missingPrices.join(', ')}`;
+        toast.error(errorMessage);
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Find the highest ASP across all categories
+      let highestASP = 0;
+      selectedCategories.forEach(categoryId => {
+        const asp = parseFloat(averagePrices[categoryId]) || 0;
+        if (asp > highestASP) {
+          highestASP = asp;
+        }
+      });
+
+      // Get payout tier based on the highest ASP
+      const payoutTier = getPayoutTier(highestASP);
+
       // Curate the payload
       const payload = {
         item_types: {},
         payout: {
-          tier: "MID",
-          threshold: 1000
+          tier: payoutTier,
+          threshold: getPayoutThreshold(calculatePrices(highestASP, 'MEAL')?.small.price)
         }
       };
 
-      // Process each selected category
+      // Process all categories - at this point we know all have valid prices
       selectedCategories.forEach(categoryId => {
-        const asp = averagePrices[categoryId] || 0;
+        const asp = averagePrices[categoryId];
         const prices = calculatePrices(asp, categoryId);
         
-        if (prices) {
-          payload.item_types[categoryId] = {
-            asp: asp,
-            bags: {
-              SMALL: prices.small.price,
-              MEDIUM: prices.medium.price,
-              LARGE: prices.large.price
-            },
-            cuts: {
-              SMALL: prices.small.cut,
-              MEDIUM: prices.medium.cut,
-              LARGE: prices.large.cut
-            }
-          };
-        }
+        payload.item_types[categoryId] = {
+          asp: asp,
+          bags: {
+            SMALL: prices.small.price,
+            MEDIUM: prices.medium.price,
+            LARGE: prices.large.price
+          },
+          cuts: {
+            SMALL: prices.small.cut,
+            MEDIUM: prices.medium.cut,
+            LARGE: prices.large.cut
+          }
+        };
       });
 
       // Make API call
@@ -123,6 +153,29 @@ const PricingForm = ({ onSuccess, showBackButton = false }) => {
   const prices = calculatePrices(currentAveragePrice, activeTab);
   const tierInfo = getTierInfo(currentAveragePrice);
 
+  // Calculate payout threshold based on highest ASP across all categories
+  const calculatePayoutThreshold = () => {
+    if (selectedCategories.length === 0) return null;
+    
+    // Find the highest ASP across all selected categories
+    let highestASP = 0;
+    selectedCategories.forEach(categoryId => {
+      const asp = parseFloat(averagePrices[categoryId]) || 0;
+      if (asp > highestASP) {
+        highestASP = asp;
+      }
+    });
+
+    // Calculate threshold using highest ASP (using MEAL category for calculation)
+    if (highestASP > 0) {
+      const smallBagPrice = calculatePrices(highestASP, 'MEAL')?.small.price;
+      return smallBagPrice ? getPayoutThreshold(smallBagPrice) : null;
+    }
+    return null;
+  };
+
+  const payoutThreshold = calculatePayoutThreshold();
+
   // Handle average price change
   const handleAveragePriceChange = (value) => {
     setAveragePrices(prev => ({
@@ -140,6 +193,10 @@ const PricingForm = ({ onSuccess, showBackButton = false }) => {
   // Check if we should show cards
   const shouldShowCards = () => {
     return currentAveragePrice && prices;
+  };
+
+  const handleWheel = (e) => {
+    e.currentTarget.blur();
   };
 
   useEffect(() => {
@@ -197,6 +254,7 @@ const PricingForm = ({ onSuccess, showBackButton = false }) => {
                     onChange={(e) => handleAveragePriceChange(e.target.value)}
                     placeholder="Enter your average menu price"
                     className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#5F22D9] focus:border-transparent transition-all duration-200"
+                    onWheel={handleWheel}
                   />
                 </div>
                 
@@ -269,11 +327,11 @@ const PricingForm = ({ onSuccess, showBackButton = false }) => {
                 </p>
               </div>
 
-              {/* Horizontal scrollable container for price cards */}
-              <div className="overflow-x-auto pb-4 -mx-2 px-2">
-                <div className="flex gap-6 min-w-max">
+              {/* Price cards container - all 3 cards fit horizontally */}
+              <div className="flex items-center justify-center gap-3 px-2 sm:px-4">
+                <div className="grid grid-cols-3 gap-3 sm:gap-4 w-full max-w-4xl">
                   {['small', 'medium', 'large'].map((size, index) => (
-                    <div key={size} className="flex-shrink-0 w-80">
+                    <div key={size} className="w-full">
                       <PriceCard
                         size={size}
                         prices={prices}
@@ -288,10 +346,11 @@ const PricingForm = ({ onSuccess, showBackButton = false }) => {
             </div>
 
             {/* Independent Payout Threshold Section */}
-            <PayoutThresholdSection 
-              tier={tierInfo.name}
-              smallBagPrice={calculatePrices(averagePrices['MEAL'] || currentAveragePrice, 'MEAL')?.small.price}
-            />
+            {payoutThreshold && (
+              <PayoutThresholdSection 
+                threshold={payoutThreshold}
+              />
+            )}
           </>
         ) : (
           <div className="bg-white rounded-2xl shadow-lg p-12 text-center">

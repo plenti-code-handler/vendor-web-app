@@ -2,7 +2,7 @@
 import React from 'react';
 import { SmallBagIcon, MediumBagIcon, LargeBagIcon } from '../../../../svgs';
 
-const PriceCard = ({ size, prices, isMedium, showCards, index }) => {
+const PriceCard = ({ size, prices, isMedium, showCards, index, scale = 1, zIndex = 1 }) => {
   const getIcon = () => {
     switch (size) {
       case 'small': return <SmallBagIcon />;
@@ -22,55 +22,65 @@ const PriceCard = ({ size, prices, isMedium, showCards, index }) => {
     return size === 'small' ? 'text-green-600' : 'text-purple-600';
   };
 
+  // Calculate padding and font sizes - smaller for compact fit
+  const padding = 'p-6';
+  const iconSize = 'w-10 h-10';
+  const priceSize = 'text-3xl';
+  const textSize = 'text-xs';
+
   return (
     <div
-      className={`relative transform transition-all duration-700 hover:scale-105 ${
+      className={`relative transition-all duration-700 ${
         showCards ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
       }`}
-      style={{ transitionDelay: `${index * 200}ms` }}
+      style={{ 
+        transitionDelay: `${index * 200}ms`,
+        transform: showCards ? `scale(${scale})` : 'scale(0.9)',
+        zIndex: zIndex,
+        transformOrigin: 'center'
+      }}
     >
-
-      <div className={`rounded-2xl p-8 h-full ${
+      <div className={`rounded-3xl ${padding} h-full transition-transform duration-300  ${
         isMedium 
           ? 'bg-gradient-to-br from-[#5F22D9]/5 to-[#5F22D9]/10 border border-[#5F22D9]/20 shadow-xl' 
           : 'bg-white border border-gray-100 shadow-lg'
       }`}>
-        <div className="text-center space-y-6">
-          <div className={`w-12 h-12 rounded-full ${getBackgroundClass()} flex items-center justify-center mx-auto`}>
+        <div className="text-center space-y-4">
+          <div className={`${iconSize} rounded-full ${getBackgroundClass()} flex items-center justify-center mx-auto`}>
             <div className={getTextColor()}>
               {getIcon()}
             </div>
           </div>
           
-          <div className="space-y-2">
-            <p className={`text-sm uppercase tracking-wide font-medium ${
+          <div className="space-y-1.5">
+            <p className={`${textSize} uppercase tracking-wide font-medium ${
               isMedium ? 'text-[#5F22D9]/70' : 'text-gray-500'
             }`}>
               {size} Bag
             </p>
-            <div className={`text-4xl font-semibold ${
+            <div className={`${priceSize} font-semibold ${
               isMedium ? 'text-[#5F22D9]' : 'text-gray-900'
             }`}>
               ₹{prices[size].price}
             </div>
           </div>
 
-          <div className={`space-y-3 text-sm ${
+          <div className={`space-y-2 ${textSize} ${
             isMedium ? 'text-[#5F22D9]/80' : 'text-gray-600'
           }`}>
             <p className="font-medium">
               Serves {prices[size].serves}
             </p>
             
-            <div className="space-y-2">
-              <div className={`flex justify-between items-center py-2 ${
+            <div className="space-y-1.5">
+              <div className={`flex justify-between items-center py-1.5 ${
                 isMedium ? 'border-b border-[#5F22D9]/20' : 'border-b border-gray-100'
               }`}>
                 <span>Our cut:</span>
                 <span className="font-semibold text-red-600">₹{prices[size].cut}</span>
               </div>
               
-              <div className="flex justify-between items-center py-2">
+              <div className="flex justify-between items-center py-1.5">
                 <span>You earn:</span>
                 <span className={`font-semibold ${
                   isMedium ? 'text-[#5F22D9]' : 'text-gray-900'

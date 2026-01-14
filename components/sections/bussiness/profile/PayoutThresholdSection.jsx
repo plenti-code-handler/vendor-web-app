@@ -2,10 +2,10 @@
 import React from 'react';
 import { HandRaisedIcon } from '@heroicons/react/24/outline';
 import { mround } from '../../../../utility/priceCalculations';
+import { getPayoutThreshold } from '../../../../utility/priceCalculations';
 
-const PayoutThresholdSection = ({ tier, smallBagPrice }) => {
-  if (!smallBagPrice) return null;
-  const threshold = mround(25 * smallBagPrice, 500);
+const PayoutThresholdSection = ({ threshold }) => {
+
 
   return (
     <div className="mt-10 flex justify-center">

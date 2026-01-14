@@ -13,10 +13,7 @@ import {
   fetchVendorDetails,
   updateVendorDetails 
 } from "../../../../redux/slices/vendorSlice";
-import { 
-  getAdministrativeArea, 
-  formatServiceLocation 
-} from "../../../../utility/googlePlacesUtils";
+import { processPlaceForVendor } from "../../../../utility/googlePlacesUtils";
 
 const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 const libraries = ["places"]; // Define as constant outside component
@@ -154,36 +151,23 @@ const Account = () => {
         const place = autocompleteInstanceRef.current.getPlace();
         console.log("Selected place:", place);
         
-        if (place.geometry && place.formatted_address) {
-          const formattedAddress = place.formatted_address;
-          const latitude = place.geometry.location.lat();
-          const longitude = place.geometry.location.lng();
-          
-          // Extract administrative area levels from address_components
-          const administrativeAreaLevel1 = getAdministrativeArea(place.address_components, 1);
-          const administrativeAreaLevel3 = getAdministrativeArea(place.address_components, 3);
-          
-          // Format service_location as uppercase(level3, level1)
-          const serviceLocation = formatServiceLocation(administrativeAreaLevel3, administrativeAreaLevel1);
-          
-          // Generate Google Maps URL for address_url
-          const googleMapsUrl = place.url || `https://www.google.com/maps/place/${encodeURIComponent(formattedAddress)}/@${latitude},${longitude},15z`;
-          setGoogleMapsUrl(googleMapsUrl);
+        const processedPlace = processPlaceForVendor(place, apiKey);
+        
+        if (processedPlace) {
+          setGoogleMapsUrl(processedPlace.googleMapsUrl);
           
           setFormData((prev) => ({
             ...prev,
-            address_url: googleMapsUrl, // Use Google Maps URL
-            address: formattedAddress, // Store formatted address
-            latitude: latitude,
-            longitude: longitude,
-            service_location: serviceLocation || "",  // Store formatted service_location
+            address_url: processedPlace.googleMapsUrl,
+            address: processedPlace.formattedAddress,
+            latitude: processedPlace.latitude,
+            longitude: processedPlace.longitude,
+            service_location: processedPlace.serviceLocation,
           }));
 
-          setMapUrl(
-            `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${latitude},${longitude}&zoom=15`
-          );
+          setMapUrl(processedPlace.mapEmbedUrl);
           
-          console.log("Google Maps URL:", googleMapsUrl);
+          console.log("Google Maps URL:", processedPlace.googleMapsUrl);
           
           toast.success("Address selected successfully!");
         } else {

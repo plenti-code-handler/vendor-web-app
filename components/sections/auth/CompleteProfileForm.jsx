@@ -4,10 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { useLoadScript } from "@react-google-maps/api";
 import { toast } from "sonner";
-import { 
-  getAdministrativeArea, 
-  formatServiceLocation 
-} from "../../../utility/googlePlacesUtils";
+import { processPlaceForVendor } from "../../../utility/googlePlacesUtils";
 
 const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 const libraries = ["places"];
@@ -119,33 +116,14 @@ const CompleteProfileForm = ({ onSubmit, loading, initialData }) => {
       // Add place_changed listener
       autocompleteInstanceRef.current.addListener("place_changed", () => {
         const place = autocompleteInstanceRef.current.getPlace();
+        const processedPlace = processPlaceForVendor(place, apiKey);
 
-        if (place.geometry && place.formatted_address) {
-          const formattedAddress = place.formatted_address;
-          const latitude = place.geometry.location.lat();
-          const longitude = place.geometry.location.lng();
-
-          // Extract administrative area levels from address_components
-          const administrativeAreaLevel1 = getAdministrativeArea(place.address_components, 1);
-          const administrativeAreaLevel3 = getAdministrativeArea(place.address_components, 3);
-          
-          // Format service_location as uppercase(level3, level1)
-          const formattedServiceLocation = formatServiceLocation(administrativeAreaLevel3, administrativeAreaLevel1);
-
-          setAddress(formattedAddress);
-          setCoordinates({ lat: latitude, lng: longitude });
-          setServiceLocation(formattedServiceLocation || "");
-
-          // Generate embed URL for iframe
-          const embedUrl = `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${latitude},${longitude}&zoom=15`;
-          setMapUrl(embedUrl);
-
-          // Generate Google Maps URL for address_url
-          const mapsUrl =
-            place.url ||
-            `https://www.google.com/maps/place/${encodeURIComponent(formattedAddress)}/@${latitude},${longitude},15z`;
-          setGoogleMapsUrl(mapsUrl);
-
+        if (processedPlace) {
+          setAddress(processedPlace.formattedAddress);
+          setCoordinates({ lat: processedPlace.latitude, lng: processedPlace.longitude });
+          setServiceLocation(processedPlace.serviceLocation);
+          setMapUrl(processedPlace.mapEmbedUrl);
+          setGoogleMapsUrl(processedPlace.googleMapsUrl);
           toast.success("Address selected successfully!");
         } else {
           toast.error("Please select a valid address from the suggestions");
