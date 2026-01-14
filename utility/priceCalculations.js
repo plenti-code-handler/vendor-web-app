@@ -62,6 +62,17 @@ export const calculatePrices = (asp, category) => {
   };
 };
 
+export const getPayoutTier = (asp) => {
+  const aspNum = parseFloat(asp);
+  if (aspNum <= 150) return 'BUDGET';
+  if (aspNum <= 300) return 'MID-TIER';
+  return 'PREMIUM';
+};
+
+export const getPayoutThreshold = (smallBagPrice) => {
+  return mround(25 * smallBagPrice, 500);
+};
+
 export const getTierInfo = (asp) => {
   const aspNum = parseFloat(asp);
   if (aspNum <= 150) return { name: 'BUDGET', color: 'bg-green-100 text-green-800' };
