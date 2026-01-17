@@ -45,6 +45,7 @@ const RecentOrders = () => {
   const [verifyModalOpen, setVerifyModalOpen] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [loadingOrderId, setLoadingOrderId] = useState(null);
+  const [selectedDescription, setSelectedDescription] = useState(null);
   
   // OTP states
   const [otp, setOtp] = useState(Array(OTP_LENGTH).fill(""));
@@ -262,7 +263,7 @@ const RecentOrders = () => {
         </div>
       </td>
       
-      <td className="text-center px-2 text-sm font-semibold text-blue-700">
+      <td className="text-center px-4 text-sm font-semibold text-blue-700 ">
         ₹{order.vendor_cut}
       </td>
       
@@ -270,7 +271,7 @@ const RecentOrders = () => {
         {order.checkout_items?.length > 0 ? (
           <div className="flex flex-col items-center space-y-1">
             {order.checkout_items.map((item, idx) => (
-              <div key={idx} className="flex items-center gap-1 text-[10px] leading-tight whitespace-nowrap">
+              <div key={idx} className="flex items-center gap-1 text-[10px] leading-tight whitespace-nowrap mx-2">
                 <DietIcon diet={item.diet} size="xs" />
                 <span className="flex items-center gap-1">
                   <span className="font-medium">{item.quantity}X</span>
@@ -293,16 +294,20 @@ const RecentOrders = () => {
       </td>
       
       <td className="text-center px-2 text-xs py-2">
-        {order.allergens?.length > 0 ? (
-          <div className="flex flex-wrap gap-1 justify-center">
-            {order.allergens.map((allergen, idx) => (
-              <span
-                key={idx}
-                className="inline-block px-2 py-1 rounded-full bg-red-100 text-red-700 text-xs font-medium"
-              >
-                {allergen.charAt(0).toUpperCase() + allergen.slice(1).toLowerCase()}
-              </span>
-            ))}
+        {order.checkout_items?.length > 0 ? (
+          <div className="flex flex-col gap-1.5 items-center">
+            {order.checkout_items
+              .filter(item => item.description)
+              .map((item, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setSelectedDescription(item.description)}
+                  className="w-full px-4 py-3 rounded-full bg-gray-100 text-gray-700 text-xs hover:bg-gray-200 transition-colors cursor-pointer truncate"
+                  title={item.description}
+                >
+                  {item.description}
+                </button>
+              ))}
           </div>
         ) : (
           <span className="text-gray-400 text-xs">None</span>
@@ -382,10 +387,10 @@ const RecentOrders = () => {
           <thead>
             <tr className="border-b text-xs font-semibold text-gray-500 uppercase">
               <th className="pb-2 px-2 pt-4 text-center w-[12%]">User Name</th>
-              <th className="pb-2 px-2 pt-4 text-center w-[10%]">Phone</th>
-              <th className="pb-2 px-2 pt-4 text-center w-[8%]">You Get</th>
+              <th className="pb-2 px-2 pt-4 text-center w-[12%]">Phone</th>
+              <th className="pb-2 px-4 pt-4 text-center w-[8%]">You Get</th>
               <th className="pb-2 px-2 pt-4 text-center w-[22%]">Items</th>
-              <th className="pb-2 px-2 pt-4 text-center w-[12%]">Allergens</th>
+              <th className="pb-2 px-2 pt-4 text-center w-[16%]">Descriptions</th>
               <th className="pb-2 px-2 pt-4 text-center w-[12%]">Created At</th>
               <th className="pb-2 px-2 pt-4 text-center w-[12%]">Status</th>
               <th className="pb-2 text-center pt-4 w-[12%]">Action</th>
@@ -487,6 +492,28 @@ const RecentOrders = () => {
                 {verifying ? "Verifying..." : "Verify"}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Description Modal */}
+      {selectedDescription && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4"
+          onClick={() => setSelectedDescription(null)}
+        >
+          <div 
+            className="animate-popout inline-block px-4 py-3 rounded-full bg-gray-100 text-gray-700 text-xs relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setSelectedDescription(null)}
+              className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-gray-200 hover:bg-gray-300 text-gray-600 hover:text-gray-800 flex items-center justify-center text-xs font-semibold transition-colors shadow-sm"
+              aria-label="Close"
+            >
+              ×
+            </button>
+            <span className="pr-4">{selectedDescription}</span>
           </div>
         </div>
       )}

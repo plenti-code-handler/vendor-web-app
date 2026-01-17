@@ -60,10 +60,21 @@ module.exports = {
             transform: 'translateY(0)' 
           },
         },
+        popout: {
+          '0%': { 
+            opacity: '0', 
+            transform: 'scale(0.8) translateY(10px)' 
+          },
+          '100%': { 
+            opacity: '1', 
+            transform: 'scale(1) translateY(0)' 
+          },
+        },
       },
       animation: {
         'fade-in': 'fadeIn 0.15s ease-out',
         'fade-down': 'fadeDown 0.2s ease-out',
+        'popout': 'popout 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
       },
       colors: {
         // texts
