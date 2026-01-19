@@ -34,12 +34,6 @@ export const getRequiredFields = (selectedBag, description, isVeg, isNonVeg, veg
     validate: (field) => field && field.trim() !== "",
   },
   {
-    field: isVeg || isNonVeg,
-    name: "diet",
-    message: "Please select at least one diet option (Veg/Non-Veg).",
-    validate: (field) => field === true,
-  },
-  {
     field: vegServings + nonVegServings,
     name: "servings",
     message: "Please provide at least one serving count.",
@@ -107,8 +101,6 @@ export const getResetFormValues = () => ({
   windowStartTime: new Date(),
   windowEndTime: new Date(),
   bestBeforeTime: new Date(),
-  isVeg: true,
-  isNonVeg: false,
   showCustomDescription: false,
   currentStep: 1,
 });

@@ -16,9 +16,6 @@ import { selectVendorData } from '../../redux/slices/vendorSlice';
 import { 
   getRequiredFields, 
   validateTimeConstraints, 
-  handleStartTimeChange as handleStartTimeChangeUtil,
-  handleEndTimeChange as handleEndTimeChangeUtil,
-  handleBestBeforeTimeChange as handleBestBeforeTimeChangeUtil,
   getAvailableCategories
 } from '../../utility/bagDrawerUtils';
 
@@ -27,7 +24,6 @@ import DrawerHeader from './components/DrawerHeader';
 import AllergensSection from './components/AllergensSection';
 import DescriptionSection from './components/DescriptionSection';
 import TimingSection from './components/TimingSection';
-import DietSection from './components/DietSection';
 import ServingsSection from './components/ServingsSection';
 import SubmitButton from './components/SubmitButton';
 
@@ -35,8 +31,6 @@ const EditBagDrawer = () => {
   const [selectedBag, setSelectedBag] = useState();
   const dispatch = useDispatch();
   const [selectedAllergens, setSelectedAllergens] = useState([]);
-  const [isVeg, setIsVeg] = useState(true);
-  const [isNonVeg, setIsNonVeg] = useState(false);
   const [description, setDescription] = useState("");
   const [vegServings, setVegServings] = useState(0);
   const [nonVegServings, setNonVegServings] = useState(0);
@@ -75,10 +69,6 @@ const EditBagDrawer = () => {
       
       setWindowDuration(calculatedWindowDuration > 0 ? calculatedWindowDuration : 60);
       setBestBeforeDuration(calculatedBestBeforeDuration > 0 ? calculatedBestBeforeDuration : 60);
-      
-      // Set diet options based on existing data
-      setIsVeg(bagToEdit.veg || false);
-      setIsNonVeg(bagToEdit.non_veg || false);
     }
   }, [bagToEdit]);
 
@@ -99,6 +89,10 @@ const EditBagDrawer = () => {
         setLoading(false);
         return;
       }
+
+      // Derive isVeg and isNonVeg from servings
+      const isVeg = vegServings > 0;
+      const isNonVeg = nonVegServings > 0;
 
       // Validation using utility function
       const requiredFields = getRequiredFields(selectedBag, description, isVeg, isNonVeg, vegServings, nonVegServings);
@@ -135,9 +129,9 @@ const EditBagDrawer = () => {
         dispatch(setOpenDrawer(false));
         dispatch(fetchAllBags());
       }
-
     } catch (error) {
       toast.error("Failed to update item!");
+      console.error("Error updating item: ", error);
     } finally {
       setLoading(false);
     }
@@ -208,16 +202,7 @@ const EditBagDrawer = () => {
                     availableDescriptions={availableDescriptions}
                   />
 
-                  <DietSection 
-                    isVeg={isVeg}
-                    setIsVeg={setIsVeg}
-                    isNonVeg={isNonVeg}
-                    setIsNonVeg={setIsNonVeg}
-                  />
-
                   <ServingsSection 
-                    isVeg={isVeg}
-                    isNonVeg={isNonVeg}
                     vegServings={vegServings}
                     setVegServings={setVegServings}
                     nonVegServings={nonVegServings}

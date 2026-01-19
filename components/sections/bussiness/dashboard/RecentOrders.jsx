@@ -130,6 +130,7 @@ const RecentOrders = () => {
   }, [loadingMore, hasMoreOrders, currentPage, filter, fetchRecentOrders]);
 
   const handleRefresh = useCallback(() => {
+    toast.info("Refreshing orders...");
     fetchRecentOrders(true, 0, filter);
   }, [filter, fetchRecentOrders]);
 

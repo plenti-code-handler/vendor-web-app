@@ -3,7 +3,6 @@ import {
   Dialog,
   DialogBackdrop,
   DialogPanel,
-  DialogTitle,
 } from "@headlessui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { setOpenDrawer } from "../../redux/slices/addBagSlice";
@@ -30,7 +29,6 @@ import DrawerHeader from './components/DrawerHeader';
 import AllergensSection from './components/AllergensSection';
 import DescriptionSection from './components/DescriptionSection';
 import TimingSection from './components/TimingSection';
-import DietSection from './components/DietSection';
 import ServingsSection from './components/ServingsSection';
 import SubmitButton from './components/SubmitButton';
 
@@ -38,8 +36,6 @@ const AddBagDrawer = () => {
   const dispatch = useDispatch();
   const [selectedBag, setSelectedBag] = useState("");
   const [selectedAllergens, setSelectedAllergens] = useState([]);
-  const [isVeg, setIsVeg] = useState(true);
-  const [isNonVeg, setIsNonVeg] = useState(false);
   const [description, setDescription] = useState("");
   const [vegServings, setVegServings] = useState(0);
   const [nonVegServings, setNonVegServings] = useState(0);
@@ -87,10 +83,8 @@ const AddBagDrawer = () => {
     setVegServings(resetValues.vegServings);
     setNonVegServings(resetValues.nonVegServings);
     setWindowStartTime(resetValues.windowStartTime);
-    setWindowDuration(60); // Reset to default
-    setBestBeforeDuration(60); // Reset to default
-    setIsVeg(resetValues.isVeg);
-    setIsNonVeg(resetValues.isNonVeg);
+    setWindowDuration(60);
+    setBestBeforeDuration(60);
     setShowCustomDescription(resetValues.showCustomDescription);
   };
 
@@ -104,6 +98,10 @@ const AddBagDrawer = () => {
         setLoading(false);
         return;
       }
+
+      // Derive isVeg and isNonVeg from servings
+      const isVeg = vegServings > 0;
+      const isNonVeg = nonVegServings > 0;
 
       // Validation using utility function
       const requiredFields = getRequiredFields(selectedBag, description, isVeg, isNonVeg, vegServings, nonVegServings);
@@ -239,16 +237,7 @@ const AddBagDrawer = () => {
                     availableDescriptions={availableDescriptions}
                   />
 
-                  <DietSection 
-                    isVeg={isVeg}
-                    setIsVeg={setIsVeg}
-                    isNonVeg={isNonVeg}
-                    setIsNonVeg={setIsNonVeg}
-                  />
-
                   <ServingsSection 
-                    isVeg={isVeg}
-                    isNonVeg={isNonVeg}
                     vegServings={vegServings}
                     setVegServings={setVegServings}
                     nonVegServings={nonVegServings}
