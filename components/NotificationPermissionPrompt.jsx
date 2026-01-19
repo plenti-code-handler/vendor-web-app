@@ -20,6 +20,11 @@ const NotificationPermissionPrompt = () => {
 
   useEffect(() => {
     (async () => {
+      // Check if Notification API is available
+      if (typeof window === 'undefined' || !('Notification' in window)) {
+        return;
+      }
+
       await navigator.serviceWorker.ready;
       await waitUntilControlled();
       await initMessaging();
@@ -37,6 +42,9 @@ const NotificationPermissionPrompt = () => {
   // Also run when component is ready to ensure token is sent after login
   useEffect(() => {
     if (!ready) return;
+    if (typeof window === 'undefined' || !('Notification' in window)) {
+      return;
+    }
     if (Notification.permission === 'granted') {
       fetchTokenSilently();
     }
@@ -109,6 +117,12 @@ const NotificationPermissionPrompt = () => {
   };
 
   const onEnable = async () => {
+    // Check if Notification API is available
+    if (typeof window === 'undefined' || !('Notification' in window)) {
+      toast.error('Notifications are not supported in this browser');
+      return;
+    }
+
     setLoading(true);
     try {
       const result = await Notification.requestPermission();
@@ -138,8 +152,13 @@ const NotificationPermissionPrompt = () => {
     }
   };
 
-  if (!ready || !show || permission !== 'default') return null;
+  // Early return if Notification API is not available
+  if (typeof window === 'undefined' || !('Notification' in window)) {
+    return null;
+  }
 
+  if (!ready || !show || permission !== 'default') return null;
+  
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
       <div className="w-full max-w-md rounded-2xl bg-white shadow-2xl overflow-hidden">

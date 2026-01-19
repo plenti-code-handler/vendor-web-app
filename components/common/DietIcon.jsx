@@ -54,9 +54,9 @@ const DietIcon = ({ diet, size = "sm" }) => {
           style={{
             width: 0,
             height: 0,
-            borderLeft: size === 'xs' ? '0.2rem solid transparent' : '0.35rem solid transparent',
-            borderRight: size === 'xs' ? '0.2rem solid transparent' : '0.35rem solid transparent',
-            borderBottom: size === 'xs' ? '0.35rem solid #DC2626' : '0.6rem solid #DC2626',
+            borderLeft: size === 'xs' ? '0.2rem solid transparent' : '0.28rem solid transparent',
+            borderRight: size === 'xs' ? '0.2rem solid transparent' : '0.28rem solid transparent',
+            borderBottom: size === 'xs' ? '0.35rem solid #DC2626' : '0.4rem solid #DC2626',
           }}
         />
       )}

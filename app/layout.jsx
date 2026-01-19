@@ -52,7 +52,7 @@ export default function RootLayout({ children }) {
       </head>
       <body className={poppins.className}>
         <ServiceWorkerRegister />
-        <Toaster richColors position="top-center" />
+        <Toaster richColors position="top-right" visibleToasts={2}/>
         <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}>
           <Providers>
             <RouteLayout>{children}</RouteLayout>
