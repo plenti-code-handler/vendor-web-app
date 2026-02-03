@@ -1,6 +1,8 @@
 "use client";
 
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
+import { useSelector } from "react-redux";
+import { selectVendorData } from "../../../../redux/slices/vendorSlice";
 import Rating from "./Rating";
 import Account from "./Account";
 import PaymentInfo from "./PaymentInfo";
@@ -31,6 +33,16 @@ const tabs = [
 ];
 
 const Tabs = () => {
+  const vendorData = useSelector(selectVendorData);
+  
+  // Check if PAN number or GST number is missing
+  const isMissingInfo = vendorData && (
+    !vendorData.pan_number || 
+    vendorData.pan_number.trim() === "" ||
+    !vendorData.gst_number || 
+    vendorData.gst_number.trim() === ""
+  );
+
   return (
     <div className="flex">
       <div className="w-full">
@@ -40,14 +52,19 @@ const Tabs = () => {
               <Tab
                 key={name}
                 className={({ selected }) =>
-                  `relative py-1 lg:py-2 px-2 text-xs sm:text-sm lg:text-sm font-semibold focus:outline-none transition-all duration-300 ${
+                  `relative py-1 lg:py-2 px-2 text-xs rounded-md sm:text-sm lg:text-sm font-semibold focus:outline-none transition-all duration-300 ${
                     selected
                       ? "text-primary after:content-[''] after:absolute after:left-0 after:right-0 after:bottom-[-6px] after:h-[2px] after:bg-primary"
                       : "text-gray-500"
                   } hover:bg-black/5`
                 }
               >
-                {name}
+                <span className="relative inline-block">
+                  {name}
+                  {name === "My Account" && isMissingInfo && (
+                    <span className="absolute -top-1 -right-2 h-2 w-2 bg-red-500 rounded-full"></span>
+                  )}
+                </span>
               </Tab>
             ))}
           </TabList>
