@@ -251,10 +251,22 @@ const Account = () => {
     }
   };
 
+  const isFieldMissing = (fieldValue) => {
+    return !fieldValue || fieldValue.toString().trim() === "";
+  };
+
+  // Badge component for missing fields
+  const MissingBadge = () => (
+    <span className="inline-block h-2 w-2 bg-red-500 rounded-full ml-1"></span>
+  );
+
   return (
     <div className="flex flex-col gap-4 pt-6 pb-6">
       <div>
-        <h3 className="font-medium ml-1 mb-1">Store name</h3>
+        <h3 className="font-medium ml-1 mb-1 flex items-center">
+          Store name
+          {isFieldMissing(formData.vendor_name) && <MissingBadge />}
+        </h3>
         <TextField
           placeholder="Store Name"
           name="vendor_name"
@@ -265,7 +277,10 @@ const Account = () => {
       
       {/* Add Owner Name field */}
       <div>
-        <h3 className="font-medium ml-1 mb-1">Owner Name</h3>
+        <h3 className="font-medium ml-1 mb-1 flex items-center">
+          Owner Name
+          {isFieldMissing(formData.owner_name) && <MissingBadge />}
+        </h3>
         <TextField
           placeholder="Owner Name"
           name="owner_name"
@@ -276,7 +291,10 @@ const Account = () => {
       
       {/* Add Store Manager Name field */}
       <div>
-        <h3 className="font-medium ml-1 mb-1">Store Manager Name</h3>
+        <h3 className="font-medium ml-1 mb-1 flex items-center">
+          Store Manager Name
+          {isFieldMissing(formData.store_manager_name) && <MissingBadge />}
+        </h3>
         <TextField
           placeholder="Store Manager Name"
           name="store_manager_name"
@@ -301,7 +319,10 @@ const Account = () => {
       </div>
 
       <div className="w-full">
-        <h3 className="font-medium ml-1 mb-1">Store Type</h3>
+        <h3 className="font-medium ml-1 mb-1 flex items-center">
+          Store Type
+          {isFieldMissing(formData.vendor_type) && <MissingBadge />}
+        </h3>
         <select
           className="rounded-md w-full border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
           name="vendor_type"
@@ -315,7 +336,10 @@ const Account = () => {
       </div>
 
       <div>
-        <h3 className="font-medium ml-1 mb-1">GST Number</h3>
+        <h3 className="font-medium ml-1 mb-1 flex items-center">
+          GST Number
+          {isFieldMissing(formData.gst_number) && <MissingBadge />}
+        </h3>
         <TextField
           placeholder="GST Number"
           name="gst_number"
@@ -324,7 +348,10 @@ const Account = () => {
         />
       </div>
       <div>
-        <h3 className="font-medium ml-1 mb-1">FSSAI Number</h3>
+        <h3 className="font-medium ml-1 mb-1 flex items-center">
+          FSSAI Number
+          {isFieldMissing(formData.fssai_number) && <MissingBadge />}
+        </h3>
         <TextField
           placeholder="FSSAI Number"
           name="fssai_number"
@@ -333,7 +360,10 @@ const Account = () => {
         />
       </div>
       <div>
-        <h3 className="font-medium ml-1 mb-1">PAN Number</h3>
+        <h3 className="font-medium ml-1 mb-1 flex items-center">
+          PAN Number
+          {isFieldMissing(formData.pan_number) && <MissingBadge />}
+        </h3>
         <TextField
           placeholder="PAN Number"
           name="pan_number"
@@ -342,7 +372,10 @@ const Account = () => {
         />
       </div>
       <div>
-        <h3 className="font-medium ml-1 mb-1">Phone Number</h3>
+        <h3 className="font-medium ml-1 mb-1 flex items-center">
+          Phone Number
+          {isFieldMissing(formData.phone_number) && <MissingBadge />}
+        </h3>
         <TextField
           placeholder="Phone Number"
           name="phone_number"
@@ -352,7 +385,10 @@ const Account = () => {
       </div>
 
       <div className="w-full">
-        <h3 className="font-medium ml-1 mb-1">Store Address</h3>
+        <h3 className="font-medium ml-1 mb-1 flex items-center">
+          Store Address
+          {isFieldMissing(formData.address) && <MissingBadge />}
+        </h3>
         <div className="relative">
           <input
             type="text"
@@ -416,6 +452,10 @@ const Account = () => {
             "Update"
           )}
         </button>
+      </div>
+      <div className="flex items-center gap-2">
+        <MissingBadge />
+        <p className="text-red-500 text-sm">Please fill all the fields to complete your profile</p>
       </div>
     </div>
   );
