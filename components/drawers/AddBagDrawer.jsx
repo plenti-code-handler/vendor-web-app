@@ -58,30 +58,7 @@ const AddBagDrawer = () => {
 
   const availableCategories = getAvailableCategories(itemTypes);
 
-  const templateItem = useSelector((state) => state.addBag.templateItem);
 
-  // Populate form with template data when available
-  useEffect(() => {
-    if (templateItem && open) {
-      setSelectedBag(templateItem.item_type || "");
-      setDescription(templateItem.description || "");
-      setVegServings(templateItem.veg_servings_start || 0);
-      setNonVegServings(templateItem.non_veg_servings_start || 0);
-      setSelectedAllergens(templateItem.allergens || []);
-      // Reset times to defaults
-      const tenMinutesFromNow = new Date(Date.now() + 10 * 60000);
-      setWindowStartTime(tenMinutesFromNow);
-      setWindowDuration(60);
-      setBestBeforeDuration(60);
-      // Determine if custom description is needed (simple logic: if description is not in available descriptions)
-      // This part depends on how availableDescriptions are loaded, might need a check
-      if (templateItem.description && !availableDescriptions.includes(templateItem.description)) {
-        setShowCustomDescription(true);
-      } else {
-        setShowCustomDescription(false);
-      }
-    }
-  }, [templateItem, open, availableDescriptions]);
 
   // Fetch catalogue data
   useEffect(() => {
