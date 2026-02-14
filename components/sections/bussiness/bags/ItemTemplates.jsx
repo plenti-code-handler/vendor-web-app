@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import AxiosClient from "../../../../AxiosClient";
-import { setOpenDrawer, setTemplateItem } from "../../../../redux/slices/addBagSlice";
+import { setOpenDrawer, setTemplateItem } from "../../../../redux/slices/editBagSlice";
 import { ArrowPathIcon, PlusIcon } from "@heroicons/react/24/outline";
 
 const ItemTemplates = () => {
