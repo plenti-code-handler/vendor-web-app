@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   drawerOpen: false,
   bagToEdit: {},
+  templateItem: null,
 };
 
 const editBagSlice = createSlice({
@@ -14,10 +15,15 @@ const editBagSlice = createSlice({
     },
     setBagToUpdate: (state, action) => {
       state.bagToEdit = action.payload;
+      state.templateItem = null; // Clear template when editing
+    },
+    setTemplateItem: (state, action) => {
+      state.templateItem = action.payload;
+      state.bagToEdit = null; // Clear edit bag when using template
     },
   },
 });
 
-export const { setOpenDrawer, setBagToUpdate, updateBagsList } =
+export const { setOpenDrawer, setBagToUpdate, updateBagsList, setTemplateItem } =
   editBagSlice.actions;
 export default editBagSlice.reducer;
