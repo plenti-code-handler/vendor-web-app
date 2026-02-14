@@ -13,9 +13,9 @@ import { setOpenDrawer } from "../../redux/slices/editBagSlice";
 import { fetchAllBags } from "../../redux/slices/bagsSlice";
 import InfoIcon from '../common/InfoIcon';
 import { selectVendorData } from '../../redux/slices/vendorSlice';
-import { 
-  getRequiredFields, 
-  validateTimeConstraints, 
+import {
+  getRequiredFields,
+  validateTimeConstraints,
   getAvailableCategories
 } from '../../utility/bagDrawerUtils';
 
@@ -39,7 +39,7 @@ const EditBagDrawer = () => {
   const [windowDuration, setWindowDuration] = useState(60); // Add this
   const [bestBeforeDuration, setBestBeforeDuration] = useState(60); // Add this
   const [showCustomDescription, setShowCustomDescription] = useState(false);
-  const { bagToEdit } = useSelector((state) => state.editBag);
+  const { bagToEdit, templateItem } = useSelector((state) => state.editBag);
   const { itemTypes } = useSelector((state) => state.catalogue);
   const vendorData = useSelector(selectVendorData);
   const availableDescriptions = vendorData?.item_descriptions || [];
@@ -55,22 +55,42 @@ const EditBagDrawer = () => {
       setDescription(bagToEdit.description || "");
       setVegServings(bagToEdit.veg_servings_current || 0);
       setNonVegServings(bagToEdit.non_veg_servings_current || 0);
-      
+
       // Calculate durations from existing times
       const startTime = bagToEdit.window_start_time ? new Date(bagToEdit.window_start_time * 1000) : new Date();
       const endTime = bagToEdit.window_end_time ? new Date(bagToEdit.window_end_time * 1000) : new Date();
       const beforeTime = bagToEdit.best_before_time ? new Date(bagToEdit.best_before_time * 1000) : new Date();
-      
+
       setWindowStartTime(startTime);
-      
+
       // Calculate durations in minutes
       const calculatedWindowDuration = Math.round((endTime - startTime) / 60000);
       const calculatedBestBeforeDuration = Math.round((beforeTime - endTime) / 60000);
-      
+
       setWindowDuration(calculatedWindowDuration > 0 ? calculatedWindowDuration : 60);
       setBestBeforeDuration(calculatedBestBeforeDuration > 0 ? calculatedBestBeforeDuration : 60);
+      setShowCustomDescription(false);
+    } else if (templateItem) {
+      // Logic for creating from template
+      setSelectedAllergens(templateItem.allergens || []);
+      setSelectedBag(templateItem.item_type);
+      setDescription(templateItem.description || "");
+      setVegServings(templateItem.veg_servings_start || 0);
+      setNonVegServings(templateItem.non_veg_servings_start || 0);
+
+      // Reset times for new item creation
+      const tenMinutesFromNow = new Date(Date.now() + 10 * 60000);
+      setWindowStartTime(tenMinutesFromNow);
+      setWindowDuration(60);
+      setBestBeforeDuration(60);
+
+      if (templateItem.description && !availableDescriptions.includes(templateItem.description)) {
+        setShowCustomDescription(true);
+      } else {
+        setShowCustomDescription(false);
+      }
     }
-  }, [bagToEdit]);
+  }, [bagToEdit, templateItem, availableDescriptions]);
 
   const availableCategories = getAvailableCategories(itemTypes);
 
@@ -79,7 +99,7 @@ const EditBagDrawer = () => {
     setWindowStartTime(date);
   };
 
-  const handleEditBag = async () => {
+  const handleSubmit = async () => {
     try {
       setLoading(true);
 
@@ -114,24 +134,44 @@ const EditBagDrawer = () => {
         best_before_time: Math.floor(bestBeforeTime.getTime() / 1000),
         veg: isVeg,
         non_veg: isNonVeg,
-        veg_servings_current: vegServings,
-        non_veg_servings_current: nonVegServings,
         allergens: selectedAllergens || [],
       };
 
-      const response = await axiosClient.patch(
-        `/v1/vendor/item/update?item_id=${bagToEdit.id}`,
-        payload
-      );
+      if (bagToEdit?.id) {
+        // Update existing item
+        payload.veg_servings_current = vegServings;
+        payload.non_veg_servings_current = nonVegServings;
 
-      if (response.status === 200) {
-        toast.success("Item updated successfully!");
-        dispatch(setOpenDrawer(false));
-        dispatch(fetchAllBags());
+        const response = await axiosClient.patch(
+          `/v1/vendor/item/update?item_id=${bagToEdit.id}`,
+          payload
+        );
+
+        if (response.status === 200) {
+          toast.success("Item updated successfully!");
+          dispatch(setOpenDrawer(false));
+          dispatch(fetchAllBags());
+        }
+      } else {
+        // Create new item (from template)
+        payload.veg_servings_start = vegServings;
+        payload.non_veg_servings_start = nonVegServings;
+
+        const response = await axiosClient.post(
+          "/v1/vendor/item/create",
+          payload
+        );
+
+        if (response.status === 200) {
+          toast.success("Item created successfully!");
+          dispatch(setOpenDrawer(false));
+          dispatch(fetchAllBags());
+        }
       }
+
     } catch (error) {
-      toast.error("Failed to update item!");
-      console.error("Error updating item: ", error);
+      toast.error(bagToEdit?.id ? "Failed to update item!" : "Failed to create item!");
+      console.error("Error submitting item: ", error);
     } finally {
       setLoading(false);
     }
@@ -158,9 +198,9 @@ const EditBagDrawer = () => {
             >
               <div className="flex h-full flex-col overflow-y-scroll bg-gradient-to-br from-gray-50 to-white py-6 shadow-2xl">
                 <div className="relative flex-1 px-6">
-                  <DrawerHeader 
+                  <DrawerHeader
                     title="Edit Item"
-                    subtitle="Update your food item details"
+                    subtitle={bagToEdit?.id ? "Update your food item details" : "Create a new item based on this template"}
                     onClose={handleClose}
                   />
 
@@ -178,12 +218,12 @@ const EditBagDrawer = () => {
                     </div>
                   </div>
 
-                  <AllergensSection 
+                  <AllergensSection
                     selectedAllergens={selectedAllergens}
                     setSelectedAllergens={setSelectedAllergens}
                   />
 
-                  <TimingSection 
+                  <TimingSection
                     windowStartTime={windowStartTime}
                     windowEndTime={windowEndTime}
                     bestBeforeTime={bestBeforeTime}
@@ -194,7 +234,7 @@ const EditBagDrawer = () => {
                     setBestBeforeDuration={setBestBeforeDuration}
                   />
 
-                  <DescriptionSection 
+                  <DescriptionSection
                     description={description}
                     setDescription={setDescription}
                     showCustomDescription={showCustomDescription}
@@ -202,20 +242,20 @@ const EditBagDrawer = () => {
                     availableDescriptions={availableDescriptions}
                   />
 
-                  <ServingsSection 
+                  <ServingsSection
                     vegServings={vegServings}
                     setVegServings={setVegServings}
                     nonVegServings={nonVegServings}
                     setNonVegServings={setNonVegServings}
-                    isEdit={true}
+                    isEdit={!!bagToEdit?.id}
                   />
 
-                  <SubmitButton 
+                  <SubmitButton
                     loading={loading}
                     disabled={false}
-                    onClick={handleEditBag}
-                    loadingText="Updating Item..."
-                    buttonText="Update Item"
+                    onClick={handleSubmit}
+                    loadingText={bagToEdit?.id ? "Updating Item..." : "Creating Item..."}
+                    buttonText={bagToEdit?.id ? "Update Item" : "Create Item"}
                     availableCategories={availableCategories}
                   />
                 </div>
