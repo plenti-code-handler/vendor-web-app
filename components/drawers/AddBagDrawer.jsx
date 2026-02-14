@@ -14,9 +14,9 @@ import { fetchAllBags } from "../../redux/slices/bagsSlice";
 import { fetchCatalogue } from "../../redux/slices/catalogueSlice";
 import InfoIcon from '../common/InfoIcon';
 import { selectVendorData } from '../../redux/slices/vendorSlice';
-import { 
-  getRequiredFields, 
-  validateTimeConstraints, 
+import {
+  getRequiredFields,
+  validateTimeConstraints,
   handleStartTimeChange as handleStartTimeChangeUtil,
   handleEndTimeChange as handleEndTimeChangeUtil,
   handleBestBeforeTimeChange as handleBestBeforeTimeChangeUtil,
@@ -45,7 +45,8 @@ const AddBagDrawer = () => {
   const [bestBeforeDuration, setBestBeforeDuration] = useState(60); // Duration in minutes after window ends
   const [showCustomDescription, setShowCustomDescription] = useState(false);
   const open = useSelector((state) => state.addBag.drawerOpen);
-  
+
+
   // Calculate end times
   const windowEndTime = new Date(windowStartTime.getTime() + windowDuration * 60000);
   const bestBeforeTime = new Date(windowEndTime.getTime() + bestBeforeDuration * 60000);
@@ -56,6 +57,31 @@ const AddBagDrawer = () => {
   const availableDescriptions = vendorData?.item_descriptions || [];
 
   const availableCategories = getAvailableCategories(itemTypes);
+
+  const templateItem = useSelector((state) => state.addBag.templateItem);
+
+  // Populate form with template data when available
+  useEffect(() => {
+    if (templateItem && open) {
+      setSelectedBag(templateItem.item_type || "");
+      setDescription(templateItem.description || "");
+      setVegServings(templateItem.veg_servings_start || 0);
+      setNonVegServings(templateItem.non_veg_servings_start || 0);
+      setSelectedAllergens(templateItem.allergens || []);
+      // Reset times to defaults
+      const tenMinutesFromNow = new Date(Date.now() + 10 * 60000);
+      setWindowStartTime(tenMinutesFromNow);
+      setWindowDuration(60);
+      setBestBeforeDuration(60);
+      // Determine if custom description is needed (simple logic: if description is not in available descriptions)
+      // This part depends on how availableDescriptions are loaded, might need a check
+      if (templateItem.description && !availableDescriptions.includes(templateItem.description)) {
+        setShowCustomDescription(true);
+      } else {
+        setShowCustomDescription(false);
+      }
+    }
+  }, [templateItem, open, availableDescriptions]);
 
   // Fetch catalogue data
   useEffect(() => {
@@ -193,7 +219,7 @@ const AddBagDrawer = () => {
             >
               <div className="flex h-full flex-col overflow-y-scroll bg-gradient-to-br from-gray-50 to-white py-6 shadow-2xl">
                 <div className="relative flex-1 px-6">
-                  <DrawerHeader 
+                  <DrawerHeader
                     title="Add New Item"
                     subtitle="Create a new food item for your customers"
                     onClose={handleClose}
@@ -213,12 +239,12 @@ const AddBagDrawer = () => {
                     </div>
                   </div>
 
-                  <AllergensSection 
+                  <AllergensSection
                     selectedAllergens={selectedAllergens}
                     setSelectedAllergens={setSelectedAllergens}
                   />
 
-                  <TimingSection 
+                  <TimingSection
                     windowStartTime={windowStartTime}
                     windowEndTime={windowEndTime}
                     bestBeforeTime={bestBeforeTime}
@@ -229,7 +255,7 @@ const AddBagDrawer = () => {
                     setBestBeforeDuration={setBestBeforeDuration}
                   />
 
-                  <DescriptionSection 
+                  <DescriptionSection
                     description={description}
                     setDescription={setDescription}
                     showCustomDescription={showCustomDescription}
@@ -237,7 +263,7 @@ const AddBagDrawer = () => {
                     availableDescriptions={availableDescriptions}
                   />
 
-                  <ServingsSection 
+                  <ServingsSection
                     vegServings={vegServings}
                     setVegServings={setVegServings}
                     nonVegServings={nonVegServings}
@@ -245,7 +271,7 @@ const AddBagDrawer = () => {
                     isEdit={false}
                   />
 
-                  <SubmitButton 
+                  <SubmitButton
                     loading={loading}
                     disabled={false}
                     onClick={handleSubmitBag}
