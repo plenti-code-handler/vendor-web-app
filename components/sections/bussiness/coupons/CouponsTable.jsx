@@ -9,7 +9,7 @@ import LoadMoreButton from "../../../buttons/LoadMoreButton";
 import TableUpper from "./TableUpper";
 import Loader from "../../../loader/loader";
 import CouponModal from "./CouponModal";
-import { formatTimestamp } from "../../../../utility/FormateTime";
+import { formatTime } from "../../../../utility/FormateTime";
 import {
   setCouponToUpdate,
   setOpenDrawer,
@@ -19,11 +19,11 @@ import AddCouponDrawer from "../../../../components/drawers/AddCouponDrawer";
 
 const CouponsTable = () => {
   const dispatch = useDispatch();
-  const { 
-    activeCoupons = [], 
-    inactiveCoupons = [], 
-    activeLoading, 
-    inactiveLoading 
+  const {
+    activeCoupons = [],
+    inactiveCoupons = [],
+    activeLoading,
+    inactiveLoading
   } = useSelector((state) => state.coupons);
 
   const [visibleItems, setVisibleItems] = useState(5);
@@ -184,11 +184,11 @@ const CouponsTable = () => {
                     </td>
 
                     <td className="px-6 py-4 text-center text-sm text-gray-900">
-                      {formatTimestamp(item.valid_from)}
+                      {formatTime(item.valid_from)}
                     </td>
 
                     <td className="px-6 py-4 text-center text-sm text-gray-900">
-                      {formatTimestamp(item.valid_until)}
+                      {formatTime(item.valid_until)}
                     </td>
 
                     <td className="px-6 py-4 text-center">
@@ -202,14 +202,14 @@ const CouponsTable = () => {
 
                     <td className="px-6 py-4 text-center">
                       <div className="flex items-center justify-center space-x-2">
-                        <button 
+                        <button
                           onClick={() => openModal(item)}
                           className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors duration-200"
                           title="View Details"
                         >
                           <EyeIcon className="h-4 w-4" />
                         </button>
-                        <button 
+                        <button
                           onClick={() => handleEdit(item)}
                           className="p-2 text-blue-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors duration-200"
                           title="Edit Coupon"

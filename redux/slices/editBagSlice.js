@@ -12,6 +12,10 @@ const editBagSlice = createSlice({
   reducers: {
     setOpenDrawer: (state, action) => {
       state.drawerOpen = action.payload;
+      if (!action.payload) {
+        state.bagToEdit = {};
+        state.templateItem = null;
+      }
     },
     setBagToUpdate: (state, action) => {
       state.bagToEdit = action.payload;
@@ -19,7 +23,7 @@ const editBagSlice = createSlice({
     },
     setTemplateItem: (state, action) => {
       state.templateItem = action.payload;
-      state.bagToEdit = null; // Clear edit bag when using template
+      state.bagToEdit = {}; // Clear edit bag when using template
     },
   },
 });
