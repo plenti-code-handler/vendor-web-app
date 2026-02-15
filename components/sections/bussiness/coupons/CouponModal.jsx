@@ -1,7 +1,7 @@
 // vendor-web-app/components/sections/bussiness/coupons/CouponModal.jsx
 import React from "react";
 import { XMarkIcon, CalendarIcon, TagIcon, CurrencyDollarIcon, ClockIcon } from "@heroicons/react/24/outline";
-import { formatTime } from "../../../../utility/FormateTime";
+import { formatTime } from "../../../../utility/FormatTime";
 
 const CouponModal = ({ isOpen, onClose, item }) => {
   if (!isOpen || !item) return null;

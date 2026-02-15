@@ -1,4 +1,4 @@
-// vendor-web-app/utility/FormateTime.js
+// vendor-web-app/utility/FormatTime.js
 export const formatTime = (time) => {
   if (!time) return "N/A";
   const date = new Date(time * 1000);

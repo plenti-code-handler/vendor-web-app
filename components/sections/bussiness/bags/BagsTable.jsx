@@ -9,7 +9,7 @@ import LoadMoreButton from "../../../buttons/LoadMoreButton";
 import TableUpper from "./TableUpper";
 import Loader from "../../../loader/loader";
 import Modal from "../../../Modal";
-import { formatTime } from "../../../../utility/FormateTime";
+import { formatTime } from "../../../../utility/FormatTime";
 import {
   setBagToUpdate,
   setOpenDrawer,
@@ -49,12 +49,12 @@ const BagsTable = () => {
 
   const filteredItems = selectedFilter
     ? bags.filter((item) => {
-        const formattedItemType = item.item_type
-          .replace(/_/g, " ")
-          .toLowerCase();
-        const formattedFilter = selectedFilter.toLowerCase();
-        return formattedItemType.includes(formattedFilter);
-      })
+      const formattedItemType = item.item_type
+        .replace(/_/g, " ")
+        .toLowerCase();
+      const formattedFilter = selectedFilter.toLowerCase();
+      return formattedItemType.includes(formattedFilter);
+    })
     : bags;
 
   const handleLoadMore = () => {
@@ -93,11 +93,11 @@ const BagsTable = () => {
   const getServingsDisplay = (item) => {
     const vegServings = item.veg_servings_current || 0;
     const nonVegServings = item.non_veg_servings_current || 0;
-    
+
     return {
       veg: vegServings,
       nonVeg: nonVegServings,
-      hasVeg: vegServings > 0 ,
+      hasVeg: vegServings > 0,
       hasNonVeg: nonVegServings > 0
     };
   };
@@ -147,7 +147,7 @@ const BagsTable = () => {
             ) : (
               filteredItems.slice(0, visibleItems).map((item) => {
                 const servings = getServingsDisplay(item);
-                
+
                 return (
                   <tr
                     key={item.id}
@@ -174,11 +174,10 @@ const BagsTable = () => {
                     </td>
                     <td className="py-2 px-2 w-1/6">
                       {servings.hasVeg ? (
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          servings.veg > 0 
-                            ? 'bg-green-100 text-green-800' 
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${servings.veg > 0
+                            ? 'bg-green-100 text-green-800'
                             : 'bg-red-100 text-red-800'
-                        }`}>
+                          }`}>
                           {servings.veg}
                         </span>
                       ) : (
@@ -187,11 +186,10 @@ const BagsTable = () => {
                     </td>
                     <td className="py-2 px-2 w-1/6">
                       {servings.hasNonVeg ? (
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          servings.nonVeg > 0 
-                            ? 'bg-green-100 text-green-800' 
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${servings.nonVeg > 0
+                            ? 'bg-green-100 text-green-800'
                             : 'bg-red-100 text-red-800'
-                        }`}>
+                          }`}>
                           {servings.nonVeg}
                         </span>
                       ) : (

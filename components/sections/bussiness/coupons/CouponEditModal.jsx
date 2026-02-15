@@ -1,6 +1,6 @@
 import React from "react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import { formatTime } from "../../../../utility/FormateTime";
+import { formatTime } from "../../../../utility/FormatTime";
 
 const Modal = ({ isOpen, onClose, item }) => {
   if (!isOpen || !item) return null;
@@ -98,11 +98,10 @@ const Modal = ({ isOpen, onClose, item }) => {
           <div>
             <label className="text-sm font-medium text-gray-500">Status</label>
             <span
-              className={`px-2 py-1 rounded-full text-xs font-medium ${
-                item.is_active
+              className={`px-2 py-1 rounded-full text-xs font-medium ${item.is_active
                   ? "bg-green-100 text-green-800"
                   : "bg-red-100 text-red-800"
-              }`}
+                }`}
             >
               {item.is_active ? "Active" : "Inactive"}
             </span>
