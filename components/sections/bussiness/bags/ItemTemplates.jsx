@@ -3,7 +3,10 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import AxiosClient from "../../../../AxiosClient";
 import { setOpenDrawer, setTemplateItem } from "../../../../redux/slices/editBagSlice";
-import { ArrowPathIcon, PlusIcon } from "@heroicons/react/24/outline";
+import { ArrowPathIcon, PlusIcon, ClockIcon, DocumentTextIcon, CursorArrowRaysIcon } from "@heroicons/react/24/outline";
+import BagSizeTag from "../../../common/BagSizeTag";
+import { getRecency } from "../../../../utility/FormateTime";
+import DietIcon from "../../../common/DietIcon";
 
 const ItemTemplates = () => {
     const dispatch = useDispatch();
@@ -35,6 +38,18 @@ const ItemTemplates = () => {
         dispatch(setOpenDrawer(true));
     };
 
+    const formatDuration = (start, end) => {
+        if (!start || !end) return "N/A";
+        const diffInMinutes = Math.floor((end - start) / 60);
+        const hours = Math.floor(diffInMinutes / 60);
+        const minutes = diffInMinutes % 60;
+
+        let durationStr = "";
+        if (hours > 0) durationStr += `${hours}h `;
+        if (minutes > 0) durationStr += `${minutes}m`;
+        return durationStr.trim() || "0m";
+    };
+
     if (loading) {
         return (
             <div className="w-full py-8 text-center text-gray-500">
@@ -52,8 +67,11 @@ const ItemTemplates = () => {
         <div className="m-4">
             <div className="flex items-center justify-between mb-4">
                 <div>
-                    <h2 className="text-lg font-semibold text-gray-900">Quick Templates</h2>
-                    <p className="text-sm text-gray-500">Recreate items from your history</p>
+                    <div className="flex items-center gap-2">
+                        <CursorArrowRaysIcon className="w-5 h-5 text-[#5f22d9]" />
+                        <h2 className="text-lg font-semibold text-gray-900">Quick Templates</h2>
+                    </div>
+                    <p className="text-sm text-gray-500">Relist your previous bags in a single click</p>
                 </div>
             </div>
 
@@ -67,41 +85,52 @@ const ItemTemplates = () => {
                         {/* Header: Date & Status */}
                         <div className="flex justify-between items-center mb-3">
                             <span className="text-xs font-semibold tracking-wide text-gray-800 uppercase">
-                                {new Date(item.created_at * 1000).toLocaleDateString('en-IN', {
-                                    hour: 'numeric',
-                                    minute: 'numeric',
-                                    day: 'numeric',
-                                    month: 'short',
-                                    year: 'numeric',
-                                    timeZone: 'Asia/Kolkata'
-                                })}
+                                {getRecency(item.created_at)}
                             </span>
-                            <div className="w-6 h-6 rounded-full bg-gray-50 group-hover:bg-[#5f22d9] flex items-center justify-center transition-colors duration-300">
-                                <PlusIcon className="w-3.5 h-3.5 text-gray-400 group-hover:text-white" />
+                            <div className="rounded-full bg-[#5f22d9] flex flex-row items-center justify-start gap-2 transition-colors duration-300 p-1 px-2">
+                                <p className="text-xs font-semibold text-white">Add</p>
+                                <PlusIcon className="w-3.5 h-3.5 text-white" />
                             </div>
                         </div>
 
-                        {/* Body: Type & Description */}
-                        <div className="mb-4 flex-grow">
-                            <h3 className="text-sm font-bold text-gray-900 mb-1 capitalize truncate">
-                                {item.item_type?.toLowerCase().replace(/_/g, ' ')}
-                            </h3>
-                            <p className="text-xs text-gray-500 line-clamp-2 leading-relaxed">
-                                {item.description || "No description available"}
-                            </p>
+                        {/* Body: Type, Duration & Description */}
+                        <div className="mb-4 flex-grow space-y-3">
+                            {/* Item Type */}
+                            <div>
+                                <BagSizeTag
+                                    bagSize={item.item_type?.replace(/_/g, ' ')}
+                                    className="uppercase tracking-wide text-[13px]"
+                                />
+                            </div>
+
+                            {/* Duration */}
+                            <div className="flex items-center gap-2 text-gray-600">
+                                <ClockIcon className="w-4 h-4 flex-shrink-0 text-gray-400" />
+                                <span className="text-xs font-medium">
+                                    Duration: {formatDuration(item.window_start_time, item.window_end_time)}
+                                </span>
+                            </div>
+
+                            {/* Description */}
+                            <div className="flex items-start gap-2 bg-gray-100 rounded-md p-1">
+                                <DocumentTextIcon className="w-4 h-4 flex-shrink-0 text-gray-800 mt-0.5" />
+                                <p className="text-xs line-clamp-2 leading-relaxed text-gray-800">
+                                    {item.description || "No description available"}
+                                </p>
+                            </div>
                         </div>
 
                         {/* Footer: Servings Pills */}
                         <div className="pt-3 border-t border-gray-50 flex gap-2">
                             {item.veg_servings_start > 0 && (
-                                <div className="flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg bg-green-50 border border-green-100">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
+                                <div className="flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg border">
+                                    <DietIcon diet="veg" size="sm" />
                                     <span className="text-[10px] font-semibold text-green-700">{item.veg_servings_start} Veg</span>
                                 </div>
                             )}
                             {item.non_veg_servings_start > 0 && (
-                                <div className="flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg bg-red-50 border border-red-100">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-red-500" />
+                                <div className="flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg border">
+                                    <DietIcon diet="non_veg" size="sm" />
                                     <span className="text-[10px] font-semibold text-red-700">{item.non_veg_servings_start} Non-Veg</span>
                                 </div>
                             )}
