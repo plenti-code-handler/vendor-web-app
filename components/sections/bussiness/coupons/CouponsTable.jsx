@@ -9,7 +9,7 @@ import LoadMoreButton from "../../../buttons/LoadMoreButton";
 import TableUpper from "./TableUpper";
 import Loader from "../../../loader/loader";
 import CouponModal from "./CouponModal";
-import { formatTime } from "../../../../utility/FormateTime";
+import { formatTime } from "../../../../utility/FormatTime";
 import {
   setCouponToUpdate,
   setOpenDrawer,

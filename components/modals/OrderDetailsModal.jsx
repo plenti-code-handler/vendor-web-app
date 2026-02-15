@@ -1,6 +1,6 @@
 import React from "react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import { formatTime } from "../../utility/FormateTime";
+import { formatTime } from "../../utility/FormatTime";
 import BagSizeTag from "../common/BagSizeTag";
 import DietIcon from "../common/DietIcon";
 import { ITEM_TYPE_DISPLAY_NAMES } from "../../constants/itemTypes";
@@ -25,7 +25,7 @@ const OrderDetailsModal = ({ isOpen, onClose, orderDetails }) => {
             <XMarkIcon className="h-6 w-6 text-gray-400 hover:text-gray-900" />
           </button>
         </div>
-        
+
         {/* Scrollable Items */}
         <div className="overflow-y-auto max-h-[70vh] px-6 py-4 space-y-6">
           {orderDetails.items.map((item, index) => (
@@ -77,7 +77,7 @@ const OrderDetailsModal = ({ isOpen, onClose, orderDetails }) => {
                   <span className="inline-block px-3 py-1 rounded-lg text-gray-900 font-medium" style={{
                     background: 'linear-gradient(135deg, #EFE5FF 0%, #DAC4FF 100%)'
                   }}>
-                    {item.best_before_time 
+                    {item.best_before_time
                       ? formatTime(item.best_before_time)
                       : formatTime(item.window_end_time + 3600) // Add 1 hour (3600 seconds)
                     }
@@ -95,7 +95,7 @@ const OrderDetailsModal = ({ isOpen, onClose, orderDetails }) => {
             </div>
           ))}
         </div>
-        
+
         {/* Transaction Breakdown */}
         {orderData && (
           <div className="px-6 py-4 border-t border-b bg-gray-50">
@@ -124,7 +124,7 @@ const OrderDetailsModal = ({ isOpen, onClose, orderDetails }) => {
             </div>
           </div>
         )}
-        
+
         {/* Footer */}
         <div className="flex justify-end px-6 py-4 border-t bg-gray-50">
           <button

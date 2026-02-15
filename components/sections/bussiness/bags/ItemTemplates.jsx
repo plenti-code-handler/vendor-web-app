@@ -5,7 +5,7 @@ import AxiosClient from "../../../../AxiosClient";
 import { setOpenDrawer, setTemplateItem } from "../../../../redux/slices/editBagSlice";
 import { ArrowPathIcon, PlusIcon, ClockIcon, DocumentTextIcon, CursorArrowRaysIcon } from "@heroicons/react/24/outline";
 import BagSizeTag from "../../../common/BagSizeTag";
-import { getRecency } from "../../../../utility/FormateTime";
+import { getRecency } from "../../../../utility/FormatTime";
 import DietIcon from "../../../common/DietIcon";
 
 const ItemTemplates = () => {

@@ -1,6 +1,6 @@
 import React from "react";
 import { XMarkIcon, ClockIcon, TagIcon, ExclamationTriangleIcon } from "@heroicons/react/24/outline";
-import { formatDateTime } from "../utility/FormateTime";
+import { formatDateTime } from "../utility/FormatTime";
 import { useSelector } from "react-redux";
 import { ITEM_TYPE_ICONS, ITEM_TYPE_DISPLAY_NAMES } from "../constants/itemTypes";
 
@@ -45,7 +45,7 @@ const Modal = ({ isOpen, onClose, item }) => {
               <p className="text-gray-500 text-sm">Item Details</p>
             </div>
           </div>
-          <button 
+          <button
             onClick={onClose}
             className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-lg transition-colors duration-200"
           >
@@ -77,7 +77,7 @@ const Modal = ({ isOpen, onClose, item }) => {
                 {item.veg_servings_current || 0}
               </p>
             </div>
-            
+
             <div className="bg-white border border-gray-200 rounded-lg p-4 hover:border-[#5F22D9]/30 transition-colors duration-200">
               <div className="flex items-center gap-2 mb-2">
                 <div className="w-2 h-2 bg-red-500 rounded-full"></div>
