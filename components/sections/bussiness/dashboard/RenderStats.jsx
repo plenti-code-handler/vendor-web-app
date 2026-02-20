@@ -26,22 +26,13 @@ const RenderStats = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  return isSmallDevice ? (
-    <>
-      <div className="flex-1 lg:flex-[0_0_30%] px-2 mb-2">
-        {isSmallDevice ? <StatSlider /> : <CardsRow />}
+  return (
+    <div className="flex flex-col w-full gap-4">
+      <div className="w-full px-2">
+        <CardsRow />
       </div>
-      <div className="flex-1 lg:flex-[0_0_70%] px-2">
+      <div className="w-full px-2">
         <RevenueChart />
-      </div>
-    </>
-  ) : (
-    <div className="flex w-[100%] gap-[2.8%]">
-      <div className="flex-1 lg:flex-[0_0_70%] lg:flex-row">
-        <RevenueChart />
-      </div>
-      <div className="flex-1 lg:flex-[0_0_30%] lg:flex-row">
-        {isSmallDevice ? <StatSlider /> : <CardsRow />}
       </div>
     </div>
   );
