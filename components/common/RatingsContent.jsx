@@ -38,7 +38,7 @@ const RatingsContent = ({ reviewsSectionTitle = "All reviews", pageSize = 10 }) 
         {summary && (
           <>
             <div className="text-sm text-gray-600 mt-3">
-              Last week avg: {summary.lagging_rating != null ? Number(summary.lagging_rating).toFixed(1) : "—"}
+              Last week avg: {summary.lagging_rating != null ? Number(summary.lagging_rating).toFixed(2) : "—"}
             </div>
             {summary.tags?.length > 0 && (
               <div className="mt-2 flex flex-wrap gap-1">

@@ -27,8 +27,8 @@ const RatingsCard = ({ ratingSummary, onViewMore }) => {
   const avg = Number(ratingSummary.avg_rating);
   const lagging = ratingSummary.lagging_rating != null ? Number(ratingSummary.lagging_rating) : null;
   const rawDiff = lagging != null ? avg - lagging : null;
-  const noChange = rawDiff !== null && Math.abs(rawDiff) < 0.05;
-  const diff = rawDiff != null ? Math.abs(rawDiff).toFixed(1) : null;
+  const noChange = rawDiff !== null && Math.abs(rawDiff) == 0;
+  const diff = rawDiff != null ? Math.abs(rawDiff).toFixed(2) : null;
   const trendIcon = !noChange && rawDiff != null && rawDiff > 0 ? <ArrowTrendingUpIcon className="w-5 h-5 text-green-600" /> : !noChange && rawDiff != null && rawDiff < 0 ? <ArrowTrendingDownIcon className="w-5 h-5 text-red-600" /> : null;
   const diffValue = !noChange && diff != null ? rawDiff > 0 ? <span className="text-green-600 font-semibold text-lg">{diff}</span> : <span className="text-red-500 font-semibold text-lg">{diff}</span> : null;
   const numReviews = Number(ratingSummary.num_reviews ?? 0);
@@ -43,7 +43,7 @@ const RatingsCard = ({ ratingSummary, onViewMore }) => {
       <div className="flex items-center justify-start gap-2">
         <StarIcon className="w-6 h-6 text-amber-500 fill-amber-500 shrink-0" />
         <span className="text-2xl lg:text-[25px] font-semibold leading-none text-black">
-          {avg.toFixed(1)}
+          {avg.toFixed(2)}
         </span>
       </div>
       <p className="text-sm text-gray-400 whitespace-nowrap">
