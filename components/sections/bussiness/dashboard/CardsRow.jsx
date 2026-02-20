@@ -24,7 +24,7 @@ const CardsRow = () => {
       const storedOrders = localStorage.getItem("Totalorders");
       if (storedBags) setTotalBags(parseInt(storedBags, 10));
       if (storedOrders) setTotalOrders(parseInt(storedOrders, 10));
-    }, 2000);
+    }, 500);
     return () => clearTimeout(t);
   }, []);
 
