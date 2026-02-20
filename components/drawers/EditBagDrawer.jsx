@@ -49,6 +49,7 @@ const EditBagDrawer = () => {
   const bestBeforeTime = new Date(windowEndTime.getTime() + bestBeforeDuration * 60000);
 
   useEffect(() => {
+    const descriptions = vendorData?.item_descriptions || [];
     if (bagToEdit) {
       setSelectedAllergens(bagToEdit.allergens || []);
       setSelectedBag(bagToEdit.item_type);
@@ -84,13 +85,13 @@ const EditBagDrawer = () => {
       setWindowDuration(60);
       setBestBeforeDuration(60);
 
-      if (templateItem.description && !availableDescriptions.includes(templateItem.description)) {
+      if (templateItem.description && !descriptions.includes(templateItem.description)) {
         setShowCustomDescription(true);
       } else {
         setShowCustomDescription(false);
       }
     }
-  }, [bagToEdit, templateItem, availableDescriptions]);
+  }, [bagToEdit, templateItem]);
 
   const availableCategories = getAvailableCategories(itemTypes);
 
