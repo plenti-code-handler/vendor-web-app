@@ -1,88 +1,65 @@
 "use client";
 
 import BackButton from "../../../components/sections/auth/BackButton";
-import React, { useState, useRef, useEffect } from "react";
-import HeaderStyle from "../../../components/sections/auth/HeaderStyle";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { baseUrl } from "../../../utility/BaseURL";
 import axiosClient from "../../../AxiosClient";
-import Link from "next/link";
 import AuthLeftContent from "../../../components/layouts/AuthLeftContent";
+import { Input } from "@headlessui/react";
+
+const LENGTH = 6;
 
 const VerifyAccountForm = () => {
-  const [otp, setOtp] = useState(new Array(6).fill(""));
+  const [otpValue, setOtpValue] = useState("");
   const [isResendDisabled, setIsResendDisabled] = useState(true);
   const [loading, setLoading] = useState(false);
   const [timeLeft, setTimeLeft] = useState(60);
-  const inputRefs = useRef([]);
+  const inputId = "otp-input";
 
   const router = useRouter();
 
-  // Handle back to login
   const handleBackToLogin = () => {
-    // Clear all auth-related data
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     localStorage.removeItem("password");
     localStorage.removeItem("email");
-    
-    // Redirect to login
     router.push("/");
   };
 
-  // Handle countdown for resend button
   useEffect(() => {
     if (timeLeft > 0) {
-      const timerId = setInterval(() => {
-        setTimeLeft((prev) => prev - 1);
-      }, 1000);
+      const timerId = setInterval(() => setTimeLeft((prev) => prev - 1), 1000);
       return () => clearInterval(timerId);
-    } else {
-      setIsResendDisabled(false); // Enable the resend button when time is up
     }
+    setIsResendDisabled(false);
   }, [timeLeft]);
 
-  const handleChange = (e, index) => {
-    const { value } = e.target;
-    if (/^\d*$/.test(value)) {
-      const newOtp = [...otp];
-      newOtp[index] = value.slice(-1);
-      setOtp(newOtp);
-      if (value && index < otp.length - 1) {
-        inputRefs.current[index + 1].focus();
-      }
-    }
-  };
-
-  const handleKeyDown = (e, index) => {
-    if (e.key === "Backspace" && !otp[index] && index > 0) {
-      inputRefs.current[index - 1].focus();
-    }
+  const handleOtpChange = (e) => {
+    const v = e.target.value.replace(/\D/g, "").slice(0, LENGTH);
+    setOtpValue(v);
   };
 
   const handleVerify = async () => {
-    if (otp.includes("")) {
-      toast.error("Please enter all 6 OTP digits");
+    if (otpValue.length !== LENGTH) {
+      toast.error("Please enter all 6 digits");
       return;
     }
 
     setLoading(true);
     const email = localStorage.getItem("email");
     if (!email) {
-      alert("Email not found. Please try again.");
+      toast.error("Email not found. Please try again.");
       setLoading(false);
       return;
     }
 
-    const otpCode = otp.join("");
+    const otpCode = otpValue;
 
     try {
       const response = await axiosClient.post(
         `/v1/vendor/me/email/verify-otp?email=${email}&otp=${otpCode}`
       );
-
-      console.log(response);
 
       if (response.status === 200) {
         toast.success("OTP Verified Successfully");
@@ -95,7 +72,6 @@ const VerifyAccountForm = () => {
         );
 
         if (registerResponse.status === 200) {
-          console.log(registerResponse.data.access_token);
           localStorage.setItem("token", registerResponse.data.access_token);
           router.push("/complete_profile");
         } else {
@@ -138,7 +114,6 @@ const VerifyAccountForm = () => {
         toast.error("Failed to send OTP. Please try again.");
       }
     } catch (error) {
-      console.log(error);
       toast.error("Failed to resend OTP. Please try again.");
     } finally {
       setLoading(false);
@@ -166,22 +141,41 @@ const VerifyAccountForm = () => {
 
           <div className="flex flex-col flex-grow items-center justify-center px-5 pb-10">
             <p className="text-black font-semibold text-[28px]">Verify Account</p>
-            <p className="text-base">Enter the code to verify your account</p>
+            <p className="text-neutral-500 text-sm mt-1">Enter the code sent to your email</p>
 
-            <div className="flex items-center justify-center gap-2 xl:gap-3 mt-4 w-[240px] md:w-[300px]">
-              {otp.map((value, index) => (
-                <input
-                  key={index}
-                  ref={(el) => (inputRefs.current[index] = el)}
-                  type="text"
-                  value={value}
-                  onChange={(e) => handleChange(e, index)}
-                  onKeyDown={(e) => handleKeyDown(e, index)}
-                  maxLength="1"
-                  className="rounded-[10px] border text-center font-semibold text-2xl w-[30px] h-[30px] md:w-[55px] md:h-[55px]"
-                />
-              ))}
-            </div>
+            {/* Headless UI OTP input: single field, 6-cell display */}
+            <label
+              htmlFor={inputId}
+              className="flex gap-1.5 sm:gap-2 mt-6 cursor-text select-none"
+            >
+              <Input
+                id={inputId}
+                type="text"
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                maxLength={LENGTH}
+                value={otpValue}
+                onChange={handleOtpChange}
+                className="sr-only"
+                aria-label="One-time code"
+              />
+              {Array.from({ length: LENGTH }).map((_, i) => {
+                const isActive = i === Math.min(otpValue.length, LENGTH - 1);
+                return (
+                  <div
+                    key={i}
+                    className={`
+                      w-10 h-12 sm:w-12 sm:h-14 rounded-lg border flex items-center justify-center
+                      text-lg sm:text-xl font-medium tabular-nums transition-colors
+                      ${isActive ? "border-[#5F22D9] ring-2 ring-[#5F22D9]/20 bg-white" : "border-gray-200 bg-gray-50/50"}
+                      ${otpValue[i] ? "text-gray-900" : "text-transparent"}
+                    `}
+                  >
+                    {otpValue[i] || ""}
+                  </div>
+                );
+              })}
+            </label>
             <div className="flex items-center justify-center mt-5">
               <p className="text-[#494949] text-[12px] font-medium">
                 Didn't Receive Code?{" "}
