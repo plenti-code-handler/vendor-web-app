@@ -133,6 +133,12 @@ const Pricing = () => {
         </div>
       )}
 
+      {pricing.length === 0 ? (
+        <div className="rounded-xl border border-gray-200 bg-gray-50 p-8 text-center">
+          <p className="text-gray-600 font-medium">There is no pricing available.</p>
+          <p className="text-sm text-gray-500 mt-1">Add pricing or request an update when approved.</p>
+        </div>
+      ) : (
       <div className="space-y-6">
         {ALL_ITEM_TYPES.map((type) => {
           const entries = getEntriesForItemType(localPricing, type);
@@ -229,17 +235,18 @@ const Pricing = () => {
             </div>
           );
         })}
+        <PrimaryButton
+          onClick={handleRequestUpdate}
+          disabled={isSubmitting}
+        >
+          {isSubmitting && <ArrowPathIcon className="w-4 h-4 animate-spin" />}
+          {isSubmitting ? 'Submitting...' : 'Request Pricing Update'}
+        </PrimaryButton>
+
+        <PricingInfo />
       </div>
+      )}
 
-      <PrimaryButton
-        onClick={handleRequestUpdate}
-        disabled={isSubmitting}
-      >
-        {isSubmitting && <ArrowPathIcon className="w-4 h-4 animate-spin" />}
-        {isSubmitting ? 'Submitting...' : 'Request Pricing Update'}
-      </PrimaryButton>
-
-      <PricingInfo />
 
       <AddPricingModal
         open={pricingModalOpen}

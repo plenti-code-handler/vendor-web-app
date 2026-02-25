@@ -57,12 +57,13 @@ axiosClient.interceptors.response.use(
       "Not authenticated"
     ];
     
-    // Check if this is an authentication error
+    // Check if this is an authentication error (detail can be string or array/object)
+    const detailStr = typeof errorDetail === 'string' ? errorDetail : JSON.stringify(errorDetail || '');
     const isAuthError = 
       error.response?.status === 401 || // Unauthorized
       error.response?.status === 403 || // Forbidden
       (errorDetail && authErrorMessages.some(msg => 
-        errorDetail.toLowerCase().includes(msg.toLowerCase())
+        detailStr.toLowerCase().includes(msg.toLowerCase())
       ));
     
     if (isAuthError) {

@@ -90,25 +90,19 @@ const PricingForm = ({ onSuccess, showBackButton = false }) => {
         }
       });
 
-      // Get payout tier based on the highest ASP
+      // Get payout tier and threshold based on the highest ASP
       const payoutTier = getPayoutTier(highestASP);
+      const payoutThreshold = getPayoutThreshold(calculatePrices(highestASP, 'MEAL')?.small.price);
 
-      // Curate the payload
-      const payload = {
-        item_types: {},
-        payout: {
-          tier: payoutTier,
-          threshold: getPayoutThreshold(calculatePrices(highestASP, 'MEAL')?.small.price)
-        }
-      };
-
-      // Process all categories - at this point we know all have valid prices
-      selectedCategories.forEach(categoryId => {
-        const asp = averagePrices[categoryId];
+      // Build payload in same shape as Pricing.jsx: { pricing: [...], payout?: {...} }
+      // Only default entries from this form, so descriptions = []
+      const pricing = selectedCategories.map((categoryId) => {
+        const asp = parseFloat(averagePrices[categoryId]) || 0;
         const prices = calculatePrices(asp, categoryId);
-        
-        payload.item_types[categoryId] = {
-          asp: asp,
+        return {
+          item_type: categoryId,
+          id: 'default',
+          name: 'Default',
           bags: {
             SMALL: prices.small.price,
             MEDIUM: prices.medium.price,
@@ -118,9 +112,19 @@ const PricingForm = ({ onSuccess, showBackButton = false }) => {
             SMALL: prices.small.cut,
             MEDIUM: prices.medium.cut,
             LARGE: prices.large.cut
-          }
+          },
+          asp,
+          descriptions: []
         };
       });
+
+      const payload = {
+        pricing,
+        payout: {
+          tier: payoutTier,
+          threshold: payoutThreshold
+        }
+      };
 
       // Make API call
       const response = await axiosClient.post('/v1/vendor/catalogue/request', payload);
