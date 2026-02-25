@@ -54,8 +54,8 @@ export const requestCatalogueUpdate = createAsyncThunk(
 const catalogueSlice = createSlice({
   name: 'catalogue',
   initialState: {
-    itemTypes: {}, // Changed from 'items' to 'itemTypes'
-    payout: {}, // Added payout field
+    pricing: [], // list of pricing entries: { item_type, id, name, bags, cuts, asp, descriptions }
+    payout: {},
     loading: false,
     error: null,
     updateLoading: false,
@@ -68,8 +68,8 @@ const catalogueSlice = createSlice({
       state.updateError = null;
     },
     resetCatalogue: (state) => {
-      state.itemTypes = {}; // Updated field name
-      state.payout = {}; // Added payout reset
+      state.pricing = [];
+      state.payout = {};
       state.requestData = {};
       state.loading = false;
       state.error = null;
@@ -87,9 +87,8 @@ const catalogueSlice = createSlice({
       })
       .addCase(fetchCatalogue.fulfilled, (state, action) => {
         state.loading = false;
-        // Handle new response structure
-        state.itemTypes = action.payload.item_types || {}; // Updated field name
-        state.payout = action.payload.payout || {}; // Added payout handling
+        state.pricing = Array.isArray(action.payload.pricing) ? action.payload.pricing : [];
+        state.payout = action.payload.payout || {};
         state.lastUpdated = new Date().toISOString();
       })
       .addCase(fetchCatalogue.rejected, (state, action) => {

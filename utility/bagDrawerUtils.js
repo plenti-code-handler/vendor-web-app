@@ -105,11 +105,13 @@ export const getResetFormValues = () => ({
   currentStep: 1,
 });
 
-// Common available categories function
-export const getAvailableCategories = (itemTypes) => {
+// Common available categories function (pricing = array of { item_type, bags, ... })
+export const getAvailableCategories = (pricing) => {
+  if (!Array.isArray(pricing)) return [];
   const { ALL_ITEM_TYPES } = require('../constants/itemTypes');
-  return ALL_ITEM_TYPES.filter(itemType => {
-    const catalogueItem = itemTypes[itemType];
-    return catalogueItem && catalogueItem.bags && Object.keys(catalogueItem.bags).length > 0;
-  });
+  const hasBags = (entry) => entry?.bags && Object.keys(entry.bags).length > 0;
+  const itemTypesWithBags = [...new Set(
+    pricing.filter(hasBags).map((p) => String(p.item_type))
+  )];
+  return ALL_ITEM_TYPES.filter((itemType) => itemTypesWithBags.includes(itemType));
 };

@@ -10,11 +10,13 @@ import ItemImageModal from "../../../modals/ItemImageModal";
 const AddBagImages = () => {
   const dispatch = useDispatch();
   const { itemTypes, loading: fetchLoading } = useSelector((state) => state.itemImage);
-  const { itemTypes: catalogueItemTypes } = useSelector((state) => state.catalogue);
+  const pricing = useSelector((state) => state.catalogue.pricing);
   const fileInputRef = useRef(null);
   
-  // Get available item types from catalogue
-  const availableItemTypes = Object.keys(catalogueItemTypes || {});
+  // Get available item types from catalogue (item types that have at least one pricing entry with bags)
+  const availableItemTypes = [...new Set(
+    (pricing || []).filter((e) => e?.bags && Object.keys(e.bags).length > 0).map((e) => e.item_type)
+  )];
   
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
