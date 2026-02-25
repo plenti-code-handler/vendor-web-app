@@ -125,13 +125,13 @@ const ItemTemplates = () => {
                             {item.veg_servings_start > 0 && (
                                 <div className="flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg border">
                                     <DietIcon diet="veg" size="sm" />
-                                    <span className="text-[10px] font-semibold text-green-700">{item.veg_servings_start} Veg</span>
+                                    <span className="text-[10px] font-semibold text-green-700">{item.veg_servings_start}</span>
                                 </div>
                             )}
                             {item.non_veg_servings_start > 0 && (
                                 <div className="flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg border">
                                     <DietIcon diet="non_veg" size="sm" />
-                                    <span className="text-[10px] font-semibold text-red-700">{item.non_veg_servings_start} Non-Veg</span>
+                                    <span className="text-[10px] font-semibold text-red-700">{item.non_veg_servings_start}</span>
                                 </div>
                             )}
                             {(item.veg_servings_start === 0 && item.non_veg_servings_start === 0) && (
