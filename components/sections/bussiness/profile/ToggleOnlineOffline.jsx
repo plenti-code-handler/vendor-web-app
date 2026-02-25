@@ -131,12 +131,12 @@ export default function OnlineOfflineToggle() {
         {/* Minimal handle styling (w-6 h-6) */}
         <div
           className={`absolute w-6 h-6 bg-white rounded-full shadow transition-all duration-300 ease-in-out flex items-center justify-center ${
-            // Position the handle (left-1 for full circle, adjusted from previous L/R)
             isOnline ? "left-[calc(100%-1.875rem)]" : "left-1"
           } ${isAnimating ? "scale-95" : "scale-100"}`}
         >
-          {/* Icon */}
-          {isOnline ? (
+          {isAnimating ? (
+            <div className="animate-spin rounded-full h-4 w-4 border-2 border-gray-300 border-t-transparent" />
+          ) : isOnline ? (
             <Wifi size={16} className="text-green-500" />
           ) : (
             <WifiOff size={16} className="text-gray-500 dark:text-gray-400" />

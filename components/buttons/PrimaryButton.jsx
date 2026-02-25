@@ -16,7 +16,7 @@ const PrimaryButton = ({
     <button
       type={type}
       disabled={isDisabled}
-      className={`group relative flex items-center justify-center px-6 py-3 border border-transparent text-sm font-medium rounded-xl text-white transition-all duration-300 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5F22D9] ${
+      className={`group relative flex items-center justify-center px-6 py-3 border border-transparent text-sm font-medium rounded-xl text-white transition-all duration-300 transform hover:scale-[1.02] ${
         isDisabled
           ? "bg-gray-400 cursor-not-allowed scale-100 hover:scale-100"
           : "bg-[#5F22D9] hover:bg-[#4A1BB8] shadow-lg hover:shadow-xl"
