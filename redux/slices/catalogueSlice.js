@@ -94,6 +94,7 @@ const catalogueSlice = createSlice({
       .addCase(fetchCatalogue.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+        state.lastUpdated = new Date().toISOString();
       })
       // Request update
       .addCase(requestCatalogueUpdate.pending, (state) => {
@@ -104,10 +105,9 @@ const catalogueSlice = createSlice({
         state.updateLoading = false;
         state.lastUpdated = new Date().toISOString();
       })
-      .addCase(fetchCatalogue.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-        state.lastUpdated = new Date().toISOString(); // add this
+      .addCase(requestCatalogueUpdate.rejected, (state, action) => {
+        state.updateLoading = false;
+        state.updateError = action.payload;
       })
       .addCase(fetchCatalogueRequest.pending, (state) => {
         state.requestLoading = true;
