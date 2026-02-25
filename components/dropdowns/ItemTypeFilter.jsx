@@ -5,17 +5,22 @@ import { fetchCatalogue } from '../../redux/slices/catalogueSlice';
 import { useRouter } from 'next/navigation';
 import { getAvailableCategories } from '../../utility/bagDrawerUtils';
 
-const ItemTypeFilter = ({ selectedFilter, onFilterChange }) => {
+const ItemTypeFilter = ({ selectedFilter, onFilterChange, selectedPricingId, onPricingChange }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(fetchCatalogue()); 
   }, [dispatch]);
 
-  const { itemTypes } = useSelector((state) => state.catalogue);
+  const pricing = useSelector((state) => state.catalogue.pricing);
   const router = useRouter();
 
-  const availableCategories = getAvailableCategories(itemTypes);
+  const availableCategories = getAvailableCategories(pricing);
+
+  const pricingsForType = useMemo(() => {
+    if (!selectedFilter || !Array.isArray(pricing)) return [];
+    return pricing.filter((e) => String(e.item_type) === String(selectedFilter));
+  }, [pricing, selectedFilter]);
 
   // Auto-select first available category if selectedFilter is empty or invalid
   useEffect(() => {
@@ -26,6 +31,16 @@ const ItemTypeFilter = ({ selectedFilter, onFilterChange }) => {
       }
     }
   }, [availableCategories, selectedFilter, onFilterChange]);
+
+  // When category or pricing list changes, keep selectedPricingId in sync (default to first or "default")
+  useEffect(() => {
+    if (pricingsForType.length === 0 || !onPricingChange) return;
+    const ids = pricingsForType.map((e) => e.id ?? 'default');
+    const defaultId = ids.includes('default') ? 'default' : ids[0];
+    if (!selectedPricingId || !ids.includes(selectedPricingId)) {
+      onPricingChange(defaultId);
+    }
+  }, [pricingsForType, selectedPricingId, onPricingChange]);
 
   if (availableCategories.length === 0) {
     return (
@@ -79,6 +94,37 @@ const ItemTypeFilter = ({ selectedFilter, onFilterChange }) => {
           );
         })}
       </div>
+
+      {/* Pricing cards for selected category - same style as AllergensSection */}
+      {selectedFilter && pricingsForType.length > 0 && (
+        <div className="space-y-2">
+          <h3 className="text-base font-medium text-gray-900">Select Pricing</h3>
+          <div className="flex flex-wrap gap-2">
+            {pricingsForType.map((entry) => {
+              const pid = entry.id ?? 'default';
+              const isSelected = selectedPricingId === pid;
+              return (
+                <button
+                  key={`${entry.item_type}:${pid}`}
+                  type="button"
+                  onClick={() => onPricingChange?.(pid)}
+                  className={`
+                    w-fit flex flex-col items-start justify-center px-2.5 py-1.5 rounded-lg border transition-all duration-200 text-left
+                    ${isSelected
+                      ? 'bg-[#5F22D9]/100 border-[#5F22D9] text-white'
+                      : 'bg-white border-gray-200 text-gray-600 hover:border-gray-300 hover:bg-gray-50'
+                    }
+                  `}
+                >
+                  <span className="text-sm font-bold truncate">{entry.name || pid}</span>
+                  <span className={`text-[8px] bg-yellow-200 px-1 py-1 rounded-lg font-medium
+                  ${isSelected ? 'text-[#5F22D9]' : 'text-gray-600'}`}>Worth <span className="font-semibold text-xs">₹{entry.asp != null ? entry.asp : '–'}</span></span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

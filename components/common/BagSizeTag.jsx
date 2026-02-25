@@ -2,8 +2,8 @@ import React from "react";
 import { useSelector } from "react-redux";
 
 const BagSizeTag = ({ bagSize, showIcon = true, showWorth = false, itemType = null, className = "" }) => {
-  const itemTypes = useSelector((state) => state.catalogue.itemTypes);
-  
+  const pricing = useSelector((state) => state.catalogue.pricing);
+
   const sizeConfig = {
     SMALL: {
       color: 'bg-blue-100 text-blue-700',
@@ -21,13 +21,16 @@ const BagSizeTag = ({ bagSize, showIcon = true, showWorth = false, itemType = nu
 
   const config = sizeConfig[bagSize] || sizeConfig.SMALL;
 
-  // Calculate worth if showWorth is true and itemType is provided
+  // Calculate worth if showWorth is true and itemType is provided (use matching pricing entry, prefer default)
   let worth = null;
-  if (showWorth && itemType && itemTypes && itemTypes[itemType]) {
-    const itemData = itemTypes[itemType];
-    const price = itemData.bags?.[bagSize] || 0;
-    const cut = itemData.cuts?.[bagSize] || 0;
-    worth = Math.round(3 * (price - cut));
+  if (showWorth && itemType && Array.isArray(pricing)) {
+    const entry = pricing.find((e) => String(e.item_type) === String(itemType) && (e.id ?? 'default') === 'default') ||
+      pricing.find((e) => String(e.item_type) === String(itemType));
+    if (entry?.bags && entry?.cuts) {
+      const price = entry.bags[bagSize] || 0;
+      const cut = entry.cuts[bagSize] || 0;
+      worth = Math.round(3 * (price - cut));
+    }
   }
 
   return (

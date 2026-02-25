@@ -7,7 +7,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { setOpenDrawer } from "../../redux/slices/addBagSlice";
 import ItemTypeFilter from "../dropdowns/ItemTypeFilter";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import axiosClient from "../../AxiosClient";
 import { toast } from "sonner";
 import { fetchAllBags } from "../../redux/slices/bagsSlice";
@@ -35,6 +35,7 @@ import SubmitButton from './components/SubmitButton';
 const AddBagDrawer = () => {
   const dispatch = useDispatch();
   const [selectedBag, setSelectedBag] = useState("");
+  const [selectedPricingId, setSelectedPricingId] = useState("default");
   const [selectedAllergens, setSelectedAllergens] = useState([]);
   const [description, setDescription] = useState("");
   const [vegServings, setVegServings] = useState(0);
@@ -53,12 +54,21 @@ const AddBagDrawer = () => {
 
   // Get vendor data and catalogue from Redux
   const vendorData = useSelector(selectVendorData);
-  const { itemTypes } = useSelector((state) => state.catalogue);
+  const pricing = useSelector((state) => state.catalogue.pricing);
   const availableDescriptions = vendorData?.item_descriptions || [];
 
-  const availableCategories = getAvailableCategories(itemTypes);
+  const availableCategories = getAvailableCategories(pricing);
 
-
+  // Dropdown descriptions: default pricing → vendor's list; else → that pricing entry's descriptions
+  const descriptionsForDropdown = useMemo(() => {
+    if (selectedPricingId === "default" || !selectedBag) return availableDescriptions;
+    const entry = pricing?.find(
+      (e) => String(e.item_type) === String(selectedBag) && (e.id ?? "default") === selectedPricingId
+    );
+    const list = entry?.descriptions;
+    if (Array.isArray(list) && list.length > 0) return list;
+    return availableDescriptions;
+  }, [selectedPricingId, selectedBag, pricing, availableDescriptions]);
 
   // Fetch catalogue data
   useEffect(() => {
@@ -81,6 +91,7 @@ const AddBagDrawer = () => {
   const resetForm = () => {
     const resetValues = getResetFormValues();
     setSelectedBag(resetValues.selectedBag);
+    setSelectedPricingId("default");
     setSelectedAllergens(resetValues.selectedAllergens);
     setDescription(resetValues.description);
     setVegServings(resetValues.vegServings);
@@ -120,6 +131,7 @@ const AddBagDrawer = () => {
 
       const newItem = {
         item_type: selectedBag,
+        pricing_id: selectedPricingId || "default",
         window_start_time: Math.floor(windowStartTime.getTime() / 1000),
         window_end_time: Math.floor(windowEndTime.getTime() / 1000),
         best_before_time: Math.floor(bestBeforeTime.getTime() / 1000),
@@ -212,6 +224,8 @@ const AddBagDrawer = () => {
                       <ItemTypeFilter
                         selectedFilter={selectedBag}
                         onFilterChange={setSelectedBag}
+                        selectedPricingId={selectedPricingId}
+                        onPricingChange={setSelectedPricingId}
                       />
                     </div>
                   </div>
@@ -237,7 +251,7 @@ const AddBagDrawer = () => {
                     setDescription={setDescription}
                     showCustomDescription={showCustomDescription}
                     setShowCustomDescription={setShowCustomDescription}
-                    availableDescriptions={availableDescriptions}
+                    availableDescriptions={descriptionsForDropdown}
                   />
 
                   <ServingsSection

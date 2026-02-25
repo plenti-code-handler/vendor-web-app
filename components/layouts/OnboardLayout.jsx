@@ -13,9 +13,9 @@ import BeatLoader from "react-spinners/BeatLoader";
 import axiosClient from "../../AxiosClient";
 
 // Check if catalogue or catalogue request has pricing data
-const checkCataloguePricing = (catalogueItemTypes, requestData) => {
-  const hasCatalogue = catalogueItemTypes && Object.keys(catalogueItemTypes).length > 0;
-  const hasRequest = requestData?.item_types && Object.keys(requestData.item_types).length > 0;
+const checkCataloguePricing = (pricing, requestData) => {
+  const hasCatalogue = pricing && Array.isArray(pricing) && pricing.length > 0;
+  const hasRequest = requestData?.pricing?.length > 0 || (requestData?.item_types && Object.keys(requestData.item_types).length > 0);
   return hasCatalogue || hasRequest;
 };
 
@@ -25,7 +25,7 @@ export const OnboardLayout = ({ children }) => {
   const dispatch = useDispatch();
   const vendorData = useSelector(selectVendorData);
   const vendorLoading = useSelector(selectVendorLoading);
-  const catalogueItemTypes = useSelector((state) => state.catalogue.itemTypes);
+  const cataloguePricing = useSelector((state) => state.catalogue.pricing);
   const catalogueRequestData = useSelector((state) => state.catalogue.requestData);
   const catalogueLoading = useSelector((state) => state.catalogue.loading);
   const catalogueRequestLoading = useSelector((state) => state.catalogue.requestLoading);
@@ -130,7 +130,7 @@ export const OnboardLayout = ({ children }) => {
         toast.info("Please accept the terms and conditions");
       }
     }
-    else if (!checkCataloguePricing(catalogueItemTypes, catalogueRequestData)) {
+    else if (!checkCataloguePricing(cataloguePricing, catalogueRequestData)) {
       // Neither catalogue nor catalogue request has pricing - route to price-decision
       targetRoute = "/pricing";
       if (pathname !== targetRoute) {
@@ -164,7 +164,7 @@ export const OnboardLayout = ({ children }) => {
     
     // User is on correct route
     setIsChecking(false);
-  }, [vendorData, vendorLoading, pathname, router, isActivating, catalogueItemTypes, catalogueRequestData, catalogueLoading, catalogueRequestLoading, dispatch]);
+  }, [vendorData, vendorLoading, pathname, router, isActivating, cataloguePricing, catalogueRequestData, catalogueLoading, catalogueRequestLoading, dispatch]);
 
   if (isChecking || isActivating || (localStorage.getItem("token") && (vendorLoading || catalogueLoading || catalogueRequestLoading))) {
     return (

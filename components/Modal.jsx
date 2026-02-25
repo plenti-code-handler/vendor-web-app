@@ -5,19 +5,21 @@ import { useSelector } from "react-redux";
 import { ITEM_TYPE_ICONS, ITEM_TYPE_DISPLAY_NAMES } from "../constants/itemTypes";
 
 const Modal = ({ isOpen, onClose, item }) => {
-  const { itemTypes } = useSelector((state) => state.catalogue);
+  const pricing = useSelector((state) => state.catalogue.pricing);
 
   if (!isOpen || !item) return null;
 
-  // Get prices from catalogue based on item type
+  // Get prices from catalogue: match by item_type and pricing_id (or default)
   const getPrices = () => {
-    const catalogueItem = itemTypes[item.item_type];
-    console.log("catalogueItem", catalogueItem);
-    if (catalogueItem && catalogueItem.bags) {
+    const pricingId = item.pricing_id ?? "default";
+    const entry = (pricing || []).find(
+      (e) => String(e.item_type) === String(item.item_type) && (e.id ?? "default") === pricingId
+    ) || (pricing || []).find((e) => String(e.item_type) === String(item.item_type));
+    if (entry?.bags) {
       return {
-        small: catalogueItem.bags.SMALL || "N/A",
-        medium: catalogueItem.bags.MEDIUM || "N/A",
-        large: catalogueItem.bags.LARGE || "N/A"
+        small: entry.bags.SMALL ?? "N/A",
+        medium: entry.bags.MEDIUM ?? "N/A",
+        large: entry.bags.LARGE ?? "N/A"
       };
     }
     return { small: "N/A", medium: "N/A", large: "N/A" };

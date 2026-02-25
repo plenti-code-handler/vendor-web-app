@@ -29,6 +29,7 @@ import SubmitButton from './components/SubmitButton';
 
 const EditBagDrawer = () => {
   const [selectedBag, setSelectedBag] = useState();
+  const [selectedPricingId, setSelectedPricingId] = useState("default");
   const dispatch = useDispatch();
   const [selectedAllergens, setSelectedAllergens] = useState([]);
   const [description, setDescription] = useState("");
@@ -40,7 +41,7 @@ const EditBagDrawer = () => {
   const [bestBeforeDuration, setBestBeforeDuration] = useState(60); // Add this
   const [showCustomDescription, setShowCustomDescription] = useState(false);
   const { bagToEdit, templateItem } = useSelector((state) => state.editBag);
-  const { itemTypes } = useSelector((state) => state.catalogue);
+  const pricing = useSelector((state) => state.catalogue.pricing);
   const vendorData = useSelector(selectVendorData);
   const availableDescriptions = vendorData?.item_descriptions || [];
 
@@ -53,6 +54,7 @@ const EditBagDrawer = () => {
     if (bagToEdit) {
       setSelectedAllergens(bagToEdit.allergens || []);
       setSelectedBag(bagToEdit.item_type);
+      setSelectedPricingId(bagToEdit.pricing_id ?? "default");
       setDescription(bagToEdit.description || "");
       setVegServings(bagToEdit.veg_servings_current || 0);
       setNonVegServings(bagToEdit.non_veg_servings_current || 0);
@@ -75,6 +77,7 @@ const EditBagDrawer = () => {
       // Logic for creating from template
       setSelectedAllergens(templateItem.allergens || []);
       setSelectedBag(templateItem.item_type);
+      setSelectedPricingId(templateItem.pricing_id ?? "default");
       setDescription(templateItem.description || "");
       setVegServings(templateItem.veg_servings_start || 0);
       setNonVegServings(templateItem.non_veg_servings_start || 0);
@@ -93,7 +96,7 @@ const EditBagDrawer = () => {
     }
   }, [bagToEdit, templateItem]);
 
-  const availableCategories = getAvailableCategories(itemTypes);
+  const availableCategories = getAvailableCategories(pricing);
 
   // Simplified time change handler
   const handleStartTimeChange = (date) => {
@@ -129,6 +132,7 @@ const EditBagDrawer = () => {
 
       const payload = {
         item_type: selectedBag,
+        pricing_id: selectedPricingId || "default",
         description: description,
         window_start_time: Math.floor(windowStartTime.getTime() / 1000),
         window_end_time: Math.floor(windowEndTime.getTime() / 1000),
@@ -215,6 +219,8 @@ const EditBagDrawer = () => {
                       <ItemTypeFilter
                         selectedFilter={selectedBag}
                         onFilterChange={setSelectedBag}
+                        selectedPricingId={selectedPricingId}
+                        onPricingChange={setSelectedPricingId}
                       />
                     </div>
                   </div>
