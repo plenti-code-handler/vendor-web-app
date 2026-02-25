@@ -235,18 +235,18 @@ const Pricing = () => {
             </div>
           );
         })}
-        <PrimaryButton
-          onClick={handleRequestUpdate}
-          disabled={isSubmitting}
-        >
-          {isSubmitting && <ArrowPathIcon className="w-4 h-4 animate-spin" />}
-          {isSubmitting ? 'Submitting...' : 'Request Pricing Update'}
-        </PrimaryButton>
-
-        <PricingInfo />
       </div>
       )}
 
+      <PrimaryButton
+        onClick={handleRequestUpdate}
+        disabled={isSubmitting}
+      >
+        {isSubmitting && <ArrowPathIcon className="w-4 h-4 animate-spin" />}
+        {isSubmitting ? 'Submitting...' : 'Request Pricing Update'}
+      </PrimaryButton>
+
+      <PricingInfo />
 
       <AddPricingModal
         open={pricingModalOpen}
