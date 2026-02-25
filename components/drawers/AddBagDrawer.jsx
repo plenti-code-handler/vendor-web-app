@@ -30,7 +30,7 @@ import AllergensSection from './components/AllergensSection';
 import DescriptionSection from './components/DescriptionSection';
 import TimingSection from './components/TimingSection';
 import ServingsSection from './components/ServingsSection';
-import SubmitButton from './components/SubmitButton';
+import PrimaryButton from '../buttons/PrimaryButton';
 
 const AddBagDrawer = () => {
   const dispatch = useDispatch();
@@ -262,14 +262,23 @@ const AddBagDrawer = () => {
                     isEdit={false}
                   />
 
-                  <SubmitButton
-                    loading={loading}
-                    disabled={false}
-                    onClick={handleSubmitBag}
-                    loadingText="Creating Item..."
-                    buttonText="Create Item"
-                    availableCategories={availableCategories}
-                  />
+                  <div className="mt-8 mb-6">
+                    <PrimaryButton
+                      loading={loading}
+                      disabled={availableCategories.length === 0}
+                      onClick={handleSubmitBag}
+                      loadingText="Creating Item..."
+                      fullWidth
+                      className="w-full"
+                    >
+                      Create Item
+                    </PrimaryButton>
+                    {availableCategories.length === 0 && (
+                      <p className="text-center text-sm text-gray-500 mt-3">
+                        No item types available. Please contact support.
+                      </p>
+                    )}
+                  </div>
                 </div>
               </div>
             </DialogPanel>

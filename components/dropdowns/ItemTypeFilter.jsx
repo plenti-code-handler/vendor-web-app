@@ -4,6 +4,7 @@ import { ALL_ITEM_TYPES, ITEM_TYPE_DISPLAY_NAMES, ITEM_TYPE_ICONS, ITEM_TYPE_DES
 import { fetchCatalogue } from '../../redux/slices/catalogueSlice';
 import { useRouter } from 'next/navigation';
 import { getAvailableCategories } from '../../utility/bagDrawerUtils';
+import PrimaryButton from '../buttons/PrimaryButton';
 
 const ItemTypeFilter = ({ selectedFilter, onFilterChange, selectedPricingId, onPricingChange }) => {
   const dispatch = useDispatch();
@@ -63,41 +64,35 @@ const ItemTypeFilter = ({ selectedFilter, onFilterChange, selectedPricingId, onP
         {availableCategories.map((itemType, index) => {
           const isSelected = selectedFilter === itemType;
           return (
-            <button
+            <PrimaryButton
               key={itemType}
+              type="button"
               onClick={() => onFilterChange(itemType)}
               className={`
-                relative flex flex-col items-center gap-3 px-4 py-5 rounded-lg border transition-all duration-200
-                ${isSelected 
-                  ? 'bg-[#5F22D9] border-[#5F22D9] shadow-sm' 
-                  : 'bg-white border-gray-200 text-gray-600 hover:border-gray-300 hover:bg-gray-50'
+                flex-row gap-2 px-2 rounded-lg transition-all duration-200
+                ${isSelected
+                  ? 'shadow-sm'
+                  : '!bg-white !border-gray-200 border !text-gray-900 hover:!bg-gray-50 hover:!border-gray-300 hover:!shadow-none hover:scale-100 focus:ring-gray-200'
                 }
               `}
               style={{
                 animation: `fadeIn 0.15s ease-out ${index * 0.03}s both`
               }}
             >
-              {/* Icon */}
               <div className="text-3xl">
                 {ITEM_TYPE_ICONS[itemType]}
               </div>
-
-              {/* Title */}
-              <h4 className={`
-                font-medium text-sm transition-colors duration-200
-                ${isSelected ? 'text-white' : 'text-gray-900'}
-              `}>
+              <h4 className={`font-medium text-sm ${isSelected ? 'text-white' : 'text-gray-900'}`}>
                 {ITEM_TYPE_DISPLAY_NAMES[itemType]}
               </h4>
-
-            </button>
+            </PrimaryButton>
           );
         })}
       </div>
 
       {/* Pricing cards for selected category - same style as AllergensSection */}
-      {selectedFilter && pricingsForType.length > 0 && (
-        <div className="space-y-2">
+      {selectedFilter && pricingsForType.length > 1 && (
+        <div className="space-y-2 animate-fade-down">
           <h3 className="text-base font-medium text-gray-900">Select Pricing</h3>
           <div className="flex flex-wrap gap-2">
             {pricingsForType.map((entry) => {

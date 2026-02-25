@@ -7,6 +7,7 @@ import { setOpenDrawer } from "../../redux/slices/addBagSlice";
 import { SunIcon, CloudIcon, MoonIcon } from "@heroicons/react/24/outline";
 
 import GreetingBanner from '../sections/bussiness/more/GreetingsBanner';
+import PrimaryButton from '../buttons/PrimaryButton';
 
 
 const decidePath = (pathname) => {
@@ -89,13 +90,13 @@ const Breadcrumb = () => {
   
           {/* Existing button */}
           {currentPath === "Manage Bags" && (
-            <button
+            <PrimaryButton
               onClick={handleOpenDrawer}
-              className="mr-3 mt-2 lg:m-0 flex items-center text-center justify-center bg-blueBgDark text-white font-semibold py-2 px-4 rounded-[6px] hover:bg-blueBgDarkHover2"
+              className="mr-3 mt-2 lg:m-0"
             >
-              <span className="mr-2 ml-2 font-semibold">Add New Bags</span>
+              <span className="mr-2 font-semibold">Add New Bags</span>
               <span>{addUserSvg}</span>
-            </button>
+            </PrimaryButton>
           )}
         </div>
       </div>

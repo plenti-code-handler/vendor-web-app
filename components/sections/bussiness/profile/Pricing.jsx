@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCatalogue, clearCatalogueError } from '../../../../redux/slices/catalogueSlice';
@@ -7,12 +7,16 @@ import { toast } from 'sonner';
 import axiosClient from '../../../../AxiosClient';
 import { ALL_ITEM_TYPES, ITEM_TYPE_DISPLAY_NAMES } from '../../../../constants/itemTypes';
 import { ArrowPathIcon, SparklesIcon, CurrencyRupeeIcon, PencilIcon, ClockIcon } from '@heroicons/react/24/outline';
-import { calculatePrices } from '../../../../utility/priceCalculations';
 import PricingInfo from "./PricingInfo";
 import SecondaryButton from "../../../buttons/SecondaryButton";
+import PrimaryButton from "../../../buttons/PrimaryButton";
 import AddPricingModal from "../../../modals/AddPricingModal";
-
-const entryKey = (e) => `${e.item_type}:${e.id ?? 'default'}`;
+import {
+  entryKey,
+  getEntriesForItemType,
+  canAddPricing,
+  PRICING_LIMIT_REACHED_MESSAGE,
+} from '../../../../utility/catalogueUtils';
 
 const SIZE_CONFIG = {
   SMALL:  { bg: 'bg-blue-100', text: 'text-blue-800', icon: '👜' },
@@ -109,12 +113,14 @@ const Pricing = () => {
           </div>
         </div>
         <div className="flex gap-3">
-          <button onClick={() => dispatch(fetchCatalogue())} className="p-2 border rounded-lg bg-purple-50 hover:bg-purple-100">
+          <SecondaryButton onClick={() => dispatch(fetchCatalogue())}>
             <ArrowPathIcon className="h-5 w-5 text-purple-600" />
-          </button>
-          <button onClick={() => router.push('/price-decision')} className="px-3 py-2 border text-sm rounded-lg text-[#5F22D9] hover:bg-purple-50">
+          </SecondaryButton>
+          <PrimaryButton
+            onClick={() => router.push('/price-decision')}
+          >
             Go to Pricing Page
-          </button>
+          </PrimaryButton>
         </div>
       </header>
 
@@ -128,9 +134,19 @@ const Pricing = () => {
       )}
 
       <div className="space-y-6">
-        {ALL_ITEM_TYPES.map(type => {
-          const entries = localPricing.filter(p => String(p.item_type) === String(type));
+        {ALL_ITEM_TYPES.map((type) => {
+          const entries = getEntriesForItemType(localPricing, type);
           if (!entries.length) return null;
+
+          const openAddPricingModal = () => {
+            if (!canAddPricing(type, entries.length)) {
+              toast.error(PRICING_LIMIT_REACHED_MESSAGE);
+              return;
+            }
+            setPricingModalItemType(type);
+            setPricingModalEditEntry(null);
+            setPricingModalOpen(true);
+          };
 
           return (
             <div key={type} className="bg-white rounded-xl border overflow-hidden shadow-sm">
@@ -142,11 +158,7 @@ const Pricing = () => {
                 <SecondaryButton
                   type="button"
                   className="py-2 px-4 text-xs shrink-0"
-                  onClick={() => {
-                    setPricingModalItemType(type);
-                    setPricingModalEditEntry(null);
-                    setPricingModalOpen(true);
-                  }}
+                  onClick={openAddPricingModal}
                 >
                   Add new Pricing +
                 </SecondaryButton>
@@ -219,14 +231,13 @@ const Pricing = () => {
         })}
       </div>
 
-      <button
+      <PrimaryButton
         onClick={handleRequestUpdate}
         disabled={isSubmitting}
-        className="flex items-center gap-2 bg-[#5F22D9] text-white px-6 py-2 rounded-lg font-bold hover:scale-105 transition-transform disabled:bg-gray-400"
       >
         {isSubmitting && <ArrowPathIcon className="w-4 h-4 animate-spin" />}
         {isSubmitting ? 'Submitting...' : 'Request Pricing Update'}
-      </button>
+      </PrimaryButton>
 
       <PricingInfo />
 
@@ -238,9 +249,7 @@ const Pricing = () => {
         }}
         itemType={pricingModalItemType}
         editEntry={pricingModalEditEntry}
-        existingEntriesForItemType={localPricing.filter(
-          (p) => String(p.item_type) === String(pricingModalItemType)
-        )}
+        existingEntriesForItemType={getEntriesForItemType(localPricing, pricingModalItemType)}
         onSave={(entry, editEntry) => {
           if (editEntry) {
             setLocalPricing((prev) =>

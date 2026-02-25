@@ -25,7 +25,7 @@ import AllergensSection from './components/AllergensSection';
 import DescriptionSection from './components/DescriptionSection';
 import TimingSection from './components/TimingSection';
 import ServingsSection from './components/ServingsSection';
-import SubmitButton from './components/SubmitButton';
+import PrimaryButton from '../buttons/PrimaryButton';
 
 const EditBagDrawer = () => {
   const [selectedBag, setSelectedBag] = useState();
@@ -257,14 +257,23 @@ const EditBagDrawer = () => {
                     isEdit={!!bagToEdit?.id}
                   />
 
-                  <SubmitButton
-                    loading={loading}
-                    disabled={false}
-                    onClick={handleSubmit}
-                    loadingText={bagToEdit?.id ? "Updating Item..." : "Creating Item..."}
-                    buttonText={bagToEdit?.id ? "Update Item" : "Create Item"}
-                    availableCategories={availableCategories}
-                  />
+                  <div className="mt-8 mb-6">
+                    <PrimaryButton
+                      loading={loading}
+                      disabled={availableCategories.length === 0}
+                      onClick={handleSubmit}
+                      loadingText={bagToEdit?.id ? "Updating Item..." : "Creating Item..."}
+                      fullWidth
+                      className="w-full"
+                    >
+                      {bagToEdit?.id ? "Update Item" : "Create Item"}
+                    </PrimaryButton>
+                    {availableCategories.length === 0 && (
+                      <p className="text-center text-sm text-gray-500 mt-3">
+                        No item types available. Please contact support.
+                      </p>
+                    )}
+                  </div>
                 </div>
               </div>
             </DialogPanel>
