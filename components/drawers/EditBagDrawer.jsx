@@ -6,7 +6,7 @@ import {
 } from "@headlessui/react";
 import { useDispatch, useSelector } from "react-redux";
 import ItemTypeFilter from "../dropdowns/ItemTypeFilter";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import axiosClient from "../../AxiosClient";
 import { toast } from "sonner";
 import { setOpenDrawer } from "../../redux/slices/editBagSlice";
@@ -16,7 +16,8 @@ import { selectVendorData } from '../../redux/slices/vendorSlice';
 import {
   getRequiredFields,
   validateTimeConstraints,
-  getAvailableCategories
+  getAvailableCategories,
+  getDescriptionsForDropdown,
 } from '../../utility/bagDrawerUtils';
 
 // Import reusable components
@@ -44,6 +45,18 @@ const EditBagDrawer = () => {
   const pricing = useSelector((state) => state.catalogue.pricing);
   const vendorData = useSelector(selectVendorData);
   const availableDescriptions = vendorData?.item_descriptions || [];
+
+  // When pricing is not default, only allow selecting from dropdown (no custom description)
+  useEffect(() => {
+    if (selectedPricingId !== "default" && showCustomDescription) {
+      setShowCustomDescription(false);
+    }
+  }, [selectedPricingId, showCustomDescription]);
+
+  const descriptionsForDropdown = useMemo(
+    () => getDescriptionsForDropdown(selectedPricingId, selectedBag, pricing, availableDescriptions),
+    [selectedPricingId, selectedBag, pricing, availableDescriptions]
+  );
 
   // Calculate end times from durations
   const windowEndTime = new Date(windowStartTime.getTime() + windowDuration * 60000);
@@ -246,7 +259,8 @@ const EditBagDrawer = () => {
                     setDescription={setDescription}
                     showCustomDescription={showCustomDescription}
                     setShowCustomDescription={setShowCustomDescription}
-                    availableDescriptions={availableDescriptions}
+                    availableDescriptions={descriptionsForDropdown}
+                    pricingId={selectedPricingId}
                   />
 
                   <ServingsSection

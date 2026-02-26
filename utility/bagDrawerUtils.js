@@ -105,5 +105,19 @@ export const getResetFormValues = () => ({
   currentStep: 1,
 });
 
+/**
+ * Get descriptions list for the description dropdown.
+ * Default pricing → vendor's availableDescriptions; else → pricing entry's descriptions, or fallback to availableDescriptions.
+ */
+export const getDescriptionsForDropdown = (selectedPricingId, selectedBag, pricing, availableDescriptions) => {
+  if (selectedPricingId === 'default' || !selectedBag) return availableDescriptions ?? [];
+  const entry = (pricing ?? []).find(
+    (e) => String(e.item_type) === String(selectedBag) && String(e.id ?? 'default') === String(selectedPricingId)
+  );
+  const list = entry?.descriptions;
+  if (Array.isArray(list) && list.length > 0) return list;
+  return availableDescriptions ?? [];
+};
+
 // Re-export catalogue helper for backward compatibility (implementation in catalogueUtils.js)
 export { getAvailableCategories } from './catalogueUtils';

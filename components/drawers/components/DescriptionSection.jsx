@@ -5,13 +5,15 @@ import React from 'react';
 import { Textarea } from "@headlessui/react";
 import InfoIcon from '../../common/InfoIcon';
 
-const DescriptionSection = ({ 
-  description, 
-  setDescription, 
-  showCustomDescription, 
-  setShowCustomDescription, 
-  availableDescriptions 
+const DescriptionSection = ({
+  description,
+  setDescription,
+  showCustomDescription,
+  setShowCustomDescription,
+  availableDescriptions,
+  pricingId = "default",
 }) => {
+  const allowCustomDescription = pricingId === "default" || pricingId == null;
   return (
     <div className="mb-8">
       <div className="flex items-center gap-2 mb-4">
@@ -19,34 +21,36 @@ const DescriptionSection = ({
         <InfoIcon content="Describe your item to attract customers" />
       </div>
       <div className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm hover:shadow-md transition-shadow duration-200">
-        {/* Description Type Selection */}
-        <div className="mb-4">
-          <div className="flex items-center space-x-4">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                name="descriptionType"
-                checked={!showCustomDescription}
-                onChange={() => setShowCustomDescription(false)}
-                className="w-4 h-4 text-[#5F22D9] bg-gray-100 border-gray-300 focus:ring-[#5F22D9] focus:ring-2"
-              />
-              <span className="text-sm font-medium text-gray-700">Use Existing Description</span>
-            </label>
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                name="descriptionType"
-                checked={showCustomDescription}
-                onChange={() => setShowCustomDescription(true)}
-                className="w-4 h-4 text-[#5F22D9] bg-gray-100 border-gray-300 focus:ring-[#5F22D9] focus:ring-2"
-              />
-              <span className="text-sm font-medium text-gray-700">Add New Description</span>
-            </label>
+        {/* Description Type Selection - only when custom description is allowed (default pricing) */}
+        {allowCustomDescription && (
+          <div className="mb-4">
+            <div className="flex items-center space-x-4">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="descriptionType"
+                  checked={!showCustomDescription}
+                  onChange={() => setShowCustomDescription(false)}
+                  className="w-4 h-4 text-[#5F22D9] bg-gray-100 border-gray-300 focus:ring-[#5F22D9] focus:ring-2"
+                />
+                <span className="text-sm font-medium text-gray-700">Use Existing Description</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="descriptionType"
+                  checked={showCustomDescription}
+                  onChange={() => setShowCustomDescription(true)}
+                  className="w-4 h-4 text-[#5F22D9] bg-gray-100 border-gray-300 focus:ring-[#5F22D9] focus:ring-2"
+                />
+                <span className="text-sm font-medium text-gray-700">Add New Description</span>
+              </label>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Existing Descriptions Dropdown */}
-        {!showCustomDescription && availableDescriptions.length > 0 && (
+        {(!showCustomDescription || !allowCustomDescription) && availableDescriptions.length > 0 && (
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Select from existing descriptions:
@@ -73,8 +77,8 @@ const DescriptionSection = ({
           </div>
         )}
 
-        {/* Custom Description Textarea */}
-        {showCustomDescription && (
+        {/* Custom Description Textarea - only when custom is allowed (default pricing) */}
+        {allowCustomDescription && showCustomDescription && (
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Enter your custom description:
@@ -100,16 +104,22 @@ const DescriptionSection = ({
           </div>
         )}
 
-        {/* Fallback for no existing descriptions */}
+        {/* Fallback for no existing descriptions - only show "Add custom" when custom is allowed */}
         {availableDescriptions.length === 0 && !showCustomDescription && (
           <div>
-            <p className="text-sm text-gray-600 mb-3">No existing descriptions available.</p>
-            <button
-              onClick={() => setShowCustomDescription(true)}
-              className="text-[#5F22D9] text-sm font-medium hover:underline transition-colors duration-200"
-            >
-              + Add custom description
-            </button>
+            <p className="text-sm text-gray-600 mb-3">
+              {allowCustomDescription
+                ? "No existing descriptions available."
+                : "No descriptions available for this pricing. Add descriptions in Pricing Management first."}
+            </p>
+            {allowCustomDescription && (
+              <button
+                onClick={() => setShowCustomDescription(true)}
+                className="text-[#5F22D9] text-sm font-medium hover:underline transition-colors duration-200"
+              >
+                + Add custom description
+              </button>
+            )}
           </div>
         )}
       </div>
