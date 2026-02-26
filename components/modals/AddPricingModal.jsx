@@ -157,7 +157,7 @@ const AddPricingModal = ({
                 value={asp}
                 onChange={(e) => setAsp(e.target.value)}
                 placeholder="e.g. 200"
-                className="w-full max-w-[180px] px-3 py-2 border border-gray-300 rounded-lg text-base focus:ring-2 focus:ring-[#5F22D9] focus:border-transparent"
+                className="w-full max-w-[180px] px-3 py-2 border border-gray-300 rounded-lg text-[16px] focus:ring-2 focus:ring-[#5F22D9] focus:border-transparent"
               />
             </div>
 
@@ -171,7 +171,7 @@ const AddPricingModal = ({
                 onChange={(e) => setName(e.target.value)}
                 placeholder="e.g. Summer Cool"
                 readOnly={isEdit && (editEntry?.id ?? "default") === "default"}
-                className={`w-full max-w-[280px] px-3 py-2 border border-gray-300 rounded-lg text-base focus:ring-2 focus:ring-[#5F22D9] focus:border-transparent ${isEdit && (editEntry?.id ?? "default") === "default" ? "bg-gray-100" : ""}`}
+                className={`w-full max-w-[280px] px-3 py-2 border border-gray-300 rounded-lg text-[16px] focus:ring-2 focus:ring-[#5F22D9] focus:border-transparent ${isEdit && (editEntry?.id ?? "default") === "default" ? "bg-gray-100" : ""}`}
               />
               {isEdit && (editEntry?.id ?? "default") === "default" && (
                 <p className="text-xs text-gray-500">Default pricing name cannot be changed.</p>
@@ -189,7 +189,7 @@ const AddPricingModal = ({
                   onChange={(e) => setDescriptionInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), handleAddDescription())}
                   placeholder="e.g. Best for summer meals"
-                  className="flex-1 min-w-[160px] px-3 py-2 border border-gray-300 rounded-lg text-base focus:ring-2 focus:ring-[#5F22D9] focus:border-transparent"
+                  className="flex-1 min-w-[160px] px-3 py-2 border border-gray-300 rounded-lg text-[16px] focus:ring-2 focus:ring-[#5F22D9] focus:border-transparent"
                 />
                 <button
                   type="button"
