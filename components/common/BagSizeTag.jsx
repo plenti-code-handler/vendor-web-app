@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 
-const BagSizeTag = ({ bagSize, showIcon = true, showWorth = false, itemType = null, className = "" }) => {
+const BagSizeTag = ({ bagSize, showIcon = true, showWorth = false, itemType = null, pricingId = null, className = "" }) => {
   const pricing = useSelector((state) => state.catalogue.pricing);
 
   const sizeConfig = {
@@ -21,11 +21,12 @@ const BagSizeTag = ({ bagSize, showIcon = true, showWorth = false, itemType = nu
 
   const config = sizeConfig[bagSize] || sizeConfig.SMALL;
 
-  // Calculate worth if showWorth is true and itemType is provided (use matching pricing entry, prefer default)
+  // Calculate worth if showWorth is true and itemType is provided (match by itemType and optional pricingId)
   let worth = null;
   if (showWorth && itemType && Array.isArray(pricing)) {
-    const entry = pricing.find((e) => String(e.item_type) === String(itemType) && (e.id ?? 'default') === 'default') ||
-      pricing.find((e) => String(e.item_type) === String(itemType));
+    const idToMatch = pricingId != null ? String(pricingId) : 'default';
+    const entry =
+      pricing.find((e) => String(e.item_type) === String(itemType) && String(e.id ?? 'default') === idToMatch)
     if (entry?.bags && entry?.cuts) {
       const price = entry.bags[bagSize] || 0;
       const cut = entry.cuts[bagSize] || 0;

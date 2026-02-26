@@ -284,6 +284,7 @@ const RecentOrders = () => {
                     showIcon={false}
                     showWorth={true}
                     itemType={item.item_type}
+                    pricingId={item.pricing_id}
                   />
                 </span>
               </div>
