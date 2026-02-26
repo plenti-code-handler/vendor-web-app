@@ -21,7 +21,8 @@ import {
   handleEndTimeChange as handleEndTimeChangeUtil,
   handleBestBeforeTimeChange as handleBestBeforeTimeChangeUtil,
   getResetFormValues,
-  getAvailableCategories
+  getAvailableCategories,
+  getDescriptionsForDropdown,
 } from '../../utility/bagDrawerUtils';
 
 // Import reusable components
@@ -59,16 +60,17 @@ const AddBagDrawer = () => {
 
   const availableCategories = getAvailableCategories(pricing);
 
-  // Dropdown descriptions: default pricing → vendor's list; else → that pricing entry's descriptions
-  const descriptionsForDropdown = useMemo(() => {
-    if (selectedPricingId === "default" || !selectedBag) return availableDescriptions;
-    const entry = pricing?.find(
-      (e) => String(e.item_type) === String(selectedBag) && (e.id ?? "default") === selectedPricingId
-    );
-    const list = entry?.descriptions;
-    if (Array.isArray(list) && list.length > 0) return list;
-    return availableDescriptions;
-  }, [selectedPricingId, selectedBag, pricing, availableDescriptions]);
+  // When pricing is not default, only allow selecting from dropdown (no custom description)
+  useEffect(() => {
+    if (selectedPricingId !== "default" && showCustomDescription) {
+      setShowCustomDescription(false);
+    }
+  }, [selectedPricingId, showCustomDescription]);
+
+  const descriptionsForDropdown = useMemo(
+    () => getDescriptionsForDropdown(selectedPricingId, selectedBag, pricing, availableDescriptions),
+    [selectedPricingId, selectedBag, pricing, availableDescriptions]
+  );
 
   // Fetch catalogue data
   useEffect(() => {
@@ -252,6 +254,7 @@ const AddBagDrawer = () => {
                     showCustomDescription={showCustomDescription}
                     setShowCustomDescription={setShowCustomDescription}
                     availableDescriptions={descriptionsForDropdown}
+                    pricingId={selectedPricingId}
                   />
 
                   <ServingsSection
