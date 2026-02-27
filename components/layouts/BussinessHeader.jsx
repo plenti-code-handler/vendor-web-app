@@ -7,12 +7,13 @@ import { logoutIconSvg } from "../../svgs";
 import Link from "next/link";
 import LanguageDropdown from "../dropdowns/LanguageDropdown";
 import ProfileDropdown from "../dropdowns/ProfileDropdown";
-// ✅ Remove the import - no longer needed
 import { setActivePage } from "../../redux/slices/headerSlice";
 import { appLogoUrl } from "../../lib/constant_data";
 import { menuItemsData } from "../../lib/business_menu";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
+import { XMarkIcon, Bars3Icon } from "@heroicons/react/24/outline";
 
 const BussinessHeader = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -142,44 +143,80 @@ const BussinessHeader = () => {
             <button
               onClick={toggleMenu}
               className="text-gray-900 hover:text-gray-700 focus:outline-none"
+              aria-label={isMenuOpen ? "Close menu" : "Open menu"}
             >
-              {isMenuOpen ? closeSvg : hamburgerIcon}
+              {isMenuOpen ? <XMarkIcon className="w-5 h-5 text-white" /> : <Bars3Icon className="w-6 h-6 text-white" />}
             </button>
           </div>
-          <nav
-            className={`${
-              isMenuOpen ? "block" : "hidden"
-            } absolute top-16 left-0 mt-14 lg:mt-0 w-full h-full bg-primary  font-base shadow-md transition-transform transform ${
-              isMenuOpen ? "translate-y-0" : "-translate-y-full"
-            } lg:static lg:block lg:bg-transparent lg:shadow-none lg:translate-y-0 xl:ml-[6%] lg:ml-[3%]`}
-            style={{
-              zIndex: isSmallDevice ? 1000 : 0,
-            }}
-          >
-            <div className="flex flex-col  justify-center items-start lg:flex-row lg:p-0 gap-2">
-              {menuItemsData.map(({ name, href }) => (
-                <Link
-                  key={name}
-                  href={href}
-                  className={`lg:text-[12px] xl:text-base leading-6 rounded-xl flex items-center justify-start lg:justify-center px-[2%] py-2 m-2 lg:m-0 ${
-                    isSmallDevice ? "w-[100%]" : ""
-                  } ${
-                    activePage === name
-                      ? "bg-[#7a48e3] font-semibold text-white animate-fade-in"
-                      : "text-white lg:text-textLight hover:bg-[#7a48e3] hover:opacity-100"
-                  }`}
-                  onClick={() => {
-                    handleLinkClick(name);
-                    if (isMobile) {
-                      toggleMenu();
-                    }
-                  }}
-                >
-                  {name}
-                </Link>
-              ))}
-              <div className="w-full lg:hidden"></div>
-            </div>
+
+          {/* Mobile: slide-from-right drawer (Dialog) */}
+          {isSmallDevice && (
+            <Dialog open={isMenuOpen} onClose={setIsMenuOpen} className="relative z-[1000]">
+              <DialogBackdrop
+                transition
+                className="fixed inset-0 bg-black/30 transition-opacity duration-300 ease-out data-[closed]:opacity-0"
+              />
+              <div className="fixed inset-0 overflow-hidden">
+                <div className="absolute inset-0 overflow-hidden">
+                  <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-4">
+                    <DialogPanel
+                      transition
+                      className="pointer-events-auto w-[300px] h-full transform bg-white shadow-xl transition duration-300 ease-out data-[closed]:translate-x-full"
+                    >
+                      <div className="flex h-full flex-col py-6 pl-2 pr-4">
+                        <div className="flex items-center justify-between px-4 mb-4">
+                          <span className="text-sm font-semibold text-gray-500">Menu</span>
+                          <button
+                            onClick={() => setIsMenuOpen(false)}
+                            className="p-2 rounded-lg text-gray-500 hover:bg-gray-100 hover:text-gray-700 focus:outline-none"
+                            aria-label="Close menu"
+                          >
+                            <XMarkIcon className="w-5 h-5 text-gray-500" />
+                          </button>
+                        </div>
+                        <nav className="flex flex-col gap-1">
+                          {menuItemsData.map(({ name, href }) => (
+                            <Link
+                              key={name}
+                              href={href}
+                              className={`rounded-xl px-4 py-3 text-[15px] font-medium transition-colors ${
+                                activePage === name
+                                  ? "bg-[#5f22d9] text-white"
+                                  : "text-gray-700 hover:bg-gray-100"
+                              }`}
+                              onClick={() => {
+                                handleLinkClick(name);
+                                setIsMenuOpen(false);
+                              }}
+                            >
+                              {name}
+                            </Link>
+                          ))}
+                        </nav>
+                      </div>
+                    </DialogPanel>
+                  </div>
+                </div>
+              </div>
+            </Dialog>
+          )}
+
+          {/* Desktop: horizontal nav */}
+          <nav className="hidden lg:flex flex-col justify-center items-start lg:flex-row gap-4">
+            {menuItemsData.map(({ name, href }) => (
+              <Link
+                key={name}
+                href={href}
+                className={`text-base leading-6 rounded-xl flex items-center justify-start lg:justify-center px-4 py-2 m-2 ${
+                  activePage === name
+                    ? "bg-[#7a48e3] font-semibold text-white animate-fade-in"
+                    : "text-white lg:text-textLight hover:bg-[#7a48e3] hover:opacity-100"
+                }`}
+                onClick={() => handleLinkClick(name)}
+              >
+                {name}
+              </Link>
+            ))}
           </nav>
           <div className="hidden lg:flex items-center gap-5">
             <ProfileDropdown />
@@ -191,34 +228,3 @@ const BussinessHeader = () => {
 };
 
 export default BussinessHeader;
-
-const closeSvg = (
-  <svg
-    viewBox="0 0 15 15"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    className="w-5 h-5 text-white"
-  >
-    <path
-      d="M14.2547 12.9612C14.6451 13.3533 14.6451 13.9416 14.2547 14.3337C14.0594 14.5298 13.8642 14.6278 13.5713 14.6278C13.2785 14.6278 13.0832 14.5298 12.888 14.3337L7.71419 9.13764L2.54038 14.3337C2.34515 14.5298 2.14991 14.6278 1.85705 14.6278C1.56419 14.6278 1.36895 14.5298 1.17372 14.3337C0.78324 13.9416 0.78324 13.3533 1.17372 12.9612L6.34753 7.76509L1.17372 2.56901C0.78324 2.17685 0.78324 1.58862 1.17372 1.19646C1.56419 0.804305 2.14991 0.804305 2.54038 1.19646L7.71419 6.39254L12.888 1.19646C13.2785 0.804305 13.8642 0.804305 14.2547 1.19646C14.6451 1.58862 14.6451 2.17685 14.2547 2.56901L9.08086 7.76509L14.2547 12.9612Z"
-      fill="white"
-    />
-  </svg>
-);
-
-const hamburgerIcon = (
-  <svg
-    className="w-6 h-6 text-white"
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="2"
-      d="M4 6h16M4 12h16m-7 6h7"
-    />
-  </svg>
-);
