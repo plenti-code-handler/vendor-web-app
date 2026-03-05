@@ -17,7 +17,7 @@ export const roundToNearestNine = (value) => {
 
 export const calculatePrices = (asp, category) => {
   const aspNum = parseFloat(asp);
-  
+
   let smallPrice, mediumPrice, largePrice;
   let smallCut, mediumCut, largeCut;
   const aspAdj = aspNum * 1.2;
@@ -38,6 +38,14 @@ export const calculatePrices = (asp, category) => {
     const largeCutRaw = largePrice * 0.2;
     const largeCutRounded = floorToMultiple(largeCutRaw, 2);
     largeCut = Math.max(largeCutRounded, mediumCut + 5);
+  } else if (category === "SNACKS_AND_DESSERT") {
+    smallPrice = ceiling(Math.round(aspNum / 3), 10) - 1;
+    mediumPrice = ceiling(Math.round(smallPrice * 2), 10) - 1;
+    largePrice = ceiling(Math.round(smallPrice * 3), 10) - 1;
+
+    smallCut = floorToMultiple(smallPrice * 0.2, 2);
+    mediumCut = smallCut * 2 + 1;
+    largeCut = smallCut * 3 + 2;
   } else {
     smallPrice = mround(Math.round(aspAdj / 3), 10) - 1;
     mediumPrice = mround(Math.round((aspAdj / 3) * 1.35), 10) - 1;
