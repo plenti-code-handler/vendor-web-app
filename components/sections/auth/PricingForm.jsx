@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import axiosClient from '../../../AxiosClient';
-import { 
+import {
   ArrowLeftIcon,
   CalculatorIcon,
   CurrencyRupeeIcon,
@@ -52,7 +52,7 @@ const PricingForm = ({ onSuccess, showBackButton = false }) => {
   const handleSubmit = async () => {
     try {
       setIsSubmitting(true);
-      
+
       // Check if token exists
       const token = localStorage.getItem("token");
       if (!token) {
@@ -128,7 +128,7 @@ const PricingForm = ({ onSuccess, showBackButton = false }) => {
 
       // Make API call
       const response = await axiosClient.post('/v1/vendor/catalogue/request', payload);
-      
+
       if (response.status === 200) {
         toast.success('Pricing request submitted successfully!');
         if (onSuccess) {
@@ -140,10 +140,10 @@ const PricingForm = ({ onSuccess, showBackButton = false }) => {
         toast.error('Failed to submit price decision');
       }
     } catch (error) {
-      const errorMessage = error?.response?.data?.detail || 
-                          error?.response?.data?.message || 
-                          error?.message || 
-                          'Failed to submit price decision';
+      const errorMessage = error?.response?.data?.detail ||
+        error?.response?.data?.message ||
+        error?.message ||
+        'Failed to submit price decision';
       toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
@@ -152,7 +152,7 @@ const PricingForm = ({ onSuccess, showBackButton = false }) => {
 
   // Get current average price for active tab
   const currentAveragePrice = averagePrices[activeTab] || '';
-  
+
   // Calculate prices based on current category and its ASP
   const prices = calculatePrices(currentAveragePrice, activeTab);
   const tierInfo = getTierInfo(currentAveragePrice);
@@ -160,7 +160,7 @@ const PricingForm = ({ onSuccess, showBackButton = false }) => {
   // Calculate payout threshold based on highest ASP across all categories
   const calculatePayoutThreshold = () => {
     if (selectedCategories.length === 0) return null;
-    
+
     // Find the highest ASP across all selected categories
     let highestASP = 0;
     selectedCategories.forEach(categoryId => {
@@ -261,7 +261,7 @@ const PricingForm = ({ onSuccess, showBackButton = false }) => {
                     onWheel={handleWheel}
                   />
                 </div>
-                
+
                 {currentAveragePrice && (
                   <div className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${tierInfo.color}`}>
                     {tierInfo.name} TIER
@@ -281,11 +281,10 @@ const PricingForm = ({ onSuccess, showBackButton = false }) => {
                     <button
                       key={categoryId}
                       onClick={() => handleCategoryTabChange(categoryId)}
-                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                        activeTab === categoryId
+                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${activeTab === categoryId
                           ? 'bg-[#5F22D9] text-white shadow-lg'
                           : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                      }`}
+                        }`}
                     >
                       {category.icon} {category.name}
                     </button>
@@ -296,11 +295,10 @@ const PricingForm = ({ onSuccess, showBackButton = false }) => {
               <button
                 onClick={handleSubmit}
                 disabled={!shouldShowCards() || isSubmitting}
-                className={`w-full flex items-center justify-center space-x-2 py-3 px-6 rounded-xl font-semibold transition-all duration-300 ${
-                  shouldShowCards() && !isSubmitting
+                className={`w-full flex items-center justify-center space-x-2 py-3 px-6 rounded-xl font-semibold transition-all duration-300 ${shouldShowCards() && !isSubmitting
                     ? 'bg-[#5F22D9] text-white hover:bg-[#4A1BB8] shadow-lg hover:shadow-xl'
                     : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                }`}
+                  }`}
               >
                 {isSubmitting ? (
                   <>
@@ -351,7 +349,7 @@ const PricingForm = ({ onSuccess, showBackButton = false }) => {
 
             {/* Independent Payout Threshold Section */}
             {payoutThreshold && (
-              <PayoutThresholdSection 
+              <PayoutThresholdSection
                 threshold={payoutThreshold}
               />
             )}

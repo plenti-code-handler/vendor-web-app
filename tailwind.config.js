@@ -51,30 +51,40 @@ module.exports = {
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
         fadeDown: {
-          '0%': { 
-            opacity: '0', 
-            transform: 'translateY(-8px)' 
+          '0%': {
+            opacity: '0',
+            transform: 'translateY(-8px)'
           },
-          '100%': { 
-            opacity: '1', 
-            transform: 'translateY(0)' 
+          '100%': {
+            opacity: '1',
+            transform: 'translateY(0)'
           },
         },
         popout: {
-          '0%': { 
-            opacity: '0', 
-            transform: 'scale(0.8) translateY(10px)' 
+          '0%': {
+            opacity: '0',
+            transform: 'scale(0.8) translateY(10px)'
           },
-          '100%': { 
-            opacity: '1', 
-            transform: 'scale(1) translateY(0)' 
+          '100%': {
+            opacity: '1',
+            transform: 'scale(1) translateY(0)'
           },
+        },
+        slideInRight: {
+          '0%': { transform: 'translateX(30px)', opacity: '0' },
+          '100%': { transform: 'translateX(0)', opacity: '1' },
+        },
+        slideInLeft: {
+          '0%': { transform: 'translateX(-30px)', opacity: '0' },
+          '100%': { transform: 'translateX(0)', opacity: '1' },
         },
       },
       animation: {
         'fade-in': 'fadeIn 0.15s ease-out',
         'fade-down': 'fadeDown 0.2s ease-out',
         'popout': 'popout 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
+        'slide-in-right': 'slideInRight 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)',
+        'slide-in-left': 'slideInLeft 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)',
       },
       colors: {
         // texts
