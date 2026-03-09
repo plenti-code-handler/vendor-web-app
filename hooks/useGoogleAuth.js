@@ -22,13 +22,17 @@ export const useGoogleAuth = () => {
         localStorage.setItem("token", access_token);
         localStorage.setItem("user", JSON.stringify(vendor));
         localStorage.setItem("prod", "true");
-        
+
         // OnboardLayout will handle routing based on vendor state
         const message = isRegistration ? "Account created successfully!" : "Google sign-in successful";
         toast.success(message);
-        
-        // Trigger a page reload to let OnboardLayout handle routing
-        window.location.href = "/";
+
+        // Smart redirect based on vendor state
+        if (vendor?.is_active) {
+          window.location.href = "/business";
+        } else {
+          window.location.href = "/onboard";
+        }
       }
     } catch (error) {
       console.error("Google auth error:", error);
