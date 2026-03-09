@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { 
+import {
   ChevronUpIcon,
   ChevronDownIcon,
   CheckCircleIcon,
@@ -24,7 +24,7 @@ const TermsAcceptanceModal = ({ onClose, isModal = false }) => {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
   const router = useRouter();
-  
+
   // Trigger fade-in animation when component mounts
   useEffect(() => {
     if (isModal) {
@@ -83,31 +83,31 @@ const TermsAcceptanceModal = ({ onClose, isModal = false }) => {
       toast.error('Vendor data not loaded. Please try again.');
       return;
     }
-  
+
     try {
       setIsSubmitting(true);
-      
+
       // Prepare JSON data
       const mouData = {
         signed: true,
         user_agent: navigator.userAgent,
         terms_version: '1.0'
       };
-      
+
       // Call API with JSON
       const response = await axiosClient.post('/v1/vendor/me/mou/update', mouData, {
         headers: {
           'Content-Type': 'application/json',
         },
       });
-      
+
       if (response.status === 200 || response.status === 201) {
         // Refresh vendor data after successful MOU signing
         await dispatch(fetchVendorDetails()).unwrap();
         toast.success('Terms Accepted successfully!');
         if (!isModal) {
-          router.push('/');
-        } 
+          router.push('/onboard');
+        }
         if (onClose) {
           onClose();
         }
@@ -116,20 +116,20 @@ const TermsAcceptanceModal = ({ onClose, isModal = false }) => {
       }
     } catch (error) {
       console.error("Error accepting terms:", error);
-      const errorMessage = error?.response?.data?.detail || 
-                          error?.response?.data?.message || 
-                          error?.message || 
-                          'Failed to accept terms';
+      const errorMessage = error?.response?.data?.detail ||
+        error?.response?.data?.message ||
+        error?.message ||
+        'Failed to accept terms';
       toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const content = (
-    <>
-      {/* Header */}
-      <div className="px-8 pt-6 pb-4 border-b border-gray-100">
+  const termsContent = (
+    <div className="relative flex flex-col w-full h-full overflow-hidden bg-white min-h-0">
+      {/* Header - Fixed to top */}
+      <div className="flex-none px-8 pt-6 pb-4 border-b border-gray-100 bg-white">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-purple-100 rounded-lg">
@@ -140,8 +140,7 @@ const TermsAcceptanceModal = ({ onClose, isModal = false }) => {
               <p className="text-sm text-gray-500">Please read and accept to continue</p>
             </div>
           </div>
-          
-          {/* Progress indicator - percentage only */}
+
           <div className="flex items-center gap-2">
             {isModal && onClose && (
               <button
@@ -152,111 +151,107 @@ const TermsAcceptanceModal = ({ onClose, isModal = false }) => {
                 <XMarkIcon className="w-5 h-5 text-gray-500" />
               </button>
             )}
-            <span className="text-sm text-[#5F22D9] font-semibold">
-              {Math.round(scrollProgress)}%
-            </span>
+            <div className="flex flex-col items-end">
+              <span className="text-xs font-medium text-gray-400">Read Progress</span>
+              <span className="text-sm text-[#5F22D9] font-bold">
+                {Math.round(scrollProgress)}%
+              </span>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Scrollable Content */}
-      <div 
-        ref={scrollContainerRef}
-        onScroll={handleScroll}
-        className="flex-1 overflow-y-auto px-8 py-6 scroll-smooth"
-        style={{ scrollBehavior: 'smooth' }}
-      >
-        <MOUContent vendorData={vendorData} />
+      {/* Main Content Area - Scrollable with pinned buttons */}
+      <div className="flex-1 relative overflow-hidden flex flex-col">
+        <div
+          ref={scrollContainerRef}
+          onScroll={handleScroll}
+          className="flex-1 overflow-y-auto px-8 py-6 scroll-smooth scrollbar-thin scrollbar-thumb-gray-200"
+          style={{ scrollBehavior: 'smooth' }}
+        >
+          <MOUContent vendorData={vendorData} />
+        </div>
+
+        {/* Navigation Buttons - Locked in bottom right of the text area */}
+        <div className="absolute right-6 bottom-6 flex flex-col gap-2 z-20">
+          <button
+            onClick={scrollToTop}
+            className="p-3 bg-white shadow-xl rounded-full border border-gray-200 hover:bg-purple-50 hover:border-[#5F22D9] transition-all duration-200 group active:scale-95 flex items-center justify-center"
+            title="Scroll to top"
+          >
+            <ChevronUpIcon className="w-6 h-6 text-gray-500 group-hover:text-[#5F22D9]" />
+          </button>
+          <button
+            onClick={scrollToBottom}
+            className="p-3 bg-white shadow-xl rounded-full border border-gray-200 hover:bg-purple-50 hover:border-[#5F22D9] transition-all duration-200 group active:scale-95 flex items-center justify-center"
+            title="Scroll to bottom"
+          >
+            <ChevronDownIcon className="w-6 h-6 text-gray-500 group-hover:text-[#5F22D9]" />
+          </button>
+        </div>
       </div>
 
-      {/* Navigation Buttons - Bottom right corner */}
-      <div className="absolute right-4 bottom-28 flex flex-col gap-2 z-10">
-        <button
-          onClick={scrollToTop}
-          className="p-2 bg-white shadow-lg rounded-full border border-gray-200 hover:bg-purple-50 hover:border-[#5F22D9] transition-all duration-200 group"
-          title="Scroll to top"
-        >
-          <ChevronUpIcon className="w-5 h-5 text-gray-500 group-hover:text-[#5F22D9]" />
-        </button>
-        <button
-          onClick={scrollToBottom}
-          className="p-2 bg-white shadow-lg rounded-full border border-gray-200 hover:bg-purple-50 hover:border-[#5F22D9] transition-all duration-200 group"
-          title="Scroll to bottom"
-        >
-          <ChevronDownIcon className="w-5 h-5 text-gray-500 group-hover:text-[#5F22D9]" />
-        </button>
-      </div>
-
-      {/* Footer with Agreement Button */}
-      <div className="px-6 py-4 border-t border-gray-100 bg-gray-50">
-        {/* Scroll hint when not scrolled */}
+      {/* Footer - Fixed to bottom */}
+      <div className="flex-none px-8 py-4 border-t border-gray-100 bg-gray-50">
         {!hasScrolledToBottom && (
-          <div className="flex items-center justify-center gap-2 mb-3 text-amber-600 bg-amber-50 py-2 px-4 rounded-lg">
+          <div className="flex items-center justify-center gap-2 mb-3 text-amber-600 bg-amber-50 py-2 px-4 rounded-lg animate-fadeIn">
             <ChevronDownIcon className="w-4 h-4 animate-bounce" />
-            <span className="text-sm font-medium">Scroll down to read the entire agreement</span>
+            <span className="text-sm font-medium">Please scroll to the bottom of the terms</span>
           </div>
         )}
 
-        {/* Success indicator when scrolled */}
         {hasScrolledToBottom && (
-          <div className="flex items-center justify-center gap-2 mb-3 text-green-600 bg-green-50 py-2 px-4 rounded-lg">
+          <div className="flex items-center justify-center gap-2 mb-3 text-green-600 bg-green-50 py-2 px-4 rounded-lg animate-fadeIn">
             <CheckCircleIcon className="w-4 h-4" />
-            <span className="text-sm font-medium">You've read the entire agreement</span>
+            <span className="text-sm font-medium">Agreement fully read</span>
           </div>
         )}
 
         <button
           onClick={handleAgree}
           disabled={!hasScrolledToBottom || isSubmitting || !vendorData}
-          className={`w-full py-3 px-6 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${
-            hasScrolledToBottom && !isSubmitting && vendorData
-              ? 'bg-[#5F22D9] text-white hover:bg-[#4A1BB8] shadow-lg hover:shadow-xl hover:scale-[1.02]'
-              : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-          }`}
+          className={`w-full py-3 px-6 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${hasScrolledToBottom && !isSubmitting && vendorData
+            ? 'bg-[#5F22D9] text-white hover:bg-[#4A1BB8] shadow-lg hover:shadow-xl hover:scale-[1.01] active:scale-[0.99]'
+            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            }`}
         >
           {isSubmitting ? (
-            <>
+            <div className="flex items-center gap-2">
               <BeatLoader color="#ffffff" size={8} />
-              <span>Processing...</span>
-            </>
+              <span>Accepting...</span>
+            </div>
           ) : (
             <>
               <CheckCircleIcon className="w-5 h-5" />
-              <span>I Agree to the Terms & Conditions</span>
+              <span>Accept Terms & Conditions</span>
             </>
           )}
         </button>
 
-        <p className="text-xs text-gray-500 text-center mt-3">
-          By clicking "I Agree", you accept the Memorandum of Understanding and all terms stated above.
+        <p className="text-[10px] text-gray-400 text-center mt-3">
+          I acknowledge that I have read and agree to all terms of the Memorandum of Understanding.
         </p>
       </div>
-    </>
+    </div>
   );
 
   if (isModal) {
     return (
-      <div 
-        className={`fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 transition-opacity duration-300 ${
-          isVisible ? 'opacity-100' : 'opacity-0'
-        }`}
-      >
-        <div 
-          className={`relative flex flex-col w-full max-w-4xl bg-white h-[90vh] max-h-[850px] rounded-[24px] shadow-lg overflow-hidden transition-all duration-300 ${
-            isVisible ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-95 translate-y-4'
+      <div
+        className={`fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 transition-opacity duration-300 ${isVisible ? 'opacity-100' : 'opacity-0'
           }`}
+      >
+        <div
+          className={`relative flex flex-col w-full max-w-4xl bg-white h-[90vh] max-h-[850px] rounded-[24px] shadow-lg overflow-hidden transition-all duration-300 ${isVisible ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-95 translate-y-4'
+            }`}
         >
-          {content}
+          {termsContent}
         </div>
       </div>
     );
   }
 
-  return (
-    <div className="relative flex flex-col w-full lg:w-[60%] bg-white lg:h-[80vh] max-h-[850px] rounded-[24px] shadow-lg overflow-hidden mt-10 lg:mt-20">
-      {content}
-    </div>
-  );
+  return termsContent;
 };
 
 export default TermsAcceptanceModal;

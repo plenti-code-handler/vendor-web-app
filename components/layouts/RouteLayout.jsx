@@ -3,7 +3,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import {
-    PublicLayout, 
+    PublicLayout,
     BusinessLayout,
     OnboardLayout,
 } from "./AllLayouts";
@@ -24,14 +24,8 @@ export const RouteLayout = ({ children }) => {
     // Onboarding pages - handled by OnboardLayout with centralized routing
     const onboardPages = [
         "/",
-        "/verify_email",
-        "/verify_otp",
-        "/complete_profile",
-        "/accountProcessing", 
+        "/onboard",
         "/forgetPassword",
-        "/terms-acceptance",
-        "/pricing",
-        "/accountApproved",
     ];
     const isOnboardPage = onboardPages.includes(pathname);
 
@@ -48,5 +42,5 @@ export const RouteLayout = ({ children }) => {
         return <PublicLayout>{children}</PublicLayout>;
     }
 };
-    
+
 export default RouteLayout;

@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import axiosClient from "../../../AxiosClient";
-import { 
-  EnvelopeIcon, 
-  LockClosedIcon, 
+import {
+  EnvelopeIcon,
+  LockClosedIcon,
   ArrowRightIcon,
   EyeIcon,
   EyeSlashIcon
@@ -15,7 +15,8 @@ import {
 import { useGoogleAuth } from "../../../hooks/useGoogleAuth";
 import GoogleAuthButton from "../../buttons/GoogleAuthButton";
 
-const LoginForm = () => {
+const LoginForm = ({ refreshState }) => {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -52,23 +53,26 @@ const LoginForm = () => {
 
     try {
       const response = await axiosClient.post("/v1/vendor/me/login", loginData);
-      
+
       if (response.status === 200) {
         const { access_token, vendor } = response.data;
+        console.log(vendor, "shine")
         localStorage.setItem("token", access_token);
         localStorage.setItem("user", JSON.stringify(vendor));
-        
-        // OnboardLayout will handle routing based on vendor state
-        toast.success("Login successful");
-        
-        // Trigger a page reload to let OnboardLayout handle routing
-        // Alternatively, we could dispatch an action to refresh vendor data
-        // For now, reload to ensure OnboardLayout picks up the new token
-        window.location.href = "/";
+
+        // Trigger layout refresh
+        if (refreshState) refreshState();
+
+        // Smart redirect based on account status
+        if (vendor?.is_active) {
+          router.push("/business");
+        } else {
+          router.push("/onboard");
+        }
       }
     } catch (error) {
       console.log(error);
-      
+
       if (error.response?.status === 401) {
         toast.error("Invalid email or password");
       } else if (error.response?.status === 403) {
@@ -78,7 +82,7 @@ const LoginForm = () => {
       } else {
         toast.error("Login failed. Please try again.");
       }
-      
+
     } finally {
       setLoading(false);
     }
@@ -100,11 +104,11 @@ const LoginForm = () => {
               Sign in to your business account
             </p>
           </div>
-          
+
           <div className="flex items-center space-x-2 text-sm">
             <span className="text-gray-500">New to Plenti?</span>
-            <Link 
-              href="/verify_email"
+            <Link
+              href="/onboard"
               className="text-[#5F22D9] font-medium hover:text-[#4A1BB8] transition-colors duration-200 underline-offset-4 hover:underline"
             >
               Create account
@@ -116,18 +120,16 @@ const LoginForm = () => {
         <div className="space-y-2">
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <EnvelopeIcon className={`h-5 w-5 transition-colors duration-200 ${
-                focusedField === 'email' ? 'text-[#5F22D9]' : 'text-gray-400'
-              }`} />
+              <EnvelopeIcon className={`h-5 w-5 transition-colors duration-200 ${focusedField === 'email' ? 'text-[#5F22D9]' : 'text-gray-400'
+                }`} />
             </div>
             <input
-              className={`w-full pl-10 pr-4 py-3 border rounded-xl text-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#5F22D9]/20 focus:border-[#5F22D9] ${
-                errors.email 
-                  ? 'border-red-300 bg-red-50' 
-                  : focusedField === 'email'
+              className={`w-full pl-10 pr-4 py-3 border rounded-xl text-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#5F22D9]/20 focus:border-[#5F22D9] ${errors.email
+                ? 'border-red-300 bg-red-50'
+                : focusedField === 'email'
                   ? 'border-[#5F22D9] bg-white'
                   : 'border-gray-200 bg-gray-50 hover:bg-white hover:border-gray-300'
-              }`}
+                }`}
               placeholder="Enter your email"
               onFocus={() => setFocusedField('email')}
               onBlur={() => setFocusedField(null)}
@@ -157,19 +159,17 @@ const LoginForm = () => {
         <div className="space-y-2">
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <LockClosedIcon className={`h-5 w-5 transition-colors duration-200 ${
-                focusedField === 'password' ? 'text-[#5F22D9]' : 'text-gray-400'
-              }`} />
+              <LockClosedIcon className={`h-5 w-5 transition-colors duration-200 ${focusedField === 'password' ? 'text-[#5F22D9]' : 'text-gray-400'
+                }`} />
             </div>
             <input
               type={showPassword ? "text" : "password"}
-              className={`w-full pl-10 pr-12 py-3 border rounded-xl text-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#5F22D9]/20 focus:border-[#5F22D9] ${
-                errors.password 
-                  ? 'border-red-300 bg-red-50' 
-                  : focusedField === 'password'
+              className={`w-full pl-10 pr-12 py-3 border rounded-xl text-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#5F22D9]/20 focus:border-[#5F22D9] ${errors.password
+                ? 'border-red-300 bg-red-50'
+                : focusedField === 'password'
                   ? 'border-[#5F22D9] bg-white'
                   : 'border-gray-200 bg-gray-50 hover:bg-white hover:border-gray-300'
-              }`}
+                }`}
               placeholder="Enter your password"
               onFocus={() => setFocusedField('password')}
               onBlur={() => setFocusedField(null)}
@@ -211,11 +211,10 @@ const LoginForm = () => {
         <button
           type="submit"
           disabled={loading || googleLoading}
-          className={`group relative w-full flex items-center justify-center px-6 py-3 border border-transparent text-sm font-medium rounded-xl text-white transition-all duration-300 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5F22D9] ${
-            loading || googleLoading
-              ? 'bg-gray-400 cursor-not-allowed' 
-              : 'bg-[#5F22D9] hover:bg-[#4A1BB8] shadow-lg hover:shadow-xl'
-          }`}
+          className={`group relative w-full flex items-center justify-center px-6 py-3 border border-transparent text-sm font-medium rounded-xl text-white transition-all duration-300 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5F22D9] ${loading || googleLoading
+            ? 'bg-gray-400 cursor-not-allowed'
+            : 'bg-[#5F22D9] hover:bg-[#4A1BB8] shadow-lg hover:shadow-xl'
+            }`}
         >
           {loading ? (
             <div className="flex items-center space-x-2">
@@ -241,7 +240,7 @@ const LoginForm = () => {
         </div>
 
         {/* Google Sign-In Button */}
-        <GoogleAuthButton 
+        <GoogleAuthButton
           onSuccess={(response) => handleGoogleAuth(response, false)}
           onError={() => handleGoogleError(false)}
           text="continue_with"
@@ -261,8 +260,8 @@ const LoginForm = () => {
         <div className="text-center space-y-2">
           <p className="text-xs text-gray-500">
             Need help?{" "}
-            <Link 
-              href="/contactus" 
+            <Link
+              href="/contactus"
               className="text-[#5F22D9] hover:text-[#4A1BB8] transition-colors duration-200 underline-offset-4 hover:underline"
             >
               Contact support
