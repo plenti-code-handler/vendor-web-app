@@ -5,7 +5,7 @@ import ItemTemplates from "../../../../components/sections/bussiness/bags/ItemTe
 
 const Page = () => {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col animate-slide-in-left">
       <TableContainer />
       <ItemTemplates />
     </div>
