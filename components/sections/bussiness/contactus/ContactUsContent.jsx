@@ -15,7 +15,7 @@ const ContactUsContent = ({ showBackButton = true }) => {
   const router = useRouter();
 
   return (
-    <div className="p-10">
+    <div className="p-10 animate-slide-in-left">
       {showBackButton && (
         <button
           onClick={() => router.back()}

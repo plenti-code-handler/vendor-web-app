@@ -82,12 +82,12 @@ const Breadcrumb = () => {
         <p className="m-4 text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold text-one">
           {currentPath === "Manage Bags" ? "Manage Bags" : currentPath}
         </p>
-  
+
         {/* Right side container */}
         <div className="flex items-center space-x-4">
           {/* ✅ Reusable Greeting Banner */}
           <GreetingBanner variant="default" />
-  
+
           {/* Existing button */}
           {currentPath === "Manage Bags" && (
             <PrimaryButton

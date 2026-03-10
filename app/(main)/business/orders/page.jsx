@@ -3,7 +3,7 @@ import RecentOrders from "../../../../components/sections/bussiness/dashboard/Re
 
 const Page = () => {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col animate-slide-in-left">
       <RecentOrders />
     </div>
   );
