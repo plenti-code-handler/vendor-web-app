@@ -2,27 +2,28 @@
  * Catalogue / pricing utility functions and constants.
  */
 
+import { catalogue_limits } from '../constants/catalogue';
 import { ALL_ITEM_TYPES } from '../constants/itemTypes';
 
-// Max number of pricing entries per item type
-export const PRICING_LIMITS_BY_ITEM_TYPE = {
-  MEAL: 3,
-  BAKED_GOODS: 3,
-  SNACKS_AND_DESSERT: 4,
-};
 
 export const PRICING_LIMIT_REACHED_MESSAGE =
   'The pricing limit has already been reached. Please contact support to add more.';
 
 /** @returns {number} Max pricing entries allowed for the given item type (default 3 if unknown). */
-export const getPricingLimit = (itemType) => {
-  const limit = PRICING_LIMITS_BY_ITEM_TYPE[itemType];
-  return typeof limit === 'number' ? limit : 3;
+export const getPricingLimit = (itemType, vendorId) => {
+  const itemTypeLimits = catalogue_limits[itemType];
+  if (!itemTypeLimits) return 3;
+
+  if (vendorId && typeof itemTypeLimits[vendorId] === 'number') {
+    return itemTypeLimits[vendorId];
+  }
+
+  return typeof itemTypeLimits.default === 'number' ? itemTypeLimits.default : 3;
 };
 
 /** @returns {boolean} True if another pricing entry can be added for this item type. */
-export const canAddPricing = (itemType, currentCount) => {
-  const limit = getPricingLimit(itemType);
+export const canAddPricing = (itemType, currentCount, vendorId) => {
+  const limit = getPricingLimit(itemType, vendorId);
   return currentCount < limit;
 };
 
