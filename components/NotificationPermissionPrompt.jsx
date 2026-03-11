@@ -30,7 +30,9 @@ const NotificationPermissionPrompt = () => {
       await initMessaging();
       setReady(true);
       setPermission(Notification.permission);
-      if (Notification.permission === 'default') {
+      const prod = localStorage.getItem('prod');
+
+      if (Notification.permission === 'default' && prod === 'true') {
         const t = setTimeout(() => setShow(true), 1200);
         return () => clearTimeout(t);
       } else if (Notification.permission === 'granted') {
@@ -87,14 +89,14 @@ const NotificationPermissionPrompt = () => {
       }
 
       console.log('🔍 Fetching FCM token - prod mode is enabled');
-      
+
       const registration = await navigator.serviceWorker.getRegistration();
       const messaging = getMessagingInstance();
       if (!registration || !messaging) {
         console.log('⚠️ Service worker or messaging not ready');
         return;
       }
-      
+
       const vapidKey = process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY;
       if (!vapidKey) {
         console.log('⚠️ VAPID key not configured');
@@ -158,15 +160,15 @@ const NotificationPermissionPrompt = () => {
   }
 
   if (!ready || !show || permission !== 'default') return null;
-  
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
       <div className="w-full max-w-md rounded-2xl bg-white shadow-2xl overflow-hidden">
         <div className="p-6 sm:p-7">
           <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-[#5f22d91a]">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="#5f22d9" className="size-6">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
-          </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="#5f22d9" className="size-6">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+            </svg>
           </div>
           <h3 className="text-xl font-semibold text-gray-900">Enable order notifications</h3>
           <p className="mt-2 text-sm leading-6 text-gray-600">
