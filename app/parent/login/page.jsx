@@ -1,5 +1,5 @@
 import ParentLoginForm from "../../../components/sections/auth/ParentLoginForm";
-import AuthLeftContent from "../../../components/layouts/AuthLeftContent";
+import AuthLeftContent from "../../../components/auth/AuthLeftContent";
 
 export default function ParentLoginPage() {
   return (

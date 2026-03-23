@@ -1,8 +1,3 @@
-import React from "react";
-import BussinessHeader from "./BussinessHeader";
+"use client";
 
-const Header = () => {
-  return <BussinessHeader />;
-};
-
-export default Header;
+export { default } from "../navigation/Header";

@@ -11,7 +11,9 @@ import {
   LockClosedIcon,
   ArrowRightIcon,
   EyeIcon,
-  EyeSlashIcon
+  EyeSlashIcon, 
+  ArrowUpRightIcon,
+  ShoppingBagIcon
 } from "@heroicons/react/24/outline";
 import { useGoogleAuth } from "../../../hooks/useGoogleAuth";
 import GoogleAuthButton from "../../buttons/GoogleAuthButton";
@@ -99,15 +101,17 @@ const LoginForm = ({ refreshState }) => {
         <div className="space-y-3">
             <div className="space-y-2">
             <div className="flex items-center gap-3">
+              <ShoppingBagIcon className="h-5 w-5 text-[#5F22D9]" />
               <h1 className="text-2xl font-semibold text-gray-900">
-                Welcome back
+                Outlet Login
               </h1>
               <SecondaryButton
                 onClick={() => router.push("/parent/login")}
                 disabled={pathname?.startsWith?.("/parent")}
-                className="px-[5px] py-[5px] text-xs hover:scale-100"
+                className="px-[5px] py-[5px] text-xs hover:scale-100 flex items-center gap-1"
               >
-                Parent login
+                Admin login
+                <ArrowRightIcon className="h-3 w-3 transition-transform duration-200 group-hover:translate-x-1" />
               </SecondaryButton>
             </div>
             <p className="text-gray-600 text-sm">

@@ -123,9 +123,10 @@ const ParentLoginForm = () => {
               <SecondaryButton
                 onClick={() => router.push("/")}
                 disabled={pathname === "/"}
-                className="px-[5px] py-[5px] text-xs hover:scale-100"
+                className="px-[5px] py-[5px] text-xs hover:scale-100 flex items-center gap-1"
               >
-                Outlet login
+                Outlet Login
+                <ArrowRightIcon className="h-3 w-3 transition-transform duration-200 group-hover:translate-x-1" />
               </SecondaryButton>
             </div>
             <p className="text-gray-600 text-sm">

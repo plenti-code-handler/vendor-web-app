@@ -14,6 +14,14 @@ axiosClient.interceptors.request.use(async (config) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+
+  // Parent -> outlet routing: use the same parent token but pass the outlet id.
+  const role = localStorage.getItem("role");
+  const targetVendorId = localStorage.getItem("target_vendor_id");
+  if (role === "PARENT" && targetVendorId) {
+    config.headers["X-Vendor-ID"] = targetVendorId;
+  }
+
   return config;
 });
 
@@ -30,6 +38,13 @@ axiosFormClient.interceptors.request.use(async (config) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+
+  const role = localStorage.getItem("role");
+  const targetVendorId = localStorage.getItem("target_vendor_id");
+  if (role === "PARENT" && targetVendorId) {
+    config.headers["X-Vendor-ID"] = targetVendorId;
+  }
+
   return config;
 });
 

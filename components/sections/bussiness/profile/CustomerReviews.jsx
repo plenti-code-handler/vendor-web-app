@@ -33,7 +33,7 @@ const CustomerReviews = ({ reviews }) => {
               <div className="flex gap-1 items-center">
                 <img
                   alt="User"
-                  src={review.imageUrl || "/User.png"}
+                  src={review.imageUrl || "/User.jpeg"}
                   className="rounded-full h-10 w-10 object-cover"
                 />
                 <p className="font-semibold text-sm text-black">

@@ -12,7 +12,7 @@ import {
 import { fetchCatalogue, fetchCatalogueRequest } from "../../redux/slices/catalogueSlice";
 import BeatLoader from "react-spinners/BeatLoader";
 import axiosClient from "../../AxiosClient";
-import AuthLeftContent from "./AuthLeftContent";
+import AuthLeftContent from "../auth/AuthLeftContent";
 import OnboardingTimeline from "../common/OnboardingTimeLine";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 

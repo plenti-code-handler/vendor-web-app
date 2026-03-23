@@ -17,7 +17,7 @@ const AdminProfileDropdown = ({ imageUrl }) => {
         <MenuButton className="flex items-center rounded-md text-sm focus:outline-none mr-2 focus:ring-2 focus:ring-secondary hover:ring-2 hover:ring-secondary">
           <img
             alt="User"
-            src={imageUrl || "/User.png"}
+            src={imageUrl || "/User.jpeg"}
             className="h-8 w-8 lg:h-9 lg:w-12 rounded-md hover:cursor-pointer focus:outline-none"
           />
         </MenuButton>

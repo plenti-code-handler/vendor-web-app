@@ -1,14 +1,4 @@
-import BussinessHeader from "./BussinessHeader";
+"use client";
 
-import Main from "./Main";
+export { default } from "../shell/ProtectedRoute";
 
-const ProtectedRoute = ({ children }) => {
-  return (
-    <>
-      <BussinessHeader />
-      <Main>{children}</Main>
-    </>
-  );
-};
-
-export default ProtectedRoute;

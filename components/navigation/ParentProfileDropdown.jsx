@@ -2,27 +2,29 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useDispatch } from "react-redux";
-import { logoutVendor } from "../../redux/slices/vendorSlice";
-import { logoutIconSvg } from "../../svgs";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 
-const ProfileDropdown = () => {
+import { logoutIconSvg } from "../../svgs";
+import { clearParentData, selectParentData } from "../../redux/slices/parentSlice";
+
+const ParentProfileDropdown = () => {
   const router = useRouter();
   const dispatch = useDispatch();
+  const parentData = useSelector(selectParentData);
   const [logo, setLogo] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const handleProfileClick = () => {
-    router.replace("/business/profile");
+    router.replace("/parent/profile");
     setIsDropdownOpen(false);
   };
 
   const handleLogout = async () => {
     toast.success("Signed Out Successfully!");
-    dispatch(logoutVendor());
-    router.push("/");
+    dispatch(clearParentData());
     localStorage.clear();
+    router.push("/parent/login");
     setIsDropdownOpen(false);
   };
 
@@ -30,43 +32,38 @@ const ProfileDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (isDropdownOpen && !event.target.closest('.profile-dropdown')) {
+      if (isDropdownOpen && !event.target.closest(".profile-dropdown")) {
         setIsDropdownOpen(false);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isDropdownOpen]);
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      const vendorLogo = localStorage.getItem("logo");
-      if (vendorLogo) {
-        setLogo(vendorLogo);
-      }
-    }, 2000);
-
-    return () => clearTimeout(timeout);
-  }, []);
+    // Prefer parentData logo_url; otherwise fall back to placeholder.
+    setLogo(parentData?.logo_url || "");
+  }, [parentData]);
 
   return (
     <div className="relative inline-block text-left profile-dropdown">
       <button
         onClick={toggleDropdown}
-        className="flex items-center h-9 w-9 sm:h-10 sm:w-10 lg:h-10 lg:w-10 rounded-full focus:outline-none hover:ring-2 hover:ring-white/20 transition-all"
+        className="flex items-center gap-5 justify-end h-9 sm:h-10 rounded-full focus:outline-none hover:ring-2 hover:ring-white/20 transition-all"
       >
+        <span className="text-sm font-semibold text-gray-500 text-right truncate max-w-[160px]">
+          {parentData?.legal_name}
+        </span>
         <img
           alt="User"
           src={logo || "/User.jpeg"}
-          className="rounded-[6px] object-cover w-full h-full rounded-full hover:cursor-pointer focus:outline-none"
+          className="rounded-[6px] object-cover w-9 h-9 lg:w-10 lg:h-10 rounded-full hover:cursor-pointer focus:outline-none"
         />
       </button>
 
-      {/* Dropdown Menu with fade-down animation */}
       {isDropdownOpen && (
         <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200 animate-fade-down">
           <button
@@ -93,9 +90,7 @@ const ProfileDropdown = () => {
             onClick={handleLogout}
             className="flex items-center w-full px-4 py-2 text-sm hover:bg-gray-100 transition-colors duration-200 text-red-500"
           >
-            <div className="w-4 h-4 mr-3">
-              {logoutIconSvg}
-            </div>
+            <div className="w-4 h-4 mr-3">{logoutIconSvg}</div>
             Logout
           </button>
         </div>
@@ -104,4 +99,5 @@ const ProfileDropdown = () => {
   );
 };
 
-export default ProfileDropdown;
+export default ParentProfileDropdown;
+
