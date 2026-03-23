@@ -28,6 +28,7 @@ const Account = () => {
   const [isUpdating, setIsUpdating] = useState(false); // Add loading state for update button
   const [formData, setFormData] = useState({
     vendor_name: "",
+    username: "",
     owner_name: "", 
     store_manager_name: "", // Add store_manager_name field
     vendor_type: "",
@@ -63,6 +64,7 @@ const Account = () => {
       setOriginalData(vendorData);
       setFormData({
         vendor_name: vendorData.vendor_name || "",
+        username: vendorData.username || "",
         owner_name: vendorData.owner_name || "", // Add owner_name
         store_manager_name: vendorData.store_manager_name || "", // Add store_manager_name
         vendor_type: vendorData.vendor_type || "",
@@ -193,6 +195,7 @@ const Account = () => {
   const handleDiscardChanges = () => {
     setFormData({
       vendor_name: originalData.vendor_name || "",
+      username: originalData.username || "",
       owner_name: originalData.owner_name || "", // Add owner_name
       store_manager_name: originalData.store_manager_name || "", // Add store_manager_name
       vendor_type: originalData.vendor_type || "",
@@ -224,6 +227,7 @@ const Account = () => {
       // Prepare data for API call - convert empty strings to null for phone_number
       const apiData = {
         ...formData,
+        username: formData.username.trim() === "" ? null : formData.username.trim(),
         phone_number: formData.phone_number.trim() === "" ? null : formData.phone_number.trim(),
         // Also handle other fields that might need null conversion
         owner_name: formData.owner_name.trim() === "" ? null : formData.owner_name.trim(),
@@ -271,6 +275,22 @@ const Account = () => {
           placeholder="Store Name"
           name="vendor_name"
           value={formData.vendor_name}
+          onChange={handleChange}
+        />
+        <p className="text-xs text-gray-500 mt-1 ml-1">
+          This will be displayed name on the Plenti app
+        </p>
+      </div>
+
+      <div>
+        <h3 className="font-medium ml-1 mb-1 flex items-center">
+          Username
+          {isFieldMissing(formData.username) && <MissingBadge />}
+        </h3>
+        <TextField
+          placeholder="Username"
+          name="username"
+          value={formData.username}
           onChange={handleChange}
         />
       </div>
