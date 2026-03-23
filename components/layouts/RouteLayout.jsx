@@ -6,6 +6,7 @@ import {
     PublicLayout,
     BusinessLayout,
     OnboardLayout,
+    ParentLayout,
 } from "./AllLayouts";
 
 export const RouteLayout = ({ children }) => {
@@ -28,10 +29,17 @@ export const RouteLayout = ({ children }) => {
         "/forgetPassword",
     ];
     const isOnboardPage = onboardPages.includes(pathname);
+    const isParentPage = pathname.startsWith("/parent");
+
+    if (!isClient) {
+        return null;
+    }
 
     // Route to appropriate layout
     if (isPublicPage) {
         return <PublicLayout>{children}</PublicLayout>;
+    } else if (isParentPage) {
+        return <ParentLayout>{children}</ParentLayout>;
     } else if (isOnboardPage) {
         return <OnboardLayout>{children}</OnboardLayout>;
     } else if (pathname.startsWith("/business")) {

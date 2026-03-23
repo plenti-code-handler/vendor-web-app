@@ -17,6 +17,7 @@ import couponReducer from "./slices/couponSlice";
 import addCouponReducer from "./slices/addCouponSlice";
 import catalogueReducer from "./slices/catalogueSlice";
 import vendorReducer from "./slices/vendorSlice";
+import parentReducer from "./slices/parentSlice";
 import itemImageReducer from "./slices/itemImageSlice";
 import ratingReducer from "./slices/ratingSlice";
 
@@ -40,6 +41,7 @@ export const store = configureStore({
     addCoupon: addCouponReducer,
     catalogue: catalogueReducer,
     vendor: vendorReducer,
+    parent: parentReducer,
     itemImage: itemImageReducer,
     rating: ratingReducer,
   },
