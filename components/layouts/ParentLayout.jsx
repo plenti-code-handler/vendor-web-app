@@ -21,10 +21,14 @@ export const ParentLayout = ({ children }) => {
   useEffect(() => {
     if (!pathname?.startsWith("/parent")) return;
 
+    // Parent pages should always use the parent token directly (no outlet override).
+    // Outlet access is handled when we navigate to `/business` after clicking a tile.
+    localStorage.removeItem("target_vendor_id");
+
     const token = localStorage.getItem("token");
 
     // Only handle the exact `/parent` route.
-    if (pathname === "/parent") {
+    if (pathname === "/parent" || pathname === "/parent/login") {
       if (token) {
         router.replace("/parent/dashboard");
       } else {
@@ -38,6 +42,13 @@ export const ParentLayout = ({ children }) => {
       dispatch(fetchParentDetails(token));
     }
   }, [pathname, router, dispatch, parentData, parentLoading]);
+
+  useEffect(() => {
+    if (!pathname?.startsWith("/parent")) return;
+    if (parentData?.role) {
+      localStorage.setItem("role", parentData.role);
+    }
+  }, [pathname, parentData]);
 
   return <>{children}</>;
 };
