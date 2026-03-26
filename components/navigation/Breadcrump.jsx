@@ -50,6 +50,15 @@ const Breadcrumb = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const [pendingUsersCount] = useState(0); // Firebase logic removed
+  const [isParentRole, setIsParentRole] = useState(false);
+
+  useEffect(() => {
+    try {
+      setIsParentRole(localStorage.getItem("role") === "PARENT");
+    } catch {
+      setIsParentRole(false);
+    }
+  }, []);
 
   const handleOpenDrawer = useCallback(() => {
     dispatch(setOpenDrawer(true));
@@ -57,6 +66,10 @@ const Breadcrumb = () => {
 
   const handleBackClick = useCallback(() => {
     router.replace("/admin/users");
+  }, [router]);
+
+  const handleBackToAdmin = useCallback(() => {
+    router.replace("/parent");
   }, [router]);
 
   const currentPath = useMemo(() => decidePath(pathname), [pathname]);
@@ -77,10 +90,21 @@ const Breadcrumb = () => {
   const DefaultContent = () => {
     return (
       <div className="flex justify-between items-center lg:mr-auto lg:mt-4 lg:mb-4 lg:py-2 lg:w-[99%]">
-        {/* Dashboard Title */}
-        <p className="m-4 text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold text-one">
-          {currentPath === "Manage Bags" ? "Manage Bags" : currentPath}
-        </p>
+        <div className="flex items-center gap-3">
+          {isParentRole && (
+            <button
+              onClick={handleBackToAdmin}
+              className="ml-4 bg-gray-100 p-2 rounded-full border border-gray-300 hover:bg-gray-200"
+              aria-label="Back to admin"
+              type="button"
+            >
+              {backButtonSvg}
+            </button>
+          )}
+          <p className="m-4 text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold text-one">
+            {currentPath === "Manage Bags" ? "Manage Bags" : currentPath}
+          </p>
+        </div>
 
         {/* Right side container */}
         <div className="flex items-center space-x-4">

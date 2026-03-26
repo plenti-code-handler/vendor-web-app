@@ -34,22 +34,26 @@ const ParentBussinessHeader = () => {
 
   return (
     <header className="bg-white w-full">
-      <div className="mx-auto flex items-center justify-between px-[7%] py-4">
-        <Link href="/parent/dashboard" className="flex items-center cursor-pointer">
+      <div className="mx-auto flex items-center justify-between px-[7%] py-4 gap-3">
+        <Link
+          href="/parent/dashboard"
+          className="flex items-center cursor-pointer flex-shrink-0"
+        >
           <img
             alt="Parent Admin Logo"
             src={logoSrc}
             onError={() => setLogoFallbackError(true)}
-            className="h-8 object-contain"
+            className="h-8 sm:h-9 md:h-10 w-auto object-contain"
           />
         </Link>
 
-        <div className="flex lg:hidden gap-3 items-center">
+        <div className="flex lg:hidden gap-2 items-center flex-shrink-0">
           <ParentProfileDropdown />
           <button
             onClick={() => setIsMenuOpen(true)}
-            className="text-gray-900 hover:text-gray-700 focus:outline-none"
+            className="p-2 rounded-lg text-gray-900 hover:bg-gray-100 hover:text-gray-700 focus:outline-none"
             aria-label="Open menu"
+            type="button"
           >
             <Bars3Icon className="w-6 h-6 text-[#5F22D9]" />
           </button>
@@ -114,7 +118,7 @@ const ParentBussinessHeader = () => {
         </Dialog>
 
         {/* Desktop: horizontal nav */}
-        <nav className="hidden md:flex items-center gap-3">
+        <nav className="hidden md:flex items-center gap-3 flex-1 justify-center min-w-0">
           {parentMenuItemsData.map(({ name, href }) => (
             <Link
               key={name}
@@ -130,7 +134,7 @@ const ParentBussinessHeader = () => {
           ))}
         </nav>
 
-        <div className="hidden lg:flex items-center gap-3">
+        <div className="hidden lg:flex items-center gap-3 flex-shrink-0">
           <ParentProfileDropdown />
         </div>
       </div>

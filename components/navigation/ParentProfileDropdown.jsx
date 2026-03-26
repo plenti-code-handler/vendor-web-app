@@ -52,15 +52,15 @@ const ParentProfileDropdown = () => {
     <div className="relative inline-block text-left profile-dropdown">
       <button
         onClick={toggleDropdown}
-        className="flex items-center gap-5 justify-end h-9 sm:h-10 rounded-full focus:outline-none hover:ring-2 hover:ring-white/20 transition-all"
+        className="flex items-center gap-3 justify-end h-9 sm:h-10 rounded-full focus:outline-none hover:ring-2 hover:ring-white/20 transition-all"
       >
-        <span className="text-sm font-semibold text-gray-500 text-right truncate max-w-[160px]">
-          {parentData?.legal_name}
+        <span className="text-sm font-semibold text-gray-500 text-right truncate max-w-[110px] sm:max-w-[160px] md:max-w-[220px]">
+          {parentData?.legal_name || ""}
         </span>
         <img
           alt="User"
           src={logo || "/User.jpeg"}
-          className="rounded-[6px] object-cover w-9 h-9 lg:w-10 lg:h-10 rounded-full hover:cursor-pointer focus:outline-none"
+          className="object-cover w-9 h-9 sm:w-10 sm:h-10 rounded-full hover:cursor-pointer focus:outline-none flex-shrink-0"
         />
       </button>
 
