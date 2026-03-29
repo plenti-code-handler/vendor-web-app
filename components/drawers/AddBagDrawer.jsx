@@ -7,7 +7,8 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { setOpenDrawer } from "../../redux/slices/addBagSlice";
 import ItemTypeFilter from "../dropdowns/ItemTypeFilter";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useBackToClose } from "../../hooks/useBackToCloseModal";
 import axiosClient from "../../AxiosClient";
 import { toast } from "sonner";
 import { fetchAllBags } from "../../redux/slices/bagsSlice";
@@ -24,6 +25,7 @@ import {
   getAvailableCategories,
   getDescriptionsForDropdown,
 } from '../../utility/bagDrawerUtils';
+
 // Import reusable components
 import DrawerHeader from './components/DrawerHeader';
 import AllergensSection from './components/AllergensSection';
@@ -189,12 +191,13 @@ const AddBagDrawer = () => {
     }
   }, [open]);
 
-  
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setLoading(false);
     dispatch(setOpenDrawer(false));
-  };
-  
+  }, [dispatch]);
+
+  useBackToClose(open, handleClose);
+
   return (
     <Dialog open={open} onClose={handleClose} className="relative z-999999">
       <DialogBackdrop
