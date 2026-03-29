@@ -6,9 +6,11 @@ import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import { fetchReviews } from "../../../../redux/slices/ratingSlice";
 import RatingsContent from "../../../common/RatingsContent";
-
+import { useBackToClose } from "../../../../hooks/useBackToCloseModal";
 const RatingsModal = ({ open, onClose }) => {
   const dispatch = useDispatch();
+
+  useBackToClose(open, onClose);
 
   useEffect(() => {
     if (open) {

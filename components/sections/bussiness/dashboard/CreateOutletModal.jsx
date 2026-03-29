@@ -5,7 +5,8 @@ import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
-
+import { InformationCircleIcon } from "@heroicons/react/24/outline";
+import { useBackToClose } from "../../../../hooks/useBackToCloseModal";
 import PrimaryButton from "../../../buttons/PrimaryButton";
 import {
   createParentOutlet,
@@ -17,6 +18,8 @@ const CreateOutletModal = ({ open, onClose }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useBackToClose(open, onClose);
 
   useEffect(() => {
     if (!open) return;
@@ -109,6 +112,11 @@ const CreateOutletModal = ({ open, onClose }) => {
                   placeholder="Enter password"
                   className="mt-1 w-full border border-gray-200 rounded-xl px-4 py-3 text-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#5F22D9]/20 focus:border-[#5F22D9]"
                 />
+              </div>
+
+              <div className="pt-2 bg-yellow-100 rounded-xl px-4 py-3 flex items-center gap-2">
+                <InformationCircleIcon className="w-5 h-5 text-yellow-800" />
+                <span className="text-xs text-yellow-800">Remember this username and password, this will be required to activate your outlet</span>
               </div>
 
               <div className="pt-2 flex justify-end gap-3">

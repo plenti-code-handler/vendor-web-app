@@ -8,6 +8,7 @@ import PricingCardRow from "../sections/bussiness/profile/PricingCardRow";
 import PrimaryButton from "../buttons/PrimaryButton";
 import { ITEM_TYPE_DISPLAY_NAMES } from "../../constants/itemTypes";
 import { toast } from "sonner";
+import { useBackToClose } from "../../hooks/useBackToCloseModal";
 
 const slugify = (s) =>
   String(s)
@@ -32,6 +33,8 @@ const AddPricingModal = ({
   const [descriptions, setDescriptions] = useState([]);
   const [descriptionInput, setDescriptionInput] = useState("");
   const [showCards, setShowCards] = useState(false);
+
+  useBackToClose(open, onClose);
 
   useEffect(() => {
     if (open) {

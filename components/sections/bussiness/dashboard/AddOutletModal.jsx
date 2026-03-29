@@ -10,11 +10,14 @@ import {
   addParentOutlet,
   fetchParentOutlets,
 } from "../../../../redux/slices/parentSlice";
+import { useBackToClose } from "../../../../hooks/useBackToCloseModal";
 
 const AddOutletModal = ({ open, onClose }) => {
   const dispatch = useDispatch();
   const [username, setUsername] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useBackToClose(open, onClose);
 
   useEffect(() => {
     if (!open) return;
