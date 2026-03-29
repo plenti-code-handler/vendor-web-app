@@ -6,7 +6,8 @@ import {
 } from "@headlessui/react";
 import { useDispatch, useSelector } from "react-redux";
 import ItemTypeFilter from "../dropdowns/ItemTypeFilter";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useBackToClose } from "../../hooks/useBackToCloseModal";
 import axiosClient from "../../AxiosClient";
 import { toast } from "sonner";
 import { setOpenDrawer } from "../../redux/slices/editBagSlice";
@@ -42,6 +43,7 @@ const EditBagDrawer = () => {
   const [bestBeforeDuration, setBestBeforeDuration] = useState(60); // Add this
   const [showCustomDescription, setShowCustomDescription] = useState(false);
   const { bagToEdit, templateItem } = useSelector((state) => state.editBag);
+  const open = useSelector((state) => state.editBag.drawerOpen);
   const pricing = useSelector((state) => state.catalogue.pricing);
   const vendorData = useSelector(selectVendorData);
   const availableDescriptions = vendorData?.item_descriptions || [];
@@ -195,11 +197,11 @@ const EditBagDrawer = () => {
     }
   };
 
-  const open = useSelector((state) => state.editBag.drawerOpen);
-
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     dispatch(setOpenDrawer(false));
-  };
+  }, [dispatch]);
+
+  useBackToClose(open, handleClose);
 
   return (
     <Dialog open={open} onClose={handleClose} className="relative z-999999">
