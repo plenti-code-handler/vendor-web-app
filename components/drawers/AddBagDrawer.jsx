@@ -24,7 +24,6 @@ import {
   getAvailableCategories,
   getDescriptionsForDropdown,
 } from '../../utility/bagDrawerUtils';
-
 // Import reusable components
 import DrawerHeader from './components/DrawerHeader';
 import AllergensSection from './components/AllergensSection';
@@ -190,11 +189,12 @@ const AddBagDrawer = () => {
     }
   }, [open]);
 
+  
   const handleClose = () => {
     setLoading(false);
     dispatch(setOpenDrawer(false));
   };
-
+  
   return (
     <Dialog open={open} onClose={handleClose} className="relative z-999999">
       <DialogBackdrop

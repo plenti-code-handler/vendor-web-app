@@ -11,10 +11,11 @@ import {
 import { formatDateTime } from "../utility/FormatTime";
 import { useSelector } from "react-redux";
 import { ITEM_TYPE_ICONS, ITEM_TYPE_DISPLAY_NAMES } from "../constants/itemTypes";
+import { useBackToClose } from "../hooks/useBackToCloseModal";
 
 const Modal = ({ isOpen, onClose, item }) => {
   const pricing = useSelector((state) => state.catalogue.pricing);
-
+  useBackToClose(isOpen, onClose);
   // Keep the modal mounted while closing so transitions can run.
   if (!item) return null;
 
