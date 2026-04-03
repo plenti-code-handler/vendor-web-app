@@ -78,6 +78,10 @@ module.exports = {
           '0%': { transform: 'translateX(-30px)', opacity: '0' },
           '100%': { transform: 'translateX(0)', opacity: '1' },
         },
+        vendorReportShimmer: {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(320%)' },
+        },
       },
       animation: {
         'fade-in': 'fadeIn 0.15s ease-out',
@@ -85,6 +89,7 @@ module.exports = {
         'popout': 'popout 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
         'slide-in-right': 'slideInRight 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)',
         'slide-in-left': 'slideInLeft 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)',
+        'vendor-report-shimmer': 'vendorReportShimmer 1.4s ease-in-out infinite',
       },
       colors: {
         // texts
