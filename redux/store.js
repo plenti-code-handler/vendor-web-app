@@ -20,6 +20,7 @@ import vendorReducer from "./slices/vendorSlice";
 import parentReducer from "./slices/parentSlice";
 import itemImageReducer from "./slices/itemImageSlice";
 import ratingReducer from "./slices/ratingSlice";
+import vendorReportsReducer from "./slices/vendorReportsSlice";
 
 export const store = configureStore({
   reducer: {
@@ -44,6 +45,7 @@ export const store = configureStore({
     parent: parentReducer,
     itemImage: itemImageReducer,
     rating: ratingReducer,
+    vendorReports: vendorReportsReducer,
   },
   devTools: process.env.NODE_ENV !== "production",
 });
