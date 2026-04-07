@@ -42,7 +42,7 @@ function normStatus(status) {
 
 /** PENDING: card emphasis, StatusBadge pulse, and top-row list polling. */
 function isReportInProgressStatus(status) {
-  return normStatus(status) === "PENDING";
+  return normStatus(status) === "PENDING" || normStatus(status) === "RUNNING";
 }
 
 function canReportJobDownload(job) {
