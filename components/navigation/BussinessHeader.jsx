@@ -185,7 +185,7 @@ const BussinessHeader = () => {
                           </button>
                         </div>
                         <nav className="flex flex-col gap-1">
-                          {menuItemsData.map(({ name, href, showNewBadge }) => (
+                          {menuItemsData.map(({ name, href }) => (
                             <Link
                               key={name}
                               href={href}
@@ -199,14 +199,7 @@ const BussinessHeader = () => {
                                 setIsMenuOpen(false);
                               }}
                             >
-                              <span className="inline-flex flex-wrap items-center gap-2">
-                                {name}
-                                {showNewBadge && (
-                                  <span className="inline-flex items-center rounded-md px-1.5 py-0.5 text-[10px] font-bold uppercase leading-none tracking-wide text-sky-900 bg-sky-300">
-                                    BETA
-                                  </span>
-                                )}
-                              </span>
+                              {name}
                             </Link>
                           ))}
                         </nav>
@@ -220,7 +213,7 @@ const BussinessHeader = () => {
 
           {/* Desktop: horizontal nav */}
           <nav className="hidden lg:flex flex-col justify-center items-start lg:flex-row gap-4">
-            {menuItemsData.map(({ name, href, showNewBadge }) => (
+            {menuItemsData.map(({ name, href }) => (
               <Link
                 key={name}
                 href={href}
@@ -231,14 +224,7 @@ const BussinessHeader = () => {
                 }`}
                 onClick={() => handleLinkClick(name)}
               >
-                <span className="inline-flex items-center gap-2">
-                  {name}
-                  {showNewBadge && (
-                    <span className="inline-flex items-center rounded-md px-1.5 py-0.5 text-[10px] font-bold uppercase leading-none tracking-wide text-sky-900 bg-sky-300">
-                      BETA
-                    </span>
-                  )}
-                </span>
+                {name}
               </Link>
             ))}
           </nav>

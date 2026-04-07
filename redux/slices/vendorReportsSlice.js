@@ -1,7 +1,15 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosClient from "../../AxiosClient";
 
+/** Default tab / list filter — must match backend AsyncJobTypes. */
 export const REPORT_JOB_TYPE = "VENDOR_ORDER_REPORT";
+
+export const REPORT_TYPES = {
+  ORDERS: "VENDOR_ORDER_REPORT",
+  PAYMENTS: "VENDOR_PAYMENTS_REPORT",
+  REFUNDS: "VENDOR_REFUNDS_REPORT",
+  PAYOUTS: "VENDOR_PAYOUTS_REPORT",
+};
 
 const reportListUrl = `/v2/vendor/report`;
 
@@ -21,9 +29,13 @@ export const fetchVendorReports = createAsyncThunk(
 
 export const requestOrderReport = createAsyncThunk(
   "vendorReports/requestOrder",
-  async ({ start_ts, end_ts }, { rejectWithValue }) => {
+  async ({ start_ts, end_ts, report_type = REPORT_JOB_TYPE }, { rejectWithValue }) => {
     try {
-      const { data } = await axiosClient.post(reportListUrl, { start_ts, end_ts });
+      const { data } = await axiosClient.post(reportListUrl, {
+        start_ts,
+        end_ts,
+        report_type,
+      });
       return data;
     } catch (e) {
       const d = e.response?.data?.detail;

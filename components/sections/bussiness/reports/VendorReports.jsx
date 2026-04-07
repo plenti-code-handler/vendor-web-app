@@ -1,10 +1,9 @@
 "use client";
 
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   ArrowPathIcon,
-  ChevronDownIcon,
   DocumentArrowDownIcon,
 } from "@heroicons/react/24/outline";
 import { toast } from "sonner";
@@ -14,6 +13,7 @@ import {
   requestOrderReport,
   fetchReportDownloadUrl,
   clearDownloadError,
+  REPORT_TYPES,
 } from "../../../../redux/slices/vendorReportsSlice";
 import {
   istStartOfDayUnix,
@@ -21,25 +21,73 @@ import {
   formatUnixIst,
 } from "../../../../utility/istUnix";
 
-const REPORT_TYPES = [{ label: "Orders", value: "orders" }];
+const REPORT_TABS = [
+  { key: "orders", label: "Orders", reportType: REPORT_TYPES.ORDERS, enabled: true },
+  { key: "payments", label: "Payments", reportType: REPORT_TYPES.PAYMENTS, enabled: false },
+  { key: "refunds", label: "Refunds", reportType: REPORT_TYPES.REFUNDS, enabled: false },
+  { key: "payouts", label: "Payouts", reportType: REPORT_TYPES.PAYOUTS, enabled: false },
+];
+
+const REPORT_POLL_INTERVAL_MS = 10_000;
+const NEW_REPORT_MAX_AGE_SEC = 5 * 60;
+
+const FIELD_LABEL_CLASS =
+  "text-xs font-medium uppercase tracking-wide text-slate-500";
+const DATE_INPUT_CLASS =
+  "w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none ring-[#5f22d9]/20 transition focus:border-[#5f22d9] focus:ring-2";
+
+function normStatus(status) {
+  return (status || "").toUpperCase();
+}
+
+/** PENDING: card emphasis, StatusBadge pulse, and top-row list polling. */
+function isReportInProgressStatus(status) {
+  return normStatus(status) === "PENDING";
+}
+
+function canReportJobDownload(job) {
+  return normStatus(job.status) === "READY" && Boolean(job.response?.s3_key);
+}
+
+function reportTabButtonClass({ selected, disabled }) {
+  const base =
+    "inline-flex min-h-[2.5rem] shrink-0 items-center gap-2 rounded-xl border px-3 py-2 text-left text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5F22D9]/35 focus-visible:ring-offset-1";
+  if (disabled) {
+    return `${base} cursor-not-allowed border-slate-300 bg-slate-100 text-slate-400 shadow-none hover:bg-slate-100`;
+  }
+  if (selected) {
+    return `${base} border-[#5F22D9] bg-[#5F22D9]/10 text-[#5F22D9] shadow-sm`;
+  }
+  return `${base} border-transparent text-slate-600 hover:border-slate-200 hover:bg-white`;
+}
+
+function reportCardClass({ busy, isNew }) {
+  if (busy) {
+    return "border-sky-100 shadow-sky-100/50 ring-1 ring-sky-100/80";
+  }
+  if (isNew) {
+    return "border-transparent bg-gradient-to-r from-amber-100/80 to-yellow-50/40 ring-1 ring-amber-100/50";
+  }
+  return "border-slate-200/80 hover:border-slate-300";
+}
+
+const STATUS_BADGE_STYLES = {
+  PENDING: "bg-amber-50 text-amber-800 ring-amber-200",
+  QUEUED: "bg-amber-50 text-amber-800 ring-amber-200",
+  RUNNING: "bg-sky-50 text-sky-800 ring-sky-200",
+  READY: "bg-emerald-50 text-emerald-800 ring-emerald-200",
+  FAILED: "bg-rose-50 text-rose-800 ring-rose-200",
+};
 
 function StatusBadge({ status }) {
-  const s = (status || "").toUpperCase();
-  const busy = s === "PENDING" || s === "RUNNING" || s === "QUEUED";
-
-  const styles = {
-    PENDING: "bg-amber-50 text-amber-800 ring-amber-200",
-    QUEUED: "bg-amber-50 text-amber-800 ring-amber-200",
-    RUNNING: "bg-sky-50 text-sky-800 ring-sky-200",
-    READY: "bg-emerald-50 text-emerald-800 ring-emerald-200",
-    FAILED: "bg-rose-50 text-rose-800 ring-rose-200",
-  };
-  const base =
-    styles[s] || "bg-slate-50 text-slate-700 ring-slate-200";
+  const s = normStatus(status);
+  const busy = isReportInProgressStatus(s);
 
   return (
     <span
-      className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold ring-1 ring-inset ${base}`}
+      className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold ring-1 ring-inset ${
+        STATUS_BADGE_STYLES[s] || "bg-slate-50 text-slate-700 ring-slate-200"
+      }`}
     >
       {busy && (
         <span className="relative flex h-2 w-2">
@@ -49,6 +97,81 @@ function StatusBadge({ status }) {
       )}
       {status || "—"}
     </span>
+  );
+}
+
+function ReportJobRow({ job, downloadLoadingId, onDownload }) {
+  const nowTs = Math.floor(Date.now() / 1000);
+  const isNew =
+    job?.created_at && nowTs - Number(job.created_at) <= NEW_REPORT_MAX_AGE_SEC;
+  const busy = isReportInProgressStatus(job.status);
+  const downloadable = canReportJobDownload(job);
+
+  return (
+    <div
+      className={`group rounded-2xl border bg-white p-4 shadow-sm transition ${reportCardClass({
+        busy,
+        isNew,
+      })}`}
+    >
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0 space-y-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="font-mono text-xs text-slate-400">
+              {String(job.job_type || "").replace(/_/g, " ")}
+            </span>
+            {isNew ? (
+              <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-900 ring-1 ring-inset ring-amber-200">
+                New
+              </span>
+            ) : null}
+            <StatusBadge status={job.status} />
+          </div>
+          <p className="text-xs text-slate-500">
+            Requested{" "}
+            <span className="font-medium text-slate-700">
+              {formatUnixIst(job.created_at)}
+            </span>
+            {job.completed_at ? (
+              <>
+                {" "}
+                · Completed{" "}
+                <span className="font-medium text-slate-700">
+                  {formatUnixIst(job.completed_at)}
+                </span>
+              </>
+            ) : null}
+          </p>
+          {busy && (
+            <p className="text-[11px] font-medium text-slate-500">
+              Your report is getting processed. It can take upto 2-5 minutes.
+            </p>
+          )}
+        </div>
+
+        <div className="flex shrink-0 items-center gap-2">
+          {downloadable ? (
+            <button
+              type="button"
+              onClick={() => onDownload(job)}
+              disabled={downloadLoadingId === job.id}
+              className="inline-flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-900 transition hover:bg-emerald-100 disabled:opacity-50"
+            >
+              {downloadLoadingId === job.id ? (
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-emerald-300 border-t-emerald-700" />
+              ) : (
+                <DocumentArrowDownIcon className="h-4 w-4" />
+              )}
+              Download
+            </button>
+          ) : (
+            <span className="text-xs text-slate-400">
+              {busy ? "Not ready yet" : "—"}
+            </span>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -64,33 +187,52 @@ export default function VendorReports() {
     downloadError,
   } = useSelector((state) => state.vendorReports);
 
-  const [requestOpen, setRequestOpen] = useState(false);
-  const [reportType, setReportType] = useState("orders");
+  const [activeTabKey, setActiveTabKey] = useState("orders");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+
+  const activeTab =
+    REPORT_TABS.find((t) => t.key === activeTabKey) ?? REPORT_TABS[0];
 
   useEffect(() => {
     dispatch(setActivePage("Reports"));
   }, [dispatch]);
 
   const refresh = useCallback(() => {
-    dispatch(fetchVendorReports());
-  }, [dispatch]);
+    dispatch(fetchVendorReports({ jobType: activeTab.reportType }));
+  }, [dispatch, activeTab.reportType]);
 
   useEffect(() => {
     refresh();
   }, [refresh]);
+
+  const shouldPollList = isReportInProgressStatus(jobs[0]?.status);
+
+  useEffect(() => {
+    if (!shouldPollList) return undefined;
+    const id = setInterval(refresh, REPORT_POLL_INTERVAL_MS);
+    return () => clearInterval(id);
+  }, [shouldPollList, refresh]);
 
   useEffect(() => {
     if (requestError) toast.error(String(requestError));
   }, [requestError]);
 
   useEffect(() => {
-    if (downloadError) {
-      toast.error(String(downloadError));
-      dispatch(clearDownloadError());
-    }
+    if (!downloadError) return;
+    toast.error(String(downloadError));
+    dispatch(clearDownloadError());
   }, [downloadError, dispatch]);
+
+  const handleTabClick = useCallback((tab) => {
+    if (!tab.enabled) {
+      toast.message("Coming soon", {
+        description: `${tab.label} reports will be available later.`,
+      });
+      return;
+    }
+    setActiveTabKey(tab.key);
+  }, []);
 
   const handleSubmitRequest = async (e) => {
     e.preventDefault();
@@ -104,45 +246,49 @@ export default function VendorReports() {
       toast.error("End date must be after start date.");
       return;
     }
-    if (reportType !== "orders") {
-      toast.error("Only Orders reports are available right now.");
+    if (!activeTab.enabled) {
+      toast.error("This report type is not available yet.");
       return;
     }
     try {
-      await dispatch(requestOrderReport({ start_ts, end_ts })).unwrap();
+      await dispatch(
+        requestOrderReport({
+          start_ts,
+          end_ts,
+          report_type: activeTab.reportType,
+        })
+      ).unwrap();
       toast.success("Report queued. It will appear below when ready.");
       setStartDate("");
       setEndDate("");
-      dispatch(fetchVendorReports());
+      dispatch(fetchVendorReports({ jobType: activeTab.reportType }));
     } catch {
       /* toast via effect */
     }
   };
 
-  const handleDownload = async (job) => {
-    const key = job.response?.s3_key;
-    if (!key) {
-      toast.error("No file key for this report yet.");
-      return;
-    }
-    try {
-      const { download_url: url } = await dispatch(
-        fetchReportDownloadUrl({ jobId: job.id, s3_key: key })
-      ).unwrap();
-      window.open(url, "_blank", "noopener,noreferrer");
-    } catch {
-      /* toast */
-    }
-  };
-
-  const canDownload = (job) => {
-    const ok = (job.status || "").toUpperCase() === "READY";
-    return ok && Boolean(job.response?.s3_key);
-  };
+  const handleDownload = useCallback(
+    async (job) => {
+      const key = job.response?.s3_key;
+      if (!key) {
+        toast.error("No file key for this report yet.");
+        return;
+      }
+      try {
+        const { download_url: url } = await dispatch(
+          fetchReportDownloadUrl({ jobId: job.id, s3_key: key })
+        ).unwrap();
+        window.open(url, "_blank", "noopener,noreferrer");
+      } catch {
+        /* toast */
+      }
+    },
+    [dispatch]
+  );
 
   return (
     <div className="min-h-screen p-4 animate-slide-in-left">
-      <div className="mx-auto max-w-7xl space-y-8">
+      <div className="max-w-7xl space-y-8">
         {listError && (
           <div
             role="alert"
@@ -152,136 +298,123 @@ export default function VendorReports() {
           </div>
         )}
 
-        <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-slate-900 md:text-3xl">
-              Reports
-            </h1>
+        <header>
+          <div className="flex flex-row items-center justify-start gap-2">
+            <span className="inline-flex items-center rounded-md px-1.5 py-0.5 text-[10px] font-bold uppercase leading-none tracking-wide text-sky-900 bg-sky-300">
+              BETA
+            </span>
             <p className="mt-1 text-sm text-slate-600">
-              Export order data for any date range (IST). Downloads use a
-              secure signed link.
+              Generate and download reports for your business here.
             </p>
           </div>
-          <button
-            type="button"
-            onClick={refresh}
-            disabled={listLoading}
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-800 shadow-sm transition hover:border-[#5f22d9]/30 hover:bg-slate-50 disabled:opacity-60"
-          >
-            <ArrowPathIcon
-              className={`h-4 w-4 ${listLoading ? "animate-spin" : ""}`}
-            />
-            Refresh list
-          </button>
         </header>
 
-        {/* Request new report */}
-        <section className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm shadow-slate-200/60">
-          <button
-            type="button"
-            onClick={() => setRequestOpen((o) => !o)}
-            className="flex w-full items-center justify-between px-5 py-4 text-left transition hover:bg-slate-50/80"
-          >
-            <div>
-              <span className="text-base font-semibold text-slate-900">
-                Request new report
-              </span>
-              <p className="text-sm text-slate-500">
-                Choose type and date range - Report will be available in the list below when ready.
-              </p>
-            </div>
-            <ChevronDownIcon
-              className={`h-5 w-5 shrink-0 text-slate-500 transition-transform duration-300 ${
-                requestOpen ? "rotate-180" : ""
-              }`}
-            />
-          </button>
+        <section className="overflow-hidden">
+          <div className="flex items-baseline justify-between gap-2">
+            <h2 className="text-lg font-semibold text-slate-900">
+              Request new report
+            </h2>
+          </div>
 
-          <div
-            className={`grid transition-[grid-template-rows] duration-300 ease-in-out ${
-              requestOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
-            }`}
-          >
-            <div className="min-h-0 overflow-hidden">
-              <div className="border-t border-slate-100 px-5 pb-6 pt-2">
-                <form onSubmit={handleSubmitRequest} className="space-y-5 pt-4">
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <label className="block space-y-2">
-                      <span className="text-xs font-medium uppercase tracking-wide text-slate-500">
-                        Report type
-                      </span>
-                      <select
-                        value={reportType}
-                        onChange={(e) => setReportType(e.target.value)}
-                        className="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3 py-2.5 text-sm text-slate-900 outline-none ring-[#5f22d9]/20 transition focus:border-[#5f22d9] focus:ring-2"
+          <div className="rounded-3xl bg-gradient-to-r from-[#5f22d9]/10 to-blue-100 shadow-sm shadow-blue-100/50 px-5 pb-6 pt-2">
+            <form onSubmit={handleSubmitRequest} className="space-y-5 pt-4">
+              <div className="space-y-2">
+                <span className={FIELD_LABEL_CLASS}>Report type</span>
+                <div
+                  className="flex flex-wrap gap-1 rounded-xl p-1"
+                  role="tablist"
+                  aria-label="Report category"
+                >
+                  {REPORT_TABS.map((tab) => {
+                    const selected = tab.key === activeTabKey;
+                    const disabled = !tab.enabled;
+                    return (
+                      <button
+                        key={tab.key}
+                        type="button"
+                        role="tab"
+                        aria-selected={selected}
+                        disabled={disabled}
+                        title={
+                          disabled
+                            ? `${tab.label} — coming soon`
+                            : `Report: ${tab.label}`
+                        }
+                        onClick={() => handleTabClick(tab)}
+                        className={reportTabButtonClass({ selected, disabled })}
                       >
-                        {REPORT_TYPES.map((t) => (
-                          <option key={t.value} value={t.value}>
-                            {t.label}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-                    <div className="hidden sm:block" aria-hidden />
-                  </div>
-
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <label className="block space-y-2">
-                      <span className="text-xs font-medium uppercase tracking-wide text-slate-500">
-                        Start date (IST)
-                      </span>
-                      <input
-                        type="date"
-                        value={startDate}
-                        onChange={(e) => setStartDate(e.target.value)}
-                        className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none ring-[#5f22d9]/20 transition focus:border-[#5f22d9] focus:ring-2"
-                      />
-                    </label>
-                    <label className="block space-y-2">
-                      <span className="text-xs font-medium uppercase tracking-wide text-slate-500">
-                        End date (IST)
-                      </span>
-                      <input
-                        type="date"
-                        value={endDate}
-                        onChange={(e) => setEndDate(e.target.value)}
-                        className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none ring-[#5f22d9]/20 transition focus:border-[#5f22d9] focus:ring-2"
-                      />
-                    </label>
-                  </div>
-
-                  <div className="flex flex-wrap items-center gap-3">
-                    <button
-                      type="submit"
-                      disabled={requestLoading}
-                      className="inline-flex items-center justify-center rounded-xl bg-[#5f22d9] px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-[#5f22d9]/25 transition hover:bg-[#4c1bb0] disabled:opacity-60"
-                    >
-                      {requestLoading ? (
-                        <span className="inline-flex items-center gap-2">
-                          <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                          Queueing…
+                        <span className={disabled ? "opacity-90" : undefined}>
+                          {tab.label}
                         </span>
-                      ) : (
-                        "Queue report"
-                      )}
-                    </button>
-                    <span className="text-xs text-slate-400">
-                      Range is interpreted as start–end of each day in India time.
-                    </span>
-                  </div>
-                </form>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <label className="block space-y-2">
+                  <span className={FIELD_LABEL_CLASS}>Start date (IST)</span>
+                  <input
+                    type="date"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    className={DATE_INPUT_CLASS}
+                  />
+                </label>
+                <label className="block space-y-2">
+                  <span className={FIELD_LABEL_CLASS}>End date (IST)</span>
+                  <input
+                    type="date"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                    className={DATE_INPUT_CLASS}
+                  />
+                </label>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-3">
+                <button
+                  type="submit"
+                  disabled={requestLoading || !activeTab.enabled}
+                  className="inline-flex items-center justify-center rounded-xl bg-[#5f22d9] px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-[#5f22d9]/25 transition hover:bg-[#4c1bb0] disabled:opacity-60"
+                >
+                  {requestLoading ? (
+                    <span className="inline-flex items-center gap-2">
+                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                      Queueing…
+                    </span>
+                  ) : (
+                    "Generate Report"
+                  )}
+                </button>
+                <span className="text-xs text-slate-400">
+                  Range is interpreted as start–end of each day in India time.
+                </span>
+              </div>
+            </form>
           </div>
         </section>
 
-        {/* Previous reports */}
         <section className="space-y-4">
-          <div className="flex items-baseline justify-between gap-2">
-            <h2 className="text-lg font-semibold text-slate-900">
-              Previous reports
-            </h2>
-            <span className="text-xs text-slate-500">{jobs.length} total</span>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+              <h2 className="text-lg font-semibold text-slate-900">
+                Previous reports
+              </h2>
+              <span className="text-xs text-slate-500">{jobs.length} total</span>
+            </div>
+            <button
+              type="button"
+              onClick={refresh}
+              disabled={listLoading}
+              className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-800 shadow-sm transition hover:border-[#5f22d9]/30 hover:bg-slate-50 disabled:opacity-60"
+            >
+              <ArrowPathIcon
+                className={`h-4 w-4 ${listLoading ? "animate-spin" : ""}`}
+              />
+              Refresh list
+            </button>
           </div>
 
           <div className="space-y-3">
@@ -298,83 +431,14 @@ export default function VendorReports() {
               </div>
             )}
 
-            {jobs.map((job) => {
-              const busy =
-                ["PENDING", "RUNNING", "QUEUED"].indexOf(
-                  (job.status || "").toUpperCase()
-                ) >= 0;
-              return (
-                <div
-                  key={job.id}
-                  className={`group rounded-2xl border bg-white p-4 shadow-sm transition ${
-                    busy
-                      ? "border-sky-100 shadow-sky-100/50 ring-1 ring-sky-100/80"
-                      : "border-slate-200/80 hover:border-slate-300"
-                  }`}
-                >
-                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                    <div className="min-w-0 space-y-2">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span className="font-mono text-xs text-slate-400">
-                          {String(job.job_type || "").replace(/_/g, " ")}
-                        </span>
-                        <StatusBadge status={job.status} />
-                      </div>
-                      <p className="text-xs text-slate-500">
-                        Requested{" "}
-                        <span className="font-medium text-slate-700">
-                          {formatUnixIst(job.created_at)}
-                        </span>
-                        {job.completed_at ? (
-                          <>
-                            {" "}
-                            · Completed{" "}
-                            <span className="font-medium text-slate-700">
-                              {formatUnixIst(job.completed_at)}
-                            </span>
-                          </>
-                        ) : null}
-                      </p>
-                      {job.error_message && (
-                        <p className="text-xs text-rose-600">{job.error_message}</p>
-                      )}
-                      {busy && (
-                        <div className="flex items-center gap-2 pt-1">
-                          <div className="relative h-1.5 flex-1 max-w-[220px] overflow-hidden rounded-full bg-slate-100">
-                            <div className="absolute inset-y-0 -left-1/3 w-1/3 rounded-full bg-gradient-to-r from-[#5f22d9]/40 via-[#39ff14] to-[#5f22d9]/40 animate-vendor-report-shimmer" />
-                          </div>
-                          <span className="text-[11px] font-medium text-slate-500">
-                            Processing…
-                          </span>
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="flex shrink-0 items-center gap-2">
-                      {canDownload(job) ? (
-                        <button
-                          type="button"
-                          onClick={() => handleDownload(job)}
-                          disabled={downloadLoadingId === job.id}
-                          className="inline-flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-900 transition hover:bg-emerald-100 disabled:opacity-50"
-                        >
-                          {downloadLoadingId === job.id ? (
-                            <span className="h-4 w-4 animate-spin rounded-full border-2 border-emerald-300 border-t-emerald-700" />
-                          ) : (
-                            <DocumentArrowDownIcon className="h-4 w-4" />
-                          )}
-                          Download
-                        </button>
-                      ) : (
-                        <span className="text-xs text-slate-400">
-                          {busy ? "Not ready yet" : "—"}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+            {jobs.map((job) => (
+              <ReportJobRow
+                key={job.id}
+                job={job}
+                downloadLoadingId={downloadLoadingId}
+                onDownload={handleDownload}
+              />
+            ))}
           </div>
         </section>
       </div>
