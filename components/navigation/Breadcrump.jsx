@@ -4,10 +4,8 @@ import { usePathname, useRouter } from "next/navigation";
 import { addUserSvg, backButtonSvg } from "../../svgs";
 import { useDispatch } from "react-redux";
 import { setOpenDrawer } from "../../redux/slices/addBagSlice";
-import { SunIcon, CloudIcon, MoonIcon } from "@heroicons/react/24/outline";
-
-import GreetingBanner from "../sections/bussiness/more/GreetingsBanner";
 import PrimaryButton from "../buttons/PrimaryButton";
+import ReportsButton from "../sections/bussiness/more/ReportsButton";
 
 const decidePath = (pathname) => {
   if (pathname.match(/\/admin\/users\/business\/[a-zA-Z0-9]+/)) {
@@ -32,8 +30,12 @@ const decidePath = (pathname) => {
       return "My Profile";
     case "admin":
       return "Admin Dashboard";
+    case "reports":
+      return "Reports";
     case "users":
       return "Users";
+    case "coupons":
+      return "Coupons";
     case "approvals":
       return "Approvals";
     case "transactions":
@@ -107,15 +109,16 @@ const Breadcrumb = () => {
         </div>
 
         {/* Right side container */}
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-4 px-4">
           {/* ✅ Reusable Greeting Banner */}
-          <GreetingBanner variant="default" />
+          {/* <GreetingBanner variant="default" /> */}
+          <ReportsButton />
 
           {/* Existing button */}
           {currentPath === "Manage Bags" && (
             <PrimaryButton
               onClick={handleOpenDrawer}
-              className="mr-3 mt-2 lg:m-0"
+              className="lg:mt-0"
             >
               <span className="mr-2 font-semibold">Add New Bags</span>
               <span>{addUserSvg}</span>
