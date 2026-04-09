@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   ArrowPathIcon,
@@ -29,6 +29,8 @@ const REPORT_TABS = [
 
 const REPORT_POLL_INTERVAL_MS = 10_000;
 const NEW_REPORT_MAX_AGE_SEC = 5 * 60;
+/** Ignore repeat download taps while navigation starts (no in-button spinner; browser shows progress). */
+const DOWNLOAD_NAV_DEBOUNCE_MS = 1_500;
 
 function buildVendorReportDownloadPageUrl(jobId) {
   const root = String(baseUrl || "").replace(/\/$/, "");
@@ -114,13 +116,12 @@ function StatusBadge({ status }) {
   );
 }
 
-function ReportJobRow({ job, onDownload, downloadNavigatingJobId }) {
+function ReportJobRow({ job, onDownload }) {
   const nowTs = Math.floor(Date.now() / 1000);
   const isNew =
     job?.created_at && nowTs - Number(job.created_at) <= NEW_REPORT_MAX_AGE_SEC;
   const busy = isReportInProgressStatus(job.status);
   const downloadable = canReportJobDownload(job);
-  const downloadLoading = downloadNavigatingJobId === job.id;
 
   return (
     <div
@@ -169,14 +170,9 @@ function ReportJobRow({ job, onDownload, downloadNavigatingJobId }) {
             <button
               type="button"
               onClick={() => onDownload(job)}
-              disabled={downloadLoading}
-              className="inline-flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-900 transition hover:bg-emerald-100 disabled:opacity-60"
+              className="inline-flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-900 transition hover:bg-emerald-100"
             >
-              {downloadLoading ? (
-                <span className="h-4 w-4 animate-spin rounded-full border-2 border-emerald-300 border-t-emerald-700" />
-              ) : (
-                <DocumentArrowDownIcon className="h-4 w-4" />
-              )}
+              <DocumentArrowDownIcon className="h-4 w-4" />
               Download
             </button>
           ) : (
@@ -203,7 +199,7 @@ export default function VendorReports() {
   const [activeTabKey, setActiveTabKey] = useState("orders");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [downloadNavigatingJobId, setDownloadNavigatingJobId] = useState(null);
+  const lastDownloadNavAtRef = useRef(0);
 
   const activeTab =
     REPORT_TABS.find((t) => t.key === activeTabKey) ?? REPORT_TABS[0];
@@ -286,13 +282,12 @@ export default function VendorReports() {
       toast.error("Not signed in. Sign in again to download.");
       return;
     }
-    setDownloadNavigatingJobId(job.id);
-    // Let React paint the spinner before navigation (assign is synchronous from JS POV).
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        window.location.assign(url);
-      });
-    });
+    const now = Date.now();
+    if (now - lastDownloadNavAtRef.current < DOWNLOAD_NAV_DEBOUNCE_MS) {
+      return;
+    }
+    lastDownloadNavAtRef.current = now;
+    window.location.assign(url);
   }, []);
 
 
@@ -445,7 +440,6 @@ export default function VendorReports() {
               <ReportJobRow
                 key={job.id}
                 job={job}
-                downloadNavigatingJobId={downloadNavigatingJobId}
                 onDownload={handleDownload}
               />
             ))}
