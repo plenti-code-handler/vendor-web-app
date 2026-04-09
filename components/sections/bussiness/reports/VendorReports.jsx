@@ -267,30 +267,25 @@ export default function VendorReports() {
     }
   };
 
-  const handleDownload = useCallback(async (job) => {
-    const key = job.response?.s3_key;
-    if (!key) return toast.error("File not ready.");
-  
-    // 1. Sync Step: Open a blank tab immediately
-    // This satisfies iOS Safari's "User Activation" rule.
-    const downloadWindow = window.open("about:blank", "_blank");
-  
-    try {
-      // 2. Async Step: Get the URL
-      const { download_url: url } = await dispatch(
-        fetchReportDownloadUrl({ jobId: job.id, s3_key: key })
-      ).unwrap();
-  
-      // 3. Update the blank tab
-      if (downloadWindow) {
-        downloadWindow.location.href = url;
+  const handleDownload = useCallback(
+    async (job) => {
+      const key = job.response?.s3_key;
+      if (!key) {
+        toast.error("No file key for this report yet.");
+        return;
       }
-    } catch (error) {
-      // 4. Cleanup: Close the empty tab if the request fails
-      downloadWindow?.close();
-      toast.error("Download failed to start.");
-    }
-  }, [dispatch]);
+      try {
+        const { download_url: url } = await dispatch(
+          fetchReportDownloadUrl({ jobId: job.id, s3_key: key })
+        ).unwrap();
+        window.open(url, "_blank", "noopener,noreferrer");
+      } catch {
+        /* toast */
+      }
+    },
+    [dispatch]
+  );
+
 
   return (
     <div className="min-h-screen p-4 animate-slide-in-left">
