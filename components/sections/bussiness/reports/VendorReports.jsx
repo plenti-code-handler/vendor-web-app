@@ -11,8 +11,6 @@ import { setActivePage } from "../../../../redux/slices/headerSlice";
 import {
   fetchVendorReports,
   requestOrderReport,
-  fetchReportDownloadUrl,
-  clearDownloadError,
   REPORT_TYPES,
 } from "../../../../redux/slices/vendorReportsSlice";
 import {
@@ -20,6 +18,7 @@ import {
   istEndOfDayUnix,
   formatUnixIst,
 } from "../../../../utility/istUnix";
+import { baseUrl } from "../../../../utility/BaseURL";
 
 const REPORT_TABS = [
   { key: "orders", label: "Orders", reportType: REPORT_TYPES.ORDERS, enabled: true },
@@ -30,6 +29,21 @@ const REPORT_TABS = [
 
 const REPORT_POLL_INTERVAL_MS = 10_000;
 const NEW_REPORT_MAX_AGE_SEC = 5 * 60;
+
+function buildVendorReportDownloadPageUrl(jobId) {
+  const root = String(baseUrl || "").replace(/\/$/, "");
+  if (typeof window === "undefined") return null;
+  const token = localStorage.getItem("token");
+  if (!token) return null;
+  const params = new URLSearchParams({ access_token: token });
+  const role = localStorage.getItem("role");
+  const targetVendorId = localStorage.getItem("target_vendor_id");
+  if (role === "PARENT" && targetVendorId) {
+    params.set("target_vendor_id", targetVendorId);
+  }
+  return `${root}/v2/vendor/report/download/${encodeURIComponent(jobId)}?${params.toString()}`;
+}
+
 
 const FIELD_LABEL_CLASS =
   "text-xs font-medium uppercase tracking-wide text-slate-500";
@@ -100,7 +114,7 @@ function StatusBadge({ status }) {
   );
 }
 
-function ReportJobRow({ job, downloadLoadingId, onDownload }) {
+function ReportJobRow({ job, onDownload }) {
   const nowTs = Math.floor(Date.now() / 1000);
   const isNew =
     job?.created_at && nowTs - Number(job.created_at) <= NEW_REPORT_MAX_AGE_SEC;
@@ -154,16 +168,11 @@ function ReportJobRow({ job, downloadLoadingId, onDownload }) {
             <button
               type="button"
               onClick={() => onDownload(job)}
-              disabled={downloadLoadingId === job.id}
-              className="inline-flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-900 transition hover:bg-emerald-100 disabled:opacity-50"
+              className="inline-flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-900 transition hover:bg-emerald-100"
             >
-              {downloadLoadingId === job.id ? (
-                <span className="h-4 w-4 animate-spin rounded-full border-2 border-emerald-300 border-t-emerald-700" />
-              ) : (
-                <DocumentArrowDownIcon className="h-4 w-4" />
-              )}
+              <DocumentArrowDownIcon className="h-4 w-4" />
               Download
-            </button>
+          </button>
           ) : (
             <span className="text-xs text-slate-400">
               {busy ? "Not ready yet" : "—"}
@@ -183,8 +192,6 @@ export default function VendorReports() {
     listError,
     requestLoading,
     requestError,
-    downloadLoadingId,
-    downloadError,
   } = useSelector((state) => state.vendorReports);
 
   const [activeTabKey, setActiveTabKey] = useState("orders");
@@ -217,12 +224,6 @@ export default function VendorReports() {
   useEffect(() => {
     if (requestError) toast.error(String(requestError));
   }, [requestError]);
-
-  useEffect(() => {
-    if (!downloadError) return;
-    toast.error(String(downloadError));
-    dispatch(clearDownloadError());
-  }, [downloadError, dispatch]);
 
   const handleTabClick = useCallback((tab) => {
     if (!tab.enabled) {
@@ -267,24 +268,19 @@ export default function VendorReports() {
     }
   };
 
-  const handleDownload = useCallback(
-    async (job) => {
-      const key = job.response?.s3_key;
-      if (!key) {
-        toast.error("No file key for this report yet.");
-        return;
-      }
-      try {
-        const { download_url: url } = await dispatch(
-          fetchReportDownloadUrl({ jobId: job.id, s3_key: key })
-        ).unwrap();
-        window.open(url, "_blank", "noopener,noreferrer");
-      } catch {
-        /* toast */
-      }
-    },
-    [dispatch]
-  );
+  const handleDownload = useCallback((job) => {
+    const key = job.response?.s3_key;
+    if (!key) {
+      toast.error("No file key for this report yet.");
+      return;
+    }
+    const url = buildVendorReportDownloadPageUrl(job.id);
+    if (!url) {
+      toast.error("Not signed in. Sign in again to download.");
+      return;
+    }
+    window.location.assign(url);
+  }, []);
 
 
   return (
@@ -436,7 +432,6 @@ export default function VendorReports() {
               <ReportJobRow
                 key={job.id}
                 job={job}
-                downloadLoadingId={downloadLoadingId}
                 onDownload={handleDownload}
               />
             ))}

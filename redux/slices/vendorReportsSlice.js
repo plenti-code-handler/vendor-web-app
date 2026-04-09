@@ -44,21 +44,6 @@ export const requestOrderReport = createAsyncThunk(
   }
 );
 
-export const fetchReportDownloadUrl = createAsyncThunk(
-  "vendorReports/downloadUrl",
-  async ({ jobId, s3_key }, { rejectWithValue }) => {
-    try {
-      const { data } = await axiosClient.post(`${reportListUrl}/download-url`, {
-        s3_key,
-      });
-      return { ...data, jobId };
-    } catch (e) {
-      const d = e.response?.data?.detail;
-      return rejectWithValue(typeof d === "string" ? d : JSON.stringify(d || e.message));
-    }
-  }
-);
-
 const vendorReportsSlice = createSlice({
   name: "vendorReports",
   initialState: {
@@ -68,14 +53,8 @@ const vendorReportsSlice = createSlice({
     listError: null,
     requestLoading: false,
     requestError: null,
-    downloadLoadingId: null,
-    downloadError: null,
   },
-  reducers: {
-    clearDownloadError: (state) => {
-      state.downloadError = null;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchVendorReports.pending, (state) => {
@@ -105,19 +84,6 @@ const vendorReportsSlice = createSlice({
         state.requestLoading = false;
         state.requestError = action.payload || action.error.message;
       })
-      .addCase(fetchReportDownloadUrl.pending, (state, action) => {
-        state.downloadLoadingId = action.meta.arg?.jobId ?? null;
-        state.downloadError = null;
-      })
-      .addCase(fetchReportDownloadUrl.fulfilled, (state) => {
-        state.downloadLoadingId = null;
-      })
-      .addCase(fetchReportDownloadUrl.rejected, (state, action) => {
-        state.downloadLoadingId = null;
-        state.downloadError = action.payload || action.error.message;
-      });
   },
 });
-
-export const { clearDownloadError } = vendorReportsSlice.actions;
 export default vendorReportsSlice.reducer;
