@@ -114,12 +114,13 @@ function StatusBadge({ status }) {
   );
 }
 
-function ReportJobRow({ job, onDownload }) {
+function ReportJobRow({ job, onDownload, downloadNavigatingJobId }) {
   const nowTs = Math.floor(Date.now() / 1000);
   const isNew =
     job?.created_at && nowTs - Number(job.created_at) <= NEW_REPORT_MAX_AGE_SEC;
   const busy = isReportInProgressStatus(job.status);
   const downloadable = canReportJobDownload(job);
+  const downloadLoading = downloadNavigatingJobId === job.id;
 
   return (
     <div
@@ -168,11 +169,16 @@ function ReportJobRow({ job, onDownload }) {
             <button
               type="button"
               onClick={() => onDownload(job)}
-              className="inline-flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-900 transition hover:bg-emerald-100"
+              disabled={downloadLoading}
+              className="inline-flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-900 transition hover:bg-emerald-100 disabled:opacity-60"
             >
-              <DocumentArrowDownIcon className="h-4 w-4" />
+              {downloadLoading ? (
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-emerald-300 border-t-emerald-700" />
+              ) : (
+                <DocumentArrowDownIcon className="h-4 w-4" />
+              )}
               Download
-          </button>
+            </button>
           ) : (
             <span className="text-xs text-slate-400">
               {busy ? "Not ready yet" : "—"}
@@ -197,6 +203,7 @@ export default function VendorReports() {
   const [activeTabKey, setActiveTabKey] = useState("orders");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [downloadNavigatingJobId, setDownloadNavigatingJobId] = useState(null);
 
   const activeTab =
     REPORT_TABS.find((t) => t.key === activeTabKey) ?? REPORT_TABS[0];
@@ -279,7 +286,13 @@ export default function VendorReports() {
       toast.error("Not signed in. Sign in again to download.");
       return;
     }
-    window.location.assign(url);
+    setDownloadNavigatingJobId(job.id);
+    // Let React paint the spinner before navigation (assign is synchronous from JS POV).
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        window.location.assign(url);
+      });
+    });
   }, []);
 
 
@@ -432,6 +445,7 @@ export default function VendorReports() {
               <ReportJobRow
                 key={job.id}
                 job={job}
+                downloadNavigatingJobId={downloadNavigatingJobId}
                 onDownload={handleDownload}
               />
             ))}
