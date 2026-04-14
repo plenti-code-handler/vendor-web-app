@@ -473,8 +473,13 @@ const RecentOrders = () => {
                   ref={(el) => (inputRefs.current[i] = el)}
                   onChange={(e) => handleOtpChange(e.target.value, i)}
                   onPaste={(e) => handlePaste(e, i)}
-                  className="w-12 h-12 border border-gray-300 text-center text-xl rounded-lg focus:ring-2 focus:ring-blue-500 transition"
+                  className="w-12 h-12 border border-gray-500 border-2 border-gray-300 text-center text-xl rounded-lg focus:ring-2 focus:ring-blue-500 transition"
                   aria-label={`Digit ${i + 1}`}
+                  style={{
+                    borderColor: digit ? "#5F22D9" : "#D1D5DB",
+                    backgroundColor: digit ? "#F9FAFB" : "#F9FAFB",
+                    color: digit ? "#111827" : "#6B7280",
+                  }}
                 />
               ))}
             </div>
