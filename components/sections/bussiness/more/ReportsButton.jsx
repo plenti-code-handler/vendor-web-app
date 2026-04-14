@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import { ArrowRightIcon } from "@heroicons/react/24/outline";
 import { setActivePage } from "../../../../redux/slices/headerSlice";
 import SecondaryButton from "../../../buttons/SecondaryButton";
+import BetaBadge from "../../../common/BetaBadge";
 
 /**
  * Vendor-only entry to Reports (BETA). Replaces the greeting strip in the breadcrumb row.
@@ -28,9 +29,7 @@ export default function ReportsButton({ className = "" }) {
       className={`px-4 py-2 rounded-lg ${className}`}
     >
       <div className="flex items-center gap-2">
-        <span className="inline-flex items-center rounded-lg bg-sky-600 p-1.5 text-[10px] font-bold leading-none tracking-wide text-sky-100">
-          beta
-        </span>
+        <BetaBadge />
         <span>Go to Reports</span>
         <ArrowRightIcon className="h-4 w-4 shrink-0 text-[#5f22d9]" aria-hidden />
       </div>

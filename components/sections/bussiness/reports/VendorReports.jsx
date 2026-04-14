@@ -19,6 +19,7 @@ import {
   formatUnixIst,
 } from "../../../../utility/istUnix";
 import { baseUrl } from "../../../../utility/BaseURL";
+import BetaBadge from "../../../common/BetaBadge";
 
 const REPORT_TABS = [
   { key: "orders", label: "Orders", reportType: REPORT_TYPES.ORDERS, enabled: true },
@@ -305,9 +306,7 @@ export default function VendorReports() {
 
         <header>
           <div className="flex flex-row items-center justify-start gap-2">
-            <span className="inline-flex items-center rounded-md px-1.5 py-0.5 text-[10px] font-bold uppercase leading-none tracking-wide text-sky-900 bg-sky-300">
-              BETA
-            </span>
+            <BetaBadge />
             <p className="mt-1 text-sm text-slate-600">
               Generate and download reports for your business here.
             </p>

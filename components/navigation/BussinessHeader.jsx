@@ -1,19 +1,29 @@
 // vendor-web-app/components/navigation/BussinessHeader.jsx
 "use client";
 import axiosClient from "../../AxiosClient";
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useMemo, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { logoutIconSvg } from "../../svgs";
 import Link from "next/link";
-import LanguageDropdown from "../dropdowns/LanguageDropdown";
 import ProfileDropdown from "../dropdowns/ProfileDropdown";
 import { setActivePage } from "../../redux/slices/headerSlice";
-import { appLogoUrl } from "../../lib/constant_data";
 import { menuItemsData } from "../../lib/business_menu";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
-import { XMarkIcon, Bars3Icon } from "@heroicons/react/24/outline";
+import {
+  Dialog,
+  DialogBackdrop,
+  DialogPanel,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuItems,
+  Transition,
+} from "@headlessui/react";
+import { XMarkIcon, Bars3Icon, ChevronDownIcon } from "@heroicons/react/24/outline";
+import BetaBadge from "../common/BetaBadge";
+
+/** Large screens: first N items in the bar; rest behind “More”. */
+const DESKTOP_PRIMARY_NAV_COUNT = 4;
 
 const BussinessHeader = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -22,7 +32,17 @@ const BussinessHeader = () => {
   const [isSmallDevice, setIsSmallDevice] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const [isMobile, setIsMobile] = useState(false);
+  const primaryNavItems = useMemo(
+    () => menuItemsData.slice(0, DESKTOP_PRIMARY_NAV_COUNT),
+    []
+  );
+  const overflowNavItems = useMemo(
+    () => menuItemsData.slice(DESKTOP_PRIMARY_NAV_COUNT),
+    []
+  );
+  const isOverflowNavActive = overflowNavItems.some(
+    (item) => item.name === activePage
+  );
 
   // ✅ Fixed - Load user info with proper redirect logic
   useEffect(() => {
@@ -75,20 +95,6 @@ const BussinessHeader = () => {
   }, [router]);
 
   useEffect(() => {
-    const checkIsMobile = () => {
-      if (typeof window !== "undefined") {
-        setIsMobile(window.innerWidth < 1024);
-      }
-    };
-
-    checkIsMobile();
-
-    window.addEventListener("resize", checkIsMobile);
-
-    return () => window.removeEventListener("resize", checkIsMobile);
-  }, []);
-
-  useEffect(() => {
     const handleResize = () => {
       setIsSmallDevice(window.innerWidth < 1024);
     };
@@ -121,11 +127,11 @@ const BussinessHeader = () => {
 
   return (
     <>
-      <header className=" xl:px-[6%] py-2 py-4 justify-around bg-[#5f22d9] ">
-        <div className="mx-auto flex items-center justify-between ">
+      <header className="xl:px-[6%] py-2 justify-around bg-[#5f22d9] ">
+        <div className="mx-auto flex items-center justify-between px-2">
           <div
             onClick={() => router.push("/business")}
-            className="flex items-center cursor-pointer ml-5"
+            className="flex items-center cursor-pointer"
           >
             <img
               alt="Vendor App Icon"
@@ -138,7 +144,7 @@ const BussinessHeader = () => {
               className="w-20 h-auto"
             />
           </div>
-          <div className="flex lg:hidden gap-3 items-center mr-3">
+          <div className="flex lg:hidden gap-3 items-center">
             <ProfileDropdown />
             <button
               onClick={toggleMenu}
@@ -189,7 +195,7 @@ const BussinessHeader = () => {
                             <Link
                               key={name}
                               href={href}
-                              className={`rounded-xl px-4 py-3 text-[15px] font-medium transition-colors ${
+                              className={`flex items-center justify-between gap-2 rounded-xl px-4 py-3 text-[15px] font-medium transition-colors ${
                                 activePage === name
                                   ? "bg-[#5f22d9] text-white"
                                   : "text-gray-700 hover:bg-gray-100"
@@ -199,7 +205,8 @@ const BussinessHeader = () => {
                                 setIsMenuOpen(false);
                               }}
                             >
-                              {name}
+                              <span>{name}</span>
+                              {name === "Reports" && <BetaBadge />}
                             </Link>
                           ))}
                         </nav>
@@ -211,22 +218,66 @@ const BussinessHeader = () => {
             </Dialog>
           )}
 
-          {/* Desktop: horizontal nav */}
-          <nav className="hidden lg:flex flex-col justify-center items-start lg:flex-row gap-4">
-            {menuItemsData.map(({ name, href }) => (
-              <Link
-                key={name}
-                href={href}
-                className={`text-base leading-6 rounded-xl flex items-center justify-start lg:justify-center px-4 py-2 m-2 ${
-                  activePage === name
-                    ? "bg-[#7a48e3] font-semibold text-white animate-fade-in"
-                    : "text-white lg:text-textLight hover:bg-[#7a48e3] hover:opacity-100"
-                }`}
-                onClick={() => handleLinkClick(name)}
-              >
-                {name}
-              </Link>
-            ))}
+          {/* Desktop: first 4 links + More dropdown */}
+          <nav className="hidden lg:flex flex-row flex-wrap items-center gap-1">
+            {primaryNavItems.map(({ name, href }) => {
+              const isActive = activePage === name;
+              const linkClass = `text-[14px] leading-6 rounded-xl flex items-center justify-center gap-1.5 px-3 py-2 m-2 ${
+                isActive
+                  ? "bg-[#7a48e3] font-semibold text-white"
+                  : "text-white lg:text-textLight hover:bg-[#7a48e3] hover:opacity-100"
+              }`;
+              return (
+                <Link
+                  key={name}
+                  href={href}
+                  className={linkClass}
+                  onClick={() => handleLinkClick(name)}
+                >
+                  <span>{name}</span>
+                  {name === "Reports" && <BetaBadge className="px-2" />}
+                </Link>
+              );
+            })}
+
+            {overflowNavItems.length > 0 && (
+              <Menu as="div" className="relative inline-block text-left">
+                <div>
+                  <MenuButton
+                    className={`inline-flex items-center gap-1 rounded-xl px-3 py-2 m-2 text-[14px] leading-6 text-white lg:text-textLight transition-colors hover:bg-[#7a48e3] hover:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60 ${
+                      isOverflowNavActive
+                        ? "bg-[#7a48e3] font-semibold text-white"
+                        : ""
+                    }`}
+                    aria-label="More navigation"
+                  >
+                    More
+                    <ChevronDownIcon className="h-4 w-4" aria-hidden />
+                  </MenuButton>
+                </div>
+                  <MenuItems className="absolute left-0 p-2 z-[1001] mt-1 min-w-[200px] origin-top-left rounded-xl bg-white shadow-lg ring-1 ring-black/5 focus:outline-none animate-fade-down">
+                    {overflowNavItems.map(({ name, href }) => (
+                      <MenuItem key={name}>
+                        {({ focus }) => (
+                          <Link
+                            href={href}
+                            className={`block px-4 py-2.5 text-[14px]  ${
+                              focus ? "bg-gray-100 rounded-xl" : ""
+                            } ${
+                              activePage === name
+                                ? "font-semibold text-[#5f22d9]"
+                                : "text-gray-800"
+                            }`}
+                            onClick={() => handleLinkClick(name)}
+                          >
+                            {name}
+                          </Link>
+                        )}
+                      </MenuItem>
+                    ))}
+                  </MenuItems>
+              </Menu>
+            )}
           </nav>
           <div className="hidden lg:flex items-center gap-5">
             <ProfileDropdown />
