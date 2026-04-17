@@ -1,12 +1,12 @@
 export const catalogue_limits = {
     MEAL: {
-        default: 3
+        default: 6
     },
     BAKED_GOODS: {
-        default: 3
+        default: 6
     },
     SNACKS_AND_DESSERT: {
-        default: 4,
+        default: 20,
         vdr_20260310185746_RSL: 10,
         vdr_20260310192348_CBK: 10,
         vdr_20260310200105_EAT: 10,
