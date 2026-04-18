@@ -111,13 +111,14 @@ function baseChartOptions() {
     fill: {
       type: "gradient",
       gradient: {
-        shade: "dark",
+        shade: "light",
         type: "vertical",
-        shadeIntensity: 0.5,
+        shadeIntensity: 0.25,
         opacityFrom: 0.95,
-        opacityTo: 1,
+        opacityTo: 0.75,
         stops: [0, 100],
       },
+
     },
     xaxis: {
       type: "datetime",
