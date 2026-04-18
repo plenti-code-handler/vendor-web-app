@@ -6,151 +6,221 @@ import axiosClient from "../../../../AxiosClient";
 
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
-  loading: () => <div className="flex justify-center items-center h-[350px]">Loading chart...</div>
+  loading: () => (
+    <div className="flex h-[260px] items-center justify-center text-gray-500">
+      Loading chart…
+    </div>
+  ),
 });
 
+const X_AXIS_LABEL_COLORS = Array(12).fill("#7E8299");
+
+const ANNOTATION_LABEL_STYLE = {
+  fontSize: "11px",
+  fontWeight: 600,
+  padding: { left: 6, right: 6, top: 2, bottom: 2 },
+};
+
+function buildBarAnnotations(categories, data, revenue) {
+  if (!Array.isArray(data) || !Array.isArray(categories) || !data.length) {
+    return {};
+  }
+  const n = Math.min(categories.length, data.length);
+  const nums = data.slice(0, n).map((v) => Number(v) || 0);
+  const cats = categories.slice(0, n);
+  const max = Math.max(...nums);
+  const avg = nums.reduce((a, b) => a + b, 0) / n;
+  if (max === 0 && avg === 0) return {};
+
+  const fmt = (v) =>
+    revenue
+      ? `₹${Number(v).toLocaleString("en-IN", { maximumFractionDigits: 0 })}`
+      : `${Math.round(v)}`;
+
+  const maxIdx = nums.indexOf(max);
+  const xPeak = cats[maxIdx];
+
+  const annotations = {
+    yaxis: [
+      {
+        y: avg,
+        borderColor: "#94a3b8",
+        strokeDashArray: 5,
+        borderWidth: 1,
+        label: {
+          text: `Avg ${fmt(avg)}`,
+          borderColor: "#94a3b8",
+          style: { ...ANNOTATION_LABEL_STYLE, color: "#fff", background: "#94a3b8" },
+        },
+      },
+    ],
+  };
+
+  if (max > 0 && xPeak != null) {
+    annotations.points = [
+      {
+        x: xPeak,
+        y: max,
+        seriesIndex: 0,
+        marker: { size: 0 },
+        label: {
+          borderColor: "#5F22D9",
+          offsetY: -6,
+          text: `Peak ${fmt(max)}`,
+          style: { ...ANNOTATION_LABEL_STYLE, color: "#fff", background: "#5F22D9" },
+        },
+      },
+    ];
+  }
+
+  return annotations;
+}
+
+function segment(revenueRows, orderRows, revenueTitle, orderTitle) {
+  return {
+    revenue: {
+      name: revenueTitle,
+      data: revenueRows.map((r) => r.value),
+      categories: revenueRows.map((r) => r.date),
+    },
+    orders: {
+      name: orderTitle,
+      data: orderRows.map((r) => r.value ?? 0),
+      categories: orderRows.map((r) => r.date),
+    },
+  };
+}
+
+function baseChartOptions() {
+  return {
+    chart: {
+      type: "bar",
+      height: 350,
+      zoom: { enabled: false },
+      toolbar: { show: false },
+    },
+    plotOptions: {
+      bar: {
+        borderRadius: 6,
+        borderRadiusApplication: "end",
+        columnWidth: "58%",
+      },
+    },
+    dataLabels: { enabled: false },
+    colors: ["#5F22D9"],
+    fill: {
+      type: "gradient",
+      gradient: {
+        shade: "dark",
+        type: "vertical",
+        shadeIntensity: 0.5,
+        opacityFrom: 0.95,
+        opacityTo: 1,
+        stops: [0, 100],
+      },
+    },
+    xaxis: {
+      type: "datetime",
+      categories: [],
+      labels: {
+        format: "MMM dd",
+        style: { fontSize: "12px", fontWeight: 600, colors: X_AXIS_LABEL_COLORS },
+      },
+      axisBorder: { show: false },
+      axisTicks: { show: false },
+      offsetX: 8,
+    },
+    yaxis: {
+      tickAmount: 4,
+      labels: {
+        formatter: (val) => val,
+        style: { fontSize: "12px", fontWeight: 600, colors: ["#7E8299"] },
+      },
+    },
+    grid: { borderColor: "#e0e0e0", strokeDashArray: 4 },
+    tooltip: { x: { format: "dd/MM/yy" } },
+    annotations: {},
+  };
+}
+
 const RevenueChart = () => {
-  const [colorsLabels] = useState(Array(12).fill("#7E8299"));
   const [activeTab, setActiveTab] = useState("Daily");
-  const [chartType, setChartType] = useState("revenue"); // New state for chart type
+  const [chartType, setChartType] = useState("revenue");
   const [totalRevenue, setTotalRevenue] = useState(null);
-  const [totalOrders, setTotalOrders] = useState(null); // New state for total orders
+  const [totalOrders, setTotalOrders] = useState(null);
   const [chartData, setChartData] = useState({
     series: [],
-    options: {
-      chart: {
-        height: 350,
-        type: "area",
-        width: 515,
-        zoom: { enabled: false },
-        toolbar: { show: false },
-      },
-      dataLabels: { enabled: false },
-      colors: ["#5F22D9"],
-      stroke: { curve: "smooth" },
-      xaxis: {
-        type: "datetime",
-        categories: [],
-        labels: {
-          format: "MMM dd",
-          style: {
-            fontSize: "12px",
-            fontWeight: 600,
-            colors: colorsLabels,
-          },
-        },
-        axisBorder: { show: false },
-        axisTicks: { show: false },
-        offsetX: 25,
-      },
-      yaxis: {
-        tickAmount: 4,
-        labels: {
-          formatter: (val) => val,
-          style: {
-            fontSize: "12px",
-            fontWeight: 600,
-            colors: ["#7E8299"],
-          },
-        },
-      },
-      grid: { borderColor: "#e0e0e0", strokeDashArray: 4 },
-      tooltip: { x: { format: "dd/MM/yy" } },
-    },
+    options: baseChartOptions(),
   });
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
         const response = await axiosClient.get("/v1/vendor/stats/");
-        if (response.status === 200) {
-          toast.success("Stats fetched successfully!");
-          const {
+        if (response.status !== 200) return;
+
+        const {
+          daily_revenue,
+          monthly_revenue,
+          yearly_revenue,
+          total_revenue,
+          total_packs_created,
+          total_orders,
+          daily_orders,
+          monthly_orders,
+          yearly_orders,
+        } = response.data;
+
+        setTotalRevenue(total_revenue);
+        setTotalOrders(total_orders);
+        localStorage.setItem("Totalbags", total_packs_created);
+        localStorage.setItem("Totalorders", total_orders);
+        localStorage.setItem("Totalrevenue", total_revenue ?? 0);
+
+        const transformedData = {
+          Daily: segment(
             daily_revenue,
-            monthly_revenue,
-            yearly_revenue,
-            total_revenue,
-            total_packs_created,
-            total_orders,
             daily_orders,
+            "Daily Revenue",
+            "Daily Orders"
+          ),
+          Monthly: segment(
+            monthly_revenue,
             monthly_orders,
+            "Monthly Revenue",
+            "Monthly Orders"
+          ),
+          Yearly: segment(
+            yearly_revenue,
             yearly_orders,
-          } = response.data;
+            "Yearly Revenue",
+            "Yearly Orders"
+          ),
+        };
 
-          setTotalRevenue(total_revenue);
-          setTotalOrders(total_orders); // Set total orders
+        const current = transformedData[activeTab][chartType];
+        const revenue = chartType === "revenue";
 
-          localStorage.setItem("Totalbags", total_packs_created);
-          localStorage.setItem("Totalorders", total_orders);
-          localStorage.setItem("Totalrevenue", total_revenue ?? 0);
-
-          const transformedData = {
-            Daily: {
-              revenue: {
-                name: "Daily Revenue",
-                data: daily_revenue.map((item) => item.value),
-                categories: daily_revenue.map((item) => item.date),
-              },
-              orders: {
-                name: "Daily Orders",
-                data: daily_orders.map((item) => item.value), // Assuming orders data exists
-                categories: daily_orders.map((item) => item.date),
+        setChartData((prev) => ({
+          series: [{ name: current.name, data: current.data }],
+          options: {
+            ...prev.options,
+            annotations: buildBarAnnotations(
+              current.categories,
+              current.data,
+              revenue
+            ),
+            xaxis: {
+              ...prev.options.xaxis,
+              type: activeTab === "Yearly" ? "category" : "datetime",
+              categories: current.categories,
+              labels: {
+                ...prev.options.xaxis.labels,
+                format: activeTab === "Yearly" ? undefined : "MMM dd",
               },
             },
-            Monthly: {
-              revenue: {
-                name: "Monthly Revenue",
-                data: monthly_revenue.map((item) => item.value),
-                categories: monthly_revenue.map((item) => item.date),
-              },
-              orders: {
-                name: "Monthly Orders",
-                data: monthly_orders.map((item) => item.value || 0),
-                categories: monthly_orders.map((item) => item.date),
-              },
-            },
-            Yearly: {
-              revenue: {
-                name: "Yearly Revenue",
-                data: yearly_revenue.map((item) => item.value),
-                categories: yearly_revenue.map((item) => item.date),
-              },
-              orders: {
-                name: "Yearly Orders",
-                data: yearly_orders.map((item) => item.value || 0),
-                categories: yearly_orders.map((item) => item.date),
-              },
-            },
-          };
-
-          const currentData = transformedData[activeTab][chartType];
-
-          setChartData((prevData) => ({
-            ...prevData,
-            series: [
-              {
-                name: currentData.name,
-                data: currentData.data,
-              },
-            ],
-            options: {
-              ...prevData.options,
-              xaxis: {
-                ...prevData.options.xaxis,
-                type: activeTab === "Yearly" ? "category" : "datetime",
-                categories: currentData.categories,
-                labels: {
-                  format: activeTab === "Yearly" ? undefined : "MMM dd",
-                  style: {
-                    fontSize: "12px",
-                    fontWeight: 600,
-                    colors: colorsLabels,
-                  },
-                },
-              },
-            },
-          }));
-        }
+          },
+        }));
       } catch (error) {
         toast.error("Failed to fetch stats");
         console.error("Error fetching stats:", error);
@@ -158,47 +228,37 @@ const RevenueChart = () => {
     };
 
     fetchStats();
-  }, [activeTab, chartType]); // Added chartType dependency
+  }, [activeTab, chartType]);
 
-  const getDisplayValue = () => {
-    if (chartType === "revenue") {
-      return totalRevenue ? totalRevenue.toFixed(2) : "0";
-    } else {
-      return totalOrders ? totalOrders : "0";
-    }
-  };
-
-  const getDisplayLabel = () => {
-    return chartType === "revenue" ? "Total Revenue" : "Total Orders";
-  };
-
-  const getDisplayUnit = () => {
-    return chartType === "revenue" ? "INR ₹" : "";
-  };
+  const displayLabel = chartType === "revenue" ? "Total Revenue" : "Total Orders";
+  const displayValue =
+    chartType === "revenue"
+      ? totalRevenue != null
+        ? totalRevenue.toFixed(2)
+        : "0"
+      : totalOrders ?? "0";
+  const displayUnit = chartType === "revenue" ? "INR ₹" : "";
 
   return (
-    <div className="flex h-full flex-col justify-between py-2.5 border border-gray-300 rounded-2xl lg:w-full">
-      <div className="flex flex-col mt-4 ml-8">
-        <div className="flex items-center justify-between mb-4">
+    <div className="flex h-full flex-col justify-between rounded-2xl border border-gray-300 py-2.5 lg:w-full">
+      <div className="ml-8 mt-4 flex flex-col">
+        <div className="mb-4 flex items-center justify-between">
           <h1 className="text-lg font-semibold leading-[28px] text-black">
-            {getDisplayLabel()}
+            {displayLabel}
           </h1>
-          
-          {/* Chart Type Dropdown */}
+
           <div className="relative mr-8">
             <select
               value={chartType}
               onChange={(e) => setChartType(e.target.value)}
-              className="appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-8 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent cursor-pointer hover:border-gray-400 transition-colors"
+              className="cursor-pointer appearance-none rounded-lg border border-gray-300 bg-white px-4 py-2 pr-8 text-sm font-medium text-gray-700 transition-colors hover:border-gray-400 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary"
             >
               <option value="revenue">Revenue Chart</option>
               <option value="orders">Orders Chart</option>
             </select>
-            
-            {/* Custom dropdown arrow */}
-            <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
               <svg
-                className="w-4 h-4 text-gray-400"
+                className="h-4 w-4 text-gray-400"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -214,28 +274,26 @@ const RevenueChart = () => {
           </div>
         </div>
 
-        <div className="w-full flex justify-end px-5">
+        <div className="flex w-full justify-end px-5">
           <Tabs
             tabs={[{ name: "Daily" }, { name: "Monthly" }, { name: "Yearly" }]}
             activeTab={activeTab}
             onChange={setActiveTab}
           />
         </div>
-        
-        <h1 className="text-[40px] leading-[28px] text-primary font-semibold my-4">
-          {getDisplayValue()}
-          {getDisplayUnit() && (
-            <span className="text-base ml-1">{getDisplayUnit()}</span>
-          )}
+
+        <h1 className="my-4 text-[40px] font-semibold leading-[28px] text-primary">
+          {displayValue}
+          {displayUnit ? <span className="ml-1 text-base">{displayUnit}</span> : null}
         </h1>
       </div>
-      
-      <div id="chart" className="w-full">
+
+      <div className="w-full" id="chart">
         <ReactApexChart
           options={chartData.options}
           series={chartData.series}
-          type="area"
-          height={220}
+          type="bar"
+          height={260}
         />
       </div>
     </div>
