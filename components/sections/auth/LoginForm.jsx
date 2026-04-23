@@ -49,7 +49,7 @@ const LoginForm = ({ refreshState }) => {
     };
 
     // Set prod flag based on password
-    if (data.password === 'HighwaytoHell') {
+    if (data.password === 'boutivis1234') {
       localStorage.setItem('prod', 'false');
     } else {
       localStorage.setItem('prod', 'true');
