@@ -42,7 +42,7 @@ const ParentLoginForm = () => {
     };
 
     // Set prod flag based on password (matches existing vendor login behavior)
-    if (data.password === "boutivis1234") {
+    if (data.password === "bountivis1234") {
       localStorage.setItem("prod", "false");
     } else {
       localStorage.setItem("prod", "true");
