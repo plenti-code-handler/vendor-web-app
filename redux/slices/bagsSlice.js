@@ -3,10 +3,12 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { toast } from "sonner";
 import axiosClient from "../../AxiosClient";
 
-export const fetchAllBags = createAsyncThunk("bags/fetchAllBags", async () => {
+export const fetchAllBags = createAsyncThunk(
+  "bags/fetchAllBags",
+  async ({ active } = { active: true }) => {
   try {
     const response = await axiosClient.get(
-      "/v1/vendor/item/get/all?active=true"
+      `/v1/vendor/item/get/all?active=${active ? "true" : "false"}`
     );
     console.log("All bags");
     console.log(response.data);
@@ -15,7 +17,8 @@ export const fetchAllBags = createAsyncThunk("bags/fetchAllBags", async () => {
     console.log(error);
     throw error;
   }
-});
+  }
+);
 
 const bagsSlice = createSlice({
   name: "bags",

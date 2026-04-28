@@ -91,7 +91,6 @@ const ItemTypeFilter = ({ selectedFilter, onFilterChange, selectedPricingId, onP
       </div>
 
       {/* Pricing cards for selected category - same style as AllergensSection */}
-      {selectedFilter && pricingsForType.length > 1 && (
         <div className="space-y-2 animate-fade-down">
           <h3 className="text-base font-medium text-gray-900">Select Pricing</h3>
           <div className="flex flex-wrap gap-2">
@@ -119,7 +118,6 @@ const ItemTypeFilter = ({ selectedFilter, onFilterChange, selectedPricingId, onP
             })}
           </div>
         </div>
-      )}
     </div>
   );
 };

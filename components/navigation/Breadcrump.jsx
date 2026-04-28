@@ -5,7 +5,7 @@ import { addUserSvg, backButtonSvg } from "../../svgs";
 import { useDispatch } from "react-redux";
 import { setOpenDrawer } from "../../redux/slices/addBagSlice";
 import PrimaryButton from "../buttons/PrimaryButton";
-import ReportsButton from "../sections/bussiness/more/ReportsButton";
+import GreetingBanner from "../sections/bussiness/more/GreetingsBanner";
 
 const decidePath = (pathname) => {
   if (pathname.match(/\/admin\/users\/business\/[a-zA-Z0-9]+/)) {
@@ -111,8 +111,7 @@ const Breadcrumb = () => {
         {/* Right side container */}
         <div className="flex items-center space-x-4 px-4">
           {/* ✅ Reusable Greeting Banner */}
-          {/* <GreetingBanner variant="default" /> */}
-          <ReportsButton />
+          <GreetingBanner variant="default" />
 
           {/* Existing button */}
           {currentPath === "Manage Bags" && (
