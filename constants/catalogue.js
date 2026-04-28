@@ -2,6 +2,7 @@ export const catalogue_limits = {
     MEAL: {
         default: 6, 
         vdr_20260421230716_YMW: 10,
+        vdr_20260427230121_CJG: 10
     },
     BAKED_GOODS: {
         default: 6
