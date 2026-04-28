@@ -98,7 +98,6 @@ const STATUS_BADGE_STYLES = {
 
 function StatusBadge({ status }) {
   const s = normStatus(status);
-  const busy = isReportInProgressStatus(s);
 
   return (
     <span
@@ -106,12 +105,6 @@ function StatusBadge({ status }) {
         STATUS_BADGE_STYLES[s] || "bg-slate-50 text-slate-700 ring-slate-200"
       }`}
     >
-      {busy && (
-        <span className="relative flex h-2 w-2">
-          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#39ff14] opacity-60" />
-          <span className="relative inline-flex h-2 w-2 rounded-full bg-[#22c55e]" />
-        </span>
-      )}
       {status || "—"}
     </span>
   );
@@ -178,7 +171,11 @@ function ReportJobRow({ job, onDownload }) {
             </button>
           ) : (
             <span className="text-xs text-slate-400">
-              {busy ? "Not ready yet" : "—"}
+              {busy ? (
+                  <div className="animate-spin rounded-full h-4 w-4 border-2 border-slate-400 border-t-transparent [animation-duration:0.6s]" />
+              ) : (
+                "—"
+              )}
             </span>
           )}
         </div>
@@ -287,6 +284,7 @@ export default function VendorReports() {
     if (now - lastDownloadNavAtRef.current < DOWNLOAD_NAV_DEBOUNCE_MS) {
       return;
     }
+    toast.success("Downloading report... Please wait while we prepare the file for you.");
     lastDownloadNavAtRef.current = now;
     window.location.assign(url);
   }, []);

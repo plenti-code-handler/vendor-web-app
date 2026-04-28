@@ -11,17 +11,11 @@ const BagsFilter = ({ selectedFilter, onFilterChange }) => {
           value={selectedFilter}
           onChange={(e) => onFilterChange(e.target.value)}
         >
-          <option value="" className="text-base">
-            {`All bags`}
+          <option value="active" className="text-base">
+            {`Active`}
           </option>
-          <option value="BAKED GOODS" className="text-base">
-            {`Baked`}
-          </option>
-          <option value="SNACKS AND DESSERT" className="text-base">
-            {`Snacks and Desserts`}
-          </option>
-          <option value="Meal" className="text-base">
-            {`Meal`}
+          <option value="expired" className="text-base">
+            {`Expired`}
           </option>
         </select>
 
