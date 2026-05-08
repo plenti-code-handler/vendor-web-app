@@ -17,6 +17,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { useGoogleAuth } from "../../../hooks/useGoogleAuth";
 import GoogleAuthButton from "../../buttons/GoogleAuthButton";
+import PrimaryButton from "../../buttons/PrimaryButton";
 
 const LoginForm = ({ refreshState }) => {
   const router = useRouter();
@@ -219,26 +220,15 @@ const LoginForm = ({ refreshState }) => {
         </div>
 
         {/* Submit Button */}
-        <button
+        <PrimaryButton
           type="submit"
           disabled={loading || googleLoading}
-          className={`group relative w-full flex items-center justify-center px-6 py-3 border border-transparent text-sm font-medium rounded-xl text-white transition-all duration-300 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5F22D9] ${loading || googleLoading
-            ? 'bg-gray-400 cursor-not-allowed'
-            : 'bg-[#5F22D9] hover:bg-[#4A1BB8] shadow-lg hover:shadow-xl'
-            }`}
+          className="w-full"
+          loading={loading}
+          loadingText="Signing in..."
         >
-          {loading ? (
-            <div className="flex items-center space-x-2">
-              <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-              <span>Signing in...</span>
-            </div>
-          ) : (
-            <div className="flex items-center space-x-2">
-              <span>Sign in</span>
-              <ArrowRightIcon className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
-            </div>
-          )}
-        </button>
+          Sign in
+        </PrimaryButton>
 
         {/* Add a divider with text "or" */}
         <div className="relative">

@@ -2,6 +2,64 @@
  * Utility functions for working with Google Places API address components
  */
 
+/** @returns {"11:00" | "23:00"-style string or null} */
+function openingHoursPointToHHMM(pt) {
+  if (!pt) return null;
+  if (pt.time != null && pt.time !== "") {
+    const s = String(pt.time).padStart(4, "0");
+    return `${s.slice(0, 2)}:${s.slice(2, 4)}`;
+  }
+  if (typeof pt.hours === "number") {
+    return `${String(pt.hours).padStart(2, "0")}:${String(pt.minutes ?? 0).padStart(2, "0")}`;
+  }
+  return null;
+}
+
+function fetchPlaceDetails(placeId) {
+  if (
+    typeof window === "undefined" ||
+    !placeId ||
+    !window.google?.maps?.places?.PlacesService
+  ) {
+    return Promise.resolve(null);
+  }
+  return new Promise((resolve) => {
+    const svc = new window.google.maps.places.PlacesService(
+      document.createElement("div")
+    );
+    svc.getDetails(
+      { placeId, fields: ["opening_hours"] },
+      (result, status) => {
+        resolve(
+          status === window.google.maps.places.PlacesServiceStatus.OK
+            ? result
+            : null
+        );
+      }
+    );
+  });
+}
+
+/**
+ * First period only: `opening_hours.periods[0].open` / `.close` → "11:00" / "23:00".
+ * @returns {Promise<{ openTime: string, closeTime: string | null } | null>}
+ */
+export const resolveOpeningHoursForPlace = async (place) => {
+  let oh = place?.opening_hours;
+  if (!oh?.periods?.length && place?.place_id) {
+    const details = await fetchPlaceDetails(place.place_id);
+    oh = details?.opening_hours;
+  }
+  const p0 = oh?.periods?.[0];
+  if (!p0?.open) return null;
+
+  const openTime = openingHoursPointToHHMM(p0.open);
+  if (!openTime) return null;
+
+  const closeTime = p0.close ? openingHoursPointToHHMM(p0.close) : null;
+  return { openTime, closeTime };
+};
+
 /**
  * Extract administrative area level from address components
  * @param {Array} addressComponents - Array of address components from Google Places
@@ -65,12 +123,8 @@ export const processPlaceForVendor = (place, apiKey) => {
   const latitude = place.geometry.location.lat();
   const longitude = place.geometry.location.lng();
 
-  // Extract administrative area levels from address_components
-  const administrativeAreaLevel1 = getAdministrativeArea(place.address_components, 1);
-  const administrativeAreaLevel3 = getAdministrativeArea(place.address_components, 3);
-  
   // Format service_location as uppercase(level3, level1)
-  const serviceLocation = formatServiceLocation(administrativeAreaLevel3, administrativeAreaLevel1);
+  const serviceLocation = getServiceLocationFromAddressComponents(place.address_components);
 
   // Generate embed URL for iframe
   const mapEmbedUrl = `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${latitude},${longitude}&zoom=15`;

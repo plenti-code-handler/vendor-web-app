@@ -1,38 +1,43 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
-import { useForm } from "react-hook-form";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useLoadScript } from "@react-google-maps/api";
 import { toast } from "sonner";
-import { processPlaceForVendor } from "../../../utility/googlePlacesUtils";
+import {
+  processPlaceForVendor,
+  resolveOpeningHoursForPlace,
+} from "../../../utility/googlePlacesUtils";
+import {
+  STORE_CLOSE_TIME_OPTIONS,
+  STORE_OPEN_TIME_OPTIONS,
+  timeSelectOptionsIncludingValue,
+} from "../../../utility/openingHoursTimeOptions";
+import PrimaryButton from "../../buttons/PrimaryButton";
 
 const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 const libraries = ["places"];
 
 const CompleteProfileForm = ({ onSubmit, loading, initialData }) => {
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    reset,
-    formState: { errors },
-  } = useForm({
-    defaultValues: initialData || {
-      storeManagerName: "",
-      ownerName: "",
-      vendorType: "",
-      gstnumber: "",
-      pannumber: "",
-      fssainumber: "",
-      pincode: "",
-    },
-  });
-
-  const [address, setAddress] = useState("");
-  const [coordinates, setCoordinates] = useState({ lat: null, lng: null });
+  const [errors, setErrors] = useState({});
   const [mapUrl, setMapUrl] = useState("");
-  const [googleMapsUrl, setGoogleMapsUrl] = useState("");
-  const [serviceLocation, setServiceLocation] = useState("");
+
+  // Store everything in one object (same pattern as Account.jsx)
+  const [formData, setFormData] = useState({
+    logoFile: null,
+    storeManagerName: "",
+    ownerName: "",
+    vendorType: "",
+    gstnumber: "",
+    pannumber: "",
+    fssainumber: "",
+    openTime: "",
+    closeTime: "",
+    address: "",
+    latitude: null,
+    longitude: null,
+    address_url: "",
+    service_location: "",
+  });
 
   const autoCompleteRef = useRef(null);
   const autocompleteInstanceRef = useRef(null);
@@ -45,35 +50,32 @@ const CompleteProfileForm = ({ onSubmit, loading, initialData }) => {
   // Initialize form and address state when initialData changes
   useEffect(() => {
     if (initialData) {
-      reset({
+      setFormData((prev) => ({
+        ...prev,
         storeManagerName: initialData.storeManagerName || "",
         ownerName: initialData.ownerName || "",
         vendorType: initialData.vendorType || "",
         gstnumber: initialData.gstnumber || "",
         pannumber: initialData.pannumber || "",
         fssainumber: initialData.fssainumber || "",
-        pincode: initialData.pincode || "",
-      });
+        openTime: initialData.openTime || "",
+        closeTime: initialData.closeTime || "",
+        address: initialData.address || "",
+        latitude: initialData.latitude || null,
+        longitude: initialData.longitude || null,
+        address_url: initialData.address_url || "",
+        service_location: initialData.service_location || "",
+      }));
 
-      if (initialData.address) {
-        setAddress(initialData.address);
-      }
       if (initialData.latitude && initialData.longitude) {
-        setCoordinates({
-          lat: initialData.latitude,
-          lng: initialData.longitude,
-        });
-        const embedUrl = `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${initialData.latitude},${initialData.longitude}&zoom=15`;
-        setMapUrl(embedUrl);
-      }
-      if (initialData.address_url) {
-        setGoogleMapsUrl(initialData.address_url);
-      }
-      if (initialData.service_location) {
-        setServiceLocation(initialData.service_location);
+        setMapUrl(
+          `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${initialData.latitude},${initialData.longitude}&zoom=15`
+        );
+      } else {
+        setMapUrl("");
       }
     }
-  }, [initialData, reset, apiKey]);
+  }, [initialData]);
 
   // Handle Google Maps API errors
   useEffect(() => {
@@ -109,6 +111,8 @@ const CompleteProfileForm = ({ onSubmit, loading, initialData }) => {
             "business_status",
             "types",
             "address_components",
+            "opening_hours",
+            "utc_offset_minutes",
           ],
         }
       );
@@ -116,18 +120,40 @@ const CompleteProfileForm = ({ onSubmit, loading, initialData }) => {
       // Add place_changed listener
       autocompleteInstanceRef.current.addListener("place_changed", () => {
         const place = autocompleteInstanceRef.current.getPlace();
-        const processedPlace = processPlaceForVendor(place, apiKey);
 
-        if (processedPlace) {
-          setAddress(processedPlace.formattedAddress);
-          setCoordinates({ lat: processedPlace.latitude, lng: processedPlace.longitude });
-          setServiceLocation(processedPlace.serviceLocation);
+        const run = async () => {
+          const processedPlace = processPlaceForVendor(place, apiKey);
+          if (!processedPlace) {
+            toast.error("Please select a valid address from the suggestions");
+            return;
+          }
+
+          let hours = null;
+          try {
+            hours = await resolveOpeningHoursForPlace(place);
+          } catch {
+            /* ignore */
+          }
+
+          setFormData((prev) => ({
+            ...prev,
+            address_url: processedPlace.googleMapsUrl,
+            address: processedPlace.formattedAddress,
+            latitude: processedPlace.latitude,
+            longitude: processedPlace.longitude,
+            service_location: processedPlace.serviceLocation,
+            ...(hours?.openTime
+              ? { openTime: hours.openTime }
+              : {}),
+            ...(hours?.closeTime
+              ? { closeTime: hours.closeTime }
+              : {}),
+          }));
           setMapUrl(processedPlace.mapEmbedUrl);
-          setGoogleMapsUrl(processedPlace.googleMapsUrl);
           toast.success("Address selected successfully!");
-        } else {
-          toast.error("Please select a valid address from the suggestions");
-        }
+        };
+
+        void run();
       });
     } catch (error) {
       console.error("Error initializing autocomplete:", error);
@@ -141,31 +167,63 @@ const CompleteProfileForm = ({ onSubmit, loading, initialData }) => {
         autocompleteInstanceRef.current = null;
       }
     };
-  }, [isLoaded, setValue, apiKey]);
+  }, [isLoaded]);
 
   const handleWheel = (e) => {
     e.currentTarget.blur();
   };
 
-  const handleFormSubmit = async (data) => {
-    // Validate address and coordinates
-    if (!address || !coordinates.lat || !coordinates.lng) {
-      toast.error("Please select a valid address");
-      return;
-    }
+  const handleChange = useCallback((e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  }, []);
 
-    // Call parent's onSubmit with form data, address, coordinates, googleMapsUrl, and service_location
-    await onSubmit(data, { 
-      address, 
-      coordinates, 
-      googleMapsUrl,
-      service_location: serviceLocation,
+  const validate = useCallback(() => {
+    const next = {};
+    if (!formData.logoFile) next.logo = "Logo is required";
+    if (!formData.ownerName?.trim()) next.ownerName = "Owner Name is required";
+    if (!formData.vendorType) next.vendorType = "Vendor type is required";
+    if (!formData.pannumber?.trim()) next.pannumber = "PAN Number is required";
+    if (!formData.fssainumber?.trim()) next.fssainumber = "FSSAI Number is required";
+    if (!formData.openTime?.trim()) next.openTime = "Opening time is required";
+    if (!formData.closeTime?.trim()) next.closeTime = "Closing time is required";
+    if (!formData.address || !formData.latitude || !formData.longitude) {
+      next.adressurl = "Please select a valid address from the suggestions";
+    }
+    setErrors(next);
+    return Object.keys(next).length === 0;
+  }, [formData]);
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    if (!validate()) return;
+
+    // Keep parent payload shape unchanged (`data.logo[0]` etc.)
+    const rhfLikeData = {
+      logo: [formData.logoFile],
+      storeManagerName: formData.storeManagerName,
+      ownerName: formData.ownerName,
+      vendorType: formData.vendorType,
+      gstnumber: formData.gstnumber,
+      pannumber: formData.pannumber,
+      fssainumber: formData.fssainumber,
+    };
+
+    await onSubmit(rhfLikeData, {
+      address: formData.address,
+      coordinates: { lat: formData.latitude, lng: formData.longitude },
+      googleMapsUrl: formData.address_url,
+      service_location: formData.service_location,
+      opening_hours: {
+        openTime: formData.openTime.trim(),
+        closeTime: formData.closeTime.trim(),
+      },
     });
   };
 
   return (
     <form
-      onSubmit={handleSubmit(handleFormSubmit)}
+      onSubmit={handleFormSubmit}
       className="flex flex-col w-full max-w-md space-y-5"
     >
       <div className="flex flex-col space-y-3">
@@ -182,11 +240,15 @@ const CompleteProfileForm = ({ onSubmit, loading, initialData }) => {
         <input
           type="file"
           accept="image/*"
-          {...register("logo", { required: "Logo is required" })}
+          onChange={(e) => {
+            const file = e.target.files?.[0] || null;
+            setFormData((prev) => ({ ...prev, logoFile: file }));
+            if (errors.logo) setErrors((prev) => ({ ...prev, logo: undefined }));
+          }}
           className="rounded-md border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
         />
         {errors.logo && (
-          <p className="text-red-500 text-sm">{errors.logo.message}</p>
+          <p className="text-red-500 text-sm">{errors.logo}</p>
         )}
       </div>
 
@@ -196,7 +258,9 @@ const CompleteProfileForm = ({ onSubmit, loading, initialData }) => {
         </label>
         <input
           type="text"
-          {...register("storeManagerName")}
+          name="storeManagerName"
+          value={formData.storeManagerName}
+          onChange={handleChange}
           className="rounded-md border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
           placeholder="Enter store Manager name"
           onWheel={handleWheel}
@@ -209,16 +273,16 @@ const CompleteProfileForm = ({ onSubmit, loading, initialData }) => {
         </label>
         <input
           type="text"
-          {...register("ownerName", {
-            required: "Owner Name is required",
-          })}
+          name="ownerName"
+          value={formData.ownerName}
+          onChange={handleChange}
           className="rounded-md border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
           placeholder="Enter owner name"
           onWheel={handleWheel}
         />
         {errors.ownerName && (
           <p className="text-red-500 text-sm">
-            {errors.ownerName.message}
+            {errors.ownerName}
           </p>
         )}
       </div>
@@ -228,9 +292,9 @@ const CompleteProfileForm = ({ onSubmit, loading, initialData }) => {
           Vendor Type
         </label>
         <select
-          {...register("vendorType", {
-            required: "Vendor type is required",
-          })}
+          name="vendorType"
+          value={formData.vendorType}
+          onChange={handleChange}
           className="rounded-md border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
         >
           <option value="">Select Vendor Type</option>
@@ -240,7 +304,7 @@ const CompleteProfileForm = ({ onSubmit, loading, initialData }) => {
         </select>
         {errors.vendorType && (
           <p className="text-red-500 text-sm">
-            {errors.vendorType.message}
+            {errors.vendorType}
           </p>
         )}
       </div>
@@ -251,7 +315,9 @@ const CompleteProfileForm = ({ onSubmit, loading, initialData }) => {
         </label>
         <input
           type="text"
-          {...register("gstnumber")}
+          name="gstnumber"
+          value={formData.gstnumber}
+          onChange={handleChange}
           className="rounded-md border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
           placeholder="Enter GST Number"
           onWheel={handleWheel}
@@ -264,16 +330,16 @@ const CompleteProfileForm = ({ onSubmit, loading, initialData }) => {
         </label>
         <input
           type="text"
-          {...register("pannumber", {
-            required: "PAN Number is required",
-          })}
+          name="pannumber"
+          value={formData.pannumber}
+          onChange={handleChange}
           className="rounded-md border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
           placeholder="Enter PAN Number"
           onWheel={handleWheel}
         />
         {errors.pannumber && (
           <p className="text-red-500 text-sm">
-            {errors.pannumber.message}
+            {errors.pannumber}
           </p>
         )}
       </div>
@@ -284,35 +350,17 @@ const CompleteProfileForm = ({ onSubmit, loading, initialData }) => {
         </label>
         <input
           type="text"
-          {...register("fssainumber", {
-            required: "FSSAI Number is required",
-          })}
+          name="fssainumber"
+          value={formData.fssainumber}
+          onChange={handleChange}
           className="rounded-md border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
           placeholder="Enter FSSAI Number"
           onWheel={handleWheel}
         />
         {errors.fssainumber && (
           <p className="text-red-500 text-sm">
-            {errors.fssainumber.message}
+            {errors.fssainumber}
           </p>
-        )}
-      </div>
-
-      <div className="flex flex-col space-y-1">
-        <label className="text-sm font-medium text-gray-600">
-          Pin Code
-        </label>
-        <input
-          type="number"
-          {...register("pincode", {
-            required: "Pin Code is required",
-          })}
-          className="rounded-md border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
-          placeholder="Enter Pin Code"
-          onWheel={handleWheel}
-        />
-        {errors.pincode && (
-          <p className="text-red-500 text-sm">{errors.pincode.message}</p>
         )}
       </div>
 
@@ -322,14 +370,13 @@ const CompleteProfileForm = ({ onSubmit, loading, initialData }) => {
         </label>
         <div className="relative">
         <input
-            {...register("adressurl", {})}
             type="text"
             ref={autoCompleteRef}
             className="rounded-md border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black w-full"
             placeholder={isLoaded ? "Search your business as per Google" : "Loading address search..."}
             onWheel={handleWheel}
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
+            value={formData.address}
+            onChange={(e) => setFormData((prev) => ({ ...prev, address: e.target.value }))}
             disabled={!isLoaded}
             />
           {!isLoaded && (
@@ -350,7 +397,7 @@ const CompleteProfileForm = ({ onSubmit, loading, initialData }) => {
         )}
         {errors.adressurl && (
           <p className="text-red-500 text-sm">
-            {errors.adressurl.message}
+            {errors.adressurl}
           </p>
         )}
       </div>
@@ -368,16 +415,65 @@ const CompleteProfileForm = ({ onSubmit, loading, initialData }) => {
         />
       )}
 
+<div className="flex flex-col space-y-1 sm:flex-row sm:gap-4">
+        <div className="flex-1 flex flex-col space-y-1">
+          <label className="text-sm font-medium text-gray-600">
+            Opening time <span className="text-red-500">*</span>
+          </label>
+          <select
+            name="openTime"
+            value={formData.openTime}
+            onChange={handleChange}
+            className="rounded-md border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
+          >
+            <option value="">Select open time</option>
+            {timeSelectOptionsIncludingValue(
+              formData.openTime,
+              STORE_OPEN_TIME_OPTIONS
+            ).map((t) => (
+              <option key={t} value={t}>
+                {t}
+              </option>
+            ))}
+          </select>
+          {errors.openTime && (
+            <p className="text-red-500 text-sm">{errors.openTime}</p>
+          )}
+        </div>
+        <div className="flex-1 flex flex-col space-y-1">
+          <label className="text-sm font-medium text-gray-600">
+            Closing time <span className="text-red-500">*</span>
+          </label>
+          <select
+            name="closeTime"
+            value={formData.closeTime}
+            onChange={handleChange}
+            className="rounded-md border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
+          >
+            <option value="">Select close time</option>
+            {timeSelectOptionsIncludingValue(
+              formData.closeTime,
+              STORE_CLOSE_TIME_OPTIONS
+            ).map((t) => (
+              <option key={t} value={t}>
+                {t}
+              </option>
+            ))}
+          </select>
+          {errors.closeTime && (
+            <p className="text-red-500 text-sm">{errors.closeTime}</p>
+          )}
+        </div>
+      </div>
+      <p className="text-xs text-gray-500 -mt-2">
+        Picked automatically from Google when available; adjust if needed (hourly slots).
+      </p>
+
+
       <div className="mt-6">
-        <button
-          type="submit"
-          className={`flex justify-center bg-primary text-white font-semibold py-2 rounded hover:bg-hoverPrimary gap-2 w-full ${
-            loading ? "opacity-50 cursor-not-allowed" : ""
-          }`}
-          disabled={loading}
-        >
-          {loading ? "Processing..." : "Create Account"}
-        </button>
+      <PrimaryButton type="submit" className="w-full" loading={loading} loadingText="Processing...">
+        Create Account
+      </PrimaryButton>
       </div>
     </form>
   );

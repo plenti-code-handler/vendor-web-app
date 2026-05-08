@@ -213,7 +213,10 @@ export const OnboardLayout = ({ children }) => {
     }
   };
 
-  const onSubmitCompleteProfile = async (data, { address, coordinates, googleMapsUrl, service_location }) => {
+  const onSubmitCompleteProfile = async (
+    data,
+    { address, coordinates, googleMapsUrl, service_location, opening_hours }
+  ) => {
     try {
       setFormLoading(true);
       const token = localStorage.getItem("token");
@@ -235,9 +238,11 @@ export const OnboardLayout = ({ children }) => {
         longitude: coordinates.lng,
         address_url: googleMapsUrl,
         address: address.trim(),
-        pincode: data.pincode.toString().trim(),
         service_location: service_location || null,
+        opening_hours: opening_hours || null,
       };
+
+      console.log(updateData, "updateData");
 
       await axiosClient.put("/v1/vendor/me/update", updateData, {
         headers: { Authorization: `Bearer ${token}` }
@@ -298,7 +303,8 @@ export const OnboardLayout = ({ children }) => {
                 gstnumber: vendorData?.gst_number || "",
                 pannumber: vendorData?.pan_number || "",
                 fssainumber: vendorData?.fssai_number || "",
-                pincode: vendorData?.pincode || "",
+                openTime: vendorData?.opening_hours?.openTime || "",
+                closeTime: vendorData?.opening_hours?.closeTime || "",
                 address: vendorData?.address || "",
                 address_url: vendorData?.address_url || "",
                 service_location: vendorData?.service_location || "",
@@ -361,7 +367,7 @@ export const OnboardLayout = ({ children }) => {
                 className="text-sm text-[#5F22D9] hover:text-[#4A1BB8] font-medium transition-colors underline-offset-4 hover:underline flex items-center gap-2"
               >
                 <ArrowLeftIcon className="h-3 w-3" />
-                <span>Go Back to Login</span>
+                <span>Sign out</span>
               </button>
             </div>
           )}

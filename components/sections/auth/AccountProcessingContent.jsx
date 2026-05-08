@@ -8,6 +8,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { useDispatch } from 'react-redux';
 import { fetchVendorDetails } from '../../../redux/slices/vendorSlice';
+import SecondaryButton from '../../buttons/SecondaryButton';
 
 const AccountProcessingContent = () => {
     const dispatch = useDispatch();
@@ -59,17 +60,16 @@ const AccountProcessingContent = () => {
 
                 {/* Action Buttons */}
                 <div className="space-y-3">
-                    <button
+                    <SecondaryButton
                         onClick={handleRefresh}
                         disabled={refreshing}
-                        className={`w-full py-3 px-6 rounded-xl font-medium transition-all duration-200 flex items-center justify-center space-x-2 ${refreshing
-                                ? 'bg-purple-100 text-purple-400 cursor-not-allowed'
-                                : 'bg-purple-100 text-[#5F22D9] hover:bg-purple-200 hover:scale-105'
-                            }`}
+                        className="w-full gap-2"
+                        loading={refreshing}
+                        loadingText="Checking..."
                     >
                         <ArrowPathIcon className={`w-5 h-5 ${refreshing ? 'animate-spin' : ''}`} />
                         <span>{refreshing ? 'Checking...' : 'Check Status'}</span>
-                    </button>
+                    </SecondaryButton>
                 </div>
 
                 {/* Footer */}
