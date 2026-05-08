@@ -109,7 +109,12 @@ const AddBagDrawer = () => {
     try {
       setLoading(true);
 
-      const timeError = validateTimeConstraints(windowStartTime, windowEndTime, bestBeforeTime);
+      const timeError = validateTimeConstraints(
+        windowStartTime,
+        windowEndTime,
+        bestBeforeTime,
+        vendorData?.opening_hours
+      );
       if (timeError) {
         toast.error(timeError);
         setLoading(false);

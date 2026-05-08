@@ -41,14 +41,72 @@ export const getRequiredFields = (selectedBag, description, isVeg, isNonVeg, veg
   },
 ];
 
-// Common time validation
-export const validateTimeConstraints = (windowStartTime, windowEndTime, bestBeforeTime) => {
+/** HH portion of `"11:30"` → `11`; `"24:00"` → treat as inclusive end-of-day hour `23`. */
+function hhmmToHour(str) {
+  const s = String(str).trim();
+  if (!s) return null;
+  if (s === "24:00") return 23;
+  const h = parseInt(s.split(":")[0], 10);
+  return Number.isNaN(h) ? null : Math.min(Math.max(h, 0), 23);
+}
+
+/** Hour of day (0–23) for `date`, in Asia/Kolkata. */
+function getHourIST(date) {
+  const d = date instanceof Date ? date : new Date(date);
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "Asia/Kolkata",
+    hour: "numeric",
+    hour12: false,
+  }).formatToParts(d);
+  const h = Number(parts.find((p) => p.type === "hour")?.value);
+  return Number.isNaN(h) ? null : h;
+}
+
+/**
+ * Inclusive IST hour ranges: normal day open≤close → [open … close].
+ * Overnight (openHour > closeHour) → … open through 23, or 0 … close (inclusive).
+ */
+function istEndHourInsideBusiness(openHour, closeHour, endHour) {
+  if (openHour <= closeHour) {
+    return endHour >= openHour && endHour <= closeHour;
+  }
+  return endHour >= openHour || endHour <= closeHour;
+}
+
+/**
+ * Validates window / best-before ordering and that IST **hour** of window end lies
+ * between opening and closing **hours** (from `openingHours.openTime` / `closeTime`).
+ * Skips the store-hours check if `closeTime` is missing.
+ */
+export const validateTimeConstraints = (
+  windowStartTime,
+  windowEndTime,
+  bestBeforeTime,
+  openingHours
+) => {
   if (windowEndTime < windowStartTime) {
     return "End time must be after start time!";
   }
   if (bestBeforeTime < windowEndTime) {
     return "Best before time cannot be before window end time!";
   }
+
+  const closeRaw = openingHours?.closeTime?.trim();
+  if (!closeRaw) return null;
+
+  const closeHour = hhmmToHour(closeRaw);
+  if (closeHour === null) return null;
+
+  const openHourRaw = openingHours?.openTime?.trim();
+  const openHour = hhmmToHour(openHourRaw || "00:00") ?? 0;
+
+  const endHour = getHourIST(windowEndTime);
+  if (endHour === null) return null;
+
+  if (!istEndHourInsideBusiness(openHour, closeHour, endHour)) {
+    return `Pickup window must be inside your opening hours (${String(openHour).padStart(2, "0")}:00–${closeRaw}).`;
+  }
+
   return null;
 };
 

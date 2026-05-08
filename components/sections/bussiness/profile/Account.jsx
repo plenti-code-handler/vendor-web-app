@@ -285,14 +285,11 @@ const Account = () => {
         service_location: formattedServiceLocation,
         opening_hours,
       };
-
-      console.log("Form data", formData);
-      console.log("API data", apiData);
       
       const result = await dispatch(updateVendorDetails(apiData)).unwrap();
       console.log("Profile update console", result);
       toast.success("Profile updated successfully!");
-      setOriginalData(formData);
+      dispatch(fetchVendorDetails());
     } catch (err) {
       console.error("Error updating vendor data:", err);
       toast.error("Failed to update profile.");
