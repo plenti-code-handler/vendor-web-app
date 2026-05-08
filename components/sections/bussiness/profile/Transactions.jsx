@@ -140,16 +140,7 @@ const Transactions = () => {
         className="flex flex-col justify-center bg-gradient-custom rounded-xl items-center shadow-lg p-6"
         style={{ width: "100%", height: "255px", position: "relative" }}
       >
-        <div className="absolute bottom-[0%] left-[40%] -z-0">
-          {bottomWalletBackground}
-        </div>
-        <div className="absolute left-[0px] -z-0">{leftWalletBackground}</div>
-        <div className="absolute top-[0%] right-[5%] -z-0">
-          {rightWalletBackground}
-        </div>
-        <div className="absolute top-[0%] left-[15%] -z-0">
-          {topLeftWalletBackground}
-        </div>
+
         {/* Wallet Balance Title */}
         <p className="text-xs text-white/60 font-medium uppercase tracking-wider z-0 mb-2">My Wallet Balance</p>
         

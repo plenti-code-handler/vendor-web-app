@@ -2,6 +2,7 @@
 
 import React from "react";
 import { useForm } from "react-hook-form";
+import PrimaryButton from "../../buttons/PrimaryButton";
 
 const ContactDetailsForm = ({ onSubmit, loading, initialData }) => {
   const {
@@ -80,15 +81,14 @@ const ContactDetailsForm = ({ onSubmit, loading, initialData }) => {
       </div>
 
       <div className="mt-6">
-        <button
+        <PrimaryButton
           type="submit"
-          className={`flex justify-center bg-primary text-white font-semibold py-2 rounded hover:bg-hoverPrimary gap-2 w-full ${
-            loading ? "opacity-50 cursor-not-allowed" : ""
-          }`}
-          disabled={loading}
+          className="w-full"
+          loading={loading}
+          loadingText="Saving..."
         >
-          {loading ? "Saving..." : "Continue"}
-        </button>
+          Continue
+        </PrimaryButton>
       </div>
     </form>
   );

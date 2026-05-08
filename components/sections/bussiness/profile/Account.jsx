@@ -13,7 +13,18 @@ import {
   fetchVendorDetails,
   updateVendorDetails 
 } from "../../../../redux/slices/vendorSlice";
-import { processPlaceForVendor } from "../../../../utility/googlePlacesUtils";
+import {
+  processPlaceForVendor,
+  resolveOpeningHoursForPlace,
+} from "../../../../utility/googlePlacesUtils";
+import {
+  STORE_CLOSE_TIME_OPTIONS,
+  STORE_OPEN_TIME_OPTIONS,
+  timeSelectOptionsIncludingValue,
+} from "../../../../utility/openingHoursTimeOptions";
+import PrimaryButton from "../../../buttons/PrimaryButton";
+import SecondaryButton from "../../../buttons/SecondaryButton";
+import UpdateEmailModal from "../../../modals/UpdateEmailModal";
 
 const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 const libraries = ["places"]; // Define as constant outside component
@@ -40,13 +51,15 @@ const Account = () => {
     longitude: null,
     address_url: "",
     address: "", // Add address field
-    pincode: "",
     phone_number: "",
     service_location: "",  // Add service_location field
+    openTime: "",
+    closeTime: "",
   });
 
   const [mapUrl, setMapUrl] = useState("");
   const [googleMapsUrl, setGoogleMapsUrl] = useState(""); // Add state for Google Maps URL
+  const [updateEmailOpen, setUpdateEmailOpen] = useState(false);
 
   const autoCompleteRef = useRef(null);
   const autocompleteInstanceRef = useRef(null);
@@ -76,9 +89,10 @@ const Account = () => {
         longitude: vendorData.longitude || null,
         address_url: removeDuplicateWords(vendorData.address_url || ""), // Add fallback
         address: vendorData.address || "", // Add address
-        pincode: vendorData.pincode || "",
         phone_number: vendorData.phone_number || "", // Keep as string for form input
         service_location: vendorData.service_location || "",  // Add service_location
+        openTime: vendorData.opening_hours?.openTime || "",
+        closeTime: vendorData.opening_hours?.closeTime || "",
       });
 
       if (vendorData.latitude && vendorData.longitude) {
@@ -141,7 +155,9 @@ const Account = () => {
             "website",               
             "business_status",       
             "types",
-            "address_components"  // Add this field
+            "address_components",
+            "opening_hours",
+            "utc_offset_minutes",
           ]
         }
       );
@@ -151,13 +167,23 @@ const Account = () => {
       // Add place_changed listener
       autocompleteInstanceRef.current.addListener("place_changed", () => {
         const place = autocompleteInstanceRef.current.getPlace();
-        console.log("Selected place:", place);
-        
-        const processedPlace = processPlaceForVendor(place, apiKey);
-        
-        if (processedPlace) {
+        const applySelection = async () => {
+          const processedPlace = processPlaceForVendor(place, apiKey);
+
+          if (!processedPlace) {
+            toast.error("Please select a valid address from the suggestions");
+            return;
+          }
+
+          let hoursPayload = null;
+          try {
+            hoursPayload = await resolveOpeningHoursForPlace(place);
+          } catch (err) {
+            console.error("Opening hours resolution failed:", err);
+          }
+
           setGoogleMapsUrl(processedPlace.googleMapsUrl);
-          
+
           setFormData((prev) => ({
             ...prev,
             address_url: processedPlace.googleMapsUrl,
@@ -165,16 +191,20 @@ const Account = () => {
             latitude: processedPlace.latitude,
             longitude: processedPlace.longitude,
             service_location: processedPlace.serviceLocation,
+            ...(hoursPayload?.openTime
+              ? { openTime: hoursPayload.openTime }
+              : {}),
+            ...(hoursPayload?.closeTime
+              ? { closeTime: hoursPayload.closeTime }
+              : {}),
           }));
 
           setMapUrl(processedPlace.mapEmbedUrl);
-          
-          console.log("Google Maps URL:", processedPlace.googleMapsUrl);
-          
+
           toast.success("Address selected successfully!");
-        } else {
-          toast.error("Please select a valid address from the suggestions");
-        }
+        };
+
+        void applySelection();
       });
 
     } catch (error) {
@@ -207,9 +237,12 @@ const Account = () => {
       longitude: originalData.longitude || null,
       address_url: removeDuplicateWords(originalData.address_url || ""), // Add fallback
       address: originalData.address || "", // Add address
-      pincode: originalData.pincode || "",
       phone_number: originalData.phone_number || "", // Keep as string for form input
       service_location: originalData.service_location || "",  // Add service_location
+      openTime:
+        originalData.openTime || originalData.opening_hours?.openTime || "",
+      closeTime:
+        originalData.closeTime || originalData.opening_hours?.closeTime || "",
     });
   };
 
@@ -223,21 +256,34 @@ const Account = () => {
       if (formData.service_location && formData.service_location.trim() !== "") {
         formattedServiceLocation = formData.service_location.trim().toUpperCase();
       }
-      
+
+      const opening_hours =
+        formData.openTime?.trim() && formData.closeTime?.trim()
+          ? {
+              openTime: formData.openTime.trim(),
+              closeTime: formData.closeTime.trim(),
+            }
+          : null;
+
+      const {
+        openTime: _openTime,
+        closeTime: _closeTime,
+        ...formFields
+      } = formData;
+
       // Prepare data for API call - convert empty strings to null for phone_number
       const apiData = {
-        ...formData,
+        ...formFields,
         username: formData.username.trim() === "" ? null : formData.username.trim(),
         phone_number: formData.phone_number.trim() === "" ? null : formData.phone_number.trim(),
-        // Also handle other fields that might need null conversion
         owner_name: formData.owner_name.trim() === "" ? null : formData.owner_name.trim(),
         store_manager_name: formData.store_manager_name.trim() === "" ? null : formData.store_manager_name.trim(),
         gst_number: formData.gst_number.trim() === "" ? null : formData.gst_number.trim(),
         fssai_number: formData.fssai_number.trim() === "" ? null : formData.fssai_number.trim(),
         pan_number: formData.pan_number.trim() === "" ? null : formData.pan_number.trim(),
         description: formData.description.trim() === "" ? null : formData.description.trim(),
-        pincode: formData.pincode.trim() === "" ? null : formData.pincode.trim(),
-        service_location: formattedServiceLocation,  // Use formatted service_location
+        service_location: formattedServiceLocation,
+        opening_hours,
       };
 
       console.log("Form data", formData);
@@ -325,16 +371,25 @@ const Account = () => {
       
       <div>
         <h3 className="font-medium ml-1 mb-1">Email</h3>
-        <div className="flex justify-between w-full rounded-lg border border-gray-300 bg-gray-100 py-3 px-3 text-sm text-black">
-          <p className="font-semibold">
+        <div className="flex justify-between items-center gap-2 w-full rounded-lg border border-gray-300 bg-gray-100 py-3 px-3 text-sm text-black min-h-[48px]">
+          <p className="font-semibold truncate min-w-0 flex-1">
             {loading ? "Loading..." : vendorData?.email}
           </p>
-          {vendorData?.email_verified && (
-            <div className="flex gap-1 items-center">
-              <p className="text-primary font-semibold">Verified</p>
-              {tickSvg}
-            </div>
-          )}
+          <div className="flex gap-2 items-center shrink-0">
+            {vendorData?.email_verified && (
+              <div className="flex gap-1 items-center">
+                <p className="text-primary font-semibold">Verified</p>
+                {tickSvg}
+              </div>
+            )}
+            <SecondaryButton
+              type="button"
+              onClick={() => setUpdateEmailOpen(true)}
+              className="!px-3 !py-2 text-xs whitespace-nowrap"
+            >
+              Update email
+            </SecondaryButton>
+          </div>
         </div>
       </div>
 
@@ -404,6 +459,56 @@ const Account = () => {
         />
       </div>
 
+      <div className="w-full flex flex-col sm:flex-row gap-4">
+        <div className="flex-1">
+          <h3 className="font-medium ml-1 mb-1 flex items-center">
+            Opening time
+            {isFieldMissing(formData.openTime) && <MissingBadge />}
+          </h3>
+          <select
+            className="rounded-md w-full border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
+            name="openTime"
+            value={formData.openTime}
+            onChange={handleChange}
+          >
+            <option value="">Select open time</option>
+            {timeSelectOptionsIncludingValue(
+              formData.openTime,
+              STORE_OPEN_TIME_OPTIONS
+            ).map((t) => (
+              <option key={t} value={t}>
+                {t}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="flex-1">
+          <h3 className="font-medium ml-1 mb-1 flex items-center">
+            Closing time
+            {isFieldMissing(formData.closeTime) && <MissingBadge />}
+          </h3>
+          <select
+            className="rounded-md w-full border border-gray-200 py-3 px-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
+            name="closeTime"
+            value={formData.closeTime}
+            onChange={handleChange}
+          >
+            <option value="">Select close time</option>
+            {timeSelectOptionsIncludingValue(
+              formData.closeTime,
+              STORE_CLOSE_TIME_OPTIONS
+            ).map((t) => (
+              <option key={t} value={t}>
+                {t}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+      <p className="text-xs text-gray-500 -mt-1 ml-1">
+        Filled from Google when you pick an address with hours; editable (hourly).
+      </p>
+
       <div className="w-full">
         <h3 className="font-medium ml-1 mb-1 flex items-center">
           Store Address
@@ -447,36 +552,36 @@ const Account = () => {
       )}
 
       <div className="flex gap-5 pt-2">
-        <button
-          className="flex justify-center bg-white text-black border border-black font-md py-2 rounded hover:bg-grayTwo gap-2 w-[100%]"
+        <SecondaryButton
+          type="button"
           onClick={handleDiscardChanges}
           disabled={isUpdating} // Disable discard button while updating
+          className="w-[100%] bg-white text-black border border-black "
         >
           Discard Changes
-        </button>
-        <button
-          className={`flex justify-center font-md py-2 rounded gap-2 w-[100%] ${
-            isUpdating 
-              ? "bg-gray-400 text-white cursor-not-allowed" 
-              : "bg-[#5F22D9] text-white hover:bg-[#7e45ee]"
-          }`}
+        </SecondaryButton>
+        <PrimaryButton
+          type="button"
           onClick={handleUpdate}
-          disabled={isUpdating} // Disable button while updating
+          disabled={isUpdating}
+          loading={isUpdating}
+          loadingText="Updating..."
+          className="w-[100%]"
         >
-          {isUpdating ? (
-            <>
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-              Updating...
-            </>
-          ) : (
-            "Update"
-          )}
-        </button>
+          Update
+        </PrimaryButton>
       </div>
       <div className="flex items-center gap-2">
         <MissingBadge />
         <p className="text-red-500 text-sm">Please fill all the fields to complete your profile</p>
       </div>
+
+      <UpdateEmailModal
+        open={updateEmailOpen}
+        onClose={() => setUpdateEmailOpen(false)}
+        vendorId={vendorData?.vendor_id}
+        onSuccess={() => dispatch(fetchVendorDetails())}
+      />
     </div>
   );
 };
