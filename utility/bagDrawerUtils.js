@@ -1,3 +1,9 @@
+import {
+  storeTimeToHourIndex,
+  isPickupEndHourIndexWithinStoreHourIndices,
+  getIstHourIndexFromDate,
+} from "./openingHoursTimeOptions";
+
 export const ALLERGENS_OPTIONS = [
   { value: "RED_MEAT", label: "Red Meat", emoji: "🥩" },
   { value: "SUGAR", label: "Sugar", emoji: "🍬" },
@@ -41,41 +47,10 @@ export const getRequiredFields = (selectedBag, description, isVeg, isNonVeg, veg
   },
 ];
 
-/** HH portion of `"11:30"` → `11`; `"24:00"` → treat as inclusive end-of-day hour `23`. */
-function hhmmToHour(str) {
-  const s = String(str).trim();
-  if (!s) return null;
-  if (s === "24:00") return 23;
-  const h = parseInt(s.split(":")[0], 10);
-  return Number.isNaN(h) ? null : Math.min(Math.max(h, 0), 23);
-}
-
-/** Hour of day (0–23) for `date`, in Asia/Kolkata. */
-function getHourIST(date) {
-  const d = date instanceof Date ? date : new Date(date);
-  const parts = new Intl.DateTimeFormat("en-US", {
-    timeZone: "Asia/Kolkata",
-    hour: "numeric",
-    hour12: false,
-  }).formatToParts(d);
-  const h = Number(parts.find((p) => p.type === "hour")?.value);
-  return Number.isNaN(h) ? null : h;
-}
-
 /**
- * Inclusive IST hour ranges: normal day open≤close → [open … close].
- * Overnight (openHour > closeHour) → … open through 23, or 0 … close (inclusive).
- */
-function istEndHourInsideBusiness(openHour, closeHour, endHour) {
-  if (openHour <= closeHour) {
-    return endHour >= openHour && endHour <= closeHour;
-  }
-  return endHour >= openHour || endHour <= closeHour;
-}
-
-/**
- * Validates window / best-before ordering and that IST **hour** of window end lies
- * between opening and closing **hours** (from `openingHours.openTime` / `closeTime`).
+ * Validates window / best-before ordering and that the IST **hour index** of window end
+ * (same numbering as `STORE_OPEN_TIME_OPTIONS`) lies in the store window from open to close.
+ * When open index `>` close index (e.g. `11:00`→`04:00`), that is **overnight** on the hourly ring.
  * Skips the store-hours check if `closeTime` is missing.
  */
 export const validateTimeConstraints = (
@@ -94,17 +69,20 @@ export const validateTimeConstraints = (
   const closeRaw = openingHours?.closeTime?.trim();
   if (!closeRaw) return null;
 
-  const closeHour = hhmmToHour(closeRaw);
-  if (closeHour === null) return null;
+  const closeIdx = storeTimeToHourIndex(closeRaw, { allow24Close: true });
+  if (closeIdx === null) return null;
 
   const openHourRaw = openingHours?.openTime?.trim();
-  const openHour = hhmmToHour(openHourRaw || "00:00") ?? 0;
+  const openIdx =
+    storeTimeToHourIndex(openHourRaw || "00:00", { allow24Close: false }) ?? 0;
 
-  const endHour = getHourIST(windowEndTime);
-  if (endHour === null) return null;
+  const endHourIdx = getIstHourIndexFromDate(windowEndTime);
+  if (endHourIdx === null) return null;
 
-  if (!istEndHourInsideBusiness(openHour, closeHour, endHour)) {
-    return `Pickup window must be inside your opening hours (${String(openHour).padStart(2, "0")}:00–${closeRaw}).`;
+  if (
+    !isPickupEndHourIndexWithinStoreHourIndices(openIdx, closeIdx, endHourIdx)
+  ) {
+    return `Pickup window must be inside your opening hours (${String(openIdx).padStart(2, "0")}:00–${closeRaw}, IST).`;
   }
 
   return null;
