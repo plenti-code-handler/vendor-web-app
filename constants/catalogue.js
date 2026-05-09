@@ -2,10 +2,12 @@ export const catalogue_limits = {
     MEAL: {
         default: 6, 
         vdr_20260421230716_YMW: 10,
-        vdr_20260427230121_CJG: 10
+        vdr_20260427230121_CJG: 10, 
+        vdr_20260422163443_MAK: 15
     },
     BAKED_GOODS: {
-        default: 6
+        default: 6, 
+        vdr_20260422163443_MAK: 15
     },
     SNACKS_AND_DESSERT: {
         default: 20,
@@ -24,5 +26,6 @@ export const catalogue_limits = {
         vdr_20260310184428_XLU: 10,
         vdr_20260318141029_AGB: 10,
         vdr_20260318162801_UND: 10,
+        vdr_20260422163443_MAK: 15
     }
 };
