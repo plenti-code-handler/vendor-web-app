@@ -79,11 +79,11 @@ export const validateTimeConstraints = (
   const endHourIdx = getIstHourIndexFromDate(windowEndTime);
   if (endHourIdx === null) return null;
 
-  if (
-    !isPickupEndHourIndexWithinStoreHourIndices(openIdx, closeIdx, endHourIdx)
-  ) {
-    return `Pickup window must be inside your opening hours (${String(openIdx).padStart(2, "0")}:00–${closeRaw}, IST).`;
-  }
+  // if (
+  //   !isPickupEndHourIndexWithinStoreHourIndices(openIdx, closeIdx, endHourIdx)
+  // ) {
+  //   return `Pickup window must be inside your opening hours (${String(openIdx).padStart(2, "0")}:00–${closeRaw}, IST).`;
+  // }
 
   return null;
 };
