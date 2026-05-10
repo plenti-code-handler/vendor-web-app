@@ -112,8 +112,7 @@ const AddBagDrawer = () => {
       const timeError = validateTimeConstraints(
         windowStartTime,
         windowEndTime,
-        bestBeforeTime,
-        vendorData?.opening_hours
+        bestBeforeTime
       );
       if (timeError) {
         toast.error(timeError);
@@ -254,6 +253,7 @@ const AddBagDrawer = () => {
                     setWindowDuration={setWindowDuration}
                     bestBeforeDuration={bestBeforeDuration}
                     setBestBeforeDuration={setBestBeforeDuration}
+                    openingHours={vendorData?.opening_hours}
                   />
 
                   <DescriptionSection

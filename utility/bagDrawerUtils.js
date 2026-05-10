@@ -1,9 +1,3 @@
-import {
-  storeTimeToHourIndex,
-  isPickupEndHourIndexWithinStoreHourIndices,
-  getIstHourIndexFromDate,
-} from "./openingHoursTimeOptions";
-
 export const ALLERGENS_OPTIONS = [
   { value: "RED_MEAT", label: "Red Meat", emoji: "🥩" },
   { value: "SUGAR", label: "Sugar", emoji: "🍬" },
@@ -48,42 +42,16 @@ export const getRequiredFields = (selectedBag, description, isVeg, isNonVeg, veg
 ];
 
 /**
- * Validates window / best-before ordering and that the IST **hour index** of window end
- * (same numbering as `STORE_OPEN_TIME_OPTIONS`) lies in the store window from open to close.
- * When open index `>` close index (e.g. `11:00`→`04:00`), that is **overnight** on the hourly ring.
- * Skips the store-hours check if `closeTime` is missing.
+ * Validates pickup window / best-before ordering only.
+ * Store hours are surfaced inline in TimingSection (no toast for hours).
  */
-export const validateTimeConstraints = (
-  windowStartTime,
-  windowEndTime,
-  bestBeforeTime,
-  openingHours
-) => {
+export const validateTimeConstraints = (windowStartTime, windowEndTime, bestBeforeTime) => {
   if (windowEndTime < windowStartTime) {
     return "End time must be after start time!";
   }
   if (bestBeforeTime < windowEndTime) {
     return "Best before time cannot be before window end time!";
   }
-
-  const closeRaw = openingHours?.closeTime?.trim();
-  if (!closeRaw) return null;
-
-  const closeIdx = storeTimeToHourIndex(closeRaw, { allow24Close: true });
-  if (closeIdx === null) return null;
-
-  const openHourRaw = openingHours?.openTime?.trim();
-  const openIdx =
-    storeTimeToHourIndex(openHourRaw || "00:00", { allow24Close: false }) ?? 0;
-
-  const endHourIdx = getIstHourIndexFromDate(windowEndTime);
-  if (endHourIdx === null) return null;
-
-  // if (
-  //   !isPickupEndHourIndexWithinStoreHourIndices(openIdx, closeIdx, endHourIdx)
-  // ) {
-  //   return `Pickup window must be inside your opening hours (${String(openIdx).padStart(2, "0")}:00–${closeRaw}, IST).`;
-  // }
 
   return null;
 };
