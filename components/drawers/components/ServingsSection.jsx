@@ -15,6 +15,10 @@ const ServingsSection = ({
   const vegPlaceholder = isEdit ? "Enter current vegetarian servings" : "Enter number of vegetarian servings";
   const nonVegPlaceholder = isEdit ? "Enter current non-vegetarian servings" : "Enter number of non-vegetarian servings";
 
+  const handleWheel = (e) => {
+    e.currentTarget.blur();
+  };
+
   return (
     <div className="mb-8">
       <div className="flex items-center gap-2 mb-4">
@@ -33,6 +37,7 @@ const ServingsSection = ({
             type="number"
             value={vegServings || ''}
             onChange={(e) => setVegServings(e.target.value === '' ? 0 : parseInt(e.target.value) || 0)}
+            onWheel={handleWheel}
             className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#5F22D9] focus:border-transparent transition-all duration-200"
             placeholder={vegPlaceholder}
           />
@@ -49,6 +54,7 @@ const ServingsSection = ({
             type="number"
             value={nonVegServings || ''}
             onChange={(e) => setNonVegServings(e.target.value === '' ? 0 : parseInt(e.target.value) || 0)}
+            onWheel={handleWheel}
             className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#5F22D9] focus:border-transparent transition-all duration-200"
             placeholder={nonVegPlaceholder}
           />
