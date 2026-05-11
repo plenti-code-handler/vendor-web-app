@@ -5,7 +5,6 @@ import { toast } from "sonner";
 import OrdersFilter from "../../../dropdowns/OrdersFilter";
 import { formatTime, formatDateTime } from "../../../../utility/FormatTime";
 import { EyeIcon, ArrowPathIcon } from "@heroicons/react/24/outline";
-import { ShieldCheckIcon } from "@heroicons/react/20/solid";
 import DietIcon from "../../../common/DietIcon";
 import BagSizeTag from "../../../common/BagSizeTag";
 import OrderDetailsModal from "../../../modals/OrderDetailsModal";
@@ -15,6 +14,7 @@ import {
   initializeAudio,
 } from "../../../../utils/notificationSound";
 import ToggleOnlineOffline from "../../../sections/bussiness/profile/ToggleOnlineOffline";
+import SuccessConfettiOverlay from "../../../common/SuccessConfettiOverlay";
 
 // Constants
 const ITEMS_PER_PAGE = 10;
@@ -50,6 +50,7 @@ const RecentOrders = () => {
   // OTP states
   const [otp, setOtp] = useState(Array(OTP_LENGTH).fill(""));
   const [verifying, setVerifying] = useState(false);
+  const [successConfetti, setSuccessConfetti] = useState(false);
 
   // Refs
   const inputRefs = useRef([]);
@@ -191,6 +192,13 @@ const RecentOrders = () => {
     }
   }, [otp]);
 
+  const closeVerifyModal = useCallback(() => {
+    setVerifyModalOpen(false);
+    setOtp(Array(OTP_LENGTH).fill(""));
+    setVerifying(false);
+    setSelectedOrderId(null);
+  }, []);
+
   const handleVerifyCode = useCallback(async () => {
     const code = otp.join("");
 
@@ -209,21 +217,17 @@ const RecentOrders = () => {
       if (response.status === 200) {
         toast.success("Order code verified successfully");
         closeVerifyModal();
-        fetchRecentOrders(true, 0, filterRef.current);
+        setSuccessConfetti(true);
+        setTimeout(() => {
+          handleRefresh();
+        }, 1000);
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to verify order code");
     } finally {
       setVerifying(false);
     }
-  }, [otp, selectedOrderId, fetchRecentOrders]);
-
-  const closeVerifyModal = useCallback(() => {
-    setVerifyModalOpen(false);
-    setOtp(Array(OTP_LENGTH).fill(""));
-    setVerifying(false);
-    setSelectedOrderId(null);
-  }, []);
+  }, [otp, selectedOrderId, fetchRecentOrders, closeVerifyModal]);
 
   // Render helpers
   const renderOrderStatus = useCallback((rawStatus) => {
@@ -521,6 +525,11 @@ const RecentOrders = () => {
           </div>
         </div>
       )}
+
+      <SuccessConfettiOverlay
+        show={successConfetti}
+        onComplete={() => setSuccessConfetti(false)}
+      />
     </div>
   );
 };
