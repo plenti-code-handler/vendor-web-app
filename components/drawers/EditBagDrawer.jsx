@@ -174,7 +174,7 @@ const EditBagDrawer = () => {
         if (response.status === 200) {
           toast.success("Item updated successfully!");
           dispatch(setOpenDrawer(false));
-          dispatch(fetchAllBags());
+          dispatch(fetchAllBags({ active: true }));
         }
       } else {
         // Create new item (from template)
@@ -189,7 +189,7 @@ const EditBagDrawer = () => {
         if (response.status === 200) {
           toast.success("Item created successfully!");
           dispatch(setOpenDrawer(false));
-          dispatch(fetchAllBags());
+          dispatch(fetchAllBags({ active: true }));
         }
       }
 
