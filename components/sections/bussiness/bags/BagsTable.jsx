@@ -202,19 +202,22 @@ const BagsTable = () => {
                               >
                                 <PencilSquareIcon className="h-[18px] w-[18px]" />
                               </button>
-                              <button
-                                type="button"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setItemToDelete(item);
-                                  setShowAlert(true);
-                                }}
-                                className={`${ACTION_BTN_BASE} hover:bg-red-50 hover:border-red-200 text-red-700`}
-                                aria-label="Delete"
-                                title="Delete"
-                              >
-                                <TrashIcon className="h-[18px] w-[18px]" />
-                              </button>
+                              {selectedFilter === "active" && (
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setItemToDelete(item);
+                                    setShowAlert(true);
+                                  }}
+                                  className={`${ACTION_BTN_BASE} hover:bg-red-50 hover:border-red-200 text-red-700`}
+                                  aria-label="Delete"
+                                  title="Delete"
+                                >
+                                  <TrashIcon className="h-[18px] w-[18px]" />
+                                </button>
+                              )}
+                              
                             </div>
                           </div>
 
