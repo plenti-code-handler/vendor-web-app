@@ -63,10 +63,11 @@ const NotificationPermissionPrompt = () => {
     try {
       const lastSent = localStorage.getItem('last_sent_fcm_token');
       // Only skip if it's the exact same token
-      if (lastSent === token) {
-        console.log('✅ FCM token already sent (same token)');
-        return;
-      }
+      // to be added back in the future
+      // if (lastSent === token) {
+      //   console.log('✅ FCM token already sent (same token)');
+      //   return;
+      // }
 
       console.log('📤 Sending FCM token to backend...');
       await axiosClient.post('/v1/vendor/me/fcm-token/add', null, { params: { fcm_token: token } });
