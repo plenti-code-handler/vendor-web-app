@@ -159,7 +159,7 @@ const AddBagDrawer = () => {
         toast.success("Item Created Successfully!");
         resetForm();
         dispatch(setOpenDrawer(false));
-        dispatch(fetchAllBags());
+        dispatch(fetchAllBags({ active: true }));
       }
     } catch (error) {
       const errorDetail = error?.response?.data?.detail;
