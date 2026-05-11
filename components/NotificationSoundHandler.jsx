@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { initMessaging, onMessage } from '../lib/firebase';
 import playNotificationSound from '../utils/notificationSound';
 import { toast } from 'sonner';
+import { dispatchVendorOrdersRefresh } from '../utility/vendorOrderEvents';
 
 export default function NotificationSoundHandler() {
   useEffect(() => {
@@ -18,14 +19,14 @@ export default function NotificationSoundHandler() {
 
         // 1. Foreground: Listen to Firebase onMessage
         unsubscribe = onMessage(messaging, (payload) => {
-          console.log('🎯 FOREGROUND notification - playing sound');
           // Play sound with source indicator
           playNotificationSound('order', 0.7);
-          
+          dispatchVendorOrdersRefresh();
+
           // Show toast notification
           const title = payload.notification?.title || 'New Order';
           const body = payload.notification?.body || 'You have a new notification';
-          
+
           toast.info(title, {description: body});
         });
 
@@ -35,6 +36,7 @@ export default function NotificationSoundHandler() {
             console.log('🎯 BACKGROUND notification - playing sound');
             // Play sound with source indicator
             playNotificationSound('order', 0.7);
+            dispatchVendorOrdersRefresh();
           }
         };
 
