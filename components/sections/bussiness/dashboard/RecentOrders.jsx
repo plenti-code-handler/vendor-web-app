@@ -15,6 +15,7 @@ import {
 } from "../../../../utils/notificationSound";
 import ToggleOnlineOffline from "../../../sections/bussiness/profile/ToggleOnlineOffline";
 import SuccessConfettiOverlay from "../../../common/SuccessConfettiOverlay";
+import { VENDOR_ORDERS_REFRESH_EVENT } from "../../../../utility/vendorOrderEvents";
 
 // Constants
 const ITEMS_PER_PAGE = 10;
@@ -122,6 +123,16 @@ const RecentOrders = () => {
   useEffect(() => {
     fetchRecentOrders(true, 0, filter);
   }, [filter, fetchRecentOrders]);
+
+  // FCM / service worker: reload list when a new order notification fires (see NotificationSoundHandler)
+  useEffect(() => {
+    const onRemoteOrdersRefresh = () => {
+      fetchRecentOrders(true, 0, filterRef.current);
+    };
+    window.addEventListener(VENDOR_ORDERS_REFRESH_EVENT, onRemoteOrdersRefresh);
+    return () =>
+      window.removeEventListener(VENDOR_ORDERS_REFRESH_EVENT, onRemoteOrdersRefresh);
+  }, [fetchRecentOrders]);
 
   // Handlers
   const handleLoadMore = useCallback(() => {
