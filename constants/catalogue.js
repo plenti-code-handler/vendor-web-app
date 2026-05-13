@@ -3,7 +3,8 @@ export const catalogue_limits = {
         default: 6, 
         vdr_20260421230716_YMW: 10,
         vdr_20260427230121_CJG: 10, 
-        vdr_20260422163443_MAK: 15
+        vdr_20260422163443_MAK: 15, 
+        vdr_20260509212611_PTQ: 10
     },
     BAKED_GOODS: {
         default: 6, 
