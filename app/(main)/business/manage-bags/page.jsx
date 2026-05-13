@@ -7,7 +7,7 @@ const Page = () => {
   return (
     <div className="flex flex-col animate-slide-in-left">
       <TableContainer />
-      <ItemTemplates />
+      {/* <ItemTemplates /> */}
     </div>
   );
 };

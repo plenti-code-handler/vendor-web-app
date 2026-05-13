@@ -404,6 +404,7 @@ const Account = () => {
           <option value="RESTAURANT">Restaurant</option>
           <option value="SUPERMARKET">Super Market</option>
           <option value="BAKERY">Bakery</option>
+          <option value="EVENTS">Events</option>
         </select>
       </div>
 
