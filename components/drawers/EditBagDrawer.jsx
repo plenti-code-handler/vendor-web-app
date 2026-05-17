@@ -118,6 +118,11 @@ const EditBagDrawer = () => {
     setWindowStartTime(date);
   };
 
+  const handlePricingChange = useCallback((pricingId) => {
+    setSelectedPricingId(pricingId);
+    setDescription("");
+  }, []);
+
   const handleSubmit = async () => {
     try {
       setLoading(true);
@@ -239,7 +244,7 @@ const EditBagDrawer = () => {
                         selectedFilter={selectedBag}
                         onFilterChange={setSelectedBag}
                         selectedPricingId={selectedPricingId}
-                        onPricingChange={setSelectedPricingId}
+                        onPricingChange={handlePricingChange}
                       />
                     </div>
                   </div>

@@ -90,6 +90,10 @@ const AddBagDrawer = () => {
     setWindowStartTime(date);
   };
 
+  const handlePricingChange = useCallback((pricingId) => {
+    setSelectedPricingId(pricingId);
+    setDescription("");
+  }, []);
 
   const resetForm = () => {
     const resetValues = getResetFormValues();
@@ -234,7 +238,7 @@ const AddBagDrawer = () => {
                         selectedFilter={selectedBag}
                         onFilterChange={setSelectedBag}
                         selectedPricingId={selectedPricingId}
-                        onPricingChange={setSelectedPricingId}
+                        onPricingChange={handlePricingChange}
                       />
                     </div>
                   </div>
