@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { setActivePage } from "../../../../redux/slices/headerSlice";
 import {
   fetchVendorReports,
-  requestOrderReport,
+  requestVendorReport,
   REPORT_TYPES,
 } from "../../../../redux/slices/vendorReportsSlice";
 import {
@@ -23,7 +23,7 @@ import BetaBadge from "../../../common/BetaBadge";
 
 const REPORT_TABS = [
   { key: "orders", label: "Orders", reportType: REPORT_TYPES.ORDERS, enabled: true },
-  { key: "payments", label: "Payments", reportType: REPORT_TYPES.PAYMENTS, enabled: false },
+  { key: "payments", label: "Payments", reportType: REPORT_TYPES.PAYMENTS, enabled: true },
   { key: "refunds", label: "Refunds", reportType: REPORT_TYPES.REFUNDS, enabled: false },
   { key: "payouts", label: "Payouts", reportType: REPORT_TYPES.PAYOUTS, enabled: false },
 ];
@@ -63,19 +63,23 @@ function isReportInProgressStatus(status) {
 }
 
 function canReportJobDownload(job) {
-  return normStatus(job.status) === "READY" && Boolean(job.response?.s3_key);
+  return normStatus(job.status) === "READY";
 }
-
 function reportTabButtonClass({ selected, disabled }) {
   const base =
-    "inline-flex min-h-[2.5rem] shrink-0 items-center gap-2 rounded-xl border px-3 py-2 text-left text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5F22D9]/35 focus-visible:ring-offset-1";
+    "inline-flex min-h-[2.5rem] shrink-0 items-center gap-2 rounded-xl border px-4 py-2 text-left text-sm transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5F22D9]/40 focus-visible:ring-offset-2";
+  
   if (disabled) {
-    return `${base} cursor-not-allowed border-slate-300 bg-slate-100 text-slate-400 shadow-none hover:bg-slate-100`;
+    return `${base} cursor-not-allowed border-slate-200 bg-slate-50 text-slate-400/80`;
   }
+  
   if (selected) {
-    return `${base} border-[#5F22D9] bg-[#5F22D9]/10 text-[#5F22D9] shadow-sm`;
+    // Premium brand state: Vibrant border, slightly richer tint, and crisp brand text
+    return `${base} border-[#5F22D9] bg-[#5F22D9]/10 text-[#5F22D9] shadow-sm font-semibold`;
   }
-  return `${base} border-transparent text-slate-600 hover:border-slate-200 hover:bg-white`;
+  
+  // SIGNIFICANT DEFAULT STATE: Clear white card feel, defined border, and subtle hover lifting
+  return `${base} border-slate-200 bg-white text-slate-600 shadow-sm hover:border-slate-300 hover:bg-slate-50 hover:text-slate-800 hover:shadow`;
 }
 
 function reportCardClass({ busy, isNew }) {
@@ -119,7 +123,7 @@ function ReportJobRow({ job, onDownload }) {
 
   return (
     <div
-      className={`group rounded-2xl border bg-white p-4 shadow-sm transition ${reportCardClass({
+      className={`group rounded-2xl border bg-white p-4 shadow-sm transition  animate-slide-in-right ${reportCardClass({
         busy,
         isNew,
       })}`}
@@ -128,7 +132,7 @@ function ReportJobRow({ job, onDownload }) {
         <div className="min-w-0 space-y-2">
           <div className="flex flex-wrap items-center gap-2">
             <span className="font-mono text-xs text-slate-400">
-              {String(job.job_type || "").replace(/_/g, " ")}
+              {String(job.report_type || "").replace(/_/g, " ")}
             </span>
             {isNew ? (
               <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-900 ring-1 ring-inset ring-amber-200">
@@ -254,7 +258,7 @@ export default function VendorReports() {
     }
     try {
       await dispatch(
-        requestOrderReport({
+        requestVendorReport({
           start_ts,
           end_ts,
           report_type: activeTab.reportType,
@@ -270,12 +274,12 @@ export default function VendorReports() {
   };
 
   const handleDownload = useCallback((job) => {
-    const key = job.response?.s3_key;
-    if (!key) {
-      toast.error("No file key for this report yet.");
-      return;
-    }
-    const url = buildVendorReportDownloadPageUrl(job.id);
+    // const key = job.response?.s3_key;
+    // if (!key) {
+    //   toast.error("No file key for this report yet.");
+    //   return;
+    // }
+    const url = buildVendorReportDownloadPageUrl(job.job_id);
     if (!url) {
       toast.error("Not signed in. Sign in again to download.");
       return;
@@ -435,7 +439,7 @@ export default function VendorReports() {
 
             {jobs.map((job) => (
               <ReportJobRow
-                key={job.id}
+                key={job.job_id}
                 job={job}
                 onDownload={handleDownload}
               />
