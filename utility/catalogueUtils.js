@@ -36,6 +36,38 @@ export const getEntriesForItemType = (pricing, itemType) => {
   return pricing.filter((p) => String(p.item_type) === String(itemType));
 };
 
+const normalizePricingEntry = (entry) => {
+  const bags = entry?.bags ?? {};
+  const cuts = entry?.cuts ?? {};
+  return {
+    item_type: String(entry.item_type),
+    id: String(entry.id ?? 'default'),
+    name: String(entry.name ?? ''),
+    asp: Number(entry.asp),
+    bags: {
+      SMALL: bags.SMALL != null ? Number(bags.SMALL) : null,
+      MEDIUM: bags.MEDIUM != null ? Number(bags.MEDIUM) : null,
+      LARGE: bags.LARGE != null ? Number(bags.LARGE) : null,
+    },
+    cuts: {
+      SMALL: Number(cuts.SMALL ?? 0),
+      MEDIUM: Number(cuts.MEDIUM ?? 0),
+      LARGE: Number(cuts.LARGE ?? 0),
+    },
+    descriptions: [...(entry.descriptions || [])].map(String).sort(),
+  };
+};
+
+/** True when local draft pricing differs from the catalogue fetched from the backend. */
+export const hasPricingCatalogueChanges = (localPricing, serverPricing) => {
+  const normalizeList = (list) =>
+    (list || [])
+      .map(normalizePricingEntry)
+      .sort((a, b) => entryKey(a).localeCompare(entryKey(b)));
+
+  return JSON.stringify(normalizeList(localPricing)) !== JSON.stringify(normalizeList(serverPricing));
+};
+
 /** Item types that have at least one pricing entry with non-empty bags. */
 export const getAvailableCategories = (pricing) => {
   if (!Array.isArray(pricing)) return [];
