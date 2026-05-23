@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCatalogue, clearCatalogueError } from '../../../../redux/slices/catalogueSlice';
@@ -15,6 +15,7 @@ import {
   entryKey,
   getEntriesForItemType,
   canAddPricing,
+  hasPricingCatalogueChanges,
   PRICING_LIMIT_REACHED_MESSAGE,
 } from '../../../../utility/catalogueUtils';
 
@@ -39,6 +40,12 @@ const Pricing = () => {
   const [pricingModalEditEntry, setPricingModalEditEntry] = useState(null);
 
   const bagSizes = ['SMALL', 'MEDIUM', 'LARGE'];
+
+  const hasPricingChanges = useMemo(() => {
+    if (pricing.length === 0) return false;
+    if (localPricing.length === 0) return false;
+    return hasPricingCatalogueChanges(localPricing, pricing);
+  }, [localPricing, pricing]);
 
   useEffect(() => {
     if (!lastUpdated && !loading) dispatch(fetchCatalogue());
@@ -132,6 +139,15 @@ const Pricing = () => {
             <CurrencyRupeeIcon className="w-4 h-4" /> Payout: ₹{payout.threshold}
           </h3>
           <p className="text-xs text-green-700">Maintain this balance for unlimited payouts</p>
+        </div>
+      )}
+
+      {hasPricingChanges && (
+        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 animate-fade-in">
+          <p className="text-sm text-amber-900">
+            Please press the{' '}
+            <span className="font-semibold">Request Pricing Update</span> button to submit the request.
+          </p>
         </div>
       )}
 
@@ -239,11 +255,16 @@ const Pricing = () => {
           })}
           <PrimaryButton
             onClick={handleRequestUpdate}
-            disabled={isSubmitting}
+            disabled={isSubmitting || !hasPricingChanges}
           >
             {isSubmitting && <ArrowPathIcon className="w-4 h-4 animate-spin" />}
             {isSubmitting ? 'Submitting...' : 'Request Pricing Update'}
           </PrimaryButton>
+          {!hasPricingChanges && !isSubmitting && (
+            <p className="text-sm text-gray-500 -mt-4">
+              Make a change to your pricing to request an update.
+            </p>
+          )}
 
           <PricingInfo />
         </div>

@@ -233,13 +233,16 @@ const EditBagDrawer = () => {
                     onClose={handleClose}
                   />
 
-                  {/* Item Type Section */}
-                  <div className="mb-8">
+                  {/* Item Type Section — read-only in edit drawer */}
+                  <fieldset
+                    disabled
+                    className="mb-8 border-0 p-0 m-0 min-w-0 opacity-60 pointer-events-none"
+                  >
                     <div className="flex items-center gap-2 mb-4">
                       <h3 className="text-lg font-semibold text-gray-900">Choose Item Type</h3>
                       <InfoIcon content="Select the category of food item you're editing" />
                     </div>
-                    <div className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm hover:shadow-md transition-shadow duration-200">
+                    <div className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm">
                       <ItemTypeFilter
                         selectedFilter={selectedBag}
                         onFilterChange={setSelectedBag}
@@ -247,7 +250,7 @@ const EditBagDrawer = () => {
                         onPricingChange={handlePricingChange}
                       />
                     </div>
-                  </div>
+                  </fieldset>
 
                   <AllergensSection
                     selectedAllergens={selectedAllergens}
@@ -266,14 +269,19 @@ const EditBagDrawer = () => {
                     openingHours={vendorData?.opening_hours}
                   />
 
-                  <DescriptionSection
-                    description={description}
-                    setDescription={setDescription}
-                    showCustomDescription={showCustomDescription}
-                    setShowCustomDescription={setShowCustomDescription}
-                    availableDescriptions={descriptionsForDropdown}
-                    pricingId={selectedPricingId}
-                  />
+                  <fieldset
+                    disabled
+                    className="border-0 p-0 m-0 min-w-0 opacity-60 pointer-events-none"
+                  >
+                    <DescriptionSection
+                      description={description}
+                      setDescription={setDescription}
+                      showCustomDescription={showCustomDescription}
+                      setShowCustomDescription={setShowCustomDescription}
+                      availableDescriptions={descriptionsForDropdown}
+                      pricingId={selectedPricingId}
+                    />
+                  </fieldset>
 
                   <ServingsSection
                     vegServings={vegServings}
