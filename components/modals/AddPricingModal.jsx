@@ -190,18 +190,31 @@ const AddPricingModal = ({
                   type="text"
                   value={descriptionInput}
                   onChange={(e) => setDescriptionInput(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), handleAddDescription())}
+                  onKeyDown={(e) =>
+                    !isDefaultEntry &&
+                    e.key === "Enter" &&
+                    (e.preventDefault(), handleAddDescription())
+                  }
                   placeholder="e.g. Best for summer meals"
-                  className="flex-1 min-w-[160px] px-3 py-2 border border-gray-300 rounded-lg text-[16px] focus:ring-2 focus:ring-[#5F22D9] focus:border-transparent"
+                  disabled={isDefaultEntry}
+                  className={`flex-1 min-w-[160px] px-3 py-2 border border-gray-300 rounded-lg text-[16px] focus:ring-2 focus:ring-[#5F22D9] focus:border-transparent ${
+                    isDefaultEntry ? "bg-gray-100 cursor-not-allowed" : ""
+                  }`}
                 />
                 <button
                   type="button"
                   onClick={handleAddDescription}
-                  className="inline-flex items-center gap-1 px-3 py-2 rounded-lg bg-[#5F22D9] text-white text-sm font-medium hover:bg-[#4A1BB8]"
+                  disabled={isDefaultEntry}
+                  className="inline-flex items-center gap-1 px-3 py-2 rounded-lg bg-[#5F22D9] text-white text-sm font-medium hover:bg-[#4A1BB8] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <PlusIcon className="w-4 h-4" /> Add +
                 </button>
               </div>
+              {isDefaultEntry && (
+                <p className="text-xs text-gray-500">
+                  Descriptions cannot be added for default pricing.
+                </p>
+              )}
               {descriptions.length > 0 && (
                 <ul className="flex flex-wrap gap-2 mt-2">
                   {descriptions.map((text, index) => (
@@ -213,7 +226,8 @@ const AddPricingModal = ({
                       <button
                         type="button"
                         onClick={() => handleRemoveDescription(index)}
-                        className="p-0.5 rounded hover:bg-gray-200"
+                        disabled={isDefaultEntry}
+                        className="p-0.5 rounded hover:bg-gray-200 disabled:opacity-40 disabled:cursor-not-allowed"
                         aria-label="Remove"
                       >
                         <XMarkIcon className="w-3 h-3" />
