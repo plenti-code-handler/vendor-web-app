@@ -7,6 +7,7 @@ export const catalogue_limits = {
         vdr_20260517202530_DLQ: 15, 
         vdr_20260522201007_YDM: 15, 
         vdr_20260509212611_PTQ: 10, 
+        vdr_20260209181215_FBR: 15
 
     },
     BAKED_GOODS: {
