@@ -15,7 +15,8 @@ export const catalogue_limits = {
         vdr_20260422163443_MAK: 15, 
         vdr_20260517202530_DLQ: 15, 
         vdr_20260521130533_JBY: 15, 
-        vdr_20260508160505_KZO: 12
+        vdr_20260508160505_KZO: 12, 
+        vdr_20260518210037_UJW: 12
     },
     SNACKS_AND_DESSERT: {
         default: 20,
