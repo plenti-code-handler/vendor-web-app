@@ -11,7 +11,8 @@ import {
   selectVendorLoading, 
   selectVendorError,
   fetchVendorDetails,
-  updateVendorDetails 
+  updateVendorDetails,
+  uploadVendorDocument,
 } from "../../../../redux/slices/vendorSlice";
 import {
   processPlaceForVendor,
@@ -28,6 +29,7 @@ import UpdateEmailModal from "../../../modals/UpdateEmailModal";
 
 const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 const libraries = ["places"]; // Define as constant outside component
+const MAX_DOCUMENT_SIZE_KB = 1000;
 
 const Account = () => {
   const dispatch = useDispatch();
@@ -60,9 +62,12 @@ const Account = () => {
   const [mapUrl, setMapUrl] = useState("");
   const [googleMapsUrl, setGoogleMapsUrl] = useState(""); // Add state for Google Maps URL
   const [updateEmailOpen, setUpdateEmailOpen] = useState(false);
+  const [uploadingDocument, setUploadingDocument] = useState(null);
 
   const autoCompleteRef = useRef(null);
   const autocompleteInstanceRef = useRef(null);
+  const gstFileInputRef = useRef(null);
+  const fssaiFileInputRef = useRef(null);
 
   // Fetch vendor data if not already loaded
   useEffect(() => {
@@ -302,6 +307,61 @@ const Account = () => {
     return !fieldValue || fieldValue.toString().trim() === "";
   };
 
+  const isDocumentMissing = (documentUrl) =>
+    !documentUrl || String(documentUrl).trim() === "";
+
+  const handleDocumentSelect = async (documentType, event) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+
+    if (file.size > MAX_DOCUMENT_SIZE_KB * 1024) {
+      toast.error(`File must be under ${MAX_DOCUMENT_SIZE_KB}KB`);
+      return;
+    }
+
+    setUploadingDocument(documentType);
+    try {
+      await dispatch(uploadVendorDocument({ documentType, file })).unwrap();
+      toast.success(`${documentType} document uploaded successfully`);
+    } catch (err) {
+      const message =
+        typeof err === "string"
+          ? err
+          : err?.detail || `Failed to upload ${documentType} document`;
+      toast.error(message);
+    } finally {
+      setUploadingDocument(null);
+    }
+  };
+
+  const renderDocumentUploadControl = (documentUrl, documentType, inputRef) => {
+      return (
+        <div className="flex gap-3 items-center shrink-0">
+          {!isDocumentMissing(documentUrl) && (
+            <a href={documentUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-[#5F22D9] underline ml-1">
+              View
+            </a>
+          )}
+          <input
+            ref={inputRef}
+            type="file"
+            accept="image/*,.pdf,application/pdf"
+            className="hidden"
+            onChange={(e) => handleDocumentSelect(documentType, e)}
+          />
+          <SecondaryButton
+            type="button"
+            onClick={() => inputRef.current?.click()}
+            disabled={uploadingDocument === documentType}
+            className="!px-3 !py-2 text-xs whitespace-nowrap"
+          >
+            {uploadingDocument === documentType ? "Uploading..." : "Upload"}
+          </SecondaryButton>
+        </div>
+      );
+  };
+
   // Badge component for missing fields
   const MissingBadge = () => (
     <span className="inline-block h-2 w-2 bg-red-500 rounded-full ml-1"></span>
@@ -375,7 +435,7 @@ const Account = () => {
           <div className="flex gap-2 items-center shrink-0">
             {vendorData?.email_verified && (
               <div className="flex gap-1 items-center">
-                <p className="text-primary font-semibold">Verified</p>
+                <p className="text-primary font-semibold text-xs">Verified</p>
                 {tickSvg}
               </div>
             )}
@@ -412,25 +472,49 @@ const Account = () => {
         <h3 className="font-medium ml-1 mb-1 flex items-center">
           GST Number
           {isFieldMissing(formData.gst_number) && <MissingBadge />}
+          {isDocumentMissing(vendorData?.gst_document) && <MissingBadge />}
         </h3>
-        <TextField
-          placeholder="GST Number"
-          name="gst_number"
-          value={formData.gst_number}
-          onChange={handleChange}
-        />
+        <div className="flex justify-between items-center gap-2 w-full rounded-lg border border-gray-300 bg-gray-100 py-3 px-3 text-sm text-black min-h-[48px]">
+          <input
+            type="text"
+            name="gst_number"
+            value={formData.gst_number}
+            onChange={handleChange}
+            placeholder="GST Number"
+            className="font-semibold truncate min-w-0 flex-1 bg-transparent border-0 outline-none focus:ring-0 p-0 text-sm text-black placeholder:text-gray-400"
+          />
+          <div className="flex gap-2 items-center shrink-0">
+            {renderDocumentUploadControl(
+              vendorData?.gst_document,
+              "GST",
+              gstFileInputRef
+            )}
+          </div>
+        </div>
       </div>
       <div>
         <h3 className="font-medium ml-1 mb-1 flex items-center">
           FSSAI Number
           {isFieldMissing(formData.fssai_number) && <MissingBadge />}
+          {isDocumentMissing(vendorData?.fssai_document) && <MissingBadge />}
         </h3>
-        <TextField
-          placeholder="FSSAI Number"
-          name="fssai_number"
-          value={formData.fssai_number}
-          onChange={handleChange}
-        />
+        <div className="flex justify-between items-center gap-2 w-full rounded-lg border border-gray-300 bg-gray-100 py-3 px-3 text-sm text-black min-h-[48px]">
+          <input
+            type="text"
+            name="fssai_number"
+            value={formData.fssai_number}
+            onChange={handleChange}
+            placeholder="FSSAI Number"
+            className="font-semibold truncate min-w-0 flex-1 bg-transparent border-0 outline-none focus:ring-0 p-0 text-sm text-black placeholder:text-gray-400"
+          />
+          <div className="flex gap-2 items-center shrink-0">
+            {renderDocumentUploadControl(
+              vendorData?.fssai_document,
+              "FSSAI",
+              fssaiFileInputRef
+            )}
+          </div>
+        </div>
       </div>
       <div>
         <h3 className="font-medium ml-1 mb-1 flex items-center">

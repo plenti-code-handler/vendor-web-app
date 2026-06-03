@@ -78,6 +78,32 @@ export const updateBankAccountDetails = createAsyncThunk(
   }
 );
 
+// Async thunk to upload GST / FSSAI document
+export const uploadVendorDocument = createAsyncThunk(
+  'vendor/uploadVendorDocument',
+  async ({ documentType, file }, { rejectWithValue, dispatch }) => {
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const endpoint =
+        documentType === 'GST'
+          ? '/v1/vendor/me/gst/upload'
+          : '/v1/vendor/me/fssai/upload';
+      const response = await axiosClient.post(endpoint, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      await dispatch(fetchVendorDetails());
+      return { documentType, ...response.data };
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.detail ||
+          error.response?.data?.message ||
+          `Failed to upload ${documentType} document`
+      );
+    }
+  }
+);
+
 const initialState = {
   vendorData: null,
   loading: false,
@@ -88,6 +114,8 @@ const initialState = {
   bankAccountDetails: null,
   bankAccountLoading: false,
   bankAccountError: null,
+  documentUploadLoading: false,
+  documentUploadError: null,
 };
 
 const vendorSlice = createSlice({
@@ -198,6 +226,18 @@ const vendorSlice = createSlice({
       .addCase(updateBankAccountDetails.rejected, (state, action) => {
         state.bankAccountLoading = false;
         state.bankAccountError = action.payload;
+      })
+      // Upload vendor document (GST / FSSAI)
+      .addCase(uploadVendorDocument.pending, (state) => {
+        state.documentUploadLoading = true;
+        state.documentUploadError = null;
+      })
+      .addCase(uploadVendorDocument.fulfilled, (state) => {
+        state.documentUploadLoading = false;
+      })
+      .addCase(uploadVendorDocument.rejected, (state, action) => {
+        state.documentUploadLoading = false;
+        state.documentUploadError = action.payload;
       });
   },
 });
@@ -223,5 +263,6 @@ export const selectVendorEmailVerified = (state) => state.vendor.emailVerified;
 export const selectBankAccountDetails = (state) => state.vendor.bankAccountDetails;
 export const selectBankAccountLoading = (state) => state.vendor.bankAccountLoading;
 export const selectBankAccountError = (state) => state.vendor.bankAccountError;
+export const selectDocumentUploadLoading = (state) => state.vendor.documentUploadLoading;
 
 export default vendorSlice.reducer;
