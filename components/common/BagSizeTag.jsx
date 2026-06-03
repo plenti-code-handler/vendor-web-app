@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 
-const BagSizeTag = ({ bagSize, showIcon = true, showWorth = false, itemType = null, pricingId = null, className = "" }) => {
+const BagSizeTag = ({ bagSize, showIcon = true, showWorth = false, itemType = null, pricingId = null, className = "", quantity = 1 }) => {
   const pricing = useSelector((state) => state.catalogue.pricing);
 
   const sizeConfig = {
@@ -40,10 +40,11 @@ const BagSizeTag = ({ bagSize, showIcon = true, showWorth = false, itemType = nu
     >
       {showIcon && config.icon}
       {showIcon && ' '}
+      {`${quantity} x `}
       {bagSize}
       {showWorth && worth !== null && (
         <span className="ml-1 opacity-75">
-          (worth ₹{worth})
+          (worth ₹{quantity * worth})
         </span>
       )}
     </span>
