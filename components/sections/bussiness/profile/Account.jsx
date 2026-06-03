@@ -315,10 +315,10 @@ const Account = () => {
     event.target.value = "";
     if (!file) return;
 
-    if (file.size > MAX_DOCUMENT_SIZE_KB * 1024) {
-      toast.error(`File must be under ${MAX_DOCUMENT_SIZE_KB}KB`);
-      return;
-    }
+    // if (file.size > MAX_DOCUMENT_SIZE_KB * 1024) {
+    //   toast.error(`File must be under ${MAX_DOCUMENT_SIZE_KB}KB`);
+    //   return;
+    // }
 
     setUploadingDocument(documentType);
     try {
