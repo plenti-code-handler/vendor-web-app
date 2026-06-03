@@ -4,11 +4,12 @@ import axiosClient from "../../../../AxiosClient";
 import { toast } from "sonner";
 import OrdersFilter from "../../../dropdowns/OrdersFilter";
 import { formatTime, formatDateTime } from "../../../../utility/FormatTime";
-import { EyeIcon, ArrowPathIcon } from "@heroicons/react/24/outline";
+import { ArrowPathIcon, ArrowUpRightIcon } from "@heroicons/react/24/outline";
 import DietIcon from "../../../common/DietIcon";
 import BagSizeTag from "../../../common/BagSizeTag";
-import OrderDetailsModal from "../../../modals/OrderDetailsModal";
+import OrderActionModal from "../../../modals/OrderActionModal";
 import { ITEM_TYPE_DISPLAY_NAMES } from "../../../../constants/itemTypes";
+import OrderStatusBadge from "../../../common/OrderStatusBadge";
 import {
   preloadSound,
   initializeAudio,
@@ -19,17 +20,6 @@ import { VENDOR_ORDERS_REFRESH_EVENT } from "../../../../utility/vendorOrderEven
 
 // Constants
 const ITEMS_PER_PAGE = 10;
-const OTP_LENGTH = 5;
-
-// Status configuration
-const ORDER_STATUS_CONFIG = {
-  CREATED: { color: "bg-[#7e45ee]", label: "Created" },
-  WAITING_FOR_PICKUP: { color: "bg-indigo-500", label: "Waiting For Pickup" },
-  READY_FOR_PICKUP: { color: "bg-yellow-500", label: "Ready For Pickup" },
-  PICKED_UP: { color: "bg-green-500", label: "Picked Up" },
-  CANCELLED: { color: "bg-red-500", label: "Cancelled" },
-  NOT_PICKED_UP: { color: "bg-orange-500", label: "Not Picked Up" },
-};
 
 const RecentOrders = () => {
   // State management - grouped by concern
@@ -40,21 +30,15 @@ const RecentOrders = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [hasMoreOrders, setHasMoreOrders] = useState(true);
 
-  // Modal states
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [verifyModalOpen, setVerifyModalOpen] = useState(false);
-  const [selectedOrderId, setSelectedOrderId] = useState(null);
-  const [loadingOrderId, setLoadingOrderId] = useState(null);
+  // Order action modal
+  const [orderModalOpen, setOrderModalOpen] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [orderDetails, setOrderDetails] = useState(null);
+  const [loadingOrderDetails, setLoadingOrderDetails] = useState(false);
   const [selectedDescription, setSelectedDescription] = useState(null);
-
-  // OTP states
-  const [otp, setOtp] = useState(Array(OTP_LENGTH).fill(""));
-  const [verifying, setVerifying] = useState(false);
   const [successConfetti, setSuccessConfetti] = useState(false);
 
   // Refs
-  const inputRefs = useRef([]);
   const filterRef = useRef(filter);
 
   // Sync filter ref
@@ -146,125 +130,47 @@ const RecentOrders = () => {
     fetchRecentOrders(true, 0, filter);
   }, [filter, fetchRecentOrders]);
 
-  const handleViewOrder = useCallback(async (order) => {
+  const closeOrderModal = useCallback(() => {
+    setOrderModalOpen(false);
+    setSelectedOrder(null);
+    setOrderDetails(null);
+    setLoadingOrderDetails(false);
+  }, []);
+
+  const handleOpenOrder = useCallback(async (order) => {
     const orderId = order.order_id;
-    setLoadingOrderId(orderId);
+    setSelectedOrder(order);
+    setOrderDetails(null);
+    setOrderModalOpen(true);
+    setLoadingOrderDetails(true);
+
     try {
       const response = await axiosClient.get(`/v1/vendor/order/${orderId}/items`);
       if (response.status === 200) {
-        setSelectedItem({ id: orderId, items: response.data, orderData: order });
-        setModalOpen(true);
+        setOrderDetails({ items: response.data, orderData: order });
       } else {
         toast.error("Failed to fetch order details");
       }
-    } catch (error) {
+    } catch {
       toast.error("Error fetching order items");
     } finally {
-      setLoadingOrderId(null);
+      setLoadingOrderDetails(false);
     }
   }, []);
 
-  const handleVerifyPickup = useCallback((orderId) => {
-    setSelectedOrderId(orderId);
-    setVerifyModalOpen(true);
-  }, []);
-
-  const handleOtpChange = useCallback((value, index) => {
-    if (!/^\d*$/.test(value)) return;
-
-    const newOtp = [...otp];
-    newOtp[index] = value;
-    setOtp(newOtp);
-
-    if (value && index < OTP_LENGTH - 1) {
-      inputRefs.current[index + 1]?.focus();
-    }
-  }, [otp]);
-
-  const handlePaste = useCallback((e, currentIndex) => {
-    e.preventDefault();
-    const pastedText = e.clipboardData.getData('text').replace(/\D/g, '');
-
-    if (pastedText.length >= OTP_LENGTH) {
-      const newOtp = pastedText.slice(0, OTP_LENGTH).split('');
-      setOtp(newOtp);
-      inputRefs.current[OTP_LENGTH - 1]?.focus();
-    } else {
-      const newOtp = [...otp];
-      for (let i = 0; i < pastedText.length && (currentIndex + i) < OTP_LENGTH; i++) {
-        newOtp[currentIndex + i] = pastedText[i];
-      }
-      setOtp(newOtp);
-
-      const nextIndex = currentIndex + pastedText.length;
-      if (nextIndex < OTP_LENGTH) {
-        inputRefs.current[nextIndex]?.focus();
-      }
-    }
-  }, [otp]);
-
-  const closeVerifyModal = useCallback(() => {
-    setVerifyModalOpen(false);
-    setOtp(Array(OTP_LENGTH).fill(""));
-    setVerifying(false);
-    setSelectedOrderId(null);
-  }, []);
-
-  const handleVerifyCode = useCallback(async () => {
-    const code = otp.join("");
-
-    if (code.length !== OTP_LENGTH) {
-      toast.error(`Please enter a ${OTP_LENGTH}-digit code`);
-      return;
-    }
-
-    setVerifying(true);
-
-    try {
-      const response = await axiosClient.patch(
-        `/v1/vendor/order/pickup/${selectedOrderId}?order_code=${code}`
-      );
-
-      if (response.status === 200) {
-        toast.success("Order code verified successfully");
-        closeVerifyModal();
-        setSuccessConfetti(true);
-        setTimeout(() => {
-          handleRefresh();
-        }, 1000);
-      }
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to verify order code");
-    } finally {
-      setVerifying(false);
-    }
-  }, [otp, selectedOrderId, fetchRecentOrders, closeVerifyModal]);
-
-  // Render helpers
-  const renderOrderStatus = useCallback((rawStatus) => {
-    if (!rawStatus) {
-      return (
-        <span className="inline-block px-2 py-1 rounded bg-gray-400 text-white text-xs font-semibold">
-          Not Available
-        </span>
-      );
-    }
-
-    const status = rawStatus.replace("order.", "").toUpperCase();
-    const config = ORDER_STATUS_CONFIG[status] || {
-      color: "bg-blue-500",
-      label: status.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, l => l.toUpperCase())
-    };
-
-    return (
-      <span className={`inline-block px-2 py-1 rounded text-white text-xs font-semibold ${config.color}`}>
-        {config.label}
-      </span>
-    );
-  }, []);
+  const handleVerifySuccess = useCallback(() => {
+    setSuccessConfetti(true);
+    setTimeout(() => {
+      handleRefresh();
+    }, 1000);
+  }, [handleRefresh]);
 
   const renderTableRow = useCallback((order) => (
-    <tr key={order.order_id} className="border-b hover:bg-gray-50 transition animate-fade-down">
+    <tr
+      key={order.order_id}
+      onClick={() => handleOpenOrder(order)}
+      className="border-b hover:bg-gray-50 transition animate-fade-down cursor-pointer"
+    >
       <td className="text-center px-2 text-sm py-3">
         <div className="truncate" title={order.user_name || "Not provided"}>
           {order.user_name || <span className="text-gray-400">Not provided</span>}
@@ -290,7 +196,6 @@ const RecentOrders = () => {
               <div key={idx} className="flex items-center gap-1 text-[10px] leading-tight whitespace-nowrap mx-2">
                 <DietIcon diet={item.diet} size="xs" />
                 <span className="flex items-center gap-1">
-                  <span className="font-medium">{item.quantity}X</span>
                   <span className="text-gray-600">
                     {ITEM_TYPE_DISPLAY_NAMES[item.item_type] || item.item_type}
                   </span>
@@ -300,6 +205,7 @@ const RecentOrders = () => {
                     showWorth={true}
                     itemType={item.item_type}
                     pricingId={item.pricing_id}
+                    quantity={item.quantity}
                   />
                 </span>
               </div>
@@ -318,7 +224,11 @@ const RecentOrders = () => {
               .map((item, idx) => (
                 <button
                   key={idx}
-                  onClick={() => setSelectedDescription(item.description)}
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedDescription(item.description);
+                  }}
                   className="w-full px-4 py-3 rounded-full bg-gray-100 text-gray-700 text-xs hover:bg-gray-200 transition-colors cursor-pointer truncate"
                   title={item.description}
                 >
@@ -338,37 +248,20 @@ const RecentOrders = () => {
       </td>
 
       <td className="text-center px-2 text-xs">
-        {renderOrderStatus(order.current_status)}
+        <OrderStatusBadge status={order.current_status} />
       </td>
 
       <td className="text-center px-2 py-2">
-        <div className="flex items-center justify-center gap-2">
-          <button
-            onClick={() => handleViewOrder(order)}
-            className="p-2 rounded hover:bg-blue-50 transition"
-            title="View"
-            disabled={loadingOrderId === order.order_id}
-          >
-            {loadingOrderId === order.order_id ? (
-              <div className="animate-spin rounded-full h-5 w-5 border-2 border-blue-600 border-t-transparent" />
-            ) : (
-              <EyeIcon className="h-5 w-5 text-blue-600" />
-            )}
-          </button>
-
-          {order.current_status === "READY_FOR_PICKUP" && (
-            <button
-              onClick={() => handleVerifyPickup(order.order_id)}
-              className="px-3 py-1.5 rounded-lg bg-green-50 hover:bg-green-100 border border-green-200 text-green-700 text-xs font-medium transition-all duration-200 hover:border-green-300"
-              title="Verify Pickup"
-            >
-              Verify OTP
-            </button>
+        <div className="flex items-center justify-center pointer-events-none">
+          {loadingOrderDetails && selectedOrder?.order_id === order.order_id ? (
+            <div className="animate-spin rounded-full h-5 w-5 border-2 border-blue-600 border-t-transparent" />
+          ) : (
+            <ArrowUpRightIcon className="h-5 w-5 text-blue-600" />
           )}
         </div>
       </td>
     </tr>
-  ), [loadingOrderId, handleViewOrder, handleVerifyPickup, renderOrderStatus]);
+  ), [loadingOrderDetails, selectedOrder?.order_id, handleOpenOrder]);
 
   // Main render
   return (
@@ -409,7 +302,7 @@ const RecentOrders = () => {
               <th className="pb-2 px-2 pt-4 text-center w-[16%]">Descriptions</th>
               <th className="pb-2 px-2 pt-4 text-center w-[12%]">Created At</th>
               <th className="pb-2 px-2 pt-4 text-center w-[12%]">Status</th>
-              <th className="pb-2 text-center pt-4 w-[12%]">Action</th>
+              <th className="pb-2 text-center pt-4 w-[12%]">View</th>
             </tr>
           </thead>
 
@@ -456,64 +349,14 @@ const RecentOrders = () => {
         </div>
       )}
 
-      {/* Modals */}
-      <OrderDetailsModal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        orderDetails={selectedItem}
+      <OrderActionModal
+        open={orderModalOpen}
+        onClose={closeOrderModal}
+        order={selectedOrder}
+        orderDetails={orderDetails}
+        loadingDetails={loadingOrderDetails}
+        onVerifySuccess={handleVerifySuccess}
       />
-
-      {verifyModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-          <div className="w-full max-w-md rounded-2xl bg-white shadow-2xl overflow-hidden flex flex-col">
-            <div className="flex items-center justify-between px-6 py-4 border-b">
-              <h2 className="text-xl font-semibold text-gray-900">Enter Order Code</h2>
-              <button
-                onClick={closeVerifyModal}
-                className="text-gray-400 hover:text-gray-600 text-2xl leading-none"
-                aria-label="Close"
-              >
-                ×
-              </button>
-            </div>
-
-            <div className="flex justify-center gap-3 py-8">
-              {otp.map((digit, i) => (
-                <input
-                  key={i}
-                  type="text"
-                  inputMode="numeric"
-                  maxLength={1}
-                  value={digit}
-                  ref={(el) => (inputRefs.current[i] = el)}
-                  onChange={(e) => handleOtpChange(e.target.value, i)}
-                  onPaste={(e) => handlePaste(e, i)}
-                  className="w-12 h-12 border border-gray-500 border-2 border-gray-300 text-center text-xl rounded-lg focus:ring-2 focus:ring-blue-500 transition"
-                  aria-label={`Digit ${i + 1}`}
-                  style={{
-                    borderColor: digit ? "#5F22D9" : "#D1D5DB",
-                    backgroundColor: digit ? "#F9FAFB" : "#F9FAFB",
-                    color: digit ? "#111827" : "#6B7280",
-                  }}
-                />
-              ))}
-            </div>
-
-            <div className="flex justify-end px-6 py-4 border-t bg-gray-50">
-              <button
-                onClick={handleVerifyCode}
-                disabled={verifying}
-                className={`px-6 py-2 rounded-lg font-medium text-white transition ${verifying
-                    ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-blue-600 hover:bg-blue-700"
-                  }`}
-              >
-                {verifying ? "Verifying..." : "Verify"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Description Modal */}
       {selectedDescription && (
