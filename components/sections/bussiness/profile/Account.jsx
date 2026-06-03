@@ -29,7 +29,7 @@ import UpdateEmailModal from "../../../modals/UpdateEmailModal";
 
 const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 const libraries = ["places"]; // Define as constant outside component
-const MAX_DOCUMENT_SIZE_KB = 1000;
+const MAX_DOCUMENT_SIZE_KB = 10000;
 
 const Account = () => {
   const dispatch = useDispatch();
@@ -315,10 +315,10 @@ const Account = () => {
     event.target.value = "";
     if (!file) return;
 
-    // if (file.size > MAX_DOCUMENT_SIZE_KB * 1024) {
-    //   toast.error(`File must be under ${MAX_DOCUMENT_SIZE_KB}KB`);
-    //   return;
-    // }
+    if (file.size > MAX_DOCUMENT_SIZE_KB * 1024) {
+      toast.error(`File must be under ${MAX_DOCUMENT_SIZE_KB}KB`);
+      return;
+    }
 
     setUploadingDocument(documentType);
     try {
