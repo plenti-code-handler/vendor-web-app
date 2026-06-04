@@ -1,12 +1,9 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
+import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import {
-  bottomWalletBackground,
-  leftWalletBackground,
-  rightWalletBackground,
-  topLeftWalletBackground,
   withdrawAmountSvg,
 } from "../../../../svgs";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,6 +15,102 @@ import BeatLoader from "react-spinners/BeatLoader";
 import axiosClient from "../../../../AxiosClient";
 import { fetchBalance } from "../../../../redux/slices/blanceSlice";
 import { fetchBankAccountDetails } from "../../../../redux/slices/vendorSlice";
+import { formatDateTime } from "../../../../utility/FormatTime";
+
+const ITEMS_PER_PAGE = 10;
+
+const TransactionTile = ({ transaction, isExpanded, onToggle }) => {
+  const {
+    id,
+    user_name,
+    total_amount,
+    vendor_cut,
+    platform_cut,
+    platform_fee_gst,
+    item_gst,
+    coupon_discount,
+    contribution,
+    refunded,
+    created_at,
+  } = transaction;
+
+  const detailRows = [
+    { label: "Payment ID", value: id },
+    { label: "Vendor cut", value: `₹${Number(vendor_cut ?? 0).toFixed(2)}`, highlight: "green" },
+    { label: "Platform fee", value: `₹${Number(platform_cut ?? 0).toFixed(2)}` },
+    { label: "Platform GST", value: `₹${Number(platform_fee_gst ?? 0).toFixed(2)}` },
+    { label: "Item GST", value: `₹${Number(item_gst ?? 0).toFixed(2)}` },
+    { label: "Coupon discount", value: `₹${Number(coupon_discount ?? 0).toFixed(2)}` },
+    { label: "Contribution", value: `₹${Number(contribution ?? 0).toFixed(2)}` },
+  ];
+
+  return (
+    <div className="bg-white shadow-md rounded-xl w-full overflow-hidden transition-shadow duration-300 ease-in-out hover:shadow-lg">
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={isExpanded}
+        className="w-full flex justify-between items-center gap-3 p-4 text-left"
+      >
+        <div className="min-w-0 flex-1">
+          <p className="text-base font-semibold text-gray-900 truncate">
+            {user_name || "Customer"}
+          </p>
+          <p className="text-sm text-gray-500 mt-0.5">
+            {formatDateTime(created_at)}
+          </p>
+        </div>
+        <div className="flex items-center gap-3 shrink-0">
+          <span className="text-lg font-bold text-[#00B877]">
+            ₹{Number(vendor_cut ?? 0).toFixed(2)}
+          </span>
+          <ChevronDownIcon
+            className={`h-5 w-5 text-gray-400 transition-transform duration-300 ease-in-out ${
+              isExpanded ? "rotate-180" : ""
+            }`}
+            aria-hidden
+          />
+        </div>
+      </button>
+
+      <div
+        className={`grid transition-[grid-template-rows] duration-300 ease-in-out ${
+          isExpanded ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+        }`}
+      >
+        <div className="overflow-hidden">
+          <div className="px-4 pb-4 pt-3 border-t border-gray-100 space-y-2">
+            {detailRows.map(({ label, value, highlight }) => (
+              <div
+                key={label}
+                className="flex justify-between gap-4 text-xs text-gray-600"
+              >
+                <span>{label}</span>
+                <span
+                  className={`font-medium tabular-nums text-right ${
+                    highlight === "green" ? "text-green-700" : "text-gray-900"
+                  }`}
+                >
+                  {value}
+                </span>
+              </div>
+            ))}
+            <div className="flex justify-between gap-4 text-xs pt-1 border-t border-gray-100">
+              <span className="text-gray-600">Refunded</span>
+              <span
+                className={`font-semibold ${
+                  refunded ? "text-red-600" : "text-green-600"
+                }`}
+              >
+                {refunded ? "Yes" : "No"}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const Transactions = () => {
   const dispatch = useDispatch();
@@ -30,7 +123,11 @@ const Transactions = () => {
   const [payouts, setPayouts] = useState([]);
   const [activeTab, setActiveTab] = useState("transactions");
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [hasMoreTransactions, setHasMoreTransactions] = useState(true);
   const [checkingPayout, setCheckingPayout] = useState(false);
+  const [expandedTransactionId, setExpandedTransactionId] = useState(null);
   const [paymentBreakdown, setPaymentBreakdown] = useState({
     total_captured_payments: 0,
     total_refund_payments: 0,
@@ -38,23 +135,48 @@ const Transactions = () => {
     balance: 0
   });
 
-  useEffect(() => {
-    const fetchTransactions = async () => {
-      try {
-        setLoading(true);
-        const response = await axiosClient.get(
-          "/v1/vendor/payment/get?skip=0&limit=10"
-        );
-        setTransactions(response.data);
-      } catch (error) {
-        console.error("Error fetching transactions:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchTransactions = useCallback(async (reset = false, pageNum = 0) => {
+    if (reset) {
+      setCurrentPage(0);
+      setTransactions([]);
+      setHasMoreTransactions(true);
+      setExpandedTransactionId(null);
+    }
 
-    fetchTransactions();
+    const skip = reset ? 0 : pageNum * ITEMS_PER_PAGE;
+
+    setLoading(reset);
+    setLoadingMore(!reset);
+
+    try {
+      const response = await axiosClient.get(
+        `/v1/vendor/payment/get?skip=${skip}&limit=${ITEMS_PER_PAGE}`
+      );
+      const newTransactions = response.data || [];
+
+      setTransactions((prev) =>
+        reset ? newTransactions : [...prev, ...newTransactions]
+      );
+      setCurrentPage(reset ? 1 : pageNum + 1);
+      setHasMoreTransactions(newTransactions.length === ITEMS_PER_PAGE);
+    } catch (error) {
+      console.error("Error fetching transactions:", error);
+      toast.error("Failed to fetch transactions");
+    } finally {
+      setLoading(false);
+      setLoadingMore(false);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchTransactions(true, 0);
+  }, [fetchTransactions]);
+
+  const handleLoadMoreTransactions = useCallback(() => {
+    if (!loadingMore && hasMoreTransactions) {
+      fetchTransactions(false, currentPage);
+    }
+  }, [loadingMore, hasMoreTransactions, currentPage, fetchTransactions]);
 
   useEffect(() => {
     dispatch(fetchBalance());
@@ -203,46 +325,47 @@ const Transactions = () => {
           <Loader />
         ) : activeTab === "transactions" ? (
           transactions.length > 0 ? (
-            <div className="overflow-x-auto sm:overflow-x-visible">
-              <div className="flex flex-col sm:flex-col gap-2 min-w-[350px] sm:min-w-0">
+            <>
+              <div className="flex flex-col gap-3">
                 {transactions.map((transaction) => (
-                  <div
+                  <TransactionTile
                     key={transaction.id}
-                    className="flex justify-between items-center bg-white shadow-lg transform translate-y-[-5px] rounded-lg w-full p-4"
-                  >
-                    <div className="flex flex-col">
-                      <p className="text-cardNumber text-base font-semibold">
-                        {transaction.id}
-                      </p>
-                      <p className="text-date text-sm font-medium">
-                        {new Intl.DateTimeFormat("en-GB", {
-                          day: "numeric",
-                          month: "short",
-                          year: "2-digit",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                          hour12: false,
-                        }).format(new Date(transaction.created_at * 1000))}
-                      </p>
-                    </div>
-                    <div className="flex gap-5 items-center">
-                      <div
-                        className={`${decideStyle(
-                          transaction.status
-                        )} font-semibold rounded-full text-center border text-[12px] px-5 py-1`}
-                      >
-                        {transaction.status}
-                      </div>
-                      <div className="text-amount text-xl font-semibold">
-                        {Number(transaction.transaction_amount).toFixed(2)}
-                      </div>
-                    </div>
-                  </div>
+                    transaction={transaction}
+                    isExpanded={expandedTransactionId === transaction.id}
+                    onToggle={() =>
+                      setExpandedTransactionId((prev) =>
+                        prev === transaction.id ? null : transaction.id
+                      )
+                    }
+                  />
                 ))}
               </div>
-            </div>
+              {hasMoreTransactions && (
+                <div className="flex justify-center mt-6">
+                  <button
+                    type="button"
+                    onClick={handleLoadMoreTransactions}
+                    disabled={loadingMore}
+                    className={`px-4 py-2 rounded-md text-sm font-normal transition-colors duration-200 ${
+                      loadingMore
+                        ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                        : "bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-200"
+                    }`}
+                  >
+                    {loadingMore ? (
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 border-2 border-gray-300 border-t-transparent rounded-full animate-spin" />
+                        Loading...
+                      </div>
+                    ) : (
+                      "Load More Transactions"
+                    )}
+                  </button>
+                </div>
+              )}
+            </>
           ) : (
-            <p>No transactions found.</p>
+            <p className="text-gray-500 text-sm">No transactions found.</p>
           )
         ) : payouts.length > 0 ? (
           <div className="overflow-x-auto sm:overflow-x-visible">
