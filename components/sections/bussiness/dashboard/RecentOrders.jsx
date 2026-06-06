@@ -147,7 +147,22 @@ const RecentOrders = () => {
     try {
       const response = await axiosClient.get(`/v1/vendor/order/${orderId}/items`);
       if (response.status === 200) {
-        setOrderDetails({ items: response.data, orderData: order });
+        
+
+        // Map through checkout_items and inject the new fields into each item
+        const updatedItems = order.checkout_items.map(item => ({
+          ...item,
+          window_start_time: response.data.find(item => item.item_id === item.item_id).window_start_time,
+          window_end_time: response.data.find(item => item.item_id === item.item_id).window_end_time,
+          best_before_time: response.data.find(item => item.item_id === item.item_id).best_before_time
+        }));
+        console.log(updatedItems, "updated items checking");
+
+        // Set the updated state
+        setOrderDetails({ 
+          items: updatedItems, 
+          orderData: order 
+        });
       } else {
         toast.error("Failed to fetch order details");
       }

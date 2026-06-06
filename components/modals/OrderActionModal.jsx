@@ -27,6 +27,7 @@ const OrderActionModal = ({
   loadingDetails,
   onVerifySuccess,
 }) => {
+  console.log(orderDetails, "order details checking");
   const [otp, setOtp] = useState(Array(OTP_LENGTH).fill(""));
   const [verifying, setVerifying] = useState(false);
   const inputRefs = useRef([]);
@@ -247,12 +248,12 @@ const OrderActionModal = ({
                               <DietIcon diet={item.diet} size="xs" />
                               <span className="text-xs text-gray-900">{itemTypeLabel}</span>
                               <BagSizeTag
-                                quantity={item.quantity}
+                                bagSize={item.bag_size}
+                                showIcon={true}
                                 showWorth={true}
                                 itemType={item.item_type}
                                 pricingId={item.pricing_id}
-                                bagSize={item.bag_size}
-                                showIcon={true}
+                                quantity={item.quantity}
                               />
                             </div>
                             <div className="flex flex-wrap items-center gap-2 text-xs text-gray-500">
