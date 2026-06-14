@@ -1,17 +1,14 @@
 export const catalogue_limits = {
     MEAL: {
-        default: 6, 
-        vdr_20260421230716_YMW: 10,
-        vdr_20260427230121_CJG: 10, 
+        default: 10,  
         vdr_20260422163443_MAK: 15, 
         vdr_20260517202530_DLQ: 15, 
         vdr_20260522201007_YDM: 15, 
-        vdr_20260509212611_PTQ: 10, 
         vdr_20260209181215_FBR: 15
 
     },
     BAKED_GOODS: {
-        default: 6, 
+        default: 10, 
         vdr_20260422163443_MAK: 15, 
         vdr_20260517202530_DLQ: 15, 
         vdr_20260521130533_JBY: 15, 
