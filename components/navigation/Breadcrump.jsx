@@ -35,7 +35,7 @@ const decidePath = (pathname) => {
     case "users":
       return "Users";
     case "coupons":
-      return "Coupons";
+      return "Dine-in Coupons";
     case "approvals":
       return "Approvals";
     case "transactions":
