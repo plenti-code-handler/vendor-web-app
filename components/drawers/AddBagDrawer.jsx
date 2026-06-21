@@ -4,7 +4,9 @@ import {
   DialogBackdrop,
   DialogPanel,
 } from "@headlessui/react";
+import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
 import { setOpenDrawer } from "../../redux/slices/addBagSlice";
 import ItemTypeFilter from "../dropdowns/ItemTypeFilter";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -13,6 +15,7 @@ import axiosClient from "../../AxiosClient";
 import { toast } from "sonner";
 import { fetchAllBags } from "../../redux/slices/bagsSlice";
 import { fetchCatalogue } from "../../redux/slices/catalogueSlice";
+import { fetchDineinCoupons } from "../../redux/slices/dineinCouponSlice";
 import InfoIcon from '../common/InfoIcon';
 import { selectVendorData } from '../../redux/slices/vendorSlice';
 import {
@@ -34,8 +37,60 @@ import TimingSection from './components/TimingSection';
 import ServingsSection from './components/ServingsSection';
 import PrimaryButton from '../buttons/PrimaryButton';
 
+function DineinCouponBanner({ activeCoupon, onEdit }) {
+  if (activeCoupon) {
+    const discountLabel =
+      activeCoupon.discount_value === Math.floor(activeCoupon.discount_value)
+        ? Math.floor(activeCoupon.discount_value)
+        : activeCoupon.discount_value;
+
+    return (
+      <button
+        type="button"
+        onClick={onEdit}
+        className="mb-6 flex w-full items-center gap-3 rounded-xl border border-emerald-200/80 bg-emerald-50/70 px-3.5 py-3 text-left transition hover:border-emerald-300 hover:bg-emerald-50"
+      >
+        <div className="min-w-0 flex-1">
+          <p className="text-sm font-medium text-emerald-900">
+            {discountLabel}% dine-in coupon active with this bag
+          </p>
+          <p className="mt-0.5 text-xs text-emerald-800/70">
+            Customers earn this offer on their next walk-in after purchase.
+          </p>
+        </div>
+        <span className="inline-flex shrink-0 items-center gap-0.5 text-xs font-medium text-emerald-800">
+          Edit
+          <ChevronRightIcon className="h-4 w-4" />
+        </span>
+      </button>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={onEdit}
+      className="mb-6 flex w-full items-center gap-3 rounded-xl border border-slate-200/90 bg-slate-50/90 px-3.5 py-3 text-left transition hover:border-slate-300 hover:bg-slate-100/80"
+    >
+      <div className="min-w-0 flex-1">
+        <p className="text-sm font-medium text-slate-700">
+          No dine-in coupon active with this bag
+        </p>
+        <p className="mt-0.5 text-xs text-slate-500">
+          Turn on a coupon to reward customers on their next visit.
+        </p>
+      </div>
+      <span className="inline-flex shrink-0 items-center gap-0.5 text-xs font-medium text-slate-600">
+        Edit
+        <ChevronRightIcon className="h-4 w-4" />
+      </span>
+    </button>
+  );
+}
+
 const AddBagDrawer = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
   const [selectedBag, setSelectedBag] = useState("");
   const [selectedPricingId, setSelectedPricingId] = useState("default");
   const [selectedAllergens, setSelectedAllergens] = useState([]);
@@ -48,6 +103,11 @@ const AddBagDrawer = () => {
   const [bestBeforeDuration, setBestBeforeDuration] = useState(60); // Duration in minutes after window ends
   const [showCustomDescription, setShowCustomDescription] = useState(false);
   const open = useSelector((state) => state.addBag.drawerOpen);
+  const dineinCoupons = useSelector((state) => state.dineinCoupons.coupons);
+  const activeDineinCoupon = useMemo(
+    () => dineinCoupons.find((coupon) => coupon.is_active) ?? null,
+    [dineinCoupons]
+  );
 
 
   // Calculate end times
@@ -73,10 +133,13 @@ const AddBagDrawer = () => {
     [selectedPricingId, selectedBag, pricing, availableDescriptions]
   );
 
-  // Fetch catalogue data
+  // Fetch catalogue and dine-in coupons when drawer opens
   useEffect(() => {
-    dispatch(fetchCatalogue());
-  }, [dispatch]);
+    if (open) {
+      dispatch(fetchCatalogue());
+      dispatch(fetchDineinCoupons({ skip: 0, limit: 20 }));
+    }
+  }, [dispatch, open]);
 
   // Set default selected bag when drawer opens and categories are available
   useEffect(() => {
@@ -154,6 +217,10 @@ const AddBagDrawer = () => {
         allergens: selectedAllergens || [],
       };
 
+      if (activeDineinCoupon?.id) {
+        newItem.dinein_coupon_id = activeDineinCoupon.id;
+      }
+
       const response = await axiosClient.post(
         "/v1/vendor/item/create",
         newItem
@@ -204,6 +271,14 @@ const AddBagDrawer = () => {
     dispatch(setOpenDrawer(false));
   }, [dispatch]);
 
+  const handleEditDineinCoupons = useCallback(() => {
+    // handleClose();
+    handleClose();
+    setTimeout(() => {
+      router.push("/business/coupons");
+    }, 500);
+  }, [handleClose, router]);
+
   useBackToClose(open, handleClose);
 
   return (
@@ -225,6 +300,11 @@ const AddBagDrawer = () => {
                     title="Add New Item"
                     subtitle="Create a new food item for your customers"
                     onClose={handleClose}
+                  />
+
+                  <DineinCouponBanner
+                    activeCoupon={activeDineinCoupon}
+                    onEdit={handleEditDineinCoupons}
                   />
 
                   {/* Item Type Section */}

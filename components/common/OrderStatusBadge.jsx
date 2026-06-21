@@ -1,6 +1,7 @@
 import { getOrderStatusDisplay } from "../../constants/orderStatus";
 
 const OrderStatusBadge = ({ status, className = "" }) => {
+
   const { color, label } = getOrderStatusDisplay(status);
 
   return (

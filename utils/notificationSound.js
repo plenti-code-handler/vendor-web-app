@@ -37,10 +37,8 @@ export const initializeAudio = () => {
             audio.pause();
             audio.currentTime = 0;
             audioUnlocked = true;
-            console.log('✅ Audio unlocked successfully');
           })
           .catch((error) => {
-            console.log('⏳ Audio still locked:', error.message);
           });
       }
     }
@@ -56,12 +54,9 @@ export const playNotificationSound = (type = 'order', volume = 0.7) => {
   try {
     const soundUrl = soundMap[type] || soundMap['default'];
     const audio = getAudioInstance();
-    
-    console.log('🔔 New notification - playing sound');
-    
+        
     // ✅ ALWAYS stop current playback first (if any)
     if (!audio.paused) {
-      console.log('⏹️ Stopping current sound');
       audio.pause();
     }
     
