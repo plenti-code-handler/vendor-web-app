@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState, useRef, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
+import { OTPInput, REGEXP_ONLY_DIGITS } from "input-otp";
 import { formatTime, formatDateTime } from "../../utility/FormatTime";
 import BagSizeTag from "../common/BagSizeTag";
 import DietIcon from "../common/DietIcon";
@@ -28,9 +29,8 @@ const OrderActionModal = ({
   onVerifySuccess,
 }) => {
   console.log(orderDetails, "order details checking");
-  const [otp, setOtp] = useState(Array(OTP_LENGTH).fill(""));
+  const [otp, setOtp] = useState("");
   const [verifying, setVerifying] = useState(false);
-  const inputRefs = useRef([]);
 
   const isReadyForPickup =
     normalizeOrderStatus(order?.current_status) === "READY_FOR_PICKUP";
@@ -42,56 +42,12 @@ const OrderActionModal = ({
   useEffect(() => {
     if (!open) return;
 
-    setOtp(Array(OTP_LENGTH).fill(""));
+    setOtp("");
     setVerifying(false);
-
-    if (normalizeOrderStatus(order?.current_status) !== "READY_FOR_PICKUP") return;
-
-    const focusTimer = setTimeout(() => {
-      inputRefs.current[0]?.focus();
-    }, 150);
-
-    return () => clearTimeout(focusTimer);
   }, [open, order?.order_id, order?.current_status]);
 
-  const handleOtpChange = useCallback((value, index) => {
-    if (!/^\d*$/.test(value)) return;
-
-    const newOtp = [...otp];
-    newOtp[index] = value;
-    setOtp(newOtp);
-
-    if (value && index < OTP_LENGTH - 1) {
-      inputRefs.current[index + 1]?.focus();
-    }
-  }, [otp]);
-
-  const handlePaste = useCallback((e, currentIndex) => {
-    e.preventDefault();
-    const pastedText = e.clipboardData.getData("text").replace(/\D/g, "");
-
-    if (pastedText.length >= OTP_LENGTH) {
-      const newOtp = pastedText.slice(0, OTP_LENGTH).split("");
-      setOtp(newOtp);
-      inputRefs.current[OTP_LENGTH - 1]?.focus();
-    } else {
-      const newOtp = [...otp];
-      for (let i = 0; i < pastedText.length && currentIndex + i < OTP_LENGTH; i++) {
-        newOtp[currentIndex + i] = pastedText[i];
-      }
-      setOtp(newOtp);
-
-      const nextIndex = currentIndex + pastedText.length;
-      if (nextIndex < OTP_LENGTH) {
-        inputRefs.current[nextIndex]?.focus();
-      }
-    }
-  }, [otp]);
-
   const handleVerifyCode = useCallback(async () => {
-    const code = otp.join("");
-
-    if (code.length !== OTP_LENGTH) {
+    if (otp.length !== OTP_LENGTH) {
       toast.error(`Please enter a ${OTP_LENGTH}-digit code`);
       return;
     }
@@ -100,7 +56,7 @@ const OrderActionModal = ({
 
     try {
       const response = await axiosClient.patch(
-        `/v1/vendor/order/pickup/${order.order_id}?order_code=${code}`
+        `/v1/vendor/order/pickup/${order.order_id}?order_code=${otp}`
       );
 
       if (response.status === 200) {
@@ -154,27 +110,38 @@ const OrderActionModal = ({
                   <p className="text-xs text-gray-600 mb-4">
                     Enter the {OTP_LENGTH}-digit order code from the customer.
                   </p>
-                  <div className="flex justify-center gap-3">
-                    {otp.map((digit, i) => (
-                      <input
-                        key={i}
-                        type="text"
-                        inputMode="numeric"
-                        maxLength={1}
-                        value={digit}
-                        ref={(el) => (inputRefs.current[i] = el)}
-                        onChange={(e) => handleOtpChange(e.target.value, i)}
-                        onPaste={(e) => handlePaste(e, i)}
-                        onClick={(e) => e.stopPropagation()}
-                        className="w-12 h-12 border-2 text-center text-xl rounded-lg focus:ring-2 focus:ring-blue-500 transition"
-                        aria-label={`Digit ${i + 1}`}
-                        style={{
-                          borderColor: digit ? "#5F22D9" : "#D1D5DB",
-                          backgroundColor: "#F9FAFB",
-                          color: digit ? "#111827" : "#6B7280",
-                        }}
-                      />
-                    ))}
+                  <div className="flex justify-center py-1">
+                    <OTPInput
+                      maxLength={OTP_LENGTH}
+                      value={otp}
+                      onChange={setOtp}
+                      disabled={verifying}
+                      inputMode="numeric"
+                      pattern={REGEXP_ONLY_DIGITS}
+                      containerClassName="flex items-center gap-2.5"
+                      render={({ slots }) => (
+                        <>
+                          {slots.map((slot, idx) => (
+                            <div
+                              key={idx}
+                              className={`relative flex h-12 w-11 items-center justify-center rounded-xl border bg-white text-lg font-semibold text-[#181C32] shadow-sm transition-all duration-200
+                                ${slot.isActive
+                                  ? "border-[#5F22D9] ring-2 ring-[#5F22D9]/20 shadow-md shadow-[#5F22D9]/10"
+                                  : slot.char
+                                    ? "border-[#5F22D9]/35 bg-[#F8F5FF]"
+                                    : "border-gray-200 hover:border-gray-300"}`}
+                            >
+                              {slot.char}
+                              {slot.hasFakeCaret && (
+                                <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                                  <div className="h-5 w-px animate-pulse bg-[#5F22D9]" />
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </>
+                      )}
+                    />
                   </div>
                   <div className="flex justify-end mt-4">
                     <button

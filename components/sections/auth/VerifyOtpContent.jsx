@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { OTPInput, REGEXP_ONLY_DIGITS } from "input-otp";
 import axiosClient from "../../../AxiosClient";
-import { Input } from "@headlessui/react";
 import BackButton from "./BackButton";
 
 const LENGTH = 6;
@@ -14,18 +14,8 @@ const VerifyOtpContent = ({ onVerifySuccess, refreshState }) => {
     const [isResendDisabled, setIsResendDisabled] = useState(true);
     const [loading, setLoading] = useState(false);
     const [timeLeft, setTimeLeft] = useState(60);
-    const inputId = "otp-input";
-    const inputRef = useRef(null);
 
     const router = useRouter();
-
-    useEffect(() => {
-        if (inputRef.current) {
-            inputRef.current.focus();
-        }
-    }, []);
-
-
 
     useEffect(() => {
         if (timeLeft > 0) {
@@ -34,11 +24,6 @@ const VerifyOtpContent = ({ onVerifySuccess, refreshState }) => {
         }
         setIsResendDisabled(false);
     }, [timeLeft]);
-
-    const handleOtpChange = (e) => {
-        const v = e.target.value.replace(/\D/g, "").slice(0, LENGTH);
-        setOtpValue(v);
-    };
 
     const handleVerify = async () => {
         if (otpValue.length !== LENGTH) {
@@ -126,40 +111,40 @@ const VerifyOtpContent = ({ onVerifySuccess, refreshState }) => {
             <p className="text-black font-semibold text-[28px]">Verify Account</p>
             <p className="text-neutral-500 text-sm mt-1">Enter the code sent to your email</p>
 
-            {/* Headless UI OTP input: single field, 6-cell display */}
-            <label
-                htmlFor={inputId}
-                className="flex gap-1.5 sm:gap-2 mt-6 cursor-text select-none"
-            >
-                <Input
-                    id={inputId}
-                    ref={inputRef}
-                    type="text"
-                    inputMode="numeric"
-                    autoComplete="one-time-code"
+            <div className="flex justify-center py-1 mt-6">
+                <OTPInput
                     maxLength={LENGTH}
                     value={otpValue}
-                    onChange={handleOtpChange}
-                    className="sr-only"
-                    aria-label="One-time code"
+                    onChange={setOtpValue}
+                    disabled={loading}
+                    inputMode="numeric"
+                    autoComplete="one-time-code"
+                    pattern={REGEXP_ONLY_DIGITS}
+                    containerClassName="flex items-center gap-2.5"
+                    render={({ slots }) => (
+                        <>
+                            {slots.map((slot, idx) => (
+                                <div
+                                    key={idx}
+                                    className={`relative flex h-12 w-11 items-center justify-center rounded-xl border bg-white text-lg font-semibold text-[#181C32] shadow-sm transition-all duration-200
+                                        ${slot.isActive
+                                            ? "border-[#5F22D9] ring-2 ring-[#5F22D9]/20 shadow-md shadow-[#5F22D9]/10"
+                                            : slot.char
+                                                ? "border-[#5F22D9]/35 bg-[#F8F5FF]"
+                                                : "border-gray-200 hover:border-gray-300"}`}
+                                >
+                                    {slot.char}
+                                    {slot.hasFakeCaret && (
+                                        <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                                            <div className="h-5 w-px animate-pulse bg-[#5F22D9]" />
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
+                        </>
+                    )}
                 />
-                {Array.from({ length: LENGTH }).map((_, i) => {
-                    const isActive = i === Math.min(otpValue.length, LENGTH - 1);
-                    return (
-                        <div
-                            key={i}
-                            className={`
-                w-10 h-12 sm:w-12 sm:h-14 rounded-lg border flex items-center justify-center
-                text-lg sm:text-xl font-medium tabular-nums transition-colors
-                ${isActive ? "border-[#5F22D9] ring-2 ring-[#5F22D9]/20 bg-white" : "border-gray-200 bg-gray-50/50"}
-                ${otpValue[i] ? "text-gray-900" : "text-transparent"}
-              `}
-                        >
-                            {otpValue[i] || ""}
-                        </div>
-                    );
-                })}
-            </label>
+            </div>
             <div className="flex items-center justify-center mt-5">
                 <p className="text-[#494949] text-[12px] font-medium">
                     Didn't Receive Code?{" "}

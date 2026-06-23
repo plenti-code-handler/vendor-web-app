@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { toast } from "sonner";
@@ -8,16 +8,16 @@ import AuthPasswordField from "../../fields/AuthPasswordField";
 import { useRouter } from "next/navigation";
 import { baseUrl } from "../../../utility/BaseURL";
 import BackButton from "./BackButton";
+import { OTPInput } from "input-otp";
 
 const ForgotPasswordContent = ({ refreshState }) => {
     const [step, setStep] = useState("email");
     const [loading, setLoading] = useState(false);
     const [email, setEmail] = useState("");
     const [token, setToken] = useState("");
-    const [otp, setOtp] = useState(new Array(6).fill(""));
+    const [otp, setOtp] = useState("");
     const [mounted, setMounted] = useState(false);
     const router = useRouter();
-    const otpRefs = useRef([]);
 
     useEffect(() => {
         setMounted(true);
@@ -51,12 +51,11 @@ const ForgotPasswordContent = ({ refreshState }) => {
     };
 
     const handleVerifyOtp = async () => {
-        const formateOTP = otp.join("");
-        if (formateOTP.length === 6) {
+        if (otp.length === 6) {
             setLoading(true);
             try {
                 const response = await axios.post(
-                    `${baseUrl}/v1/vendor/me/email/verify-otp?email=${email}&otp=${formateOTP}`
+                    `${baseUrl}/v1/vendor/me/email/verify-otp?email=${email}&otp=${otp}`
                 );
                 setToken(response.data.access_token);
                 setStep("password");
@@ -92,16 +91,6 @@ const ForgotPasswordContent = ({ refreshState }) => {
             toast.error("Failed to reset password.");
         } finally {
             setLoading(false);
-        }
-    };
-
-    const handleOtpChange = (idx, value) => {
-        if (!mounted) return;
-        const newOtp = [...otp];
-        newOtp[idx] = value.replace(/\D/, "");
-        setOtp(newOtp);
-        if (value && idx < 5 && otpRefs.current[idx + 1]) {
-            otpRefs.current[idx + 1].focus();
         }
     };
 
@@ -141,18 +130,35 @@ const ForgotPasswordContent = ({ refreshState }) => {
             <div className="flex flex-col w-full max-w-md space-y-4">
                 <p className="text-black font-semibold text-[28px]">Verify OTP</p>
                 <p className="text-sm text-[#7E8299]">Enter the 6-digit code sent to {email}</p>
-                <div className="flex justify-center space-x-2">
-                    {otp.map((digit, idx) => (
-                        <input
-                            key={idx}
-                            type="text"
-                            maxLength={1}
-                            value={digit}
-                            ref={(el) => (otpRefs.current[idx] = el)}
-                            onChange={(e) => handleOtpChange(idx, e.target.value)}
-                            className="w-10 h-12 text-center border border-gray-300 rounded text-xl focus:ring-2 focus:ring-[#5F22D9] focus:border-transparent"
-                        />
-                    ))}
+                <div className="flex justify-center py-1">
+                    <OTPInput
+                        maxLength={6}
+                        value={otp}
+                        onChange={setOtp}
+                        containerClassName="flex items-center gap-2.5"
+                        render={({ slots }) => (
+                            <>
+                                {slots.map((slot, idx) => (
+                                    <div
+                                        key={idx}
+                                        className={`relative flex h-12 w-11 items-center justify-center rounded-xl border bg-white text-lg font-semibold text-[#181C32] shadow-sm transition-all duration-200
+                                            ${slot.isActive
+                                                ? "border-[#5F22D9] ring-2 ring-[#5F22D9]/20 shadow-md shadow-[#5F22D9]/10"
+                                                : slot.char
+                                                    ? "border-[#5F22D9]/35 bg-[#F8F5FF]"
+                                                    : "border-gray-200 hover:border-gray-300"}`}
+                                    >
+                                        {slot.char}
+                                        {slot.hasFakeCaret && (
+                                            <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                                                <div className="h-5 w-px animate-pulse bg-[#5F22D9]" />
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+                            </>
+                        )}
+                    />
                 </div>
                 <button
                     onClick={handleVerifyOtp}
