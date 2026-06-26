@@ -21,6 +21,12 @@ const VARIANTS = {
     iconWrap: "bg-red-50 text-red-600 ring-red-100",
     button: "bg-red-600 hover:bg-red-700 shadow-red-600/25",
   },
+  confirm: {
+    title: "Are you sure?",
+    icon: ExclamationCircleIcon,
+    iconWrap: "bg-amber-50 text-amber-600 ring-amber-100",
+    button: "bg-red-600 hover:bg-red-700 shadow-red-600/25",
+  },
 };
 
 const StatusResultModal = ({
@@ -29,6 +35,10 @@ const StatusResultModal = ({
   variant = "success",
   title,
   message = "",
+  onConfirm,
+  confirmLabel = "Delete",
+  cancelLabel = "Cancel",
+  confirmLoading = false,
 }) => {
   useBackToClose(open, onClose);
 
@@ -71,13 +81,34 @@ const StatusResultModal = ({
             ) : null}
           </div>
 
-          <button
-            type="button"
-            onClick={onClose}
-            className={`mt-6 inline-flex w-full items-center justify-center rounded-xl px-4 py-2.5 text-sm font-semibold text-white shadow-md transition ${config.button}`}
-          >
-            OK
-          </button>
+          {variant === "confirm" && onConfirm ? (
+            <div className="mt-6 flex gap-3">
+              <button
+                type="button"
+                onClick={onClose}
+                disabled={confirmLoading}
+                className="inline-flex flex-1 items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:opacity-60"
+              >
+                {cancelLabel}
+              </button>
+              <button
+                type="button"
+                onClick={onConfirm}
+                disabled={confirmLoading}
+                className={`inline-flex flex-1 items-center justify-center rounded-xl px-4 py-2.5 text-sm font-semibold text-white shadow-md transition disabled:opacity-60 ${config.button}`}
+              >
+                {confirmLoading ? "Deleting..." : confirmLabel}
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={onClose}
+              className={`mt-6 inline-flex w-full items-center justify-center rounded-xl px-4 py-2.5 text-sm font-semibold text-white shadow-md transition ${config.button}`}
+            >
+              OK
+            </button>
+          )}
         </DialogPanel>
       </div>
     </Dialog>
