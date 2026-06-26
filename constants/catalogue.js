@@ -4,7 +4,8 @@ export const catalogue_limits = {
         vdr_20260422163443_MAK: 15, 
         vdr_20260517202530_DLQ: 15, 
         vdr_20260522201007_YDM: 15, 
-        vdr_20260209181215_FBR: 15
+        vdr_20260209181215_FBR: 15, 
+        vdr_20260612151323_XHZ: 15
 
     },
     BAKED_GOODS: {
