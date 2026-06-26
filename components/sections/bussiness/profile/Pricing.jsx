@@ -6,11 +6,12 @@ import { fetchCatalogue, clearCatalogueError } from '../../../../redux/slices/ca
 import { toast } from 'sonner';
 import axiosClient from '../../../../AxiosClient';
 import { ALL_ITEM_TYPES, ITEM_TYPE_DISPLAY_NAMES } from '../../../../constants/itemTypes';
-import { ArrowPathIcon, SparklesIcon, CurrencyRupeeIcon, PencilIcon, ClockIcon } from '@heroicons/react/24/outline';
+import { ArrowPathIcon, SparklesIcon, CurrencyRupeeIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import PricingInfo from "./PricingInfo";
 import SecondaryButton from "../../../buttons/SecondaryButton";
 import PrimaryButton from "../../../buttons/PrimaryButton";
 import AddPricingModal from "../../../modals/AddPricingModal";
+import StatusResultModal from "../../../modals/StatusResultModal";
 import {
   entryKey,
   getEntriesForItemType,
@@ -38,6 +39,8 @@ const Pricing = () => {
   const [pricingModalOpen, setPricingModalOpen] = useState(false);
   const [pricingModalItemType, setPricingModalItemType] = useState(null);
   const [pricingModalEditEntry, setPricingModalEditEntry] = useState(null);
+  const [deleteConfirm, setDeleteConfirm] = useState({ open: false, entry: null });
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   const bagSizes = ['SMALL', 'MEDIUM', 'LARGE'];
 
@@ -99,6 +102,32 @@ const Pricing = () => {
       toast.error(err?.response?.data?.detail || 'Submission failed');
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleDeletePricing = async () => {
+    const entry = deleteConfirm.entry;
+    if (!entry) return;
+
+    setDeleteLoading(true);
+    try {
+      const response = await axiosClient.delete('/v1/vendor/catalogue/delete', {
+        params: {
+          pricing_id: entry.id,
+          item_type: entry.item_type,
+        },
+      });
+      if (response.status === 200) {
+        toast.success(response.data?.message || 'Pricing deleted successfully');
+        setDeleteConfirm({ open: false, entry: null });
+        dispatch(fetchCatalogue());
+      } else {
+        toast.error('Failed to delete pricing');
+      }
+    } catch (err) {
+      toast.error(err?.response?.data?.detail || 'Failed to delete pricing');
+    } finally {
+      setDeleteLoading(false);
     }
   };
 
@@ -212,6 +241,16 @@ const Pricing = () => {
                                 >
                                   <PencilIcon className="w-3 h-3 cursor-pointer" />
                                 </button>
+                                {!isDefault && (
+                                  <button
+                                    type="button"
+                                    onClick={() => setDeleteConfirm({ open: true, entry })}
+                                    className="p-0.5 rounded hover:bg-red-100"
+                                    aria-label="Delete pricing"
+                                  >
+                                    <TrashIcon className="w-3 h-3 cursor-pointer text-red-600" />
+                                  </button>
+                                )}
                               </div>
                               {pendingRequests[key] && <div className="text-[10px] text-center text-indigo-600">Pending: ₹{pendingRequests[key]}</div>}
                             </th>
@@ -291,6 +330,18 @@ const Pricing = () => {
           setPricingModalOpen(false);
           setPricingModalEditEntry(null);
         }}
+      />
+
+      <StatusResultModal
+        open={deleteConfirm.open}
+        onClose={() => !deleteLoading && setDeleteConfirm({ open: false, entry: null })}
+        variant="confirm"
+        title="Are you sure you want to delete?"
+        message="Once the pricing is deleted, this cannot be undone."
+        onConfirm={handleDeletePricing}
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        confirmLoading={deleteLoading}
       />
     </div>
   );
