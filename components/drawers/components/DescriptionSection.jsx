@@ -7,6 +7,14 @@ const MAX_DESCRIPTION_LENGTH = 255;
 const MOBILE_FONT_SIZE = "16px";
 const MENU_PORTAL_Z_INDEX = 10000000;
 
+function isIOSDevice() {
+  if (typeof navigator === "undefined") return false;
+  return (
+    /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)
+  );
+}
+
 const selectStyles = {
   control: (base, state) => ({
     ...base,
@@ -65,6 +73,7 @@ const selectStyles = {
     borderRadius: "0.5rem",
     overflow: "hidden",
     boxShadow: "0 10px 25px rgba(0, 0, 0, 0.12)",
+    zIndex: 50,
   }),
   menuPortal: (base) => ({
     ...base,
@@ -94,10 +103,12 @@ const DescriptionSection = ({
   pricingId = "default",
 }) => {
   const [menuPortalTarget, setMenuPortalTarget] = useState(null);
+  const [isIOS, setIsIOS] = useState(false);
   const allowCustomDescription = pricingId === "default" || pricingId == null;
 
   useEffect(() => {
     setMenuPortalTarget(document.body);
+    setIsIOS(isIOSDevice());
   }, []);
 
   const options = useMemo(
@@ -128,12 +139,14 @@ const DescriptionSection = ({
     isSearchable: true,
     blurInputOnSelect: true,
     closeMenuOnSelect: true,
-    menuShouldScrollIntoView: true,
-    menuShouldBlockScroll: true,
+    // iOS: inline absolute menu avoids fixed+portal jump when keyboard opens.
+    // Android/desktop: portal to body so menu isn't clipped by the drawer.
+    menuPortalTarget: isIOS ? null : menuPortalTarget,
+    menuPosition: isIOS ? "absolute" : "fixed",
+    menuShouldScrollIntoView: !isIOS,
+    menuShouldBlockScroll: !isIOS,
     menuPlacement: "auto",
     maxMenuHeight: 240,
-    menuPortalTarget,
-    menuPosition: "fixed",
     inputProps: {
       autoComplete: "off",
       autoCorrect: "off",
@@ -153,37 +166,41 @@ const DescriptionSection = ({
         <h3 className="text-lg font-semibold text-gray-900">Item Description</h3>
         <InfoIcon content="Describe your item to attract customers" />
       </div>
-      <div className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm hover:shadow-md transition-shadow duration-200">
+      <div className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm hover:shadow-md transition-shadow duration-200 overflow-visible">
         {availableDescriptions.length === 0 && !allowCustomDescription ? (
           <p className="text-sm text-gray-600">
             No descriptions available for this pricing. Add descriptions in Pricing
             Management first.
           </p>
-        ) : allowCustomDescription ? (
-          <>
-            <CreatableSelect
-              {...commonProps}
-              onCreateOption={handleCreate}
-              formatCreateLabel={(inputValue) => `Add "${inputValue}"`}
-              isValidNewOption={(inputValue) => {
-                const trimmed = inputValue.trim();
-                return (
-                  trimmed.length > 0 &&
-                  trimmed.length <= MAX_DESCRIPTION_LENGTH &&
-                  !availableDescriptions.some(
-                    (desc) => desc.toLowerCase() === trimmed.toLowerCase()
-                  )
-                );
-              }}
-            />
-            {description && (
-              <p className="mt-2 text-xs text-gray-500">
-                {description.length}/{MAX_DESCRIPTION_LENGTH} characters
-              </p>
-            )}
-          </>
         ) : (
-          <Select {...commonProps} />
+          <div className="relative z-20">
+            {allowCustomDescription ? (
+              <>
+                <CreatableSelect
+                  {...commonProps}
+                  onCreateOption={handleCreate}
+                  formatCreateLabel={(inputValue) => `Add "${inputValue}"`}
+                  isValidNewOption={(inputValue) => {
+                    const trimmed = inputValue.trim();
+                    return (
+                      trimmed.length > 0 &&
+                      trimmed.length <= MAX_DESCRIPTION_LENGTH &&
+                      !availableDescriptions.some(
+                        (desc) => desc.toLowerCase() === trimmed.toLowerCase()
+                      )
+                    );
+                  }}
+                />
+                {description && (
+                  <p className="mt-2 text-xs text-gray-500">
+                    {description.length}/{MAX_DESCRIPTION_LENGTH} characters
+                  </p>
+                )}
+              </>
+            ) : (
+              <Select {...commonProps} />
+            )}
+          </div>
         )}
       </div>
     </div>

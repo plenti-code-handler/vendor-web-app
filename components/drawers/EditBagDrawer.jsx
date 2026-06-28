@@ -1,9 +1,4 @@
 "use client";
-import {
-  Dialog,
-  DialogBackdrop,
-  DialogPanel,
-} from "@headlessui/react";
 import { useDispatch, useSelector } from "react-redux";
 import ItemTypeFilter from "../dropdowns/ItemTypeFilter";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -24,6 +19,7 @@ import {
 } from '../../utility/bagDrawerUtils';
 
 // Import reusable components
+import BagBottomSheet from './components/BagBottomSheet';
 import DrawerHeader from './components/DrawerHeader';
 import AllergensSection from './components/AllergensSection';
 import DescriptionSection from './components/DescriptionSection';
@@ -212,114 +208,99 @@ const EditBagDrawer = () => {
 
   return (
     <>
-    <Dialog open={open} onClose={handleClose} className="relative z-999999">
-      <DialogBackdrop
-        transition
-        className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity duration-500 ease-in-out data-[closed]:opacity-0"
-      />
-      <div className="fixed inset-0 overflow-hidden rounded-md">
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-4">
-            <DialogPanel
-              transition
-              className="pointer-events-auto relative lg:w-screen max-w-[29rem] transform transition duration-500 ease-in-out data-[closed]:translate-x-full sm:duration-700"
+      <BagBottomSheet open={open} onClose={handleClose}>
+        <div className="shrink-0 px-4">
+          <DrawerHeader
+            title="Edit Item"
+            subtitle={bagToEdit?.id ? "Update your food item details" : "Create a new item based on this template"}
+            onClose={handleClose}
+          />
+        </div>
+
+        <div className="flex-1 min-h-0 overflow-y-auto px-4 pb-6 bg-gradient-to-br from-gray-50 to-white">
+          {/* Item Type Section — read-only in edit drawer */}
+          <fieldset
+            disabled
+            className="mb-8 border-0 p-0 m-0 min-w-0 opacity-60 pointer-events-none"
+          >
+            <div className="flex items-center gap-2 mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">Choose Item Type</h3>
+              <InfoIcon content="Select the category of food item you're editing" />
+            </div>
+            <div className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm">
+              <ItemTypeFilter
+                selectedFilter={selectedBag}
+                onFilterChange={setSelectedBag}
+                selectedPricingId={selectedPricingId}
+                onPricingChange={handlePricingChange}
+              />
+            </div>
+          </fieldset>
+
+          <AllergensSection
+            selectedAllergens={selectedAllergens}
+            setSelectedAllergens={setSelectedAllergens}
+          />
+
+          <TimingSection
+            windowStartTime={windowStartTime}
+            windowEndTime={windowEndTime}
+            bestBeforeTime={bestBeforeTime}
+            handleStartTimeChange={handleStartTimeChange}
+            windowDuration={windowDuration}
+            setWindowDuration={setWindowDuration}
+            bestBeforeDuration={bestBeforeDuration}
+            setBestBeforeDuration={setBestBeforeDuration}
+          />
+
+          <fieldset
+            disabled
+            className="border-0 p-0 m-0 min-w-0 opacity-60 pointer-events-none"
+          >
+            <DescriptionSection
+              description={description}
+              setDescription={setDescription}
+              availableDescriptions={descriptionsForDropdown}
+              pricingId={selectedPricingId}
+            />
+          </fieldset>
+
+          <ServingsSection
+            vegServings={vegServings}
+            setVegServings={setVegServings}
+            nonVegServings={nonVegServings}
+            setNonVegServings={setNonVegServings}
+            isEdit={!!bagToEdit?.id}
+          />
+
+          <div className="mt-8 mb-2">
+            <PrimaryButton
+              loading={loading}
+              disabled={availableCategories.length === 0}
+              onClick={handleSubmit}
+              loadingText={bagToEdit?.id ? "Updating Item..." : "Creating Item..."}
+              fullWidth
+              className="w-full"
             >
-              <div className="flex h-full flex-col overflow-y-scroll bg-gradient-to-br from-gray-50 to-white py-6 shadow-2xl">
-                <div className="relative flex-1 px-6">
-                  <DrawerHeader
-                    title="Edit Item"
-                    subtitle={bagToEdit?.id ? "Update your food item details" : "Create a new item based on this template"}
-                    onClose={handleClose}
-                  />
-
-                  {/* Item Type Section — read-only in edit drawer */}
-                  <fieldset
-                    disabled
-                    className="mb-8 border-0 p-0 m-0 min-w-0 opacity-60 pointer-events-none"
-                  >
-                    <div className="flex items-center gap-2 mb-4">
-                      <h3 className="text-lg font-semibold text-gray-900">Choose Item Type</h3>
-                      <InfoIcon content="Select the category of food item you're editing" />
-                    </div>
-                    <div className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm">
-                      <ItemTypeFilter
-                        selectedFilter={selectedBag}
-                        onFilterChange={setSelectedBag}
-                        selectedPricingId={selectedPricingId}
-                        onPricingChange={handlePricingChange}
-                      />
-                    </div>
-                  </fieldset>
-
-                  <AllergensSection
-                    selectedAllergens={selectedAllergens}
-                    setSelectedAllergens={setSelectedAllergens}
-                  />
-
-                  <TimingSection
-                    windowStartTime={windowStartTime}
-                    windowEndTime={windowEndTime}
-                    bestBeforeTime={bestBeforeTime}
-                    handleStartTimeChange={handleStartTimeChange}
-                    windowDuration={windowDuration}
-                    setWindowDuration={setWindowDuration}
-                    bestBeforeDuration={bestBeforeDuration}
-                    setBestBeforeDuration={setBestBeforeDuration}
-                  />
-
-                  <fieldset
-                    disabled
-                    className="border-0 p-0 m-0 min-w-0 opacity-60 pointer-events-none"
-                  >
-                    <DescriptionSection
-                      description={description}
-                      setDescription={setDescription}
-                      availableDescriptions={descriptionsForDropdown}
-                      pricingId={selectedPricingId}
-                    />
-                  </fieldset>
-
-                  <ServingsSection
-                    vegServings={vegServings}
-                    setVegServings={setVegServings}
-                    nonVegServings={nonVegServings}
-                    setNonVegServings={setNonVegServings}
-                    isEdit={!!bagToEdit?.id}
-                  />
-
-                  <div className="mt-8 mb-6">
-                    <PrimaryButton
-                      loading={loading}
-                      disabled={availableCategories.length === 0}
-                      onClick={handleSubmit}
-                      loadingText={bagToEdit?.id ? "Updating Item..." : "Creating Item..."}
-                      fullWidth
-                      className="w-full"
-                    >
-                      {bagToEdit?.id ? "Update Item" : "Create Item"}
-                    </PrimaryButton>
-                    {availableCategories.length === 0 && (
-                      <p className="text-center text-sm text-gray-500 mt-3">
-                        No item types available. Please contact support.
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </DialogPanel>
+              {bagToEdit?.id ? "Update Item" : "Create Item"}
+            </PrimaryButton>
+            {availableCategories.length === 0 && (
+              <p className="text-center text-sm text-gray-500 mt-3">
+                No item types available. Please contact support.
+              </p>
+            )}
           </div>
         </div>
-      </div>
-    </Dialog>
-    <StatusResultModal
-      open={showHoursWarning}
-      onClose={() => setShowHoursWarning(false)}
-      variant="error"
-      title="Outside store hours"
-      message={PICKUP_OUTSIDE_HOURS_MESSAGE}
-      className="relative z-[10000000]"
-    />
-  </>
+      </BagBottomSheet>
+
+      <StatusResultModal
+        open={showHoursWarning}
+        onClose={() => setShowHoursWarning(false)}
+        variant="error"
+        title="Outside store hours"
+        message={PICKUP_OUTSIDE_HOURS_MESSAGE}
+      />
+    </>
   );
 };
 

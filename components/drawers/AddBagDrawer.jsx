@@ -1,12 +1,7 @@
 "use client";
-import {
-  Dialog,
-  DialogBackdrop,
-  DialogPanel,
-} from "@headlessui/react";
-import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
+import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import { setOpenDrawer } from "../../redux/slices/addBagSlice";
 import ItemTypeFilter from "../dropdowns/ItemTypeFilter";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -32,6 +27,7 @@ import {
 } from '../../utility/bagDrawerUtils';
 
 // Import reusable components
+import BagBottomSheet from './components/BagBottomSheet';
 import DrawerHeader from './components/DrawerHeader';
 import AllergensSection from './components/AllergensSection';
 import DescriptionSection from './components/DescriptionSection';
@@ -288,111 +284,96 @@ const AddBagDrawer = () => {
 
   return (
     <>
-    <Dialog open={open} onClose={handleClose} className="relative z-999999">
-      <DialogBackdrop
-        transition
-        className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity duration-500 ease-in-out data-[closed]:opacity-0"
-      />
-      <div className="fixed inset-0 overflow-hidden rounded-md">
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-4">
-            <DialogPanel
-              transition
-              className="pointer-events-auto relative lg:w-screen max-w-[29rem] transform transition duration-500 ease-in-out data-[closed]:translate-x-full sm:duration-700"
+      <BagBottomSheet open={open} onClose={handleClose}>
+        <div className="shrink-0 px-4">
+          <DrawerHeader
+            title="Add New Item"
+            subtitle="Create a new food item for your customers"
+            onClose={handleClose}
+          />
+        </div>
+
+        <div className="flex-1 min-h-0 overflow-y-auto px-4 pb-6 bg-gradient-to-br from-gray-50 to-white">
+          <DineinCouponBanner
+            activeCoupon={activeDineinCoupon}
+            onEdit={handleEditDineinCoupons}
+          />
+
+          {/* Item Type Section */}
+          <div className="mb-8">
+            <div className="flex items-center gap-2 mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">Choose Item Type</h3>
+              <InfoIcon content="Select the category of food item you're creating" />
+            </div>
+            <div className="bg-white rounded-xl border border-gray-100 p-4">
+              <ItemTypeFilter
+                selectedFilter={selectedBag}
+                onFilterChange={setSelectedBag}
+                selectedPricingId={selectedPricingId}
+                onPricingChange={handlePricingChange}
+              />
+            </div>
+          </div>
+
+          <AllergensSection
+            selectedAllergens={selectedAllergens}
+            setSelectedAllergens={setSelectedAllergens}
+          />
+
+          <TimingSection
+            windowStartTime={windowStartTime}
+            windowEndTime={windowEndTime}
+            bestBeforeTime={bestBeforeTime}
+            handleStartTimeChange={handleStartTimeChange}
+            windowDuration={windowDuration}
+            setWindowDuration={setWindowDuration}
+            bestBeforeDuration={bestBeforeDuration}
+            setBestBeforeDuration={setBestBeforeDuration}
+          />
+
+          <DescriptionSection
+            description={description}
+            setDescription={setDescription}
+            availableDescriptions={descriptionsForDropdown}
+            pricingId={selectedPricingId}
+          />
+
+          <ServingsSection
+            vegServings={vegServings}
+            setVegServings={setVegServings}
+            nonVegServings={nonVegServings}
+            setNonVegServings={setNonVegServings}
+            isEdit={false}
+          />
+
+          <div className="mt-8 mb-2">
+            <PrimaryButton
+              loading={loading}
+              disabled={availableCategories.length === 0}
+              onClick={handleSubmitBag}
+              loadingText="Creating Item..."
+              fullWidth
+              className="w-full"
             >
-              <div className="flex h-full flex-col overflow-y-scroll bg-gradient-to-br from-gray-50 to-white py-6 shadow-2xl">
-                <div className="relative flex-1 px-6">
-                  <DrawerHeader
-                    title="Add New Item"
-                    subtitle="Create a new food item for your customers"
-                    onClose={handleClose}
-                  />
-
-                  <DineinCouponBanner
-                    activeCoupon={activeDineinCoupon}
-                    onEdit={handleEditDineinCoupons}
-                  />
-
-                  {/* Item Type Section */}
-                  <div className="mb-8">
-                    <div className="flex items-center gap-2 mb-4">
-                      <h3 className="text-lg font-semibold text-gray-900">Choose Item Type</h3>
-                      <InfoIcon content="Select the category of food item you're creating" />
-                    </div>
-                    <div className="bg-white rounded-xl border border-gray-100 p-4">
-                      <ItemTypeFilter
-                        selectedFilter={selectedBag}
-                        onFilterChange={setSelectedBag}
-                        selectedPricingId={selectedPricingId}
-                        onPricingChange={handlePricingChange}
-                      />
-                    </div>
-                  </div>
-
-                  <AllergensSection
-                    selectedAllergens={selectedAllergens}
-                    setSelectedAllergens={setSelectedAllergens}
-                  />
-
-                  <TimingSection
-                    windowStartTime={windowStartTime}
-                    windowEndTime={windowEndTime}
-                    bestBeforeTime={bestBeforeTime}
-                    handleStartTimeChange={handleStartTimeChange}
-                    windowDuration={windowDuration}
-                    setWindowDuration={setWindowDuration}
-                    bestBeforeDuration={bestBeforeDuration}
-                    setBestBeforeDuration={setBestBeforeDuration}
-                  />
-
-                  <DescriptionSection
-                    description={description}
-                    setDescription={setDescription}
-                    availableDescriptions={descriptionsForDropdown}
-                    pricingId={selectedPricingId}
-                  />
-
-                  <ServingsSection
-                    vegServings={vegServings}
-                    setVegServings={setVegServings}
-                    nonVegServings={nonVegServings}
-                    setNonVegServings={setNonVegServings}
-                    isEdit={false}
-                  />
-
-                  <div className="mt-8 mb-6">
-                    <PrimaryButton
-                      loading={loading}
-                      disabled={availableCategories.length === 0}
-                      onClick={handleSubmitBag}
-                      loadingText="Creating Item..."
-                      fullWidth
-                      className="w-full"
-                    >
-                      Create Item
-                    </PrimaryButton>
-                    {availableCategories.length === 0 && (
-                      <p className="text-center text-sm text-gray-500 mt-3">
-                        No item types available. Please contact support.
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </DialogPanel>
+              Create Item
+            </PrimaryButton>
+            {availableCategories.length === 0 && (
+              <p className="text-center text-sm text-gray-500 mt-3">
+                No item types available. Please contact support.
+              </p>
+            )}
           </div>
         </div>
-      </div>
-    </Dialog>
-    <StatusResultModal
-      open={showHoursWarning}
-      onClose={() => setShowHoursWarning(false)}
-      variant="confirm"
-      title="Outside store hours"
-      message={PICKUP_OUTSIDE_HOURS_MESSAGE}
-      className="relative z-[10000000]"
-    />
-  </>
+      </BagBottomSheet>
+
+      <StatusResultModal
+        open={showHoursWarning}
+        onClose={() => setShowHoursWarning(false)}
+        variant="confirm"
+        title="Outside store hours"
+        message={PICKUP_OUTSIDE_HOURS_MESSAGE}
+      />
+    </>
   );
 };
 
