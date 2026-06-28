@@ -167,11 +167,11 @@ const AddBagDrawer = () => {
     setBestBeforeDuration(60);
   };
 
-  const handleSubmitBag = async () => {
+  const submitBag = async ({ skipHoursCheck = false } = {}) => {
     try {
       setLoading(true);
 
-      if (pickupEndOutsideStoreHours) {
+      if (!skipHoursCheck && pickupEndOutsideStoreHours) {
         setShowHoursWarning(true);
         setLoading(false);
         return;
@@ -226,10 +226,10 @@ const AddBagDrawer = () => {
         "/v1/vendor/item/create",
         newItem
       );
-      console.log("bag creation response ->", response);
       if (response.status === 200) {
         toast.success("Item Created Successfully!");
         resetForm();
+        setShowHoursWarning(false);
         dispatch(setOpenDrawer(false));
         dispatch(fetchAllBags({ active: true }));
       }
@@ -258,6 +258,10 @@ const AddBagDrawer = () => {
       setLoading(false);
     }
   };
+
+  const handleSubmitBag = () => submitBag();
+
+  const handleConfirmOutsideHours = () => submitBag({ skipHoursCheck: true });
 
   // Set window start time to 10 minutes from now when drawer opens
   useEffect(() => {
@@ -368,10 +372,16 @@ const AddBagDrawer = () => {
 
       <StatusResultModal
         open={showHoursWarning}
-        onClose={() => setShowHoursWarning(false)}
+        onClose={() => !loading && setShowHoursWarning(false)}
         variant="confirm"
         title="Outside store hours"
         message={PICKUP_OUTSIDE_HOURS_MESSAGE}
+        onConfirm={handleConfirmOutsideHours}
+        confirmLabel="Continue"
+        cancelLabel="Cancel"
+        confirmLoading={loading}
+        enableBackToClose={false}
+        className="relative z-[10000000]"
       />
     </>
   );

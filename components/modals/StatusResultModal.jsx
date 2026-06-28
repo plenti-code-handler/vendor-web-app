@@ -40,8 +40,9 @@ const StatusResultModal = ({
   cancelLabel = "Cancel",
   confirmLoading = false,
   className = "relative z-[60]",
+  enableBackToClose = true,
 }) => {
-  useBackToClose(open, onClose);
+  useBackToClose(enableBackToClose ? open : false, onClose);
 
   const config = VARIANTS[variant] ?? VARIANTS.success;
   const Icon = config.icon;
@@ -98,7 +99,7 @@ const StatusResultModal = ({
                 disabled={confirmLoading}
                 className={`inline-flex flex-1 items-center justify-center rounded-xl px-4 py-2.5 text-sm font-semibold text-white shadow-md transition disabled:opacity-60 ${config.button}`}
               >
-                {confirmLoading ? "Deleting..." : confirmLabel}
+                {confirmLoading ? "Loading..." : confirmLabel}
               </button>
             </div>
           ) : (
