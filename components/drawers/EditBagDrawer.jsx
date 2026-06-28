@@ -111,11 +111,11 @@ const EditBagDrawer = () => {
     setDescription("");
   }, []);
 
-  const handleSubmit = async () => {
+  const submitBag = async ({ skipHoursCheck = false } = {}) => {
     try {
       setLoading(true);
 
-      if (pickupEndOutsideStoreHours) {
+      if (!skipHoursCheck && pickupEndOutsideStoreHours) {
         setShowHoursWarning(true);
         setLoading(false);
         return;
@@ -172,6 +172,7 @@ const EditBagDrawer = () => {
 
         if (response.status === 200) {
           toast.success("Item updated successfully!");
+          setShowHoursWarning(false);
           dispatch(setOpenDrawer(false));
           dispatch(fetchAllBags({ active: true }));
         }
@@ -187,6 +188,7 @@ const EditBagDrawer = () => {
 
         if (response.status === 200) {
           toast.success("Item created successfully!");
+          setShowHoursWarning(false);
           dispatch(setOpenDrawer(false));
           dispatch(fetchAllBags({ active: true }));
         }
@@ -199,6 +201,10 @@ const EditBagDrawer = () => {
       setLoading(false);
     }
   };
+
+  const handleSubmit = () => submitBag();
+
+  const handleConfirmOutsideHours = () => submitBag({ skipHoursCheck: true });
 
   const handleClose = useCallback(() => {
     dispatch(setOpenDrawer(false));
@@ -295,10 +301,16 @@ const EditBagDrawer = () => {
 
       <StatusResultModal
         open={showHoursWarning}
-        onClose={() => setShowHoursWarning(false)}
-        variant="error"
+        onClose={() => !loading && setShowHoursWarning(false)}
+        variant="confirm"
         title="Outside store hours"
         message={PICKUP_OUTSIDE_HOURS_MESSAGE}
+        onConfirm={handleConfirmOutsideHours}
+        confirmLabel="Continue"
+        cancelLabel="Cancel"
+        confirmLoading={loading}
+        enableBackToClose={false}
+        className="relative z-[10000000]"
       />
     </>
   );
