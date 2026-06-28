@@ -1,3 +1,8 @@
+import {
+  isUnixInstantWithinOpeningWindow,
+  STORE_HOURS_TIMEZONE,
+} from "./openingHoursTimeOptions";
+
 export const ALLERGENS_OPTIONS = [
   { value: "RED_MEAT", label: "Red Meat", emoji: "🥩" },
   { value: "SUGAR", label: "Sugar", emoji: "🍬" },
@@ -105,7 +110,6 @@ export const getResetFormValues = () => ({
   windowStartTime: new Date(),
   windowEndTime: new Date(),
   bestBeforeTime: new Date(),
-  showCustomDescription: false,
   currentStep: 1,
 });
 
@@ -122,6 +126,21 @@ export const getDescriptionsForDropdown = (selectedPricingId, selectedBag, prici
   if (Array.isArray(list) && list.length > 0) return list;
   return availableDescriptions ?? [];
 };
+
+export const PICKUP_OUTSIDE_HOURS_MESSAGE =
+  "Your pickup window ends outside your operational hours. Adjust the pickup window time or duration so the end time falls within your operational hours.";
+
+export function isPickupEndOutsideStoreHours(windowEndTime, openingHours) {
+  if (!openingHours?.closeTime?.trim()) return false;
+  if (!(windowEndTime instanceof Date) || Number.isNaN(windowEndTime.getTime())) return false;
+  const unixSec = Math.floor(windowEndTime.getTime() / 1000);
+  return !isUnixInstantWithinOpeningWindow(
+    unixSec,
+    openingHours.openTime,
+    openingHours.closeTime,
+    STORE_HOURS_TIMEZONE
+  );
+}
 
 // Re-export catalogue helper for backward compatibility (implementation in catalogueUtils.js)
 export { getAvailableCategories } from './catalogueUtils';
