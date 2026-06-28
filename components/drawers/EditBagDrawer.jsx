@@ -19,6 +19,8 @@ import {
   validateTimeConstraints,
   getAvailableCategories,
   getDescriptionsForDropdown,
+  isPickupEndOutsideStoreHours,
+  PICKUP_OUTSIDE_HOURS_MESSAGE,
 } from '../../utility/bagDrawerUtils';
 
 // Import reusable components
@@ -28,6 +30,7 @@ import DescriptionSection from './components/DescriptionSection';
 import TimingSection from './components/TimingSection';
 import ServingsSection from './components/ServingsSection';
 import PrimaryButton from '../buttons/PrimaryButton';
+import StatusResultModal from '../modals/StatusResultModal';
 
 const EditBagDrawer = () => {
   const [selectedBag, setSelectedBag] = useState();
@@ -41,19 +44,12 @@ const EditBagDrawer = () => {
   const [windowStartTime, setWindowStartTime] = useState(new Date());
   const [windowDuration, setWindowDuration] = useState(60); // Add this
   const [bestBeforeDuration, setBestBeforeDuration] = useState(60); // Add this
-  const [showCustomDescription, setShowCustomDescription] = useState(false);
+  const [showHoursWarning, setShowHoursWarning] = useState(false);
   const { bagToEdit, templateItem } = useSelector((state) => state.editBag);
   const open = useSelector((state) => state.editBag.drawerOpen);
   const pricing = useSelector((state) => state.catalogue.pricing);
   const vendorData = useSelector(selectVendorData);
   const availableDescriptions = vendorData?.item_descriptions || [];
-
-  // When pricing is not default, only allow selecting from dropdown (no custom description)
-  useEffect(() => {
-    if (selectedPricingId !== "default" && showCustomDescription) {
-      setShowCustomDescription(false);
-    }
-  }, [selectedPricingId, showCustomDescription]);
 
   const descriptionsForDropdown = useMemo(
     () => getDescriptionsForDropdown(selectedPricingId, selectedBag, pricing, availableDescriptions),
@@ -63,9 +59,12 @@ const EditBagDrawer = () => {
   // Calculate end times from durations
   const windowEndTime = new Date(windowStartTime.getTime() + windowDuration * 60000);
   const bestBeforeTime = new Date(windowEndTime.getTime() + bestBeforeDuration * 60000);
+  const pickupEndOutsideStoreHours = useMemo(
+    () => isPickupEndOutsideStoreHours(windowEndTime, vendorData?.opening_hours),
+    [windowEndTime, vendorData?.opening_hours]
+  );
 
   useEffect(() => {
-    const descriptions = vendorData?.item_descriptions || [];
     if (bagToEdit) {
       setSelectedAllergens(bagToEdit.allergens || []);
       setSelectedBag(bagToEdit.item_type);
@@ -87,7 +86,6 @@ const EditBagDrawer = () => {
 
       setWindowDuration(calculatedWindowDuration > 0 ? calculatedWindowDuration : 60);
       setBestBeforeDuration(calculatedBestBeforeDuration > 0 ? calculatedBestBeforeDuration : 60);
-      setShowCustomDescription(false);
     } else if (templateItem) {
       // Logic for creating from template
       setSelectedAllergens(templateItem.allergens || []);
@@ -102,12 +100,6 @@ const EditBagDrawer = () => {
       setWindowStartTime(tenMinutesFromNow);
       setWindowDuration(60);
       setBestBeforeDuration(60);
-
-      if (templateItem.description && !descriptions.includes(templateItem.description)) {
-        setShowCustomDescription(true);
-      } else {
-        setShowCustomDescription(false);
-      }
     }
   }, [bagToEdit, templateItem]);
 
@@ -126,6 +118,12 @@ const EditBagDrawer = () => {
   const handleSubmit = async () => {
     try {
       setLoading(true);
+
+      if (pickupEndOutsideStoreHours) {
+        setShowHoursWarning(true);
+        setLoading(false);
+        return;
+      }
 
       const timeError = validateTimeConstraints(
         windowStartTime,
@@ -213,6 +211,7 @@ const EditBagDrawer = () => {
   useBackToClose(open, handleClose);
 
   return (
+    <>
     <Dialog open={open} onClose={handleClose} className="relative z-999999">
       <DialogBackdrop
         transition
@@ -266,7 +265,6 @@ const EditBagDrawer = () => {
                     setWindowDuration={setWindowDuration}
                     bestBeforeDuration={bestBeforeDuration}
                     setBestBeforeDuration={setBestBeforeDuration}
-                    openingHours={vendorData?.opening_hours}
                   />
 
                   <fieldset
@@ -276,8 +274,6 @@ const EditBagDrawer = () => {
                     <DescriptionSection
                       description={description}
                       setDescription={setDescription}
-                      showCustomDescription={showCustomDescription}
-                      setShowCustomDescription={setShowCustomDescription}
                       availableDescriptions={descriptionsForDropdown}
                       pricingId={selectedPricingId}
                     />
@@ -315,6 +311,15 @@ const EditBagDrawer = () => {
         </div>
       </div>
     </Dialog>
+    <StatusResultModal
+      open={showHoursWarning}
+      onClose={() => setShowHoursWarning(false)}
+      variant="error"
+      title="Outside store hours"
+      message={PICKUP_OUTSIDE_HOURS_MESSAGE}
+      className="relative z-[10000000]"
+    />
+  </>
   );
 };
 

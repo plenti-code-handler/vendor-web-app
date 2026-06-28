@@ -25,7 +25,7 @@ const VARIANTS = {
     title: "Are you sure?",
     icon: ExclamationCircleIcon,
     iconWrap: "bg-amber-50 text-amber-600 ring-amber-100",
-    button: "bg-red-600 hover:bg-red-700 shadow-red-600/25",
+    button: "bg-amber-600 hover:bg-amber-700 shadow-amber-600/25",
   },
 };
 
@@ -39,6 +39,7 @@ const StatusResultModal = ({
   confirmLabel = "Delete",
   cancelLabel = "Cancel",
   confirmLoading = false,
+  className = "relative z-[60]",
 }) => {
   useBackToClose(open, onClose);
 
@@ -47,7 +48,7 @@ const StatusResultModal = ({
   const heading = title || config.title;
 
   return (
-    <Dialog open={open} onClose={onClose} className="relative z-[60]">
+    <Dialog open={open} onClose={onClose} className={className}>
       <DialogBackdrop
         transition
         className="fixed inset-0 bg-black/40 transition-opacity duration-300 data-[closed]:opacity-0"

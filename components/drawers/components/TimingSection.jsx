@@ -1,12 +1,8 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import InfoIcon from '../../common/InfoIcon';
-import {
-  isUnixInstantWithinOpeningWindow,
-  STORE_HOURS_TIMEZONE,
-} from '../../../utility/openingHoursTimeOptions';
+import { STORE_HOURS_TIMEZONE } from '../../../utility/openingHoursTimeOptions';
 
 const TimingSection = ({ 
   windowStartTime, 
@@ -17,7 +13,6 @@ const TimingSection = ({
   setWindowDuration,
   bestBeforeDuration,
   setBestBeforeDuration,
-  openingHours,
 }) => {
   const windowDurationOptions = [
     { label: '15 minutes', value: 15 },
@@ -54,17 +49,6 @@ const TimingSection = ({
     windowEndTime instanceof Date && !Number.isNaN(windowEndTime.getTime())
       ? windowEndTime
       : new Date(windowStartTime.getTime() + windowDuration * 60000);
-
-  const pickupEndOutsideStoreHours = useMemo(() => {
-    if (!openingHours?.closeTime?.trim()) return false;
-    const unixSec = Math.floor(pickupWindowEnd.getTime() / 1000);
-    return !isUnixInstantWithinOpeningWindow(
-      unixSec,
-      openingHours.openTime,
-      openingHours.closeTime,
-      STORE_HOURS_TIMEZONE
-    );
-  }, [pickupWindowEnd, openingHours]);
 
   return (
     <div className="mb-8">
@@ -122,23 +106,6 @@ const TimingSection = ({
               </option>
             ))}
           </select>
-          {pickupEndOutsideStoreHours && (
-            <div
-              role="alert"
-              className="mt-3 flex gap-2.5 rounded-xl border border-amber-200 bg-amber-50/90 px-3.5 py-2.5 text-sm text-amber-950 shadow-sm animate-fade-down"
-            >
-              <ExclamationTriangleIcon
-                className="h-5 w-5 shrink-0 text-amber-600"
-                aria-hidden
-              />
-              <p className="leading-snug">
-                <span className="font-semibold">Outside store hours.</span>{" "}
-                Your pickup window ends outside your operational hours.
-                Adjust the pickup window time or duration so the end time falls
-                within your operational hours.
-              </p>
-            </div>
-          )}
           <p className="text-xs text-gray-500 mt-2">
             Window ends at:{" "}
             {pickupWindowEnd.toLocaleString("en-IN", {

@@ -1,19 +1,152 @@
+import React, { useEffect, useMemo, useState } from "react";
+import Select from "react-select";
+import CreatableSelect from "react-select/creatable";
+import InfoIcon from "../../common/InfoIcon";
 
+const MAX_DESCRIPTION_LENGTH = 255;
+const MOBILE_FONT_SIZE = "16px";
+const MENU_PORTAL_Z_INDEX = 10000000;
 
-
-import React from 'react';
-import { Textarea } from "@headlessui/react";
-import InfoIcon from '../../common/InfoIcon';
+const selectStyles = {
+  control: (base, state) => ({
+    ...base,
+    minHeight: "48px",
+    borderColor: state.isFocused ? "#5F22D9" : "#e5e7eb",
+    borderRadius: "0.5rem",
+    boxShadow: state.isFocused ? "0 0 0 2px rgba(95, 34, 217, 0.2)" : "none",
+    WebkitTapHighlightColor: "transparent",
+    touchAction: "manipulation",
+    "&:hover": {
+      borderColor: "#5F22D9",
+    },
+  }),
+  valueContainer: (base) => ({
+    ...base,
+    padding: "8px 12px",
+  }),
+  option: (base, state) => ({
+    ...base,
+    minHeight: "44px",
+    padding: "12px 16px",
+    fontSize: MOBILE_FONT_SIZE,
+    lineHeight: "1.25",
+    whiteSpace: "normal",
+    wordBreak: "break-word",
+    backgroundColor: state.isSelected
+      ? "#5F22D9"
+      : state.isFocused
+        ? "#f3f0ff"
+        : "white",
+    color: state.isSelected ? "white" : "#1f2937",
+    cursor: "pointer",
+    WebkitTapHighlightColor: "transparent",
+  }),
+  placeholder: (base) => ({
+    ...base,
+    color: "#9ca3af",
+    fontSize: MOBILE_FONT_SIZE,
+  }),
+  input: (base) => ({
+    ...base,
+    fontSize: MOBILE_FONT_SIZE,
+    color: "#111827",
+    margin: 0,
+    padding: 0,
+  }),
+  singleValue: (base) => ({
+    ...base,
+    fontSize: MOBILE_FONT_SIZE,
+    color: "#111827",
+    whiteSpace: "normal",
+    wordBreak: "break-word",
+  }),
+  menu: (base) => ({
+    ...base,
+    borderRadius: "0.5rem",
+    overflow: "hidden",
+    boxShadow: "0 10px 25px rgba(0, 0, 0, 0.12)",
+  }),
+  menuPortal: (base) => ({
+    ...base,
+    zIndex: MENU_PORTAL_Z_INDEX,
+  }),
+  menuList: (base) => ({
+    ...base,
+    maxHeight: "min(240px, 40vh)",
+    WebkitOverflowScrolling: "touch",
+  }),
+  clearIndicator: (base) => ({
+    ...base,
+    padding: "8px",
+    cursor: "pointer",
+  }),
+  dropdownIndicator: (base) => ({
+    ...base,
+    padding: "8px",
+    cursor: "pointer",
+  }),
+};
 
 const DescriptionSection = ({
   description,
   setDescription,
-  showCustomDescription,
-  setShowCustomDescription,
   availableDescriptions,
   pricingId = "default",
 }) => {
+  const [menuPortalTarget, setMenuPortalTarget] = useState(null);
   const allowCustomDescription = pricingId === "default" || pricingId == null;
+
+  useEffect(() => {
+    setMenuPortalTarget(document.body);
+  }, []);
+
+  const options = useMemo(
+    () => availableDescriptions.map((desc) => ({ value: desc, label: desc })),
+    [availableDescriptions]
+  );
+
+  const value = description ? { value: description, label: description } : null;
+
+  const handleChange = (option) => {
+    setDescription(option?.value ?? "");
+  };
+
+  const handleCreate = (inputValue) => {
+    setDescription(inputValue.trim());
+  };
+
+  const commonProps = {
+    options,
+    value,
+    onChange: handleChange,
+    styles: selectStyles,
+    classNamePrefix: "description-select",
+    placeholder: allowCustomDescription
+      ? "Search, select, or type a new description..."
+      : "Search and select a description...",
+    isClearable: true,
+    isSearchable: true,
+    blurInputOnSelect: true,
+    closeMenuOnSelect: true,
+    menuShouldScrollIntoView: true,
+    menuShouldBlockScroll: true,
+    menuPlacement: "auto",
+    maxMenuHeight: 240,
+    menuPortalTarget,
+    menuPosition: "fixed",
+    inputProps: {
+      autoComplete: "off",
+      autoCorrect: "off",
+      spellCheck: "false",
+      enterKeyHint: allowCustomDescription ? "done" : "search",
+    },
+    noOptionsMessage: ({ inputValue }) =>
+      allowCustomDescription && inputValue.trim()
+        ? "Tap Add below or press Done on keyboard"
+        : "No matching descriptions",
+    "aria-label": "Item description",
+  };
+
   return (
     <div className="mb-8">
       <div className="flex items-center gap-2 mb-4">
@@ -21,106 +154,36 @@ const DescriptionSection = ({
         <InfoIcon content="Describe your item to attract customers" />
       </div>
       <div className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm hover:shadow-md transition-shadow duration-200">
-        {/* Description Type Selection - only when custom description is allowed (default pricing) */}
-        {allowCustomDescription && (
-          <div className="mb-4">
-            <div className="flex items-center space-x-4">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="descriptionType"
-                  checked={!showCustomDescription}
-                  onChange={() => setShowCustomDescription(false)}
-                  className="w-4 h-4 text-[#5F22D9] bg-gray-100 border-gray-300 focus:ring-[#5F22D9] focus:ring-2"
-                />
-                <span className="text-sm font-medium text-gray-700">Use Existing Description</span>
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="descriptionType"
-                  checked={showCustomDescription}
-                  onChange={() => setShowCustomDescription(true)}
-                  className="w-4 h-4 text-[#5F22D9] bg-gray-100 border-gray-300 focus:ring-[#5F22D9] focus:ring-2"
-                />
-                <span className="text-sm font-medium text-gray-700">Add New Description</span>
-              </label>
-            </div>
-          </div>
-        )}
-
-        {/* Existing Descriptions Dropdown */}
-        {(!showCustomDescription || !allowCustomDescription) && availableDescriptions.length > 0 && (
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Select from existing descriptions:
-            </label>
-            <select
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#5F22D9] focus:border-transparent transition-all duration-200 bg-white"
-            >
-              <option value="">-- Select a description --</option>
-              {availableDescriptions.map((desc, index) => (
-                <option key={index} value={desc}>
-                  {desc}
-                </option>
-              ))}
-            </select>
-            
-            {description && (
-              <div className="mt-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
-                <p className="text-sm text-gray-600 font-medium mb-1">Selected Description:</p>
-                <p className="text-sm text-gray-800">{description}</p>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Custom Description Textarea - only when custom is allowed (default pricing) */}
-        {allowCustomDescription && showCustomDescription && (
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Enter your custom description:
-            </label>
-            <Textarea
-              className="block w-full resize-none rounded-lg border border-gray-200 py-3 px-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#5F22D9] focus:border-transparent transition-all duration-200"
-              rows={4}
-              placeholder="Enter your custom description..."
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              maxLength={255}
+        {availableDescriptions.length === 0 && !allowCustomDescription ? (
+          <p className="text-sm text-gray-600">
+            No descriptions available for this pricing. Add descriptions in Pricing
+            Management first.
+          </p>
+        ) : allowCustomDescription ? (
+          <>
+            <CreatableSelect
+              {...commonProps}
+              onCreateOption={handleCreate}
+              formatCreateLabel={(inputValue) => `Add "${inputValue}"`}
+              isValidNewOption={(inputValue) => {
+                const trimmed = inputValue.trim();
+                return (
+                  trimmed.length > 0 &&
+                  trimmed.length <= MAX_DESCRIPTION_LENGTH &&
+                  !availableDescriptions.some(
+                    (desc) => desc.toLowerCase() === trimmed.toLowerCase()
+                  )
+                );
+              }}
             />
-            <div className="mt-2 flex justify-between items-center">
-              <p className="text-xs text-gray-500">
-                {description.length}/255 characters
+            {description && (
+              <p className="mt-2 text-xs text-gray-500">
+                {description.length}/{MAX_DESCRIPTION_LENGTH} characters
               </p>
-              {description.length > 200 && (
-                <p className="text-xs text-amber-600">
-                  {255 - description.length} characters remaining
-                </p>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Fallback for no existing descriptions - only show "Add custom" when custom is allowed */}
-        {availableDescriptions.length === 0 && !showCustomDescription && (
-          <div>
-            <p className="text-sm text-gray-600 mb-3">
-              {allowCustomDescription
-                ? "No existing descriptions available."
-                : "No descriptions available for this pricing. Add descriptions in Pricing Management first."}
-            </p>
-            {allowCustomDescription && (
-              <button
-                onClick={() => setShowCustomDescription(true)}
-                className="text-[#5F22D9] text-sm font-medium hover:underline transition-colors duration-200"
-              >
-                + Add custom description
-              </button>
             )}
-          </div>
+          </>
+        ) : (
+          <Select {...commonProps} />
         )}
       </div>
     </div>
