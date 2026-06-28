@@ -44,7 +44,6 @@ export function isUnixInstantWithinOpeningWindow(
     });
     console.log(targetHhMm, openHhMm, closeHhMm)
     const [t, s, e] = [targetHhMm, openHhMm, close].map(toMinutes);
-    console.log(t, s, e, "-> target, start, end")
 
     if (![t, s, e].every(Number.isFinite)) return true;
 

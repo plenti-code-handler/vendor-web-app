@@ -14,7 +14,6 @@ import BeatLoader from "react-spinners/BeatLoader";
 
 import axiosClient from "../../../../AxiosClient";
 import { fetchBalance } from "../../../../redux/slices/blanceSlice";
-import { fetchBankAccountDetails } from "../../../../redux/slices/vendorSlice";
 import { formatDateTime } from "../../../../utility/FormatTime";
 
 const ITEMS_PER_PAGE = 10;
@@ -114,9 +113,7 @@ const TransactionTile = ({ transaction, isExpanded, onToggle }) => {
 
 const Transactions = () => {
   const dispatch = useDispatch();
-  const payoutThreshold = useSelector((state) => state.catalogue?.payout?.threshold || 0);
   const { value: balance } = useSelector((state) => state.balance);
-  const bankAccountDetails = useSelector((state) => state.vendor.bankAccountDetails);
   const [newbalance, setBalance] = useState(0);
 
   const [transactions, setTransactions] = useState([]);
@@ -210,29 +207,15 @@ const Transactions = () => {
 
   const handleWithdraw = async () => {
     setCheckingPayout(true);
-    const result = await dispatch(fetchBankAccountDetails());
-    if (result.error) {
-      toast.error(result.payload.detail);
+    try {
+      const response = await axiosClient.get("/v1/vendor/payout/eligibility");
+      toast.success(response.data.detail);
+      dispatch(setOpenDrawer(true));
+    } catch (error) {
+      toast.error(error.response?.data?.detail || "Failed to check payout eligibility");
+    } finally {
       setCheckingPayout(false);
-      return;
     }
-    if (result.status === "INACTIVE") {
-      toast.error("Please add your bank account details to enable payouts");
-      setCheckingPayout(false);
-      return;
-    } else if (result.status === "PENDING") {
-      toast.info("Your bank account details are pending verification");
-      setCheckingPayout(false);
-      return;
-    }
-      
-    if (Number(balance) < payoutThreshold) {
-      toast.error(`Minimum balance of ₹${payoutThreshold} required for withdrawal`);
-      setCheckingPayout(false);
-      return;
-    }
-    setCheckingPayout(false);
-    dispatch(setOpenDrawer(true));
   };
 
   const decideStyle = (status) => {
