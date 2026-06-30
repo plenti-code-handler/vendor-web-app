@@ -10,6 +10,7 @@ export const REPORT_TYPES = {
   PAYMENTS: "PAYMENT",
   REFUNDS: "REFUNDS",
   PAYOUTS: "PAYOUTS",
+  ITEM_CONSOLIDATED: "ITEM_CONSOLIDATED",
 };
 
 const reportListUrl = `/v2/vendor/report`;
