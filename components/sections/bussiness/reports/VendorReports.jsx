@@ -26,6 +26,7 @@ const REPORT_TABS = [
   { key: "payments", label: "Payments", reportType: REPORT_TYPES.PAYMENTS, enabled: true },
   { key: "refunds", label: "Refunds", reportType: REPORT_TYPES.REFUNDS, enabled: false },
   { key: "payouts", label: "Payouts", reportType: REPORT_TYPES.PAYOUTS, enabled: false },
+  { key: "item_consolidated", label: "Item Consolidated", reportType: REPORT_TYPES.ITEM_CONSOLIDATED, enabled: true },
 ];
 
 const REPORT_POLL_INTERVAL_MS = 10_000;
