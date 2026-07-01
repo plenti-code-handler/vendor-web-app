@@ -36,5 +36,6 @@ export const catalogue_limits = {
         vdr_20260422163443_MAK: 15, 
         vdr_20260517202530_DLQ: 15, 
         vdr_20260521130533_JBY: 15, 
+        vdr_20260624014729_HDC: 30
     }
 };
