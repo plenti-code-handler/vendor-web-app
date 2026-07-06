@@ -1,6 +1,6 @@
 export const catalogue_limits = {
     MEAL: {
-        default: 10,  
+        default: 30,  
         vdr_20260422163443_MAK: 15, 
         vdr_20260517202530_DLQ: 15, 
         vdr_20260522201007_YDM: 15, 
@@ -9,7 +9,7 @@ export const catalogue_limits = {
 
     },
     BAKED_GOODS: {
-        default: 10, 
+        default: 40, 
         vdr_20260422163443_MAK: 15, 
         vdr_20260517202530_DLQ: 15, 
         vdr_20260521130533_JBY: 15, 
@@ -22,7 +22,7 @@ export const catalogue_limits = {
         vdr_20260624014959_VZU: 40
     },
     SNACKS_AND_DESSERT: {
-        default: 20,
+        default: 40,
         vdr_20260310185746_RSL: 10,
         vdr_20260310192348_CBK: 10,
         vdr_20260310200105_EAT: 10,
