@@ -8,6 +8,7 @@ import Account from "./Account";
 import PaymentInfo from "./PaymentInfo";
 import AddBagImages from "./AddBagImages";
 import Pricing from "./Pricing";
+import Printers from "./Printers";
 
 const tabs = [
   {
@@ -21,6 +22,10 @@ const tabs = [
   {
     name: "Rating & Reviews",
     component: <Rating />,
+  },
+  {
+    name: "Printers",
+    component: <Printers />,
   },
   {
     name: "Add Bag Images",
@@ -52,7 +57,7 @@ const Tabs = () => {
               <Tab
                 key={name}
                 className={({ selected }) =>
-                  `relative py-1 lg:py-2 px-2 text-xs rounded-md sm:text-sm lg:text-sm font-semibold focus:outline-none transition-all duration-300 ${
+                  `relative py-1 lg:py-2 px-2 text-xs rounded-md sm:text-xs lg:text-xs font-semibold focus:outline-none transition-all duration-300 ${
                     selected
                       ? "text-primary after:content-[''] after:absolute after:left-0 after:right-0 after:bottom-[-6px] after:h-[2px] after:bg-primary"
                       : "text-gray-500"

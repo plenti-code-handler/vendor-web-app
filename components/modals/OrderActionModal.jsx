@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback, useEffect } from "react";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
-import { XMarkIcon } from "@heroicons/react/24/outline";
+import { DocumentTextIcon, PrinterIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { OTPInput, REGEXP_ONLY_DIGITS } from "input-otp";
 import { formatTime, formatDateTime } from "../../utility/FormatTime";
 import BagSizeTag from "../common/BagSizeTag";
@@ -13,7 +13,7 @@ import { useBackToClose } from "../../hooks/useBackToCloseModal";
 import axiosClient from "../../AxiosClient";
 import { toast } from "sonner";
 import OrderStatusBadge from "../common/OrderStatusBadge";
-import { DocumentTextIcon } from "@heroicons/react/24/outline";
+import { reprintOrder } from "../../utility/printApi";
 
 const OTP_LENGTH = 5;
 
@@ -31,6 +31,7 @@ const OrderActionModal = ({
   console.log(orderDetails, "order details checking");
   const [otp, setOtp] = useState("");
   const [verifying, setVerifying] = useState(false);
+  const [reprinting, setReprinting] = useState(false);
 
   const isReadyForPickup =
     normalizeOrderStatus(order?.current_status) === "READY_FOR_PICKUP";
@@ -44,7 +45,28 @@ const OrderActionModal = ({
 
     setOtp("");
     setVerifying(false);
+    setReprinting(false);
   }, [open, order?.order_id, order?.current_status]);
+
+  const handleReprint = useCallback(async () => {
+    if (!order?.order_id) return;
+
+    setReprinting(true);
+    try {
+      const result = await reprintOrder(order.order_id);
+      toast.success(
+        result?.order_code
+          ? `Kitchen ticket sent for order #${result.order_code}`
+          : "Kitchen ticket sent to printer",
+      );
+    } catch (error) {
+      const message =
+        error.response?.data?.detail || error.message || "Could not reprint ticket";
+      toast.error(typeof message === "string" ? message : "Could not reprint ticket");
+    } finally {
+      setReprinting(false);
+    }
+  }, [order?.order_id]);
 
   const handleVerifyCode = useCallback(async () => {
     if (otp.length !== OTP_LENGTH) {
@@ -356,7 +378,18 @@ const OrderActionModal = ({
             </div>
           </div>
 
-          <div className="flex justify-end px-6 py-4 border-t bg-gray-50 shrink-0">
+          <div className="flex flex-wrap justify-end gap-2 px-6 py-4 border-t bg-gray-50 shrink-0">
+            {order?.order_id ? (
+              <button
+                type="button"
+                onClick={handleReprint}
+                disabled={reprinting}
+                className="inline-flex items-center gap-2 px-4 py-2 border border-[#5f22d9]/20 bg-[#f8f5ff] text-[#5f22d9] rounded-lg hover:bg-[#efe8ff] transition-colors duration-200 font-medium disabled:opacity-60"
+              >
+                <PrinterIcon className="h-4 w-4" />
+                {reprinting ? "Sending…" : "Reprint kitchen ticket"}
+              </button>
+            ) : null}
             <button
               type="button"
               onClick={onClose}
