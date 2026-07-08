@@ -24,7 +24,7 @@ const tabs = [
     component: <Rating />,
   },
   {
-    name: "Printers",
+    name: "KOT Printer",
     component: <Printers />,
   },
   {
