@@ -379,7 +379,7 @@ const OrderActionModal = ({
           </div>
 
           <div className="flex flex-wrap justify-end gap-2 px-6 py-4 border-t bg-gray-50 shrink-0">
-            {order?.order_id ? (
+            {/* {order?.order_id ? (
               <button
                 type="button"
                 onClick={handleReprint}
@@ -389,7 +389,7 @@ const OrderActionModal = ({
                 <PrinterIcon className="h-4 w-4" />
                 {reprinting ? "Sending…" : "Reprint kitchen ticket"}
               </button>
-            ) : null}
+            ) : null} */}
             <button
               type="button"
               onClick={onClose}
