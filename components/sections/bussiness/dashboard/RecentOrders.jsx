@@ -17,6 +17,7 @@ import {
 import ToggleOnlineOffline from "../../../sections/bussiness/profile/ToggleOnlineOffline";
 import SuccessConfettiOverlay from "../../../common/SuccessConfettiOverlay";
 import { VENDOR_ORDERS_REFRESH_EVENT } from "../../../../utility/vendorOrderEvents";
+import { formatOrderLabel } from "../../../../utility/orderLabel";
 
 // Constants
 const ITEMS_PER_PAGE = 10;
@@ -186,6 +187,12 @@ const RecentOrders = () => {
       onClick={() => handleOpenOrder(order)}
       className="border-b hover:bg-gray-50 transition animate-fade-down cursor-pointer"
     >
+      <td className="text-center px-2 text-sm py-3 font-semibold bg-blue-50 text-gray-900">
+        <div className="truncate" title={order.order_id}>
+          {formatOrderLabel(order.order_id)}
+        </div>
+      </td>
+
       <td className="text-center px-2 text-sm py-3">
         <div className="truncate" title={order.user_name || "Not provided"}>
           {order.user_name || <span className="text-gray-400">Not provided</span>}
@@ -194,9 +201,7 @@ const RecentOrders = () => {
 
       <td className="text-center px-2 text-sm">
         <div className="truncate" title={order.user_phone_number || "Not provided"}>
-          {order.user_phone_number
-            ? `${order.user_phone_number.slice(0, -3)}***`
-            : <span className="text-gray-400">Not provided</span>}
+          {order.user_phone_number || <span className="text-gray-400">Not provided</span>}
         </div>
       </td>
 
@@ -310,21 +315,22 @@ const RecentOrders = () => {
         <table className="w-full min-w-[800px] table-fixed animate-fade-down">
           <thead>
             <tr className="border-b text-xs font-semibold text-gray-500 uppercase">
-              <th className="pb-2 px-2 pt-4 text-center w-[12%]">User Name</th>
-              <th className="pb-2 px-2 pt-4 text-center w-[12%]">Phone</th>
+              <th className="pb-2 px-2 pt-4 text-center w-[8%]">Order ID</th>
+              <th className="pb-2 px-2 pt-4 text-center w-[11%]">User Name</th>
+              <th className="pb-2 px-2 pt-4 text-center w-[11%]">Phone</th>
               <th className="pb-2 px-4 pt-4 text-center w-[8%]">You Get</th>
-              <th className="pb-2 px-2 pt-4 text-center w-[22%]">Items</th>
-              <th className="pb-2 px-2 pt-4 text-center w-[16%]">Descriptions</th>
-              <th className="pb-2 px-2 pt-4 text-center w-[12%]">Created At</th>
-              <th className="pb-2 px-2 pt-4 text-center w-[12%]">Status</th>
-              <th className="pb-2 text-center pt-4 w-[12%]">View</th>
+              <th className="pb-2 px-2 pt-4 text-center w-[20%]">Items</th>
+              <th className="pb-2 px-2 pt-4 text-center w-[14%]">Descriptions</th>
+              <th className="pb-2 px-2 pt-4 text-center w-[11%]">Created At</th>
+              <th className="pb-2 px-2 pt-4 text-center w-[11%]">Status</th>
+              <th className="pb-2 text-center pt-4 w-[6%]">View</th>
             </tr>
           </thead>
 
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan="8" className="text-center py-8 text-gray-400">
+                <td colSpan="9" className="text-center py-8 text-gray-400">
                   Loading...
                 </td>
               </tr>
@@ -332,7 +338,7 @@ const RecentOrders = () => {
               orders.map(renderTableRow)
             ) : (
               <tr className="animate-fade-down">
-                <td colSpan="8" className="text-center py-8 text-gray-400">
+                <td colSpan="9" className="text-center py-8 text-gray-400">
                   No orders found.
                 </td>
               </tr>

@@ -14,11 +14,9 @@ import axiosClient from "../../AxiosClient";
 import { toast } from "sonner";
 import OrderStatusBadge from "../common/OrderStatusBadge";
 import { reprintOrder } from "../../utility/printApi";
+import { formatOrderLabel } from "../../utility/orderLabel";
 
 const OTP_LENGTH = 5;
-
-const maskPhone = (phone) =>
-  phone ? `${String(phone).slice(0, -3)}***` : null;
 
 const OrderActionModal = ({
   open,
@@ -55,8 +53,8 @@ const OrderActionModal = ({
     try {
       const result = await reprintOrder(order.order_id);
       toast.success(
-        result?.order_code
-          ? `Kitchen ticket sent for order #${result.order_code}`
+        result?.order_id
+          ? `Kitchen ticket sent for order #${result.order_id.slice(-4).toUpperCase()}`
           : "Kitchen ticket sent to printer",
       );
     } catch (error) {
@@ -98,7 +96,7 @@ const OrderActionModal = ({
   const platformCut = orderData?.platform_cut || 0;
   const couponDiscount = orderData?.coupon_discount || 0;
   const platformFeeGst = orderData?.platform_fee_gst || 0;
-
+  const orderId = formatOrderLabel(orderData?.order_id || order?.order_id);
   const orderAllergens = orderData?.allergens?.filter(Boolean) ?? [];
 
   return (
@@ -113,7 +111,7 @@ const OrderActionModal = ({
           className="w-full max-w-3xl h-full max-h-[85vh] flex flex-col rounded-t-2xl bg-white shadow-xl transform transition duration-300 ease-out data-[closed]:translate-y-full"
         >
           <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 shrink-0">
-            <h2 className="text-xl font-semibold text-gray-900">Order Details</h2>
+            <h2 className="text-xl font-semibold text-gray-900">Order ID {orderId}</h2>
             <button
               type="button"
               onClick={onClose}
@@ -282,7 +280,7 @@ const OrderActionModal = ({
                 <div className="space-y-4">
                   <div className="space-y-2">
                     <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-500">
-                      Order Details
+
                     </h3>
                     <span
                       className="block text-[10px] text-gray-400 font-mono truncate"
@@ -299,7 +297,7 @@ const OrderActionModal = ({
                             {orderData.user_phone_number && (
                               <>
                                 <span className="text-gray-300 mx-1">·</span>
-                                {maskPhone(orderData.user_phone_number)}
+                                {orderData.user_phone_number}
                               </>
                             )}
                           </span>
@@ -379,21 +377,21 @@ const OrderActionModal = ({
           </div>
 
           <div className="flex flex-wrap justify-end gap-2 px-6 py-4 border-t bg-gray-50 shrink-0">
-            {/* {order?.order_id ? (
+            {order?.order_id ? (
               <button
                 type="button"
                 onClick={handleReprint}
                 disabled={reprinting}
-                className="inline-flex items-center gap-2 px-4 py-2 border border-[#5f22d9]/20 bg-[#f8f5ff] text-[#5f22d9] rounded-lg hover:bg-[#efe8ff] transition-colors duration-200 font-medium disabled:opacity-60"
+                className="inline-flex text-sm items-center gap-2 px-4 py-2 border border-[#5f22d9]/20 bg-[#f8f5ff] text-[#5f22d9] rounded-lg hover:bg-[#efe8ff] transition-colors duration-200 font-medium disabled:opacity-60"
               >
                 <PrinterIcon className="h-4 w-4" />
                 {reprinting ? "Sending…" : "Reprint kitchen ticket"}
               </button>
-            ) : null} */}
+            ) : null}
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors duration-200 font-medium"
+              className="px-6 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors duration-200 text-sm"
             >
               Close
             </button>
