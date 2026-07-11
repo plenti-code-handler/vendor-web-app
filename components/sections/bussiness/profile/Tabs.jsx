@@ -23,10 +23,10 @@ const tabs = [
     name: "Rating & Reviews",
     component: <Rating />,
   },
-  // {
-  //   name: "KOT Printer",
-  //   component: <Printers />,
-  // },
+  {
+    name: "KOT Printer",
+    component: <Printers />,
+  },
   {
     name: "Add Bag Images",
     component: <AddBagImages />,
