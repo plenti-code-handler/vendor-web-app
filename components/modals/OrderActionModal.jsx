@@ -377,21 +377,21 @@ const OrderActionModal = ({
           </div>
 
           <div className="flex flex-wrap justify-end gap-2 px-6 py-4 border-t bg-gray-50 shrink-0">
-            {/* {order?.order_id ? (
+            {order?.order_id ? (
               <button
                 type="button"
                 onClick={handleReprint}
                 disabled={reprinting}
-                className="inline-flex text-sm items-center gap-2 px-4 py-2 border border-[#5f22d9]/20 bg-[#f8f5ff] text-[#5f22d9] rounded-lg hover:bg-[#efe8ff] transition-colors duration-200 font-medium disabled:opacity-60"
+                className="inline-flex text-sm items-center gap-2 px-4 py-2 border bg-[#ffffff] text-[#000000] rounded-xl hover:bg-[#f5f5f5] transition-colors duration-200 font-medium disabled:opacity-60"
               >
                 <PrinterIcon className="h-4 w-4" />
                 {reprinting ? "Sending…" : "Reprint kitchen ticket"}
               </button>
-            ) : null} */}
+            ) : null}
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors duration-200 text-sm"
+              className="px-6 py-2 bg-gray-900 text-white rounded-xl hover:bg-gray-800 transition-colors duration-200 text-sm"
             >
               Close
             </button>
