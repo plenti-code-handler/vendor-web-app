@@ -21,12 +21,12 @@ import {
 import { formatUnixIst } from "../../../../utility/istUnix";
 
 const FIELD_LABEL_CLASS =
-  "text-xs font-medium uppercase tracking-wide text-slate-500";
+  "text-xs font-medium uppercase tracking-wide text-neutral-500";
 
 function DeviceStatusBadge({ device }) {
   if (!device.is_active) {
     return (
-      <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-500 ring-1 ring-inset ring-slate-200">
+      <span className="rounded-full bg-neutral-100 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-neutral-500 ring-1 ring-inset ring-neutral-300">
         Disconnected
       </span>
     );
@@ -52,26 +52,28 @@ function DeviceCard({ device, onRevoke, revoking }) {
   const canRevoke = device.is_active;
 
   return (
-    <div className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm">
+    <div className="rounded-2xl border border-neutral-300 bg-white p-4 shadow-sm">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0 space-y-2">
           <div className="flex flex-wrap items-center gap-2">
-            <ComputerDesktopIcon className="h-5 w-5 text-[#5f22d9]" />
-            <span className="text-base font-semibold text-slate-900">
+            <ComputerDesktopIcon className="h-5 w-5 text-black" />
+            <span className="text-base font-semibold text-black">
               {device.device_name}
             </span>
             <DeviceStatusBadge device={device} />
           </div>
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-neutral-600">
             {device.platform}
             {device.app_version ? ` · v${device.app_version}` : ""}
           </p>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-neutral-400">
             Last seen{" "}
             {device.last_seen_at ? formatUnixIst(device.last_seen_at) : "never"}
           </p>
           {device.auto_print_enabled === false ? (
-            <p className="text-xs text-amber-700">Auto-print is turned off on this computer</p>
+            <p className="text-xs font-medium text-neutral-700">
+              Auto-print is turned off on this computer
+            </p>
           ) : null}
         </div>
 
@@ -88,7 +90,7 @@ function DeviceCard({ device, onRevoke, revoking }) {
               <TrashIcon className="h-4 w-4" />
             )}
             Remove
-          </button>
+        </button>
         ) : null}
       </div>
     </div>
@@ -188,15 +190,15 @@ export default function Printers() {
   const codeExpired = pairing && secondsLeft <= 0;
 
   return (
-    <div className="space-y-6 animate-slide-in-left">
-      <section className="rounded-2xl border border-slate-200/80 bg-gradient-to-br from-[#f8f5ff] to-white p-5 shadow-sm">
+    <div className="space-y-6 animate-slide-in-left text-black">
+      <section className="rounded-2xl border border-neutral-300 bg-gradient-to-br from-neutral-100 to-white p-5 shadow-sm">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <PrinterIcon className="h-6 w-6 text-[#5f22d9]" />
-              <h2 className="text-md font-semibold text-slate-900">Print Connect</h2>
+              <PrinterIcon className="h-6 w-6 text-black" />
+              <h2 className="text-md font-semibold text-black">Print Connect</h2>
             </div>
-            <p className="max-w-xl text-xs text-slate-600">
+            <p className="max-w-xl text-xs text-neutral-600">
               Install Plenti Print Connect on your counter PC.
             </p>
           </div>
@@ -204,7 +206,7 @@ export default function Printers() {
             href={PRINT_CONNECT_DOWNLOAD_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#5f22d9] px-4 py-2.5 text-xs font-semibold text-white shadow-sm transition hover:bg-[#4c1bb8]"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-black px-4 py-2.5 text-xs font-semibold font-mono text-white shadow-sm transition hover:bg-neutral-800"
           >
             <ArrowDownTrayIcon className="h-4 w-4" />
             Download for Windows
@@ -212,12 +214,12 @@ export default function Printers() {
         </div>
       </section>
 
-      <section className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm">
+      <section className="rounded-2xl border border-neutral-300 bg-white p-5 shadow-sm">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="space-y-1">
             <p className={FIELD_LABEL_CLASS}>Pair a computer</p>
-            <p className="text-xs font-semibold text-slate-900">Generate pairing code</p>
-            <p className="text-xs text-slate-600">
+            <p className="text-xs font-semibold text-black">Generate pairing code</p>
+            <p className="text-xs text-neutral-600">
               Open Print Connect on the counter PC and enter this code.
             </p>
           </div>
@@ -225,10 +227,10 @@ export default function Printers() {
             type="button"
             disabled={generatingCode}
             onClick={() => void handleGenerateCode()}
-            className="inline-flex shrink-0 items-center gap-2 rounded-xl border border-[#5f22d9]/20 bg-[#f8f5ff] px-4 py-2.5 text-xs font-semibold text-[#5f22d9] transition hover:bg-[#efe8ff] disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex shrink-0 items-center gap-2 rounded-xl border border-black bg-white px-4 py-2.5 text-xs font-semibold text-black transition hover:bg-neutral-100 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {generatingCode ? (
-              <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#5f22d9]/30 border-t-[#5f22d9]" />
+              <span className="h-4 w-4 animate-spin rounded-full border-2 border-neutral-300 border-t-black" />
             ) : (
               <ArrowPathIcon className="h-4 w-4" />
             )}
@@ -240,26 +242,26 @@ export default function Printers() {
           <div
             className={`mt-5 rounded-2xl border p-5 text-center ${
               codeExpired
-                ? "border-amber-200 bg-amber-50"
-                : "border-[#5f22d9]/20 bg-[#faf8ff]"
+                ? "border-neutral-400 bg-neutral-100"
+                : "border-neutral-300 bg-neutral-50"
             }`}
           >
             {codeExpired ? (
               <>
-                <p className="text-sm font-medium text-amber-800">Code expired</p>
-                <p className="mt-1 text-xs text-amber-700">
+                <p className="text-sm font-medium text-black">Code expired</p>
+                <p className="mt-1 text-xs text-neutral-600">
                   Generate a new code and enter it in Print Connect.
                 </p>
               </>
             ) : (
               <>
                 <p className={FIELD_LABEL_CLASS}>Enter in Print Connect</p>
-                <p className="mt-2 font-mono text-2xl font-bold tracking-[0.35em] text-[#5f22d9]">
+                <p className="mt-2 font-mono text-2xl font-bold tracking-[0.35em] text-blue-600">
                   {pairing.code}
                 </p>
-                <p className="mt-3 text-xs text-slate-600">
+                <p className="mt-3 text-xs text-neutral-600">
                   Expires in{" "}
-                  <span className="font-semibold tabular-nums text-slate-900">
+                  <span className="font-semibold tabular-nums text-black">
                     {formatPairingCountdown(secondsLeft)}
                   </span>
                 </p>
@@ -273,13 +275,13 @@ export default function Printers() {
         <div className="flex items-center justify-between gap-3">
           <div>
             <p className={FIELD_LABEL_CLASS}>Connected computers</p>
-            <h3 className="text-sm font-semibold text-slate-900">Your devices</h3>
+            <h3 className="text-sm font-semibold text-black">Your devices</h3>
           </div>
           <button
             type="button"
             onClick={() => void loadDevices()}
             disabled={loadingDevices}
-            className="inline-flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-xs font-semibold text-slate-600 transition hover:bg-slate-100 disabled:opacity-60"
+            className="inline-flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-xs font-semibold text-neutral-700 transition hover:bg-neutral-100 disabled:opacity-60"
           >
             <ArrowPathIcon className={`h-4 w-4 ${loadingDevices ? "animate-spin" : ""}`} />
             Refresh
@@ -287,19 +289,19 @@ export default function Printers() {
         </div>
 
         {devicesError ? (
-          <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          <p className="rounded-xl border border-black bg-neutral-100 px-4 py-3 text-sm text-black">
             {devicesError}
           </p>
         ) : null}
 
         {loadingDevices && devices.length === 0 ? (
           <div className="flex justify-center py-10">
-            <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#5f22d9]/30 border-t-[#5f22d9]" />
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-neutral-300 border-t-black" />
           </div>
         ) : activeDevices.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-4 py-10 text-center">
-            <p className="text-sm font-medium text-slate-700">No computers connected yet</p>
-            <p className="mt-1 text-xs text-slate-500">
+          <div className="rounded-2xl border border-dashed border-neutral-300 bg-neutral-50 px-4 py-10 text-center">
+            <p className="text-sm font-medium text-neutral-800">No computers connected yet</p>
+            <p className="mt-1 text-xs text-neutral-500">
               Download Print Connect, generate a code above, and pair your counter PC.
             </p>
           </div>
@@ -318,10 +320,10 @@ export default function Printers() {
 
         {revokedDevices.length > 0 ? (
           <div className="pt-2">
-            <p className="mb-2 text-xs font-medium uppercase tracking-wide text-slate-400">
+            <p className="mb-2 text-xs font-medium uppercase tracking-wide text-neutral-400">
               Previously removed
             </p>
-            <div className="grid gap-2 opacity-70">
+            <div className="grid gap-2 opacity-60">
               {revokedDevices.map((device) => (
                 <DeviceCard key={device.id} device={device} onRevoke={() => {}} revoking={false} />
               ))}
