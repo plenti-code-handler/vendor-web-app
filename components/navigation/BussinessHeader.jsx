@@ -206,7 +206,7 @@ const BussinessHeader = () => {
                               }}
                             >
                               <span>{name}</span>
-                              {name === "Reports" && <BetaBadge />}
+                              <span>{name === "Dine-In Coupons" && <BetaBadge />}</span>
                             </Link>
                           ))}
                         </nav>
@@ -235,7 +235,7 @@ const BussinessHeader = () => {
                   onClick={() => handleLinkClick(name)}
                 >
                   <span>{name}</span>
-                  {name === "Reports" && <BetaBadge className="px-2" />}
+                  <span>{name === "Dine-In Coupons" && <BetaBadge />}</span>
                 </Link>
               );
             })}
