@@ -16,11 +16,13 @@ import {
 } from "../../../../utils/notificationSound";
 import ToggleOnlineOffline from "../../../sections/bussiness/profile/ToggleOnlineOffline";
 import SuccessConfettiOverlay from "../../../common/SuccessConfettiOverlay";
+import ExpandableSearchButton from "../../../buttons/ExpandableSearchButton";
 import { VENDOR_ORDERS_REFRESH_EVENT } from "../../../../utility/vendorOrderEvents";
 import { formatOrderLabel } from "../../../../utility/orderLabel";
 
 // Constants
 const ITEMS_PER_PAGE = 10;
+const SEARCH_MIN_CHARS = 2;
 
 const RecentOrders = () => {
   // State management - grouped by concern
@@ -28,6 +30,7 @@ const RecentOrders = () => {
   const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [filter, setFilter] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
   const [hasMoreOrders, setHasMoreOrders] = useState(true);
 
@@ -41,11 +44,16 @@ const RecentOrders = () => {
 
   // Refs
   const filterRef = useRef(filter);
+  const searchQueryRef = useRef(searchQuery);
 
-  // Sync filter ref
+  // Sync filter / search refs
   useEffect(() => {
     filterRef.current = filter;
   }, [filter]);
+
+  useEffect(() => {
+    searchQueryRef.current = searchQuery;
+  }, [searchQuery]);
 
   // Initialize audio
   useEffect(() => {
@@ -63,7 +71,7 @@ const RecentOrders = () => {
   }, []);
 
   // Fetch orders function
-  const fetchRecentOrders = useCallback(async (reset = false, pageNum = 0, currentFilter = null) => {
+  const fetchRecentOrders = useCallback(async (reset = false, pageNum = 0, currentFilter = null, currentSearch = null) => {
     if (reset) {
       setCurrentPage(0);
       setOrders([]);
@@ -72,12 +80,15 @@ const RecentOrders = () => {
 
     const skip = reset ? 0 : pageNum * ITEMS_PER_PAGE;
     const activeFilter = currentFilter ?? filterRef.current;
+    const query = (currentSearch ?? searchQueryRef.current).trim();
 
     setLoading(reset);
     setLoadingMore(!reset);
 
     try {
-      let apiUrl = `/v1/vendor/order/get?skip=${skip}&limit=${ITEMS_PER_PAGE}`;
+      let apiUrl = query
+        ? `/v1/vendor/order/search/${encodeURIComponent(query)}?skip=${skip}&limit=${ITEMS_PER_PAGE}`
+        : `/v1/vendor/order/get?skip=${skip}&limit=${ITEMS_PER_PAGE}`;
 
       if (activeFilter === true) {
         apiUrl += "&active=true";
@@ -96,7 +107,7 @@ const RecentOrders = () => {
       }
     } catch (error) {
       if (error.response?.status !== 403) {
-        toast.error("Failed to fetch orders");
+        toast.error(query ? "Failed to search orders" : "Failed to fetch orders");
       }
     } finally {
       setLoading(false);
@@ -104,15 +115,15 @@ const RecentOrders = () => {
     }
   }, []);
 
-  // Fetch orders when filter changes
+  // Fetch orders when filter or search changes
   useEffect(() => {
-    fetchRecentOrders(true, 0, filter);
-  }, [filter, fetchRecentOrders]);
+    fetchRecentOrders(true, 0, filter, searchQuery);
+  }, [filter, searchQuery, fetchRecentOrders]);
 
   // FCM / service worker: reload list when a new order notification fires (see NotificationSoundHandler)
   useEffect(() => {
     const onRemoteOrdersRefresh = () => {
-      fetchRecentOrders(true, 0, filterRef.current);
+      fetchRecentOrders(true, 0, filterRef.current, searchQueryRef.current);
     };
     window.addEventListener(VENDOR_ORDERS_REFRESH_EVENT, onRemoteOrdersRefresh);
     return () =>
@@ -122,14 +133,20 @@ const RecentOrders = () => {
   // Handlers
   const handleLoadMore = useCallback(() => {
     if (!loadingMore && hasMoreOrders) {
-      fetchRecentOrders(false, currentPage, filter);
+      fetchRecentOrders(false, currentPage, filter, searchQuery);
     }
-  }, [loadingMore, hasMoreOrders, currentPage, filter, fetchRecentOrders]);
+  }, [loadingMore, hasMoreOrders, currentPage, filter, searchQuery, fetchRecentOrders]);
 
   const handleRefresh = useCallback(() => {
-    toast.info("Refreshing orders...");
-    fetchRecentOrders(true, 0, filter);
-  }, [filter, fetchRecentOrders]);
+    toast.info(searchQuery ? "Refreshing search results..." : "Refreshing orders...");
+    fetchRecentOrders(true, 0, filter, searchQuery);
+  }, [filter, searchQuery, fetchRecentOrders]);
+
+  const handleSearchChange = useCallback((query) => {
+    const trimmed = query.trim();
+    if (trimmed && trimmed.length < SEARCH_MIN_CHARS) return;
+    setSearchQuery(trimmed);
+  }, []);
 
   const closeOrderModal = useCallback(() => {
     setOrderModalOpen(false);
@@ -288,7 +305,17 @@ const RecentOrders = () => {
     <div className="mt-4 w-full border border-gray-200 rounded-2xl bg-white shadow-sm p-6 sm:px-4">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-        <h2 className="text-xl font-semibold text-gray-900">Recent Orders</h2>
+        <div className="flex items-center gap-3">
+          <h2 className="text-xl font-semibold text-gray-900">Recent Orders</h2>
+          <ExpandableSearchButton
+              value={searchQuery}
+              onChange={handleSearchChange}
+              onClear={() => setSearchQuery("")}
+              minChars={SEARCH_MIN_CHARS}
+              placeholder="Order ID, name, phone"
+              aria-label="Search orders"
+            />
+        </div>
 
         <div className="flex items-center gap-3">
           <button
@@ -339,7 +366,9 @@ const RecentOrders = () => {
             ) : (
               <tr className="animate-fade-down">
                 <td colSpan="9" className="text-center py-8 text-gray-400">
-                  No orders found.
+                  {searchQuery
+                    ? `No orders match "${searchQuery}".`
+                    : "No orders found."}
                 </td>
               </tr>
             )}
