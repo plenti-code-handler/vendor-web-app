@@ -204,15 +204,15 @@ return (
         </thead>
         <tbody>
           <tr>
-            <td className="py-1">Name: BHARATH MOHAN S.</td>
+            <td className="py-1">Company Name: SURGESLAMCO PVT LTD</td>
             <td className="py-1">Name: {ownerName}</td>
           </tr>
           <tr>
-            <td className="py-1">Title: COO</td>
+            <td className="py-1">455/9, FIRDOUSE, THAMARKULAM, KANIYAMPURAM, Pallippuram Thiruvananthapuram, Kerala, 695316</td>
             <td className="py-1">Title: OWNER/MANAGER</td>
           </tr>
           <tr>
-            <td className="py-1">Signature: BHARATH MOHAN S.</td>
+            <td className="py-1">Signature: SURGESLAMCO PVT LTD</td>
             <td className="py-1">Signature: {ownerName}</td>
           </tr>
           <tr>
