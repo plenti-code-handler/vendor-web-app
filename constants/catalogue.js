@@ -45,6 +45,7 @@ export const catalogue_limits = {
         vdr_20260624014729_HDC: 40,
         vdr_20260624014836_UCY: 40,
         vdr_20260624014909_ZAQ: 40,
-        vdr_20260624014959_VZU: 40
+        vdr_20260624014959_VZU: 40, 
+        vdr_20260624014909_ZAQ: 45
     }
 };
