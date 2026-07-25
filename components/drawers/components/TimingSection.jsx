@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import InfoIcon from '../../common/InfoIcon';
@@ -14,9 +15,13 @@ const TimingSection = ({
   bestBeforeDuration,
   setBestBeforeDuration,
 }) => {
+  // criterias for haleej restaurant
+  const vendor_id = useSelector((state) => state.vendor.vendorData.id);
+  const isHaleej = vendor_id === 'vdr_20260520182633_NMV';
+  console.log('isHaleej', vendor_id, isHaleej);
   const windowDurationOptions = [
-    { label: '15 minutes', value: 15 },
-    { label: '30 minutes', value: 30 },
+    ...(isHaleej ? []: [{ label: '15 minutes', value: 15 }] ),
+    ...(isHaleej ? []: [{ label: '30 minutes', value: 30 }]  ),
     { label: '45 minutes', value: 45 },
     { label: '1 hour', value: 60 },
     { label: '1 hour 15 minutes', value: 75 },
