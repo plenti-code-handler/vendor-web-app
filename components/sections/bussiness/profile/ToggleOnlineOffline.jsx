@@ -34,7 +34,14 @@ export default function OnlineOfflineToggle() {
     }
   }, [isOnline]);
 
+  const TOGGLE_DISABLED = true;
+
   const toggleStatus = async () => {
+    if (TOGGLE_DISABLED) {
+      toast.error("Listing is paused due to a payment gateway issue. We'll resume shortly.");
+      return;
+    }
+
     // Prevent multiple clicks while the animation/request is running
     if (isAnimating) return;
 
