@@ -34,14 +34,7 @@ export default function OnlineOfflineToggle() {
     }
   }, [isOnline]);
 
-  const TOGGLE_DISABLED = true;
-
   const toggleStatus = async () => {
-    if (TOGGLE_DISABLED) {
-      toast.error("Listing is paused due to a payment gateway issue. We'll resume shortly.");
-      return;
-    }
-
     // Prevent multiple clicks while the animation/request is running
     if (isAnimating) return;
 
@@ -103,16 +96,10 @@ export default function OnlineOfflineToggle() {
       <div
         onClick={toggleStatus}
         // Minimal track styling: w-24 h-8
-        className={` p-5 relative flex items-center w-24 h-8 rounded-full transition-all duration-300 ease-in-out ${
-          TOGGLE_DISABLED
-            ? "opacity-50 cursor-not-allowed"
-            : "cursor-pointer"
-        } ${
+        className={` p-5 relative flex items-center w-24 h-8 rounded-full cursor-pointer transition-all duration-300 ease-in-out ${
           isOnline ? "bg-green-500 shadow-md" : "bg-gray-300 dark:bg-gray-700"
         } ${isOnline && isOnlineJustActivated ? 'online-pulse' : ''}
         `}
-        title={TOGGLE_DISABLED ? "Temporarily disabled due to payment gateway issue" : undefined}
-        aria-disabled={TOGGLE_DISABLED}
       >
         {/*
           Status Text - Now positioned absolutely inside the track
