@@ -103,10 +103,16 @@ export default function OnlineOfflineToggle() {
       <div
         onClick={toggleStatus}
         // Minimal track styling: w-24 h-8
-        className={` p-5 relative flex items-center w-24 h-8 rounded-full cursor-pointer transition-all duration-300 ease-in-out ${
+        className={` p-5 relative flex items-center w-24 h-8 rounded-full transition-all duration-300 ease-in-out ${
+          TOGGLE_DISABLED
+            ? "opacity-50 cursor-not-allowed"
+            : "cursor-pointer"
+        } ${
           isOnline ? "bg-green-500 shadow-md" : "bg-gray-300 dark:bg-gray-700"
         } ${isOnline && isOnlineJustActivated ? 'online-pulse' : ''}
         `}
+        title={TOGGLE_DISABLED ? "Temporarily disabled due to payment gateway issue" : undefined}
+        aria-disabled={TOGGLE_DISABLED}
       >
         {/*
           Status Text - Now positioned absolutely inside the track
