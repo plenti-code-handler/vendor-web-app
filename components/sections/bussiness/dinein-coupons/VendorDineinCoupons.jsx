@@ -1,13 +1,14 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Switch } from "@headlessui/react";
+import { useLoadScript } from "@react-google-maps/api";
 import {
   ArrowPathIcon,
   CheckBadgeIcon,
   GiftIcon,
-  SparklesIcon,
+  MapPinIcon,
   TicketIcon,
 } from "@heroicons/react/24/outline";
 import { toast } from "sonner";
@@ -21,10 +22,14 @@ import {
   toggleDineinCoupon,
   verifyDineinCoupon,
 } from "../../../../redux/slices/dineinCouponSlice";
-import { formatUnixIst } from "../../../../utility/istUnix";
+import { processPlaceForVendor } from "../../../../utility/googlePlacesUtils";
 import BetaBadge from "../../../common/BetaBadge";
 import StatusResultModal from "../../../modals/StatusResultModal";
 import VerifyDineinCouponModal from "../../../modals/VerifyDineinCouponModal";
+import CouponCard from "./CouponCard";
+
+const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+const GOOGLE_MAPS_LIBRARIES = ["places"];
 
 const FIELD_LABEL_CLASS =
   "text-xs font-medium uppercase tracking-wide text-slate-500";
@@ -36,72 +41,6 @@ function StatCard({ label, value, accent }) {
     <div className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm">
       <p className={FIELD_LABEL_CLASS}>{label}</p>
       <p className={`mt-1 text-2xl font-bold ${accent}`}>{value}</p>
-    </div>
-  );
-}
-
-function CouponCard({ coupon, onToggle, toggling }) {
-  const active = coupon.is_active;
-
-  return (
-    <div
-      className={`rounded-2xl border bg-white p-4 shadow-sm transition animate-slide-in-right ${
-        active
-          ? "border-green-600/40 ring-1 ring-green-600/20"
-          : "border-slate-200/80 hover:border-slate-300"
-      }`}
-    >
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="min-w-0 space-y-2">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-lg font-semibold text-slate-900">
-              {coupon.discount_value}% off
-            </span>
-            {active ? (
-              <span className="inline-flex items-center gap-1 rounded-full bg-green-600/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-green-600 ring-1 ring-inset ring-green-600/20">
-                <SparklesIcon className="h-3 w-3" />
-                ACTIVE
-              </span>
-            ) : (
-              <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-500 ring-1 ring-inset ring-slate-200">
-                Inactive
-              </span>
-            )}
-          </div>
-          <p className="text-xs text-slate-500">
-            Min bill ₹{coupon.min_order_value}
-            {coupon.max_discount != null ? ` · Max discount ₹${coupon.max_discount}` : ""}
-            {" · "}
-            Valid {coupon.validity_period} days after issue
-          </p>
-          <p className="text-xs text-slate-400">
-            Created {formatUnixIst(coupon.created_at)}
-          </p>
-        </div>
-
-        <div className="flex shrink-0 items-center gap-3">
-          <span className="text-xs font-medium text-slate-500">
-            {active ? "Active" : "Inactive"}
-          </span>
-          <Switch
-            checked={active}
-            disabled={toggling}
-            onChange={() => onToggle(coupon)}
-            className="group relative inline-flex h-7 w-12 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent bg-slate-200 transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-[#5f22d9]/40 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[checked]:bg-green-600"
-          >
-            <span className="sr-only">Toggle coupon active state</span>
-            <span
-              aria-hidden="true"
-              className={`pointer-events-none inline-block size-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                toggling ? "opacity-60" : ""
-              } ${active ? "translate-x-5" : "translate-x-0.5"}`}
-            />
-          </Switch>
-          {toggling ? (
-            <span className="h-4 w-4 animate-spin rounded-full border-2 border-slate-300 border-t-green-600" />
-          ) : null}
-        </div>
-      </div>
     </div>
   );
 }
@@ -127,7 +66,21 @@ export default function VendorDineinCoupons() {
   const [minOrderValue, setMinOrderValue] = useState("0");
   const [maxDiscount, setMaxDiscount] = useState("");
   const [validityPeriod, setValidityPeriod] = useState("30");
+  const [service, setService] = useState("");
+  const [serviceType, setServiceType] = useState("INTERNAL");
+  const [site, setSite] = useState("");
+  const [addressUrl, setAddressUrl] = useState("");
+  const [placeSearch, setPlaceSearch] = useState("");
+  const [mapUrl, setMapUrl] = useState("");
   const [verifyModalOpen, setVerifyModalOpen] = useState(false);
+  const autoCompleteRef = useRef(null);
+  const autocompleteInstanceRef = useRef(null);
+  const isExternal = serviceType === "EXTERNAL";
+
+  const { isLoaded, loadError } = useLoadScript({
+    googleMapsApiKey: GOOGLE_MAPS_API_KEY,
+    libraries: GOOGLE_MAPS_LIBRARIES,
+  });
   const [resultModal, setResultModal] = useState({
     open: false,
     variant: "success",
@@ -169,6 +122,78 @@ export default function VendorDineinCoupons() {
     if (deactivateAllError) toast.error(String(deactivateAllError));
   }, [deactivateAllError]);
 
+  useEffect(() => {
+    if (loadError) {
+      toast.error("Failed to load Google Maps search");
+    }
+  }, [loadError]);
+
+  useEffect(() => {
+    if (!isExternal) {
+      setSite("");
+      setAddressUrl("");
+      setPlaceSearch("");
+      setMapUrl("");
+      if (autocompleteInstanceRef.current && window.google?.maps?.event) {
+        window.google.maps.event.clearInstanceListeners(autocompleteInstanceRef.current);
+        autocompleteInstanceRef.current = null;
+      }
+    }
+  }, [isExternal]);
+
+  useEffect(() => {
+    if (!isLoaded || !isExternal || !autoCompleteRef.current) return;
+
+    try {
+      if (autocompleteInstanceRef.current) {
+        window.google.maps.event.clearInstanceListeners(autocompleteInstanceRef.current);
+      }
+
+      autocompleteInstanceRef.current = new window.google.maps.places.Autocomplete(
+        autoCompleteRef.current,
+        {
+          types: ["geocode", "establishment"],
+          componentRestrictions: { country: "IN" },
+          fields: [
+            "formatted_address",
+            "geometry",
+            "place_id",
+            "name",
+            "url",
+            "website",
+            "types",
+            "address_components",
+          ],
+        }
+      );
+
+      autocompleteInstanceRef.current.addListener("place_changed", () => {
+        const place = autocompleteInstanceRef.current.getPlace();
+        const processedPlace = processPlaceForVendor(place, GOOGLE_MAPS_API_KEY);
+        if (!processedPlace) {
+          toast.error("Please select a valid place from the suggestions");
+          return;
+        }
+
+        setSite(place.name || processedPlace.formattedAddress);
+        setAddressUrl(processedPlace.googleMapsUrl);
+        setPlaceSearch(place.name || processedPlace.formattedAddress);
+        setMapUrl(processedPlace.mapEmbedUrl);
+        toast.success("Location selected");
+      });
+    } catch (error) {
+      console.error("Error initializing autocomplete:", error);
+      toast.error("Failed to initialize location search");
+    }
+
+    return () => {
+      if (autocompleteInstanceRef.current && window.google?.maps?.event) {
+        window.google.maps.event.clearInstanceListeners(autocompleteInstanceRef.current);
+        autocompleteInstanceRef.current = null;
+      }
+    };
+  }, [isLoaded, isExternal]);
+
   const anyCouponActive = coupons.some((coupon) => coupon.is_active);
 
   const handleCreate = async (e) => {
@@ -186,6 +211,10 @@ export default function VendorDineinCoupons() {
       toast.error("Validity period must be at least 1 day.");
       return;
     }
+    if (isExternal && (!site.trim() || !addressUrl.trim())) {
+      toast.error("Search and select a partner location from Google Maps.");
+      return;
+    }
 
     try {
       await dispatch(
@@ -194,13 +223,28 @@ export default function VendorDineinCoupons() {
           min_order_value,
           max_discount,
           validity_period,
+          service: service.trim() || undefined,
+          service_type: serviceType,
+          ...(isExternal
+            ? { site: site.trim(), address_url: addressUrl.trim() }
+            : {}),
         })
       ).unwrap();
-      toast.success("Dine-in coupon created. Activate it to attach to new listings.");
+      toast.success(
+        isExternal
+          ? "Partner coupon created. It will go live after Plenti approval."
+          : "Dine-in coupon created. Activate it to attach to new listings."
+      );
       setDiscountValue("");
       setMinOrderValue("0");
       setMaxDiscount("");
       setValidityPeriod("30");
+      setService("");
+      setServiceType("INTERNAL");
+      setSite("");
+      setAddressUrl("");
+      setPlaceSearch("");
+      setMapUrl("");
       dispatch(clearCreateError());
       refresh();
     } catch {
@@ -209,6 +253,15 @@ export default function VendorDineinCoupons() {
   };
 
   const handleToggle = async (coupon) => {
+    if (!coupon.is_active && coupon.approved !== true) {
+      toast.error(
+        coupon.approved === false
+          ? "This coupon was rejected and cannot go live."
+          : "This coupon is pending Plenti approval."
+      );
+      return;
+    }
+
     try {
       await dispatch(
         toggleDineinCoupon({
@@ -279,6 +332,11 @@ export default function VendorDineinCoupons() {
 
   return (
     <div className="min-h-screen p-4 animate-slide-in-left">
+      <style jsx global>{`
+        .pac-container {
+          z-index: 10000;
+        }
+      `}</style>
       <div className="max-w-7xl space-y-8">
         <header>
           <div className="flex flex-row items-center justify-start gap-2">
@@ -352,7 +410,7 @@ export default function VendorDineinCoupons() {
           message={resultModal.message}
         />
 
-        <section className="overflow-hidden">
+        <section>
           <div className="flex items-baseline justify-between gap-2">
             <h2 className="text-lg font-semibold text-slate-900">Create Dine-in Coupon</h2>
           </div>
@@ -408,6 +466,92 @@ export default function VendorDineinCoupons() {
                   />
                 </label>
               </div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <label className="block space-y-2">
+                  <span className={FIELD_LABEL_CLASS}>Service</span>
+                  <input
+                    type="text"
+                    value={service}
+                    onChange={(e) => setService(e.target.value)}
+                    placeholder="Buffet, spa, gym session"
+                    className={INPUT_CLASS}
+                  />
+                </label>
+                <label className="block space-y-2">
+                  <span className={FIELD_LABEL_CLASS}>Service type</span>
+                  <select
+                    value={serviceType}
+                    onChange={(e) => setServiceType(e.target.value)}
+                    className={INPUT_CLASS}
+                  >
+                    <option value="INTERNAL">Your store</option>
+                    <option value="EXTERNAL">Another business</option>
+                  </select>
+                </label>
+              </div>
+              {isExternal ? (
+                <div className="space-y-3">
+                  <label className="block space-y-2">
+                    <span className={FIELD_LABEL_CLASS}>Partner location</span>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        ref={autoCompleteRef}
+                        value={placeSearch}
+                        onChange={(e) => setPlaceSearch(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") e.preventDefault();
+                        }}
+                        placeholder={
+                          isLoaded
+                            ? "Search a place on Google Maps"
+                            : "Loading location search..."
+                        }
+                        className={INPUT_CLASS}
+                        disabled={!isLoaded}
+                        autoComplete="off"
+                      />
+                      {!isLoaded ? (
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                          <span className="h-4 w-4 animate-spin rounded-full border-2 border-slate-300 border-t-[#5f22d9]" />
+                        </div>
+                      ) : null}
+                    </div>
+                    <p className="text-xs text-slate-500">
+                      Pick the partner from suggestions. Site name and maps link are filled automatically.
+                    </p>
+                  </label>
+                  {site && addressUrl ? (
+                    <div className="rounded-xl border border-slate-200 bg-white/70 px-3 py-2 text-sm text-slate-700">
+                      <p className="font-medium">{site}</p>
+                      <a
+                        href={addressUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-1 inline-flex items-center gap-1 text-xs font-medium text-[#5f22d9] hover:underline"
+                      >
+                        <MapPinIcon className="h-3.5 w-3.5" />
+                        View on Google Maps
+                      </a>
+                    </div>
+                  ) : null}
+                  {mapUrl ? (
+                    <iframe
+                      src={mapUrl}
+                      title="Selected partner location"
+                      width="450"
+                      height="220"
+                      className="w-full rounded-xl"
+                      style={{ border: 0 }}
+                      allowFullScreen
+                      loading="lazy"
+                    />
+                  ) : null}
+                  <p className="text-xs text-amber-700">
+                    External coupons need Plenti approval before you can turn them on.
+                  </p>
+                </div>
+              ) : null}
               <button
                 type="submit"
                 disabled={createLoading}
