@@ -52,7 +52,7 @@ const Tabs = () => {
     <div className="flex">
       <div className="w-full">
         <TabGroup>
-          <TabList className="flex gap-4">
+          <TabList className="flex flex-wrap gap-2 sm:gap-4">
             {tabs.map(({ name }) => (
               <Tab
                 key={name}

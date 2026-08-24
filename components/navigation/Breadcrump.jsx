@@ -77,7 +77,7 @@ const Breadcrumb = () => {
   const currentPath = useMemo(() => decidePath(pathname), [pathname]);
 
   const MoreOptionsContent = () => (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center w-[90%] mx-auto">
       <img
         alt="Plenti Logo"
         src={"/logo.png"}
@@ -91,7 +91,7 @@ const Breadcrumb = () => {
 
   const DefaultContent = () => {
     return (
-      <div className="flex justify-between items-center lg:mr-auto lg:mt-4 lg:mb-4 lg:py-2 lg:w-[99%]">
+      <div className="flex justify-between items-center lg:mr-auto lg:mt-4 lg:mb-4 lg:py-2 w-[90%] mx-auto">
         <div className="flex items-center gap-3">
           {isParentRole && (
             <button

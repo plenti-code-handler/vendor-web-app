@@ -234,24 +234,21 @@ const Transactions = () => {
   };
 
   return (
-    <div className="flex flex-col w-[100%] lg:w-[50%] md:w-[60%] p-5 md:p-0">
+    <div className="flex flex-col w-full">
       <WithdrawAmountDrawer
         balance={balance}
         setBalance={setBalance}
         withdrawals={transactions}
         setWithdrawals={setTransactions}
       />
-      <div
-        className="flex flex-col justify-center bg-gradient-custom rounded-xl items-center shadow-lg p-6"
-        style={{ width: "100%", height: "255px", position: "relative" }}
-      >
+      <div className="flex flex-col justify-center bg-gradient-custom rounded-xl items-center shadow-lg p-6 w-full min-h-[255px] relative">
 
         {/* Wallet Balance Title */}
         <p className="text-xs text-white/60 font-medium uppercase tracking-wider z-0 mb-2">My Wallet Balance</p>
         
 
         {/* Payment Breakdown - Subtle */}
-        <div className="flex items-center gap-1.5 z-0 mb-4 text-xs text-white/50">
+        <div className="flex flex-wrap items-center justify-center gap-1.5 z-0 mb-4 text-xs text-white/50">
           <span className="border border-white/20 rounded-lg px-2 py-1 text-white/80">₹{Number(paymentBreakdown.total_captured_payments).toFixed(2)} (Revenue)</span>
           <span>−</span>
           <span className="border border-white/20 rounded-lg px-2 py-1 text-white/80">₹{Number(paymentBreakdown.total_refund_payments).toFixed(2)} (Refunds)</span>
@@ -267,7 +264,7 @@ const Transactions = () => {
 
         <button
           onClick={handleWithdraw}
-          className=" w-64 h-10 flex justify-center items-center bg-white/10 backdrop-blur-sm border border-white/20 text-white font-medium rounded-lg hover:bg-white/20 px-4 py-2 z-0 transition-all duration-200"
+          className="w-full max-w-64 h-10 flex justify-center items-center bg-white/10 backdrop-blur-sm border border-white/20 text-white font-medium rounded-lg hover:bg-white/20 px-4 py-2 z-0 transition-all duration-200"
         >
           {checkingPayout ? <BeatLoader color="#ffffff" size={8} /> : 
             <>

@@ -6,7 +6,7 @@ const Page = () => {
 
 
   return (
-    <div className="flex flex-col p-5 animate-slide-in-left">
+    <div className="flex flex-col p-5 animate-slide-in-left w-[90%] mx-auto">
       <div className="flex flex-col lg:flex-row lg:space-x-4 space-y-4 lg:space-y-0">
         <RenderStats />
       </div>

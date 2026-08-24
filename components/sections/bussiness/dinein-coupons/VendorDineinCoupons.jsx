@@ -337,7 +337,7 @@ export default function VendorDineinCoupons() {
           z-index: 10000;
         }
       `}</style>
-      <div className="max-w-7xl space-y-8">
+      <div className="space-y-8">
         <header>
           <div className="flex flex-row items-center justify-start gap-2">
             <BetaBadge />
