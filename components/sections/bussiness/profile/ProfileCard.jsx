@@ -178,7 +178,7 @@ const ProfileCard = () => {
 
   return (
     <>
-      <div className="flex flex-col    w-[100%] lg:w-[60%] md:w-[60%] border border-gray-100 rounded-md">
+      <div className="flex flex-col w-full border border-gray-100 rounded-md">
         <div className="w-full">
           {/* Cover Image */}
           {/* Cover Image with Upload */}

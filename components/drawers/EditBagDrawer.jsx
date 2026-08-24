@@ -41,7 +41,7 @@ const EditBagDrawer = () => {
   const [windowDuration, setWindowDuration] = useState(60); // Add this
   const [bestBeforeDuration, setBestBeforeDuration] = useState(60); // Add this
   const [showHoursWarning, setShowHoursWarning] = useState(false);
-  const { bagToEdit, templateItem } = useSelector((state) => state.editBag);
+  const { bagToEdit } = useSelector((state) => state.editBag);
   const open = useSelector((state) => state.editBag.drawerOpen);
   const pricing = useSelector((state) => state.catalogue.pricing);
   const vendorData = useSelector(selectVendorData);
@@ -82,22 +82,8 @@ const EditBagDrawer = () => {
 
       setWindowDuration(calculatedWindowDuration > 0 ? calculatedWindowDuration : 60);
       setBestBeforeDuration(calculatedBestBeforeDuration > 0 ? calculatedBestBeforeDuration : 60);
-    } else if (templateItem) {
-      // Logic for creating from template
-      setSelectedAllergens(templateItem.allergens || []);
-      setSelectedBag(templateItem.item_type);
-      setSelectedPricingId(templateItem.pricing_id ?? "default");
-      setDescription(templateItem.description || "");
-      setVegServings(templateItem.veg_servings_start || 0);
-      setNonVegServings(templateItem.non_veg_servings_start || 0);
-
-      // Reset times for new item creation
-      const tenMinutesFromNow = new Date(Date.now() + 10 * 60000);
-      setWindowStartTime(tenMinutesFromNow);
-      setWindowDuration(60);
-      setBestBeforeDuration(60);
     }
-  }, [bagToEdit, templateItem]);
+  }, [bagToEdit]);
 
   const availableCategories = getAvailableCategories(pricing);
 
@@ -161,7 +147,6 @@ const EditBagDrawer = () => {
       };
 
       if (bagToEdit?.id) {
-        // Update existing item
         payload.veg_servings_current = vegServings;
         payload.non_veg_servings_current = nonVegServings;
 
@@ -176,26 +161,10 @@ const EditBagDrawer = () => {
           dispatch(setOpenDrawer(false));
           dispatch(fetchAllBags({ active: true }));
         }
-      } else {
-        // Create new item (from template)
-        payload.veg_servings_start = vegServings;
-        payload.non_veg_servings_start = nonVegServings;
-
-        const response = await axiosClient.post(
-          "/v1/vendor/item/create",
-          payload
-        );
-
-        if (response.status === 200) {
-          toast.success("Item created successfully!");
-          setShowHoursWarning(false);
-          dispatch(setOpenDrawer(false));
-          dispatch(fetchAllBags({ active: true }));
-        }
       }
 
     } catch (error) {
-      toast.error(bagToEdit?.id ? "Failed to update item!" : "Failed to create item!");
+      toast.error("Failed to update item!");
       console.error("Error submitting item: ", error);
     } finally {
       setLoading(false);
@@ -218,7 +187,7 @@ const EditBagDrawer = () => {
         <div className="shrink-0 px-4">
           <DrawerHeader
             title="Edit Item"
-            subtitle={bagToEdit?.id ? "Update your food item details" : "Create a new item based on this template"}
+            subtitle="Update your food item details"
             onClose={handleClose}
           />
         </div>
@@ -284,11 +253,11 @@ const EditBagDrawer = () => {
               loading={loading}
               disabled={availableCategories.length === 0}
               onClick={handleSubmit}
-              loadingText={bagToEdit?.id ? "Updating Item..." : "Creating Item..."}
+              loadingText="Updating Item..."
               fullWidth
               className="w-full"
             >
-              {bagToEdit?.id ? "Update Item" : "Create Item"}
+              Update Item
             </PrimaryButton>
             {availableCategories.length === 0 && (
               <p className="text-center text-sm text-gray-500 mt-3">
