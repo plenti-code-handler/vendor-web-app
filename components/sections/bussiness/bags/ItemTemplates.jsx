@@ -1,13 +1,16 @@
 "use client";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 import {
+  ChevronDownIcon,
+  ChevronUpIcon,
   MagnifyingGlassIcon,
   PencilSquareIcon,
   PlusIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
+import { BoltIcon } from "@heroicons/react/24/solid";
 import axiosClient from "../../../../AxiosClient";
 import { fetchAllBags } from "../../../../redux/slices/bagsSlice";
 import { ITEM_TYPE_DISPLAY_NAMES } from "../../../../constants/itemTypes";
@@ -29,6 +32,59 @@ const parseServings = (value) => {
   if (value === "") return 0;
   const n = parseInt(value, 10);
   return Number.isNaN(n) || n < 0 ? 0 : n;
+};
+
+const ServingsField = ({ label, diet, value, onChange, focusClass }) => {
+  const inputRef = useRef(null);
+  const bump = (delta) => onChange(Math.max(0, (Number(value) || 0) + delta));
+
+  useEffect(() => {
+    const el = inputRef.current;
+    if (!el) return;
+    const blockWheel = (e) => e.preventDefault();
+    el.addEventListener("wheel", blockWheel, { passive: false });
+    return () => el.removeEventListener("wheel", blockWheel);
+  }, []);
+
+  return (
+    <div className="flex min-w-[7.5rem] flex-1  gap-1">
+      <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wide text-gray-600">
+        <DietIcon diet={diet} size="sm" />
+      </span>
+      <div className={`relative flex h-9 overflow-hidden rounded-lg border border-gray-300 bg-white shadow-[inset_0_1px_2px_rgba(0,0,0,0.06)] focus-within:ring-2 ${focusClass}`}>
+        <input
+          ref={inputRef}
+          type="text"
+          inputMode="numeric"
+          pattern="[0-9]*"
+          value={value || ""}
+          onChange={(e) => onChange(parseServings(e.target.value.replace(/\D/g, "")))}
+          placeholder="Qty"
+          aria-label={`${label} servings`}
+          className="h-full w-full bg-transparent px-2.5 pr-8 text-sm font-medium text-gray-900 outline-none placeholder:font-normal placeholder:text-gray-400"
+        />
+        <div className="absolute inset-y-0 right-0 flex w-6 flex-col border-l border-gray-200 bg-gray-50">
+          <button
+            type="button"
+            onClick={() => bump(1)}
+            aria-label={`Increase ${label} servings`}
+            className="flex flex-1 items-center justify-center text-gray-500 hover:bg-gray-100 hover:text-gray-800"
+          >
+            <ChevronUpIcon className="h-3 w-3" />
+          </button>
+          <button
+            type="button"
+            disabled={!value}
+            onClick={() => bump(-1)}
+            aria-label={`Decrease ${label} servings`}
+            className="flex flex-1 items-center justify-center border-t border-gray-200 text-gray-500 hover:bg-gray-100 hover:text-gray-800 disabled:cursor-not-allowed disabled:text-gray-300"
+          >
+            <ChevronDownIcon className="h-3 w-3" />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 // Updated to edit values directly in hours
@@ -130,39 +186,21 @@ const TemplateCard = ({ template, onGoLive, onDelete, goingLive }) => {
       </div>
 
       {/* Servings Inputs and Go Live Button */}
-      <div className="mt-4 flex flex-wrap items-center gap-2 pt-3 border-t border-gray-100">
-        <label className="flex min-w-[7.5rem] flex-1 items-center gap-1.5 rounded-xl border border-green-500 bg-green-50 px-2 py-1.5 focus-within:ring-2 focus-within:ring-green-400/60">
-          <DietIcon diet="veg" size="sm" />
-          <span className="shrink-0 text-[10px] font-bold uppercase tracking-wide text-green-700">
-            Veg
-          </span>
-          <input
-            type="number"
-            min={0}
-            inputMode="numeric"
-            value={vegServings || ""}
-            onChange={(e) => setVegServings(parseServings(e.target.value))}
-            placeholder="0"
-            aria-label="Vegetarian servings"
-            className="w-full min-w-0 bg-transparent text-sm font-bold text-green-800 outline-none placeholder:text-green-700/40"
-          />
-        </label>
-        <label className="flex min-w-[8.5rem] flex-1 items-center gap-1.5 rounded-xl border border-red-500 bg-red-50 px-2 py-1.5 focus-within:ring-2 focus-within:ring-red-400/60">
-          <DietIcon diet="non_veg" size="sm" />
-          <span className="shrink-0 text-[10px] font-bold uppercase tracking-wide text-red-700">
-            Non-veg
-          </span>
-          <input
-            type="number"
-            min={0}
-            inputMode="numeric"
-            value={nonVegServings || ""}
-            onChange={(e) => setNonVegServings(parseServings(e.target.value))}
-            placeholder="0"
-            aria-label="Non-vegetarian servings"
-            className="w-full min-w-0 bg-transparent text-sm font-bold text-red-800 outline-none placeholder:text-red-700/40"
-          />
-        </label>
+      <div className="mt-4 flex flex-wrap items-end gap-2 pt-3 border-t border-gray-100">
+        <ServingsField
+          label="Veg"
+          diet="veg"
+          value={vegServings}
+          onChange={setVegServings}
+          focusClass="focus-within:border-green-500 focus-within:ring-green-500/20"
+        />
+        <ServingsField
+          label="Non-veg"
+          diet="non_veg"
+          value={nonVegServings}
+          onChange={setNonVegServings}
+          focusClass="focus-within:border-red-500 focus-within:ring-red-500/20"
+        />
         <button
           type="button"
           disabled={!canGoLive || goingLive}
@@ -260,8 +298,11 @@ const ItemTemplates = () => {
     >
       <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <h2 className="text-xl text-[#5f22d9] font-bold tracking-tight">Quick templates</h2>
-          <p className="text-sm font-medium text-gray-500">Go live in 2 clicks</p>
+          <h2 className="inline-flex items-center gap-2 text-xl text-[#5f22d9] font-bold tracking-tight">
+            <BoltIcon className="h-5 w-5 shrink-0" />
+            Quick templates
+          </h2>
+          <p className="text-sm font-medium text-gray-500">Go live in 2 clicks. Just for you.</p>
         </div>
         <div className="flex w-full flex-col gap-2.5 sm:flex-row sm:items-center lg:w-auto">
           <div className="flex w-full items-center gap-2 rounded-full border border-gray-200/80 bg-white/80 px-3.5 py-2 shadow-sm backdrop-blur-sm sm:w-60 focus-within:border-[#5f22d9] focus-within:ring-1 focus-within:ring-[#5f22d9] transition">
