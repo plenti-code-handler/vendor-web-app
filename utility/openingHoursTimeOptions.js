@@ -36,12 +36,23 @@ export function isUnixInstantWithinOpeningWindow(
     const close = String(closeHhMm ?? "").trim();
     if (!close) return true;
 
-    const targetHhMm = new Date(unixTs*1000).toLocaleTimeString("en-IN", {
-        timeZone,
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-    });
+    const targetHhMm = (() => {
+      const date = new Date(unixTs * 1000);
+      try {
+        return date.toLocaleTimeString("en-GB", {
+          timeZone,
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        });
+      } catch {
+        const utc = date.getTime() + date.getTimezoneOffset() * 60000;
+        const ist = new Date(utc + 5.5 * 3600000);
+        return `${String(ist.getHours()).padStart(2, "0")}:${String(
+          ist.getMinutes()
+        ).padStart(2, "0")}`;
+      }
+    })();
     console.log(targetHhMm, openHhMm, closeHhMm)
     const [t, s, e] = [targetHhMm, openHhMm, close].map(toMinutes);
 

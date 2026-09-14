@@ -4,6 +4,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import InfoIcon from '../../common/InfoIcon';
 import { STORE_HOURS_TIMEZONE } from '../../../utility/openingHoursTimeOptions';
+import { safeToLocaleString } from '../../../utility/intlSafe';
 
 const TimingSection = ({ 
   windowStartTime, 
@@ -17,7 +18,7 @@ const TimingSection = ({
   showStartTime = true,
 }) => {
   // criterias for haleej restaurant
-  const vendor_id = useSelector((state) => state.vendor.vendorData.id);
+  const vendor_id = useSelector((state) => state.vendor.vendorData?.id);
   const isHaleej = vendor_id === 'vdr_20260520182633_NMV';
   console.log('isHaleej', vendor_id, isHaleej);
   const windowDurationOptions = [
@@ -54,7 +55,9 @@ const TimingSection = ({
   const pickupWindowEnd =
     windowEndTime instanceof Date && !Number.isNaN(windowEndTime.getTime())
       ? windowEndTime
-      : new Date(windowStartTime.getTime() + windowDuration * 60000);
+      : windowStartTime instanceof Date && !Number.isNaN(windowStartTime.getTime())
+        ? new Date(windowStartTime.getTime() + windowDuration * 60000)
+        : null;
 
   return (
     <div className="mb-8">
@@ -117,15 +120,17 @@ const TimingSection = ({
           {showStartTime && (
           <p className="text-xs text-gray-500 mt-2">
             Window ends at:{" "}
-            {pickupWindowEnd.toLocaleString("en-IN", {
-              timeZone: STORE_HOURS_TIMEZONE,
-              month: "short",
-              day: "numeric",
-              year: "numeric",
-              hour: "2-digit",
-              minute: "2-digit",
-              hour12: true,
-            })}{" "}
+            {pickupWindowEnd
+              ? safeToLocaleString(pickupWindowEnd, "en-IN", {
+                  timeZone: STORE_HOURS_TIMEZONE,
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: true,
+                })
+              : "—"}{" "}
           </p>
           )}
         </div>
@@ -166,17 +171,23 @@ const TimingSection = ({
           {showStartTime && (
           <p className="text-xs text-gray-500 mt-2">
             Best before:{" "}
-            {new Date(
-              pickupWindowEnd.getTime() + bestBeforeDuration * 60000
-            ).toLocaleString("en-IN", {
-              timeZone: STORE_HOURS_TIMEZONE,
-              month: "short",
-              day: "numeric",
-              year: "numeric",
-              hour: "2-digit",
-              minute: "2-digit",
-              hour12: true,
-            })}{" "}
+            {pickupWindowEnd
+              ? safeToLocaleString(
+                  new Date(
+                    pickupWindowEnd.getTime() + bestBeforeDuration * 60000
+                  ),
+                  "en-IN",
+                  {
+                    timeZone: STORE_HOURS_TIMEZONE,
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: true,
+                  }
+                )
+              : "—"}{" "}
             <span className="text-gray-400">(IST)</span>
           </p>
           )}

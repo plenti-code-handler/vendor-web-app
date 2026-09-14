@@ -46,9 +46,10 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={poppins.variable}>
+    <html lang="en" translate="no" className={poppins.variable}>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+        <meta name="google" content="notranslate" />
       </head>
       <body className={poppins.className}>
         <ServiceWorkerRegister />

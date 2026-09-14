@@ -29,9 +29,12 @@ export default function HomeLayout({ children }) {
         dangerouslySetInnerHTML={{
           __html: `
             function googleTranslateElementInit() {
-              new google.translate.TranslateElement({
-                autoDisplay: false
-              }, 'google_translate_element');
+              try {
+                if (!document.getElementById('google_translate_element')) return;
+                new google.translate.TranslateElement({
+                  autoDisplay: false
+                }, 'google_translate_element');
+              } catch (e) {}
             }
           `,
         }}

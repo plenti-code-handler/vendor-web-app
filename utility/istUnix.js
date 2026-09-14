@@ -1,3 +1,5 @@
+import { safeToLocaleString } from "./intlSafe";
+
 /**
  * Convert HTML date input (YYYY-MM-DD) to Unix seconds for start/end of that day in IST (Asia/Kolkata).
  */
@@ -13,9 +15,11 @@ export function istEndOfDayUnix(dateStr) {
 
 export function formatUnixIst(tsSeconds) {
   if (tsSeconds == null) return "—";
-  return new Date(tsSeconds * 1000).toLocaleString("en-IN", {
-    timeZone: "Asia/Kolkata",
-    dateStyle: "medium",
-    timeStyle: "short",
-  });
+  return (
+    safeToLocaleString(new Date(tsSeconds * 1000), "en-IN", {
+      timeZone: "Asia/Kolkata",
+      dateStyle: "medium",
+      timeStyle: "short",
+    }) || "—"
+  );
 }
