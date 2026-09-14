@@ -24,6 +24,7 @@ const NotificationPermissionPrompt = () => {
       if (typeof window === 'undefined' || !('Notification' in window)) {
         return;
       }
+      if (!('serviceWorker' in navigator)) return;
 
       await navigator.serviceWorker.ready;
       await waitUntilControlled();

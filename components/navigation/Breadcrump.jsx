@@ -15,7 +15,7 @@ const decidePath = (pathname) => {
   }
 
   const path = pathname.split("/");
-  const lastPath = path.at(-1);
+  const lastPath = path[path.length - 1];
 
   switch (lastPath) {
     case "business":
