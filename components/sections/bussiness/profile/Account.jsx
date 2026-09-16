@@ -465,6 +465,7 @@ const Account = () => {
           <option value="SUPERMARKET">Super Market</option>
           <option value="BAKERY">Bakery</option>
           <option value="EVENTS">Events</option>
+          <option value="HYBRID_SELLER">Hybrid Seller</option>
         </select>
       </div>
 

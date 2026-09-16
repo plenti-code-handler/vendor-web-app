@@ -36,6 +36,17 @@ export const getEntriesForItemType = (pricing, itemType) => {
   return pricing.filter((p) => String(p.item_type) === String(itemType));
 };
 
+export const DEFAULT_ITEM_GST_RATE = 0.05;
+export const DEFAULT_TCS_RATE = 0.01;
+
+export const isPackedItemEligible = (vendorType, itemType) =>
+  String(vendorType) === 'HYBRID_SELLER' && String(itemType) === 'SNACKS_AND_DESSERT';
+
+export const packedItemFields = (packed) =>
+  packed
+    ? { tcs: true, item_gst_rate: 0, tcs_rate: DEFAULT_TCS_RATE }
+    : { tcs: false, item_gst_rate: DEFAULT_ITEM_GST_RATE, tcs_rate: 0 };
+
 const normalizePricingEntry = (entry) => {
   const bags = entry?.bags ?? {};
   const cuts = entry?.cuts ?? {};
@@ -55,6 +66,9 @@ const normalizePricingEntry = (entry) => {
       LARGE: Number(cuts.LARGE ?? 0),
     },
     descriptions: [...(entry.descriptions || [])].map(String).sort(),
+    tcs: Boolean(entry?.tcs),
+    item_gst_rate: Number(entry?.item_gst_rate ?? DEFAULT_ITEM_GST_RATE),
+    tcs_rate: Number(entry?.tcs_rate ?? (entry?.tcs ? DEFAULT_TCS_RATE : 0)),
   };
 };
 

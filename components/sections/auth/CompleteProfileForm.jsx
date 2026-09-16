@@ -302,6 +302,7 @@ const CompleteProfileForm = ({ onSubmit, loading, initialData }) => {
           <option value="SUPERMARKET">Super Market</option>
           <option value="BAKERY">Bakery</option>
           <option value="EVENTS">Events</option>
+          <option value="HYBRID_SELLER">Hybrid Seller</option>
         </select>
         {errors.vendorType && (
           <p className="text-red-500 text-sm">

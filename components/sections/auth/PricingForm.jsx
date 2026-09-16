@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useSelector } from 'react-redux';
 import { toast } from 'sonner';
 import axiosClient from '../../../AxiosClient';
 import {
@@ -13,16 +14,22 @@ import { calculatePrices, getTierInfo, getPayoutTier, getPayoutThreshold } from 
 import PriceCard from '../../sections/bussiness/profile/PriceCard';
 import PayoutThresholdSection from '../../sections/bussiness/profile/PayoutThresholdSection';
 import CategorySelection from '../bussiness/profile/CategorySelection';
+import { isPackedItemEligible, packedItemFields } from '../../../utility/catalogueUtils';
+import { selectVendorData } from '../../../redux/slices/vendorSlice';
 
 
 const PricingForm = ({ onSuccess, showBackButton = false }) => {
   const router = useRouter();
+  const vendorData = useSelector(selectVendorData);
+  const vendorType = vendorData?.vendor_type;
   const [step, setStep] = useState(1);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [activeTab, setActiveTab] = useState(ITEM_TYPES.MEAL);
   const [averagePrices, setAveragePrices] = useState({});
   const [showCards, setShowCards] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [packedItem, setPackedItem] = useState(false);
+  const showPackedItem = isPackedItemEligible(vendorType, activeTab);
 
   // Dynamic categories from constants
   const categories = getCategoriesForUI();
@@ -114,7 +121,8 @@ const PricingForm = ({ onSuccess, showBackButton = false }) => {
             LARGE: prices.large.cut
           },
           asp,
-          descriptions: []
+          descriptions: [],
+          ...(isPackedItemEligible(vendorType, categoryId) ? packedItemFields(packedItem) : {})
         };
       });
 
@@ -266,6 +274,18 @@ const PricingForm = ({ onSuccess, showBackButton = false }) => {
                   <div className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${tierInfo.color}`}>
                     {tierInfo.name} TIER
                   </div>
+                )}
+
+                {showPackedItem && (
+                  <label className="inline-flex items-center gap-2 text-sm font-medium text-gray-700 cursor-pointer pt-1">
+                    <input
+                      type="checkbox"
+                      checked={packedItem}
+                      onChange={(e) => setPackedItem(e.target.checked)}
+                      className="h-4 w-4 rounded border-gray-300 text-[#5F22D9] focus:ring-[#5F22D9]"
+                    />
+                    Packed Item
+                  </label>
                 )}
               </div>
             </div>
