@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { XMarkIcon, PlusIcon } from "@heroicons/react/24/solid";
 import { calculatePrices } from "../../utility/priceCalculations";
@@ -9,6 +10,8 @@ import PrimaryButton from "../buttons/PrimaryButton";
 import { ITEM_TYPE_DISPLAY_NAMES } from "../../constants/itemTypes";
 import { toast } from "sonner";
 import { useBackToClose } from "../../hooks/useBackToCloseModal";
+import { isPackedItemEligible, packedItemFields } from "../../utility/catalogueUtils";
+import { selectVendorData } from "../../redux/slices/vendorSlice";
 
 const slugify = (s) =>
   String(s)
@@ -25,14 +28,18 @@ const AddPricingModal = ({
   existingEntriesForItemType = [],
   onSave,
 }) => {
+  const vendorData = useSelector(selectVendorData);
+  const vendorType = vendorData?.vendor_type;
   const itemType = itemTypeProp ?? "MEAL";
   const isEdit = Boolean(editEntry);
   const isDefaultEntry = isEdit && String(editEntry?.id ?? "default") === "default";
+  const showPackedItem = isPackedItemEligible(vendorType, itemType);
   const [asp, setAsp] = useState("");
   const [name, setName] = useState("");
   const [descriptions, setDescriptions] = useState([]);
   const [descriptionInput, setDescriptionInput] = useState("");
   const [showCards, setShowCards] = useState(false);
+  const [packedItem, setPackedItem] = useState(false);
 
   useBackToClose(open, onClose);
 
@@ -42,10 +49,12 @@ const AddPricingModal = ({
         setAsp(String(editEntry.asp ?? ""));
         setName(editEntry.name || editEntry.id || "");
         setDescriptions(Array.isArray(editEntry.descriptions) ? [...editEntry.descriptions] : []);
+        setPackedItem(Boolean(editEntry.tcs));
       } else {
         setAsp("");
         setName("");
         setDescriptions([]);
+        setPackedItem(false);
       }
       setDescriptionInput("");
       setShowCards(false);
@@ -118,6 +127,7 @@ const AddPricingModal = ({
         LARGE: prices.large.cut,
       },
       descriptions: [...descriptions],
+      ...(showPackedItem ? packedItemFields(packedItem) : {}),
     };
     onSave(entry, editEntry);
     onClose();
@@ -180,6 +190,18 @@ const AddPricingModal = ({
                 <p className="text-xs text-gray-500">Default pricing name cannot be changed.</p>
               )}
             </div>
+
+            {showPackedItem && (
+              <label className="inline-flex items-center gap-2 text-sm font-medium text-gray-700 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={packedItem}
+                  onChange={(e) => setPackedItem(e.target.checked)}
+                  className="h-4 w-4 rounded border-gray-300 text-[#5F22D9] focus:ring-[#5F22D9]"
+                />
+                Packed Item
+              </label>
+            )}
 
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">
