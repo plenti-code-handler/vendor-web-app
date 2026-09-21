@@ -37,7 +37,7 @@ export const getEntriesForItemType = (pricing, itemType) => {
 };
 
 export const DEFAULT_ITEM_GST_RATE = 0.05;
-export const DEFAULT_TCS_RATE = 0.01;
+export const DEFAULT_TCS_RATE = 0.005;
 
 export const isPackedItemEligible = (vendorType, itemType) =>
   String(vendorType) === 'HYBRID_SELLER' && String(itemType) === 'SNACKS_AND_DESSERT';
