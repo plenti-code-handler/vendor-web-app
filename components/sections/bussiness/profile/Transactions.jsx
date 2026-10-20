@@ -18,6 +18,29 @@ import { formatDateTime } from "../../../../utility/FormatTime";
 
 const ITEMS_PER_PAGE = 10;
 
+const PAYOUT_STATUS = {
+  INITIATED: {
+    label: "Initiated",
+    pill: "bg-amber-50 text-amber-700",
+    dot: "bg-amber-400",
+  },
+  PROCESSING: {
+    label: "Processing",
+    pill: "bg-sky-50 text-sky-700",
+    dot: "bg-sky-400",
+  },
+  COMPLETED: {
+    label: "Completed",
+    pill: "bg-emerald-50 text-emerald-700",
+    dot: "bg-emerald-500",
+  },
+  FAILED: {
+    label: "Failed",
+    pill: "bg-rose-50 text-rose-700",
+    dot: "bg-rose-500",
+  },
+};
+
 const TransactionTile = ({ transaction, isExpanded, onToggle }) => {
   const {
     id,
@@ -111,6 +134,39 @@ const TransactionTile = ({ transaction, isExpanded, onToggle }) => {
   );
 };
 
+const PayoutTile = ({ payout }) => {
+  const { id, amount, description, status } = payout;
+  const statusMeta = PAYOUT_STATUS[status] ?? {
+    label: status || "Unknown",
+    pill: "bg-gray-100 text-gray-600",
+    dot: "bg-gray-400",
+  };
+
+  return (
+    <div className="flex items-center justify-between gap-4 rounded-xl border border-gray-200 bg-white px-4 py-3.5 transition-colors duration-150 hover:bg-gray-50">
+      <div className="min-w-0 flex-1">
+        <p className="truncate font-mono text-[13px] font-medium text-gray-900">
+          {id}
+        </p>
+        {description ? (
+          <p className="mt-0.5 truncate text-xs text-gray-500">{description}</p>
+        ) : null}
+      </div>
+      <div className="flex shrink-0 items-center gap-3 sm:gap-4">
+        <span
+          className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-medium ${statusMeta.pill}`}
+        >
+          <span className={`h-1.5 w-1.5 rounded-full ${statusMeta.dot}`} aria-hidden />
+          {statusMeta.label}
+        </span>
+        <span className="min-w-[4.75rem] text-right text-sm font-semibold tabular-nums text-gray-900 sm:min-w-[5.5rem]">
+          ₹{Number(amount ?? 0).toFixed(2)}
+        </span>
+      </div>
+    </div>
+  );
+};
+
 const Transactions = () => {
   const dispatch = useDispatch();
   const { value: balance } = useSelector((state) => state.balance);
@@ -123,6 +179,10 @@ const Transactions = () => {
   const [loadingMore, setLoadingMore] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const [hasMoreTransactions, setHasMoreTransactions] = useState(true);
+  const [payoutsLoading, setPayoutsLoading] = useState(true);
+  const [loadingMorePayouts, setLoadingMorePayouts] = useState(false);
+  const [currentPayoutPage, setCurrentPayoutPage] = useState(0);
+  const [hasMorePayouts, setHasMorePayouts] = useState(true);
   const [checkingPayout, setCheckingPayout] = useState(false);
   const [expandedTransactionId, setExpandedTransactionId] = useState(null);
   const [paymentBreakdown, setPaymentBreakdown] = useState({
@@ -190,20 +250,45 @@ const Transactions = () => {
   };
 
 
-  useEffect(() => {
-    const fetchPayouts = async () => {
-      try {
-        const response = await axiosClient.get(
-          "/v1/vendor/payout/get?skip=0&limit=10"
-        );
-        setPayouts(response.data);
-      } catch (error) {
-        console.error("Error fetching payouts:", error);
-      }
-    };
+  const fetchPayouts = useCallback(async (reset = false, pageNum = 0) => {
+    if (reset) {
+      setCurrentPayoutPage(0);
+      setPayouts([]);
+      setHasMorePayouts(true);
+    }
 
-    fetchPayouts();
+    const skip = reset ? 0 : pageNum * ITEMS_PER_PAGE;
+
+    setPayoutsLoading(reset);
+    setLoadingMorePayouts(!reset);
+
+    try {
+      const response = await axiosClient.get(
+        `/v1/vendor/payout/get?skip=${skip}&limit=${ITEMS_PER_PAGE}`
+      );
+      const newPayouts = response.data || [];
+
+      setPayouts((prev) => (reset ? newPayouts : [...prev, ...newPayouts]));
+      setCurrentPayoutPage(reset ? 1 : pageNum + 1);
+      setHasMorePayouts(newPayouts.length === ITEMS_PER_PAGE);
+    } catch (error) {
+      console.error("Error fetching payouts:", error);
+      toast.error("Failed to fetch payouts");
+    } finally {
+      setPayoutsLoading(false);
+      setLoadingMorePayouts(false);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchPayouts(true, 0);
+  }, [fetchPayouts]);
+
+  const handleLoadMorePayouts = useCallback(() => {
+    if (!loadingMorePayouts && hasMorePayouts) {
+      fetchPayouts(false, currentPayoutPage);
+    }
+  }, [loadingMorePayouts, hasMorePayouts, currentPayoutPage, fetchPayouts]);
 
   const handleWithdraw = async () => {
     setCheckingPayout(true);
@@ -215,21 +300,6 @@ const Transactions = () => {
       toast.error(error.response?.data?.detail || "Failed to check payout eligibility");
     } finally {
       setCheckingPayout(false);
-    }
-  };
-
-  const decideStyle = (status) => {
-    switch (status) {
-      case "PENDING":
-      case "INITIATED":
-      case "PROCESSING":
-        return "bg-scheduledBg border-badgeScheduled text-badgeScheduled";
-      case "COMPLETED":
-        return "bg-green-200 border-green-500 text-green-500";
-      case "FAILED":
-        return "bg-red-200 text-red-500 border-red-500";
-      default:
-        return "bg-gray-200 text-gray-500 border-gray-500";
     }
   };
 
@@ -301,10 +371,10 @@ const Transactions = () => {
       </div>
 
       <div className="flex flex-col mt-4 p-3">
-        {loading ? (
-          <Loader />
-        ) : activeTab === "transactions" ? (
-          transactions.length > 0 ? (
+        {activeTab === "transactions" ? (
+          loading ? (
+            <Loader />
+          ) : transactions.length > 0 ? (
             <>
               <div className="flex flex-col gap-3">
                 {transactions.map((transaction) => (
@@ -347,40 +417,41 @@ const Transactions = () => {
           ) : (
             <p className="text-gray-500 text-sm">No transactions found.</p>
           )
+        ) : payoutsLoading ? (
+          <Loader />
         ) : payouts.length > 0 ? (
-          <div className="overflow-x-auto sm:overflow-x-visible">
-            <div className="flex flex-col sm:flex-col gap-2 min-w-[350px] sm:min-w-0">
+          <>
+            <div className="flex flex-col gap-2">
               {payouts.map((payout) => (
-                <div
-                  key={payout.id}
-                  className="flex justify-between items-center bg-white shadow-lg transform translate-y-[-5px] rounded-lg w-full p-4"
-                >
-                  <div className="flex flex-col">
-                    <p className="text-cardNumber text-base font-semibold">
-                      {payout.id}
-                    </p>
-                    <p className="text-date text-sm font-medium">
-                      {payout.description}
-                    </p>
-                  </div>
-                  <div className="flex gap-5 items-center">
-                    <div
-                      className={`${decideStyle(
-                        payout.status
-                      )} font-semibold rounded-full text-center border text-[12px] px-5 py-1`}
-                    >
-                      {payout.status}
-                    </div>
-                    <div className="text-amount text-xl font-semibold">
-                      {Number(payout.amount).toFixed(2)}
-                    </div>
-                  </div>
-                </div>
+                <PayoutTile key={payout.id} payout={payout} />
               ))}
             </div>
-          </div>
+            {hasMorePayouts && (
+              <div className="flex justify-center mt-6">
+                <button
+                  type="button"
+                  onClick={handleLoadMorePayouts}
+                  disabled={loadingMorePayouts}
+                  className={`px-4 py-2 rounded-md text-sm font-normal transition-colors duration-200 ${
+                    loadingMorePayouts
+                      ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                      : "bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-200"
+                  }`}
+                >
+                  {loadingMorePayouts ? (
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 border-2 border-gray-300 border-t-transparent rounded-full animate-spin" />
+                      Loading...
+                    </div>
+                  ) : (
+                    "Load More Payouts"
+                  )}
+                </button>
+              </div>
+            )}
+          </>
         ) : (
-          <p>No payouts found.</p>
+          <p className="text-sm text-gray-500">No payouts found.</p>
         )}
       </div>
     </div>
