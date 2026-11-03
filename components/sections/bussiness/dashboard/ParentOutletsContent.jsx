@@ -19,8 +19,10 @@ import {
   toggleParentOutletOnline,
 } from "../../../../redux/slices/parentSlice";
 import { clearVendorData } from "../../../../redux/slices/vendorSlice";
+import { resetCatalogue } from "../../../../redux/slices/catalogueSlice";
 import AddOutletModal from "./AddOutletModal";
 import CreateOutletModal from "./CreateOutletModal";
+import UpdateOutletPasswordModal from "../../../modals/UpdateOutletPasswordModal";
 
 const formatInt = (n) =>
   Number(n ?? 0).toLocaleString("en-IN", { maximumFractionDigits: 0 });
@@ -91,51 +93,40 @@ const ParentOutletTile = ({
   onToggleOnline,
   toggling,
   onOpenOutletDashboard,
+  onUpdatePassword,
 }) => {
   const isLoading = toggling === outlet.vendor_id;
   const isInactive = outlet.is_active === false;
 
   return (
     <div
-      className={`border rounded-xl px-5 py-4 flex flex-col transition-shadow duration-200 ${
-        isInactive
-          ? "border-gray-200 bg-gray-50/80 opacity-75 cursor-not-allowed"
-          : "border-gray-200 cursor-pointer hover:border-[#5F22D9] hover:shadow-lg"
-      }`}
-      role={isInactive ? "group" : "button"}
-      aria-disabled={isInactive}
-      tabIndex={isInactive ? -1 : 0}
-      onClick={() => {
-        if (!isInactive) onOpenOutletDashboard(outlet.vendor_id);
-      }}
+      className="border border-gray-200 rounded-xl px-5 py-4 flex flex-col cursor-pointer transition-shadow duration-200 hover:border-[#5F22D9] hover:shadow-lg"
+      role="button"
+      tabIndex={0}
+      onClick={() => onOpenOutletDashboard(outlet)}
       onKeyDown={(e) => {
-        if (isInactive) return;
-        if (e.key === "Enter" || e.key === " ") onOpenOutletDashboard(outlet.vendor_id);
+        if (e.key === "Enter" || e.key === " ") onOpenOutletDashboard(outlet);
       }}
     >
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-start gap-2">
         <div className="flex justify-start items-center gap-2 min-w-0">
-          <MapPinIcon
-            className={`w-5 h-5 shrink-0 ${isInactive ? "text-gray-400" : "text-[#5F22D9]"}`}
-          />
+          <MapPinIcon className="w-5 h-5 shrink-0 text-[#5F22D9]" />
           <div className="flex flex-col min-w-0">
-            <span
-              className={`text-sm font-semibold truncate ${
-                isInactive ? "text-gray-500" : "text-black"
-              }`}
-            >
+            <span className="text-sm font-semibold truncate text-black">
               {outlet.vendor_name || "No name"}
             </span>
-            {isInactive && (
-              <span className="text-[10px] font-medium text-gray-800 uppercase tracking-wide">
-                COMPLETE ONBOARDING TO ACTIVATE
-              </span>
-            )}
+            <span className="text-[11px] font-medium text-gray-400 truncate">
+              {outlet.username || "No username"}
+            </span>
           </div>
         </div>
-        <ArrowRightIcon
-          className={`w-4 h-4 shrink-0 ${isInactive ? "text-gray-300" : "text-[#5F22D9]"}`}
-        />
+        {isInactive ? (
+          <span className="shrink-0 rounded-md border border-amber-200 bg-amber-50 px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-amber-700">
+            Not activated
+          </span>
+        ) : (
+          <ArrowRightIcon className="w-4 h-4 shrink-0 text-[#5F22D9]" />
+        )}
       </div>
 
       <div className="mt-3 flex items-start justify-between gap-2">
@@ -156,11 +147,41 @@ const ParentOutletTile = ({
       <div className="mt-4">
         <OutletOnlineToggle
           isOnline={outlet.is_online}
-          disabled={isLoading || isInactive}
+          disabled={isLoading}
           loading={isLoading}
-          onToggle={() => onToggleOnline(outlet.vendor_id)}
+          onToggle={() => {
+            if (isInactive) {
+              onOpenOutletDashboard(outlet);
+              return;
+            }
+            onToggleOnline(outlet.vendor_id);
+          }}
         />
       </div>
+
+      <div
+        className="mt-3"
+        onClick={(e) => e.stopPropagation()}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
+        <SecondaryButton
+          type="button"
+          onClick={() => onUpdatePassword(outlet)}
+          className="w-full px-3 py-2 text-xs"
+        >
+          Update password
+        </SecondaryButton>
+      </div>
+
+      {isInactive ? (
+        <p className="mt-3 text-xs font-semibold text-[#5F22D9]">
+          Click to complete onboarding →
+        </p>
+      ) : (
+        <p className="mt-3 text-xs font-semibold text-[#5F22D9]">
+          Click to view dashboard →
+        </p>
+      )}
     </div>
   );
 };
@@ -173,6 +194,7 @@ const ParentOutletsContent = () => {
   const [togglingId, setTogglingId] = useState(null);
   const [isAddOutletOpen, setIsAddOutletOpen] = useState(false);
   const [isCreateOutletOpen, setIsCreateOutletOpen] = useState(false);
+  const [passwordOutlet, setPasswordOutlet] = useState(null);
 
   useEffect(() => {
     if (!outlets && !outletsLoading) {
@@ -197,10 +219,15 @@ const ParentOutletsContent = () => {
     }
   };
 
-  const handleOpenOutletDashboard = (childId) => {
+  const handleOpenOutletDashboard = (outlet) => {
     localStorage.setItem("role", "PARENT");
-    localStorage.setItem("target_vendor_id", childId);
+    localStorage.setItem("target_vendor_id", outlet.vendor_id);
     dispatch(clearVendorData());
+    if (outlet.is_active === false) {
+      dispatch(resetCatalogue());
+      router.push("/onboard");
+      return;
+    }
     router.push("/business");
   };
 
@@ -240,6 +267,7 @@ const ParentOutletsContent = () => {
                 onToggleOnline={handleToggleOnline}
                 toggling={togglingId}
                 onOpenOutletDashboard={handleOpenOutletDashboard}
+                onUpdatePassword={setPasswordOutlet}
               />
             ))}
           </div>
@@ -256,6 +284,11 @@ const ParentOutletsContent = () => {
         <CreateOutletModal
           open={isCreateOutletOpen}
           onClose={() => setIsCreateOutletOpen(false)}
+        />
+        <UpdateOutletPasswordModal
+          open={Boolean(passwordOutlet)}
+          outlet={passwordOutlet}
+          onClose={() => setPasswordOutlet(null)}
         />
       </div>
     </div>
