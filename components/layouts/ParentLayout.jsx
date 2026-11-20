@@ -27,13 +27,17 @@ export const ParentLayout = ({ children }) => {
 
     const token = localStorage.getItem("token");
 
-    // Only handle the exact `/parent` route.
-    if (pathname === "/parent" || pathname === "/parent/login") {
+    // Stay on the login form when credentials fail. Replacing the same
+    // route remounts the form and clears what the user typed.
+    if (pathname === "/parent/login") {
       if (token) {
         router.replace("/parent/dashboard");
-      } else {
-        router.replace("/parent/login");
       }
+      return;
+    }
+
+    if (pathname === "/parent") {
+      router.replace(token ? "/parent/dashboard" : "/parent/login");
       return;
     }
 
