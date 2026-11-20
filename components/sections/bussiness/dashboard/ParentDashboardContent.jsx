@@ -76,10 +76,10 @@ const MetricTile = ({ icon, value, subtext, trend }) => {
   );
 
   return (
-    <div className="border border-gray-200 rounded-xl px-4 sm:px-5 py-4 flex flex-col">
+    <div className="border border-gray-200 rounded-xl px-4 sm:px-5 py-4 flex flex-col min-w-[max(11rem,max-content)] flex-[1_1_11rem]">
       <div className="flex items-start gap-2">
         <div className="text-gray-600 flex-shrink-0">{icon}</div>
-        <div className="text-2xl sm:text-3xl font-semibold text-black leading-none whitespace-nowrap overflow-hidden text-ellipsis max-w-[130px]">
+        <div className="text-2xl sm:text-3xl font-semibold text-black leading-none whitespace-nowrap">
           {value}
         </div>
       </div>
@@ -128,6 +128,7 @@ const ParentDashboardContent = () => {
     total_bags_created,
     last_week_total_bags_created,
     total_outlets,
+    total_balance,
   } = parentStats;
 
   return (
@@ -136,12 +137,18 @@ const ParentDashboardContent = () => {
         <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
         <p className="text-lg font-semibold text-gray-500 mt-10">Metrics</p>
 
-        <div className="mt-2 grid grid-cols-2 gap-4 lg:grid-cols-5">
+        <div className="mt-2 flex flex-wrap gap-4">
           <MetricTile
             icon={<StarIcon className="w-7 h-7 text-pinkTextOne" />}
             value={Number(avg_rating ?? 0).toFixed(1)}
             subtext="Average rating"
             trend={{ current: avg_rating, prev: last_week_avg_rating }}
+          />
+          <MetricTile
+            icon={<BanknotesIcon className="w-7 h-7 text-pinkTextOne" />}
+            value={formatCurrency(total_balance)}
+            subtext="Total balance"
+            trend={null}
           />
           <MetricTile
             icon={<BanknotesIcon className="w-7 h-7 text-pinkTextOne" />}

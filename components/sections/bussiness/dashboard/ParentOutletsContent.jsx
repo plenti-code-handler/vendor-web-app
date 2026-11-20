@@ -109,10 +109,10 @@ const ParentOutletTile = ({
       }}
     >
       <div className="flex justify-between items-start gap-2">
-        <div className="flex justify-start items-center gap-2 min-w-0">
+        <div className="flex justify-start items-start gap-2 min-w-0">
           <MapPinIcon className="w-5 h-5 shrink-0 text-[#5F22D9]" />
           <div className="flex flex-col min-w-0">
-            <span className="text-sm font-semibold truncate text-black">
+            <span className="text-sm font-semibold text-black break-words">
               {outlet.vendor_name || "No name"}
             </span>
             <span className="text-[11px] font-medium text-gray-400 truncate">
