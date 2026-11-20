@@ -49,19 +49,13 @@ const LoginForm = ({ refreshState }) => {
       password: data.password,
     };
 
-    // Set prod flag based on password
-    if (data.password === 'bountivis1234') {
-      localStorage.setItem('prod', 'false');
-    } else {
-      localStorage.setItem('prod', 'true');
-    }
-
     try {
       const response = await axiosClient.post("/v1/vendor/me/login", loginData);
       if (response.status === 200) {
-        const { access_token, vendor } = response.data;
+        const { access_token, vendor, internal_login } = response.data;
         localStorage.setItem("token", access_token);
         localStorage.setItem("user", JSON.stringify(vendor));
+        localStorage.setItem("prod", internal_login ? "false" : "true");
 
         // Trigger layout refresh
         if (refreshState) refreshState();
