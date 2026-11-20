@@ -60,7 +60,6 @@ const LoginForm = ({ refreshState }) => {
       const response = await axiosClient.post("/v1/vendor/me/login", loginData);
       if (response.status === 200) {
         const { access_token, vendor } = response.data;
-        console.log(vendor, "shine")
         localStorage.setItem("token", access_token);
         localStorage.setItem("user", JSON.stringify(vendor));
 

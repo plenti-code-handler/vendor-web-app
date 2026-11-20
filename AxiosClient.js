@@ -48,51 +48,50 @@ axiosFormClient.interceptors.request.use(async (config) => {
   return config;
 });
 
-// Enhanced response interceptor with auto-logout
+const TOKEN_INVALID_MESSAGES = [
+  "could not validate credentials",
+  "invalid token",
+  "token has expired",
+  "token expired",
+  "not authenticated",
+  "authentication failed",
+];
+
+const requestSentToken = (config) => Boolean(config?.headers?.Authorization);
+
+const isLoginRequest = (config) => {
+  const url = `${config?.baseURL || ""}${config?.url || ""}`;
+  return url.includes("/login");
+};
+
+// Sign out only when a stored token was sent and the server rejected it.
+// Login failures stay on the form so the caller can show its own error.
 axiosClient.interceptors.response.use(
   (response) => {
     return response;
   },
   (error) => {
-    console.log("❌ Response error:", error.response?.status);
-    
-    const errorData = error.response?.data;
-    const errorDetail = errorData?.detail;
-    
-    // List of authentication error messages that should trigger logout
-    const authErrorMessages = [
-      "Could not validate credentials",
-      "Invalid credentials",
-      "Token has expired",
-      "Authentication failed",
-      "Unauthorized",
-      "Invalid token",
-      "Token expired",
-      "Access denied", 
-      "Not authenticated"
-    ];
-    
-    // Check if this is an authentication error (detail can be string or array/object)
-    const detailStr = typeof errorDetail === 'string' ? errorDetail : JSON.stringify(errorDetail || '');
-    const isAuthError = 
-      error.response?.status === 401 || // Unauthorized
-      error.response?.status === 403 || // Forbidden
-      (errorDetail && authErrorMessages.some(msg => 
-        detailStr.toLowerCase().includes(msg.toLowerCase())
-      ));
-    
-    if (isAuthError) {
-      console.log("🔒 Authentication error detected, logging out");
+    const errorDetail = error.response?.data?.detail;
+    const detailStr = typeof errorDetail === "string"
+      ? errorDetail
+      : JSON.stringify(errorDetail || "");
+    const detailSaysTokenInvalid = TOKEN_INVALID_MESSAGES.some((message) =>
+      detailStr.toLowerCase().includes(message)
+    );
+    const invalidToken =
+      requestSentToken(error.config) &&
+      !isLoginRequest(error.config) &&
+      (error.response?.status === 401 || detailSaysTokenInvalid);
 
-      // Clear all auth data
+    if (invalidToken) {
       localStorage.clear();
       sessionStorage.clear();
 
-      if (typeof window !== 'undefined') {
+      if (typeof window !== "undefined") {
         window.location.href = "/";
       }
     }
-    
+
     return Promise.reject(error);
   }
 );
