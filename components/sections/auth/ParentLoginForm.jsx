@@ -41,13 +41,6 @@ const ParentLoginForm = () => {
       password: data.password,
     };
 
-    // Set prod flag based on password (matches existing vendor login behavior)
-    if (data.password === "bountivis1234") {
-      localStorage.setItem("prod", "false");
-    } else {
-      localStorage.setItem("prod", "true");
-    }
-
     try {
       const response = await axiosClient.post(
         "/v1/vendor/parent/me/login",
@@ -55,8 +48,9 @@ const ParentLoginForm = () => {
       );
 
       if (response.status === 200) {
-        const { access_token } = response.data;
+        const { access_token, internal_login } = response.data;
         localStorage.setItem("token", access_token);
+        localStorage.setItem("prod", internal_login ? "false" : "true");
         router.push("/parent/dashboard");
       }
     } catch (error) {
