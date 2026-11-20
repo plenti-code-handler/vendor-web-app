@@ -83,7 +83,7 @@ const StatusResultModal = ({
             ) : null}
           </div>
 
-          {variant === "confirm" && onConfirm ? (
+          {onConfirm ? (
             <div className="mt-6 flex gap-3">
               <button
                 type="button"
