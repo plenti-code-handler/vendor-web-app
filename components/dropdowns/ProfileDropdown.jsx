@@ -6,24 +6,31 @@ import { useDispatch } from "react-redux";
 import { logoutVendor } from "../../redux/slices/vendorSlice";
 import { logoutIconSvg } from "../../svgs";
 import { toast } from "sonner";
+import StatusResultModal from "../modals/StatusResultModal";
 
 const ProfileDropdown = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const [logo, setLogo] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [logoutOpen, setLogoutOpen] = useState(false);
 
   const handleProfileClick = () => {
     router.replace("/business/profile");
     setIsDropdownOpen(false);
   };
 
-  const handleLogout = async () => {
+  const handleLogoutClick = () => {
+    setIsDropdownOpen(false);
+    setLogoutOpen(true);
+  };
+
+  const handleLogout = () => {
+    setLogoutOpen(false);
     toast.success("Signed Out Successfully!");
     dispatch(logoutVendor());
     router.push("/");
     localStorage.clear();
-    setIsDropdownOpen(false);
   };
 
   const toggleDropdown = () => {
@@ -90,7 +97,7 @@ const ProfileDropdown = () => {
             Profile
           </button>
           <button
-            onClick={handleLogout}
+            onClick={handleLogoutClick}
             className="flex items-center w-full px-4 py-2 text-sm hover:bg-gray-100 transition-colors duration-200 text-red-500"
           >
             <div className="w-4 h-4 mr-3">
@@ -100,6 +107,17 @@ const ProfileDropdown = () => {
           </button>
         </div>
       )}
+
+      <StatusResultModal
+        open={logoutOpen}
+        onClose={() => setLogoutOpen(false)}
+        variant="error"
+        title="Sign out?"
+        message="We had a great time saving food with you!"
+        onConfirm={handleLogout}
+        confirmLabel="Logout"
+        cancelLabel="Cancel"
+      />
     </div>
   );
 };
